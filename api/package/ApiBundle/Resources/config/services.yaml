@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Package\ApiBundle\:
+        resource: '../../*'
+        exclude: '../../{Entity,Migrations,Tests}'

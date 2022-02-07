@@ -1,0 +1,11 @@
+parameters:
+    level: 5
+    checkMissingIterableValueType: false
+
+paths:
+    - src
+    - package
+
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
