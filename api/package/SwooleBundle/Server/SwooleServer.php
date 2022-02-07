@@ -5,6 +5,7 @@ namespace Package\SwooleBundle\Server;
 use Package\ApiBundle\Utils\Util;
 use Swoole\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
@@ -36,6 +37,8 @@ class SwooleServer
             ]);
         });
         $server->start();
+        $server->statQueue();
+
 
         sleep(1);
 
@@ -73,9 +76,15 @@ class SwooleServer
      */
     public function watch(string $host): void
     {
+        $fsWatch = (new ExecutableFinder())->find('fswatch');
+        if (!$fsWatch) {
+            $this->output->error('fswatch plugin not found!');
+            return;
+        }
+
         // Start File Watcher
         $process = new SymfonyProcess([
-            'fswatch', '*.php', '*.yaml', '*.twig', '-r', '-e', '.*~',
+            $fsWatch, '*.php', '*.yaml', '*.twig', '-r', '-e', '.*~',
             Util::rootDir('src'),
             Util::rootDir('config'),
             Util::rootDir('package'),
@@ -103,6 +112,7 @@ class SwooleServer
                 $server->stop();
                 $server->start(null, ['watch' => random_int(100, 200)]);
             }
+            usleep(100*2500);
         }
     }
 

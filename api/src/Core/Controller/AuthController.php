@@ -2,13 +2,15 @@
 
 namespace App\Core\Controller;
 
-use App\Core\Task\TestTask;
 use Package\ApiBundle\Attribute\ApiDoc;
 use Package\ApiBundle\Utils\ApiResponse;
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
 use Package\SwooleBundle\Task\TaskHandler;
+use Swoole\Constant;
+use Swoole\Coroutine;
 use Swoole\Coroutine\Client;
+use Swoole\Process;
 use Swoole\Server;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,8 +33,17 @@ class AuthController extends AbstractController
         $client = new Client(SWOOLE_SOCK_TCP);
         //dump($client->connect('swoole://task'));
         /** @var Server $server */
-        //$server = $request->attributes->get('_server');
-        //dump($server);
+        $server = $request->attributes->get('_server');
+        $server->task(['asd']);
+        $server->task(['asd']);
+        $server->task(['asd']);
+        $server->task(['asd']);
+        $server->task(['asd']);
+        //dump($server->master_pid);
+        go(function (){
+            Coroutine::sleep(60);
+        });
+        //Process::kill($server->master_pid, SIGUSR1);
         //dump($handler->dispatch());
 
         return ApiResponse::json(['asdddddsa']);

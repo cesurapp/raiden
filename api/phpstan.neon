@@ -1,10 +1,9 @@
 parameters:
     level: 5
     checkMissingIterableValueType: false
-
-paths:
-    - src
-    - package
+    paths:
+        - src
+        - package
 
 includes:
     - vendor/phpstan/phpstan-symfony/extension.neon

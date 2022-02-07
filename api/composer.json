@@ -8,6 +8,7 @@
     "ext-ctype": "*",
     "ext-iconv": "*",
     "ext-pcntl": "*",
+    "ext-xlswriter": "*",
     "doctrine/doctrine-bundle": "^2.5",
     "doctrine/orm": "^2.10",
     "symfony/console": "6.0.*",
@@ -17,7 +18,7 @@
     "symfony/runtime": "6.0.*",
     "symfony/security-bundle": "6.0.*",
     "symfony/validator": "6.0.*",
-    "symfony/yaml": "6.0.*",
+    "symfony/yaml": "6.0.*"
   },
   "require-dev": {
     "openswoole/ide-helper": "@dev",

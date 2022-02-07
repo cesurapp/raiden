@@ -4,9 +4,11 @@ namespace Package\SwooleBundle\Runtime;
 
 use App\Kernel;
 use Package\ApiBundle\Utils\Util;
+use Swoole\Constant;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
+use Swoole\Server as TcpServer;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -32,7 +34,7 @@ class SwooleRunner implements RunnerInterface
         $kernel->boot();
         $this->locator = $kernel->getContainer();
 
-        // Create Server
+        // Create HTTP Server
         $this->server = new Server(
             $this->options['host'],
             (int)$this->options['port'],
@@ -45,10 +47,13 @@ class SwooleRunner implements RunnerInterface
         $this->server->on('request', [$this, 'onRequest']);
         $this->server->on('task', [$this, 'onTask']);
         $this->server->on('start', [$this, 'onStart']);
-        $this->server->taskworker = true;
+
+        // Create TCP Command Server
+        $this->createTCPServer();
 
         return (int)$this->server->start();
     }
+
 
     /**
      * Handle Request
@@ -100,7 +105,36 @@ class SwooleRunner implements RunnerInterface
      */
     public function onTask(Server $server, $taskId, $reactorId, $data): void
     {
-        $class = $this->locator->get($data);
+        sleep(60);
+        //$class = $this->locator->get($data);
+    }
+
+    /**
+     * TCP Commander Server
+     *
+     * @return void
+     */
+    public function createTCPServer(): void
+    {
+        /** @var TcpServer $server */
+        $server = $this->server->addlistener("127.0.0.1", 9502, SWOOLE_SOCK_TCP);
+        $server->set([
+            Constant::OPTION_WORKER_NUM => 1,
+            Constant::OPTION_TASK_WORKER_NUM => 0,
+        ]);
+        $server->on('receive', function (Server $server, $fd, $from_id, $cmd) {
+            /** @var TcpServer\Port $port */
+            $server->send($fd, $this->tcpCommander($cmd, $this->server));
+        });
+    }
+
+    public function tcpCommander($cmd, Server $server): string|int
+    {
+        return match ($cmd) {
+            'OPENSWOOLE_STATS_OPENMETRICS' => $this->server->stats(OPENSWOOLE_STATS_OPENMETRICS),
+            'OPENSWOOLE_STATS_JSON' => $this->server->stats(OPENSWOOLE_STATS_JSON),
+            default => 0
+        };
     }
 
     /**
