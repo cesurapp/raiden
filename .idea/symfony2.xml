@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Symfony2PluginSettings">
+    <option name="pathToTranslation" value="var/cache/dev/translations" />
+    <option name="directoryToWeb" value="public" />
+    <option name="directoryToApp" value="src" />
+    <option name="pluginEnabled" value="true" />
+    <option name="profilerCsvPath" value="" />
+    <option name="lastServiceGeneratorLanguage" value="yaml" />
+    <option name="twigNamespaces">
+      <list>
+        <twig_namespace custom="true" namespaceType="ADD_PATH" path="api/templates" />
+      </list>
+    </option>
+    <option name="routingFiles">
+      <list>
+        <routing_file path="app/cache/dev/appDevUrlGenerator.php" />
+        <routing_file path="var/cache/dev/appDevUrlGenerator.php" />
+        <routing_file path="var/cache/dev/appDevDebugProjectContainerUrlGenerator.php" />
+        <routing_file path="var/cache/dev/srcDevDebugProjectContainerUrlGenerator.php" />
+        <routing_file path="var/cache/dev/url_matching_routes.php" />
+      </list>
+    </option>
+  </component>
+</project>

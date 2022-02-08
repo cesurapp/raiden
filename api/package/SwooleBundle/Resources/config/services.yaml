@@ -6,4 +6,11 @@ services:
 
     Package\SwooleBundle\:
         resource: '../../*'
-        exclude: '../../{Entity,Migrations,Tests,Runtime,Public,Server}'
+        exclude: '../../{Entity,Migrations,Tests,Runtime,Log,Task,Cron}'
+
+    logger:
+        class: Package\SwooleBundle\Log\Logger
+        arguments:
+            $output: "%kernel.logs_dir%/%env(APP_ENV)%.log"
+            $minLevel: "%env(LOG_LEVEL)%"
+            $stdin: "%env(LOG_STDIN)%"

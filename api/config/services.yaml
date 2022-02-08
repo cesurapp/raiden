@@ -1,6 +1,3 @@
-parameters:
-    app.name: fak
-
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -18,6 +15,3 @@ services:
             - '../src/ApiCore/Contract/'
             - '../src/ApiCore/Exception/'
             - '../src/ApiCore/Utils/'
-
-    App\Core\Task\TestTask:
-        public: true

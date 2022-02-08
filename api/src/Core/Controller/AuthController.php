@@ -7,6 +7,7 @@ use Package\ApiBundle\Utils\ApiResponse;
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
 use Package\SwooleBundle\Task\TaskHandler;
+use Psr\Log\LoggerInterface;
 use Swoole\Constant;
 use Swoole\Coroutine;
 use Swoole\Coroutine\Client;
@@ -28,21 +29,23 @@ class AuthController extends AbstractController
         'id' => 222,
         'name' => 'FakOff',
     ])]
-    public function index(Request $request, TaskHandler $handler): JsonResponse
+    public function index(Request $request, TaskHandler $handler, LoggerInterface $logger): JsonResponse
     {
-        $client = new Client(SWOOLE_SOCK_TCP);
+        //$logger->error('sdsadasdas');
+        //$logger->info('sdsadasdas');
+        //$logger->warning('sdsadasdas');
+        //$client = new Client(SWOOLE_SOCK_TCP);
         //dump($client->connect('swoole://task'));
-        /** @var Server $server */
-        $server = $request->attributes->get('_server');
-        $server->task(['asd']);
-        $server->task(['asd']);
-        $server->task(['asd']);
-        $server->task(['asd']);
-        $server->task(['asd']);
+        //$server = $request->attributes->get('_server');
+        //$server->task(['asd']);
+        //$server->task(['asd']);
+        //$server->task(['asd']);
+        //$server->task(['asd']);
+        //$server->task(['asd']);
         //dump($server->master_pid);
-        go(function (){
+        /*go(function (){
             Coroutine::sleep(60);
-        });
+        });*/
         //Process::kill($server->master_pid, SIGUSR1);
         //dump($handler->dispatch());
 

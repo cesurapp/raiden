@@ -14,11 +14,8 @@ class TaskHandler
         $this->server = $requestStack->getMainRequest()->attributes->get('_server');
     }
 
-    public function dispatch(TaskInterface $task, string|array|bool $data): void
+    public function dispatch(TaskInterface $task, string|array|bool|null $data = null, ?callable $finishCallback = null): void
     {
-        $this->server->task([
-            'class' => get_class($task),
-            'data' => $data
-        ]);
+        $this->server->task(['class' => get_class($task), 'data' => $data], -1, $finishCallback);
     }
 }

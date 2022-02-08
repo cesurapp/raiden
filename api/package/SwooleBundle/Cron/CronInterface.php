@@ -1,8 +1,8 @@
 <?php
 
-namespace Package\SwooleBundle\Task;
+namespace Package\SwooleBundle\Cron;
 
-interface TaskInterface
+interface CronInterface
 {
     public function __invoke(string|array|bool|null $data);
 }
