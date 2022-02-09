@@ -14,7 +14,7 @@ class TaskHandler
         $this->server = $kernel->getServer(); // @phpstan-ignore-line
     }
 
-    public function dispatch(TaskInterface|string $task, string|array|bool|null $payload = null, ?callable $finishCallback = null): void
+    public function dispatch(TaskInterface|string $task, mixed $payload = null, ?callable $finishCallback = null): void
     {
         $this->server->task([
             'class' => is_string($task) ? $task : get_class($task),

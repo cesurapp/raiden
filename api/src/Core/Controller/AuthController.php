@@ -25,10 +25,7 @@ class AuthController extends AbstractController
     ])]
     public function index(Request $request, TaskHandler $handler): JsonResponse
     {
-        $handler->dispatch('asdsdassaasd', ['asd', 1,2,3], function () {
-            sleep(10);
-            dump('nalet girsin');
-        });
+        $handler->dispatch('sadasd', ['asd', 1,2,3]);
         //$logger->error('sdsadasdas');
         //$logger->info('sdsadasdas');
         //$logger->warning('sdsadasdas');

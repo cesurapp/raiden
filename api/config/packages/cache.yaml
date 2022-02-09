@@ -7,3 +7,7 @@ framework:
         app: cache.adapter.array
         system: cache.adapter.array
         #default_redis_provider: redis://localhost
+
+        pools:
+            my_cache_pool:
+                adapter: cache.adapter.swoole

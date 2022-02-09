@@ -127,7 +127,7 @@ class SwooleRunner implements RunnerInterface
         // Create Container
          $kernel = new Kernel( self::$options['app']['env'],  self::$options['debug']);
          $kernel->boot();
-         $this->locator = $kernel->getContainer();
+         //$this->locator = $kernel->getContainer();
     }
 
     /**
@@ -184,10 +184,9 @@ class SwooleRunner implements RunnerInterface
     /**
      * Handle Task
      */
-    public function onTask(Server $server, $taskId, $reactorId, $data): void
+    public function onTask(Server $server, int $taskId, int $reactorId, mixed $data): void
     {
-        dump($data);
-        $server->finish('asd');
+        //dump($data);
         /*$task = $data['class'];
         $payload = $data['payload'];*/
     }
@@ -195,7 +194,7 @@ class SwooleRunner implements RunnerInterface
     /**
      * TCP Commander
      */
-    public function onTcpReceive(Server $server, $fd, $fromId, $cmd): void
+    public function onTcpReceive(Server $server, int $fd, int $fromId, string $cmd): void
     {
         $result = match ($cmd) {
             'metrics' => json_encode(array_merge(self::$options, [

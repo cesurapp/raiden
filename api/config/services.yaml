@@ -4,14 +4,10 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
     App\:
-        resource: '../src/*/'
+        resource: '../src/*'
         exclude:
-            - '../src/*/DependencyInjection/'
-            - '../src/*/Entity/'
-            - '../src/*/Tests/'
-            - '../src/*/Enum/'
+            - '../src/*/DependencyInjection'
+            - '../src/*/Entity'
+            - '../src/*/Test'
+            - '../src/*/Enum'
             - '../src/Kernel.php'
-            - '../src/ApiCore/Attribute/'
-            - '../src/ApiCore/Contract/'
-            - '../src/ApiCore/Exception/'
-            - '../src/ApiCore/Utils/'

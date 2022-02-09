@@ -3,23 +3,24 @@
 namespace Package\SwooleBundle\Adapter;
 
 use Psr\Cache\CacheItemInterface;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Swoole\Table;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\PruneableInterface;
 use Symfony\Component\Cache\ResettableInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
-class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwareInterface, ResettableInterface
+class SwooleCacheAdapter implements AdapterInterface, CacheInterface, ResettableInterface, PruneableInterface
 {
-    use LoggerAwareTrait;
     private ?Table $table;
     private static \Closure $createCacheItem;
 
-    public function __construct(RequestStack $requestStack, private int $defaultLifetime = 0)
+    public function __construct(KernelInterface $kernel, private int $defaultLifetime = 0)
     {
+        /** @phpstan-ignore-next-line */
+        $this->table = $kernel->getServer()->table;
+
         self::$createCacheItem ?? self::$createCacheItem = \Closure::bind(
             static function ($key, $value, $isHit) {
                 $item = new CacheItem();
@@ -39,16 +40,19 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
         $item = $this->table->get($key);
         $isHit = isset($item['expr']) && $item['expr'] > time();
 
-        return (self::$createCacheItem)($key, isset($item['value']) ? unserialize($item['value']) : null, $isHit ?? false);
+        return (self::$createCacheItem)($key, isset($item['value']) ? unserialize($item['value']) : null, $isHit);
     }
 
     public function getItems(array $keys = []): iterable
     {
         foreach ($keys as $key) {
-            yield $key => $this->getItems($keys);
+            yield $key => $this->getItem($keys);
         }
     }
 
+    /**
+     * Clear Expired Value
+     */
     public function clear(string $prefix = ''): bool
     {
         $now = microtime(true);
@@ -56,7 +60,7 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
         if ($prefix !== '') {
             foreach ($this->table as $key => $value) {
                 if ($value['expr'] < $now && str_starts_with($key, $prefix)) {
-                    $this->deleteItem($key);
+                    $this->delete($key);
                 }
             }
             return true;
@@ -64,7 +68,7 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
 
         foreach ($this->table as $key => $value) {
             if ($value['expr'] < $now) {
-                $this->deleteItem($key);
+                $this->delete($key);
             }
         }
 
@@ -90,12 +94,12 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
 
     public function delete(string $key): bool
     {
-        return $this->deleteItem($key);
+        return $this->table->del($key);
     }
 
     public function deleteItem(string $key): bool
     {
-        return $this->table->del($key);
+        return $this->delete($key);
     }
 
     public function deleteItems(array $keys): bool
@@ -114,7 +118,6 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
         }
 
         $item = (array)$item;
-
         $this->table->set($item["\0*\0key"], [
             'value' => serialize($item["\0*\0value"]),
             'expr' => (int)($item["\0*\0expiry"] ?? $this->defaultLifetime ?? PHP_INT_MAX)
@@ -133,7 +136,15 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
         return true;
     }
 
-    public function reset()
+    public function prune(): bool
+    {
+        return $this->clear('');
+    }
+
+    /**
+     * Clear All Cache
+     */
+    public function reset(): void
     {
         foreach ($this->table as $key => $value) {
             $this->table->del($key);

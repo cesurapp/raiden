@@ -16,6 +16,8 @@ services:
             $minLevel: "%env(LOG_LEVEL)%"
             $stdin: "%env(LOG_STDIN)%"
 
+    # Task Worker
     Package\SwooleBundle\Task\TaskHandler:
 
-    # Adapter
+    # Cron Worker
+    Package\SwooleBundle\Cron\CronHandler:
