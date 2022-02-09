@@ -2,6 +2,7 @@
 
 namespace Package\SwooleBundle\Runtime;
 
+use App\Kernel;
 use Swoole\Constant;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -88,6 +89,9 @@ class SwooleRunner implements RunnerInterface
             (int)(self::$options['http']['sock_type'])
         );
         $this->server->set(self::$options['http']['settings']);
+        if ($this->application instanceof Kernel) {
+            $this->application->setServer($this->server);
+        }
 
         // Handle Event
         $this->server->on('request', [$this, 'onRequest']);
@@ -121,9 +125,9 @@ class SwooleRunner implements RunnerInterface
     private function initTask(): void
     {
         // Create Container
-        /* $kernel = new Kernel( self::$options['env'],  self::$options['debug']);
+         $kernel = new Kernel( self::$options['app']['env'],  self::$options['debug']);
          $kernel->boot();
-         $this->locator = $kernel->getContainer();*/
+         $this->locator = $kernel->getContainer();
     }
 
     /**
@@ -150,6 +154,7 @@ class SwooleRunner implements RunnerInterface
      */
     public function onStart(Server $server): void
     {
+        // Info
         if (self::$options['app']['watch'] < 2) {
             $output = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
             $output->definitionList('Swoole HTTP Server Information',
@@ -181,8 +186,10 @@ class SwooleRunner implements RunnerInterface
      */
     public function onTask(Server $server, $taskId, $reactorId, $data): void
     {
-        //usleep(100*5000);
-        //$class = $this->locator->get($data);
+        dump($data);
+        $server->finish('asd');
+        /*$task = $data['class'];
+        $payload = $data['payload'];*/
     }
 
     /**

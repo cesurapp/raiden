@@ -4,13 +4,18 @@ services:
         autoconfigure: true
         public: false
 
-    Package\SwooleBundle\:
-        resource: '../../*'
-        exclude: '../../{Entity,Migrations,Tests,Runtime,Log,Task,Cron}'
+    # Commands
+    Package\SwooleBundle\Command\:
+        resource: '../../Command/*'
 
+    # Custom Logger
     logger:
         class: Package\SwooleBundle\Log\Logger
         arguments:
             $output: "%kernel.logs_dir%/%env(APP_ENV)%.log"
             $minLevel: "%env(LOG_LEVEL)%"
             $stdin: "%env(LOG_STDIN)%"
+
+    Package\SwooleBundle\Task\TaskHandler:
+
+    # Adapter

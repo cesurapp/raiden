@@ -20,7 +20,6 @@ class SwooleCacheAdapter implements AdapterInterface, CacheInterface, LoggerAwar
 
     public function __construct(RequestStack $requestStack, private int $defaultLifetime = 0)
     {
-
         self::$createCacheItem ?? self::$createCacheItem = \Closure::bind(
             static function ($key, $value, $isHit) {
                 $item = new CacheItem();

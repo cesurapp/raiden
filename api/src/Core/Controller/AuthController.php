@@ -7,12 +7,6 @@ use Package\ApiBundle\Utils\ApiResponse;
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
 use Package\SwooleBundle\Task\TaskHandler;
-use Psr\Log\LoggerInterface;
-use Swoole\Constant;
-use Swoole\Coroutine;
-use Swoole\Coroutine\Client;
-use Swoole\Process;
-use Swoole\Server;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,8 +23,12 @@ class AuthController extends AbstractController
         'id' => 222,
         'name' => 'FakOff',
     ])]
-    public function index(Request $request, TaskHandler $handler, LoggerInterface $logger): JsonResponse
+    public function index(Request $request, TaskHandler $handler): JsonResponse
     {
+        $handler->dispatch('asdsdassaasd', ['asd', 1,2,3], function () {
+            sleep(10);
+            dump('nalet girsin');
+        });
         //$logger->error('sdsadasdas');
         //$logger->info('sdsadasdas');
         //$logger->warning('sdsadasdas');

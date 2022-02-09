@@ -3,19 +3,22 @@
 namespace Package\SwooleBundle\Task;
 
 use Swoole\Http\Server;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class TaskHandler
 {
     private Server $server;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(KernelInterface $kernel)
     {
-        $this->server = $requestStack->getMainRequest()->attributes->get('_server');
+        $this->server = $kernel->getServer(); // @phpstan-ignore-line
     }
 
-    public function dispatch(TaskInterface $task, string|array|bool|null $data = null, ?callable $finishCallback = null): void
+    public function dispatch(TaskInterface|string $task, string|array|bool|null $payload = null, ?callable $finishCallback = null): void
     {
-        $this->server->task(['class' => get_class($task), 'data' => $data], -1, $finishCallback);
+        $this->server->task([
+            'class' => is_string($task) ? $task : get_class($task),
+            'payload' => $payload
+        ], -1, $finishCallback);
     }
 }
