@@ -7,7 +7,7 @@
   </component>
   <component name="PhpCSFixer">
     <phpcsfixer_settings>
-      <PhpCSFixerConfiguration tool_path="$PROJECT_DIR$/api/vendor/bin/php-cs-fixer" />
+      <PhpCSFixerConfiguration standards="PSR1;PSR2;Symfony;DoctrineAnnotation;PHP70Migration;PHP71Migration" tool_path="$PROJECT_DIR$/api/bin/tool/vendor/bin/php-cs-fixer" />
     </phpcsfixer_settings>
   </component>
   <component name="PhpIncludePathManager">
@@ -73,8 +73,6 @@
       <path value="$PROJECT_DIR$/api/vendor/symfony/security-bundle" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/property-access" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/property-info" />
-      <path value="$PROJECT_DIR$/api/vendor/phpstan/phpstan" />
-      <path value="$PROJECT_DIR$/api/vendor/phpstan/phpstan-symfony" />
       <path value="$PROJECT_DIR$/api/vendor/myclabs/deep-copy" />
       <path value="$PROJECT_DIR$/api/vendor/theseer/tokenizer" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/browser-kit" />
@@ -198,7 +196,7 @@
   </component>
   <component name="PhpStan">
     <PhpStan_settings>
-      <PhpStanConfiguration tool_path="api/vendor/phpstan/phpstan/phpstan" />
+      <PhpStanConfiguration tool_path="api/bin/tool/vendor/phpstan/phpstan/phpstan" timeout="20000" />
     </PhpStan_settings>
   </component>
   <component name="PhpUnit">

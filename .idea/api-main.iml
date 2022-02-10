@@ -22,6 +22,7 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/ui/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/api/bin/tool" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
