@@ -44,9 +44,7 @@
   "autoload": {
     "exclude-from-classmap": [
       "src/**/Test/",
-      "src/**/Tests/",
-      "package/**/Test/",
-      "package/**/Tests/"
+      "package/**/Test/"
     ],
     "psr-4": {
       "App\\": "src/",
@@ -55,7 +53,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\**\\Tests\\": "src/**/Test/"
+      "App\\Tests\\": "src/*/Test/"
     }
   },
   "replace": {
@@ -78,6 +76,7 @@
       "@auto-scripts"
     ],
     "analyse": "vendor/bin/phpstan analyse",
+    "fix": "vendor/bin/php-cs-fix fix",
     "test": "bin/phpunit"
   },
   "conflict": {

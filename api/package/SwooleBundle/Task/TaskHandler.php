@@ -18,7 +18,7 @@ class TaskHandler
     {
         $this->server->task([
             'class' => is_string($task) ? $task : get_class($task),
-            'payload' => $payload
+            'payload' => $payload,
         ], -1, $finishCallback);
     }
 }

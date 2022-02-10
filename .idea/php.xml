@@ -5,6 +5,11 @@
       <MessDetectorConfiguration tool_path="api/vendor/phpmd/phpmd/src/bin/phpmd" />
     </phpmd_settings>
   </component>
+  <component name="PhpCSFixer">
+    <phpcsfixer_settings>
+      <PhpCSFixerConfiguration tool_path="$PROJECT_DIR$/api/vendor/bin/php-cs-fixer" />
+    </phpcsfixer_settings>
+  </component>
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/api/vendor/psr/container" />

@@ -3,11 +3,13 @@
 namespace Package\SwooleBundle\Runtime;
 
 use App\Kernel;
+use Package\SwooleBundle\Adapter\SwooleCacheAdapter;
 use Swoole\Constant;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 use Swoole\Server as TcpServer;
+use Swoole\Table;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -18,12 +20,12 @@ use Symfony\Component\Runtime\RunnerInterface;
 class SwooleRunner implements RunnerInterface
 {
     /**
-     * Swoole HTTP Server
+     * Swoole HTTP Server.
      */
     private Server $server;
 
     /**
-     * Swoole Config
+     * Swoole Config.
      */
     public static array $options = [
         'http' => [
@@ -35,10 +37,7 @@ class SwooleRunner implements RunnerInterface
                 Constant::OPTION_WORKER_NUM => 8,
                 Constant::OPTION_TASK_WORKER_NUM => 4,
                 Constant::OPTION_ENABLE_STATIC_HANDLER => false,
-                //Constant::OPTION_DOCUMENT_ROOT => 'public',
-                //Constant::OPTION_PID_FILE => 'var/server.pid',
-                //Constant::OPTION_LOG_FILE => 'var/log/server.log',
-                Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_ERROR
+                Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_ERROR,
             ],
         ],
         'tcp' => [
@@ -46,16 +45,21 @@ class SwooleRunner implements RunnerInterface
             'port' => 9502,
             'sock_type' => SWOOLE_SOCK_TCP,
         ],
+        'cache_table' => [
+            'size' => 500,
+            'size_value' => 500,
+        ],
         'app' => [
-            'env' => 'prod',
+            'env' => 'dev',
             'watch' => 0,
             'cron' => 1,
-            'task' => 1
+            'task' => 1,
         ],
     ];
 
     public function __construct(private HttpKernelInterface $application, array $options)
     {
+        self::$options['app']['env'] = $_ENV['APP_ENV'];
         self::$options = array_merge(self::$options, $options);
         if (isset($_SERVER['watch'])) {
             self::$options['app']['watch'] = $_SERVER['watch'];
@@ -67,31 +71,30 @@ class SwooleRunner implements RunnerInterface
         // Create Server
         $this->createHttpServer();
         $this->createTCPServer();
+        $this->initCacheTable();
 
         // Init Task & Cron
         $this->initTask();
         $this->initCron();
 
         // Start Server
-        return (int)$this->server->start();
+        return (int) $this->server->start();
     }
 
     /**
-     * Create HTTP Server
+     * Create HTTP Server.
      */
     private function createHttpServer(): void
     {
         // Create HTTP Server
         $this->server = new Server(
             self::$options['http']['host'],
-            (int)self::$options['http']['port'],
-            (int)(self::$options['http']['mode']),
-            (int)(self::$options['http']['sock_type'])
+            (int) self::$options['http']['port'],
+            (int) (self::$options['http']['mode']),
+            (int) (self::$options['http']['sock_type'])
         );
         $this->server->set(self::$options['http']['settings']);
-        if ($this->application instanceof Kernel) {
-            $this->application->setServer($this->server);
-        }
+        $GLOBALS['http_server'] = $this->server;
 
         // Handle Event
         $this->server->on('request', [$this, 'onRequest']);
@@ -100,7 +103,7 @@ class SwooleRunner implements RunnerInterface
     }
 
     /**
-     * Create TCP Server
+     * Create TCP Server.
      */
     private function createTCPServer(): void
     {
@@ -117,26 +120,35 @@ class SwooleRunner implements RunnerInterface
         $server->on('receive', [$this, 'onTcpReceive']);
     }
 
+    private function initCacheTable(): void
+    {
+        $table = new Table(self::$options['cache_table']['size']);
+        $table->column('value', Table::TYPE_STRING, self::$options['cache_table']['size_value']);
+        $table->column('expr', Table::TYPE_INT);
+        $table->create();
+        $this->server->table = $table;
+    }
+
     private function initCron(): void
     {
-
     }
 
     private function initTask(): void
     {
         // Create Container
-         $kernel = new Kernel( self::$options['app']['env'],  self::$options['debug']);
-         $kernel->boot();
-         //$this->locator = $kernel->getContainer();
+        $kernel = new Kernel(self::$options['app']['env'], self::$options['debug']);
+        $kernel->boot();
+        //$this->locator = $kernel->getContainer();
     }
 
     /**
-     * Handle Request
+     * Handle Request.
      */
     public function onRequest(Request $request, Response $response): void
     {
-        if ($request->server['request_uri'] === '/metrics') {
+        if ('/metrics' === $request->server['request_uri']) {
             $this->handleMetrics($request, $response);
+
             return;
         }
 
@@ -150,16 +162,17 @@ class SwooleRunner implements RunnerInterface
     }
 
     /**
-     * Handle Server Start Event
+     * Handle Server Start Event.
      */
     public function onStart(Server $server): void
     {
         // Info
         if (self::$options['app']['watch'] < 2) {
             $output = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-            $output->definitionList('Swoole HTTP Server Information',
-                ['Host' => self::$options['http']['host'] . ':' . self::$options['http']['port']],
-                ['TCP Host' => self::$options['tcp']['host'] . ':' . self::$options['tcp']['port']],
+            $output->definitionList(
+                'Swoole HTTP Server Information',
+                ['Host' => self::$options['http']['host'].':'.self::$options['http']['port']],
+                ['TCP Host' => self::$options['tcp']['host'].':'.self::$options['tcp']['port']],
                 ['Worker' => self::$options['http']['settings']['worker_num']],
                 ['Task Worker' => self::$options['http']['settings']['task_worker_num']],
                 ['Debug' => self::$options['debug'] ? 'True' : 'False'],
@@ -182,7 +195,7 @@ class SwooleRunner implements RunnerInterface
     }
 
     /**
-     * Handle Task
+     * Handle Task.
      */
     public function onTask(Server $server, int $taskId, int $reactorId, mixed $data): void
     {
@@ -192,13 +205,13 @@ class SwooleRunner implements RunnerInterface
     }
 
     /**
-     * TCP Commander
+     * TCP Commander.
      */
     public function onTcpReceive(Server $server, int $fd, int $fromId, string $cmd): void
     {
         $result = match ($cmd) {
             'metrics' => json_encode(array_merge(self::$options, [
-                'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT)
+                'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),
             ]), JSON_THROW_ON_ERROR),
             default => 0
         };
@@ -207,18 +220,16 @@ class SwooleRunner implements RunnerInterface
     }
 
     /**
-     * Handle Swoole Server Metrics
-     *
-     * @param Request $req
-     * @param Response $res
+     * Handle Swoole Server Metrics.
      */
     private function handleMetrics(Request $req, Response $res): void
     {
         if (isset($req->header['authorization'])) {
-            $pass = 'Basic ' . base64_encode($_ENV['SERVER_USER'] . ':' . $_ENV['SERVER_PASS']);
+            $pass = 'Basic '.base64_encode($_ENV['SERVER_USER'].':'.$_ENV['SERVER_PASS']);
             if ($pass === $req->header['authorization']) {
-                $res->header("Content-Type", "text/plain");
+                $res->header('Content-Type', 'text/plain');
                 $res->end($this->server->stats(\OPENSWOOLE_STATS_OPENMETRICS));
+
                 return;
             }
         }

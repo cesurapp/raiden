@@ -16,7 +16,7 @@ framework:
         log: "%kernel.debug%"
 
     default_locale: en
-    #default_uri:
+
 # TEST
 when@test:
     framework:

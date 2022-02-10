@@ -7,7 +7,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Json Request Body to Array Convert
+ * Json Request Body to Array Convert.
  */
 class RequestListener implements EventSubscriberInterface
 {
@@ -18,7 +18,7 @@ class RequestListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        if ($request->headers->get('Content-Type') === 'application/json' && $content = $request->getContent()) {
+        if ('application/json' === $request->headers->get('Content-Type') && $content = $request->getContent()) {
             $request->request->add(
                 json_decode($content, true, 512, \JSON_BIGINT_AS_STRING | \JSON_THROW_ON_ERROR)
             );

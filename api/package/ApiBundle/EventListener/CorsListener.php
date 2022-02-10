@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Cors Handler
+ * Cors Handler.
  */
 class CorsListener implements EventSubscriberInterface
 {

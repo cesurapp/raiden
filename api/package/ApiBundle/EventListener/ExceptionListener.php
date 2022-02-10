@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Global Exception Handler
+ * Global Exception Handler.
  */
 class ExceptionListener implements EventSubscriberInterface
 {
@@ -21,7 +21,7 @@ class ExceptionListener implements EventSubscriberInterface
         $message = [
             'type' => (new \ReflectionClass($exception))->getShortName(),
             'code' => isset(Response::$statusTexts[$code]) ? $code : 500,
-            'message' => $exception->getMessage()
+            'message' => $exception->getMessage(),
         ];
 
         // Append Fields

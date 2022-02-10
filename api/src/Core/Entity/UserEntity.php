@@ -14,7 +14,7 @@ class UserEntity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
+    #[ORM\Column(type: 'integer')]
     private ?int $id;
 
     #[NotBlank]
@@ -23,17 +23,11 @@ class UserEntity
     #[Assert\Length(min: 3, max: 10)]
     private ?string $name;
 
-    /**
-     * @return string|null
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string|null $name
-     */
     public function setName(?string $name): void
     {
         $this->name = $name;

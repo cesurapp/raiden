@@ -22,9 +22,6 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
  */
 abstract class AbstractApiController implements ServiceSubscriberInterface
 {
-    /**
-     * @var ContainerInterface
-     */
     protected ContainerInterface $container;
 
     /**
@@ -41,13 +38,13 @@ abstract class AbstractApiController implements ServiceSubscriberInterface
     public static function getSubscribedServices(): array
     {
         return [
-            'router' => '?' . RouterInterface::class,
-            'request_stack' => '?' . RequestStack::class,
-            'http_kernel' => '?' . HttpKernelInterface::class,
-            'security.authorization_checker' => '?' . AuthorizationCheckerInterface::class,
-            'security.token_storage' => '?' . TokenStorageInterface::class,
-            'security.csrf.token_manager' => '?' . CsrfTokenManagerInterface::class,
-            'parameter_bag' => '?' . ContainerBagInterface::class,
+            'router' => '?'.RouterInterface::class,
+            'request_stack' => '?'.RequestStack::class,
+            'http_kernel' => '?'.HttpKernelInterface::class,
+            'security.authorization_checker' => '?'.AuthorizationCheckerInterface::class,
+            'security.token_storage' => '?'.TokenStorageInterface::class,
+            'security.csrf.token_manager' => '?'.CsrfTokenManagerInterface::class,
+            'parameter_bag' => '?'.ContainerBagInterface::class,
         ];
     }
 

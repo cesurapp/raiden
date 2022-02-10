@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Data Transfer Object for Validation
+ * Data Transfer Object for Validation.
  */
 abstract class AbstractApiDtoRequest
 {
@@ -20,7 +20,7 @@ abstract class AbstractApiDtoRequest
         // Set Parameters
         $fields = [...$this->request->query->all(), ...$this->request->request->all(), ...$this->request->files->all()];
         foreach ($fields as $field => $value) {
-            if (property_exists($this, (string)$field)) {
+            if (property_exists($this, (string) $field)) {
                 $this->$field = $value;
             }
         }
@@ -32,7 +32,7 @@ abstract class AbstractApiDtoRequest
     }
 
     /**
-     * Validate DTO Request
+     * Validate DTO Request.
      *
      * @throws ValidationException
      */
@@ -58,9 +58,7 @@ abstract class AbstractApiDtoRequest
     }
 
     /**
-     * Get Validated Data
-     *
-     * @return array
+     * Get Validated Data.
      */
     final public function validated(): array
     {
@@ -70,18 +68,16 @@ abstract class AbstractApiDtoRequest
     }
 
     /**
-     * Run Before Validation
+     * Run Before Validation.
      */
     protected function beforeValidated(): void
     {
-
     }
 
     /**
-     * Run Success Validation
+     * Run Success Validation.
      */
     protected function endValidated(): void
     {
-
     }
 }

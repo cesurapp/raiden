@@ -13,15 +13,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
 #[AsCommand(name: 'server:stop', description: 'Stop Swoole Server')]
 class StopCommand extends Command
 {
-    public function __construct(private KernelInterface $kernel)
-    {
-        parent::__construct();
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        /** @var KernelInterface $kernel */
+        $kernel = $this->getApplication()->getKernel(); // @phpstan-ignore-line
         $output = new SymfonyStyle($input, $output);
-        $server = new SwooleProcess($output, $this->kernel->getProjectDir());
+        $server = new SwooleProcess($output, $kernel->getProjectDir());
         $server->stop();
 
         return Command::SUCCESS;

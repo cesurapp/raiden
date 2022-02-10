@@ -2,6 +2,7 @@
 
 namespace Package\SwooleBundle\Log;
 
+use DateTimeInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
@@ -25,10 +26,7 @@ class Logger extends AbstractLogger
     /** @var resource|null */
     private $handle;
 
-    /**
-     * @param string|null $output
-     */
-    public function __construct(string $minLevel = null, string $output = null, callable $formatter = null,private bool $stdin = false)
+    public function __construct(string $minLevel = null, string $output = null, callable $formatter = null, private bool $stdin = false)
     {
         if ($stdin) {
             $output = null;
@@ -53,7 +51,7 @@ class Logger extends AbstractLogger
 
         $this->minLevelIndex = self::LEVELS[$minLevel];
         $this->formatter = $formatter instanceof \Closure ? $formatter : \Closure::fromCallable($formatter ?? [$this, 'format']);
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         if ($output && false === $this->handle = \is_resource($output) ? $output : @fopen($output, 'a')) {
             throw new InvalidArgumentException(sprintf('Unable to open "%s".', $output));
         }
@@ -88,7 +86,7 @@ class Logger extends AbstractLogger
                 if (null === $val || is_scalar($val) || $val instanceof \Stringable) {
                     $replacements["{{$key}}"] = $val;
                 } elseif ($val instanceof \DateTimeInterface) {
-                    $replacements["{{$key}}"] = $val->format(\DateTime::RFC3339);
+                    $replacements["{{$key}}"] = $val->format(\DateTimeInterface::RFC3339);
                 } elseif (\is_object($val)) {
                     $replacements["{{$key}}"] = '[object '.\get_class($val).']';
                 } else {
@@ -101,7 +99,7 @@ class Logger extends AbstractLogger
 
         $log = sprintf('[%s] %s', $level, $message).($this->stdin ? '' : \PHP_EOL);
         if ($prefixDate) {
-            $log = date(\DateTime::RFC3339).' '.$log;
+            $log = date(DateTimeInterface::RFC3339).' '.$log;
         }
 
         return $log;

@@ -7,11 +7,11 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * Form Validation Exception
+ * Form Validation Exception.
  */
 class ValidationException extends AbstractApiException
 {
-    public function __construct($message = "Validation failed", $code = 403, protected array|ConstraintViolationListInterface|null $errors = null)
+    public function __construct($message = 'Validation failed', $code = 403, protected array|ConstraintViolationListInterface|null $errors = null)
     {
         parent::__construct($message, $code, $errors);
     }

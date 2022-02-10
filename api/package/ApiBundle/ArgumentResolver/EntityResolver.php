@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Controller Resolve Entity Object
+ * Controller Resolve Entity Object.
  */
 class EntityResolver implements ArgumentValueResolverInterface
 {
@@ -32,9 +32,7 @@ class EntityResolver implements ArgumentValueResolverInterface
         $key = array_key_first($attrs);
 
         if (!$object = $this->em->getRepository($argument->getType())->findOneBy([$key => $attrs[$key]])) {
-            throw new NotFoundHttpException(
-                sprintf('%s %s object not found', ucfirst($argument->getName()), $attrs[$key])
-            );
+            throw new NotFoundHttpException(sprintf('%s %s object not found', ucfirst($argument->getName()), $attrs[$key]));
         }
 
         yield $object;

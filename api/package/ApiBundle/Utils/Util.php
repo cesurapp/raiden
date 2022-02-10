@@ -5,7 +5,7 @@ namespace Package\ApiBundle\Utils;
 use Symfony\Component\Finder\Finder;
 
 /**
- * General Static Methods
+ * General Static Methods.
  */
 class Util
 {
@@ -26,7 +26,7 @@ class Util
     }
 
     /**
-     * Extract Class Name
+     * Extract Class Name.
      */
     public static function baseClass(string|object|null $class): string|null
     {
@@ -34,7 +34,7 @@ class Util
     }
 
     /**
-     * Read All Attributes src Directory
+     * Read All Attributes src Directory.
      */
     public static function findAttributes(array $attributeClass, ?string $findDir = null, array $excludeDirs = ['DependencyInjection', 'Repository', 'Entity']): array
     {
@@ -49,7 +49,7 @@ class Util
 
         foreach ($files as $file) {
             $reflection = new \ReflectionClass(
-                'App\\' . str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname())
+                'App\\'.str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname())
             );
 
             // Class Attribute

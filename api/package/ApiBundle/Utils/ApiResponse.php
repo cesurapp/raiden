@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Symfony Simple Response
+ * Symfony Simple Response.
  */
 class ApiResponse
 {
@@ -28,13 +28,14 @@ class ApiResponse
     public static function jsonResource(ApiResourceInterface|array $resource, string $type = 'default', int $status = 200, array $headers = []): JsonResponse
     {
         if (is_array($resource)) {
-            return self::json(array_map(static fn($res) => $res->{"{$type}Resource"}(), $resource));
+            return self::json(array_map(static fn ($res) => $res->{"{$type}Resource"}(), $resource));
         }
+
         return self::json($resource->{"{$type}Resource"}(), $status, $headers);
     }
 
     /**
-     * Download Binary File
+     * Download Binary File.
      */
     public static function file(\SplFileInfo|string $filePath, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
     {
@@ -42,7 +43,7 @@ class ApiResponse
     }
 
     /**
-     * Download Large File
+     * Download Large File.
      */
     public static function fileLarge(string $filePath, string $fileName = null): StreamedResponse
     {
@@ -50,7 +51,7 @@ class ApiResponse
 
         return new StreamedResponse(static function () use ($filePath) {
             $output = fopen('php://output', 'wb+');
-            $handle = fopen($filePath, "rb");
+            $handle = fopen($filePath, 'rb');
 
             while (!feof($handle)) {
                 fwrite($output, fread($handle, 2048));
@@ -60,7 +61,7 @@ class ApiResponse
             fclose($handle);
         }, 200, [
             'Content-Type' => $file->getMimeType(),
-            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $fileName ?? $file->getFilename())
+            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $fileName ?? $file->getFilename()),
         ]);
     }
 }

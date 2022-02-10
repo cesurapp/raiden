@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Controller Resolve DTO Request Object
+ * Controller Resolve DTO Request Object.
  */
 class DtoRequestResolver implements ArgumentValueResolverInterface
 {

@@ -2,152 +2,94 @@
 
 namespace Package\SwooleBundle\Adapter;
 
-use Psr\Cache\CacheItemInterface;
 use Swoole\Table;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Cache\PruneableInterface;
-use Symfony\Component\Cache\ResettableInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
-class SwooleCacheAdapter implements AdapterInterface, CacheInterface, ResettableInterface, PruneableInterface
+/**
+ * Swoole Table Symfony Cache Adapter.
+ */
+class SwooleCacheAdapter extends AbstractAdapter implements PruneableInterface
 {
-    private ?Table $table;
-    private static \Closure $createCacheItem;
+    protected ?Table $table;
 
-    public function __construct(KernelInterface $kernel, private int $defaultLifetime = 0)
+    public function __construct(string $namespace = '', int $defaultLifetime = 0)
     {
-        /** @phpstan-ignore-next-line */
-        $this->table = $kernel->getServer()->table;
-
-        self::$createCacheItem ?? self::$createCacheItem = \Closure::bind(
-            static function ($key, $value, $isHit) {
-                $item = new CacheItem();
-                $item->key = $key;
-                $item->value = $value;
-                $item->isHit = $isHit;
-
-                return $item;
-            },
-            null,
-            CacheItem::class
-        );
+        $this->table = isset($GLOBALS['http_server']) ? $GLOBALS['http_server']->table : null;
+        parent::__construct($namespace, $defaultLifetime);
     }
 
-    public function getItem(mixed $key): CacheItem
+    protected function doFetch(array $ids): iterable
     {
-        $item = $this->table->get($key);
-        $isHit = isset($item['expr']) && $item['expr'] > time();
+        $values = [];
+        $now = time();
 
-        return (self::$createCacheItem)($key, isset($item['value']) ? unserialize($item['value']) : null, $isHit);
-    }
-
-    public function getItems(array $keys = []): iterable
-    {
-        foreach ($keys as $key) {
-            yield $key => $this->getItem($keys);
-        }
-    }
-
-    /**
-     * Clear Expired Value
-     */
-    public function clear(string $prefix = ''): bool
-    {
-        $now = microtime(true);
-
-        if ($prefix !== '') {
-            foreach ($this->table as $key => $value) {
-                if ($value['expr'] < $now && str_starts_with($key, $prefix)) {
-                    $this->delete($key);
-                }
+        foreach ($ids as $id) {
+            $item = $this->table->get($id);
+            if (!$item) {
+                continue;
             }
-            return true;
+
+            if ($now >= $item['expr']) {
+                $this->table->del($id);
+            } else {
+                $values[$id] = unserialize($item['value']);
+            }
         }
 
+        return $values;
+    }
+
+    protected function doHave(string $id): bool
+    {
+        return ($item = $this->table->get($id)) && $item['expr'] > time();
+    }
+
+    protected function doClear(string $namespace): bool
+    {
         foreach ($this->table as $key => $value) {
-            if ($value['expr'] < $now) {
-                $this->delete($key);
+            if (str_starts_with($key, $namespace)) {
+                $this->table->del($key);
             }
         }
 
         return true;
     }
 
-    public function get(string $key, callable $callback, float $beta = null, array &$metadata = null): mixed
+    protected function doDelete(array $ids): bool
     {
-        $item = $this->getItem($key);
-
-        if (\INF === $beta || !$item->isHit()) {
-            $save = true;
-            $this->save($item->set($callback($item, $save)));
-        }
-
-        return $item->get();
-    }
-
-    public function hasItem(string $key): bool
-    {
-        return $this->table->exist($key);
-    }
-
-    public function delete(string $key): bool
-    {
-        return $this->table->del($key);
-    }
-
-    public function deleteItem(string $key): bool
-    {
-        return $this->delete($key);
-    }
-
-    public function deleteItems(array $keys): bool
-    {
-        foreach ($keys as $key) {
-            $this->deleteItem($key);
+        foreach ($ids as $id) {
+            $this->table->del($id);
         }
 
         return true;
     }
 
-    public function save(CacheItemInterface $item): bool
+    protected function doSave(array $values, int $lifetime): array|bool
     {
-        if (!$item instanceof CacheItem) {
-            return false;
+        $expiresAt = $lifetime ? (time() + $lifetime) : 0;
+        foreach ($values as $id => $value) {
+            $this->table->set($id, [
+                'value' => serialize($value),
+                'expr' => $expiresAt,
+            ]);
         }
 
-        $item = (array)$item;
-        $this->table->set($item["\0*\0key"], [
-            'value' => serialize($item["\0*\0value"]),
-            'expr' => (int)($item["\0*\0expiry"] ?? $this->defaultLifetime ?? PHP_INT_MAX)
-        ]);
-
-        return true;
-    }
-
-    public function saveDeferred(CacheItemInterface $item): bool
-    {
-        return $this->save($item);
-    }
-
-    public function commit(): bool
-    {
         return true;
     }
 
     public function prune(): bool
     {
-        return $this->clear('');
-    }
+        $time = time();
+        $pruned = false;
 
-    /**
-     * Clear All Cache
-     */
-    public function reset(): void
-    {
-        foreach ($this->table as $key => $value) {
-            $this->table->del($key);
+        foreach ($this->table as $key => $item) {
+            if ($time >= $item['expr']) {
+                $this->table->del($key);
+                $pruned = true;
+            }
         }
+
+        return $pruned;
     }
 }

@@ -3,7 +3,7 @@
 namespace Package\ApiBundle\Contract;
 
 /**
- * Entity API Resource
+ * Entity API Resource.
  */
 interface ApiResourceInterface
 {
@@ -11,7 +11,7 @@ interface ApiResourceInterface
     public const ADMIN = 'admin';
 
     /**
-     * Default User Resource
+     * Default User Resource.
      */
     public function defaultResource(): array;
 }

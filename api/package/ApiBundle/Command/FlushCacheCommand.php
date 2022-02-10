@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Clear All Cache
+ * Clear All Cache.
  */
 class FlushCacheCommand extends Command
 {

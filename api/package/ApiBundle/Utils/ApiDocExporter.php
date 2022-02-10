@@ -15,15 +15,14 @@ use Twig\Environment;
 
 class ApiDocExporter
 {
-    public function __construct(private RouterInterface    $router,
+    public function __construct(private RouterInterface $router,
                                 private ValidatorInterface $validator,
-                                private Environment        $twig
-    )
-    {
+                                private Environment $twig
+    ) {
     }
 
     /**
-     * Render Documentation
+     * Render Documentation.
      */
     public function render(): string
     {
@@ -31,7 +30,7 @@ class ApiDocExporter
     }
 
     /**
-     * Read All Attributes from Routes
+     * Read All Attributes from Routes.
      *
      * @throws \ReflectionException
      */
@@ -49,16 +48,16 @@ class ApiDocExporter
                 $docAttr = isset($docAttribute[0]) ? $docAttribute[0]->getArguments() : null;
 
                 $apiDoc[$path] = [
-                    'controller' => $route['controller'] . '::' . $route['method'],
+                    'controller' => $route['controller'].'::'.$route['method'],
                     'filePath' => $controller->getFileName(),
                     'fileLine' => $method->getStartLine(),
                     'method' => $route['router']->getMethods() ?: ['GET', 'POST'],
-                    /** @phpstan-ignore-next-line */
+                    /* @phpstan-ignore-next-line */
                     'responseType' => Util::baseClass($method->getReturnType()?->getName()) ?? 'Mixed',
                     'response' => $docAttr['response'] ?? [],
                     'description' => $docAttr['description'] ?? '',
                     'query' => array_merge($this->argumentResolver($route['router'], $method), $docAttr['query'] ?? []),
-                    'body' => $docAttr ? array_merge($this->extractDto($docAttribute[0]), $docAttr['body'] ?? []) : null
+                    'body' => $docAttr ? array_merge($this->extractDto($docAttribute[0]), $docAttr['body'] ?? []) : null,
                 ];
             }
         }
@@ -78,9 +77,8 @@ class ApiDocExporter
         return $apiDoc;
     }
 
-
     /**
-     * Extract DTO Parameters
+     * Extract DTO Parameters.
      */
     private function extractDto(ReflectionAttribute $attribute): array
     {
@@ -101,15 +99,16 @@ class ApiDocExporter
     }
 
     /**
-     * Extract Request Validation Parameters using AbstractApiDtoRequest
+     * Extract Request Validation Parameters using AbstractApiDtoRequest.
      */
     private function extractDTOClass(ReflectionClass $class): array
     {
         $parameters = [];
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $parameters[$property->getName()] = implode(' | ', array_map(static function ($attr) {
-                $args = $attr->getArguments() ? '(' . http_build_query($attr->getArguments(), '', ', ') . ')' : '';
-                return Util::baseClass($attr->getName()) . $args;
+                $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
+
+                return Util::baseClass($attr->getName()).$args;
             }, $property->getAttributes()));
         }
 
@@ -117,7 +116,7 @@ class ApiDocExporter
     }
 
     /**
-     * Extract Request Validation Parameters using Entity Object
+     * Extract Request Validation Parameters using Entity Object.
      */
     private function extractEntityClass(ReflectionClass $class): array
     {
@@ -126,7 +125,7 @@ class ApiDocExporter
         /*** @var PropertyMetadataInterface $metaData */
         if (!empty($this->validator->getMetadataFor($class)->properties)) {
             foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
-                $parameters[$name] = array_map(static fn($class) => Util::baseClass($class), $metaData->getConstraints());
+                $parameters[$name] = array_map(static fn ($class) => Util::baseClass($class), $metaData->getConstraints());
             }
         }
 
@@ -155,10 +154,10 @@ class ApiDocExporter
             };
 
             if ($p->getType() instanceof ReflectionUnionType) {
-                return count(array_filter($p->getType()->getTypes(), static fn($item) => $check($item->getName())));
+                return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
             }
 
-            /** @phpstan-ignore-next-line */
+            /* @phpstan-ignore-next-line */
             return $check($p->getType()->getName());
         }));
 
@@ -166,13 +165,13 @@ class ApiDocExporter
         if (count($routerVars) === count($controllerArgs)) {
             foreach ($routerVars as $index => $key) {
                 if ($controllerArgs[$index]->getType() instanceof ReflectionUnionType) {
-                    $type = implode('|', array_map(static fn($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes()));
+                    $type = implode('|', array_map(static fn ($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes()));
                 } else {
                     /** @phpstan-ignore-next-line */
                     $type = $controllerArgs[$index]->getType()->getName();
                 }
 
-                $matched[$key] = Util::baseClass($type) . ($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
+                $matched[$key] = Util::baseClass($type).($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
             }
         }
 
@@ -180,7 +179,7 @@ class ApiDocExporter
     }
 
     /**
-     * Get All Routes
+     * Get All Routes.
      */
     private function routerList(): array
     {
@@ -196,7 +195,7 @@ class ApiDocExporter
                 $list[$router->getPath()] = [
                     'controller' => $controller,
                     'method' => $method,
-                    'router' => $router
+                    'router' => $router,
                 ];
             }
         }
