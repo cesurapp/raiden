@@ -3,7 +3,6 @@
 namespace Package\SwooleBundle\Runtime;
 
 use App\Kernel;
-use Package\SwooleBundle\Adapter\SwooleCacheAdapter;
 use Swoole\Constant;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -209,6 +208,9 @@ class SwooleRunner implements RunnerInterface
      */
     public function onTcpReceive(Server $server, int $fd, int $fromId, string $cmd): void
     {
+        /* @phpstan-ignore-next-line */
+        self::$options['cache_table']['current'] = $server->table->count();
+
         $result = match ($cmd) {
             'metrics' => json_encode(array_merge(self::$options, [
                 'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),

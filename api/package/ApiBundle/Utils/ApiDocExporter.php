@@ -15,9 +15,10 @@ use Twig\Environment;
 
 class ApiDocExporter
 {
-    public function __construct(private RouterInterface $router,
-                                private ValidatorInterface $validator,
-                                private Environment $twig
+    public function __construct(
+        private RouterInterface $router,
+        private ValidatorInterface $validator,
+        private Environment $twig
     ) {
     }
 

@@ -26,10 +26,9 @@ class AuthController extends AbstractController
     ])]
     public function index(Request $request, CacheInterface $adapter): JsonResponse
     {
-
         //dump($GLOBALS['server']);
         //  dump($adapter);
-        $cache = $adapter->get('test', function (ItemInterface $item) {
+        $cache = $adapter->get('asdsa', function (ItemInterface $item) {
             $item->expiresAfter(1400);
 
             return random_int(100, 4000);

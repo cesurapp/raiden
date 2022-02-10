@@ -43,6 +43,7 @@ class StatusCommand extends Command
                         ['Task Worker', 'Idle > '.$data['metrics']['task_workers_idle'], 'Total > '.$data['metrics']['task_workers_total'], 'Current > '.$data['metrics']['tasking_num']],
                         ['Connection', 'Max > '.number_format($data['metrics']['max_conn']), 'Total > '.number_format($data['metrics']['requests_total']), 'Active > '.$data['metrics']['connections_active']],
                         ['Memory', ((int) $data['metrics']['worker_memory_usage'] / (1024 * 1024)).'mb'],
+                        ['Cache Table', 'Current > '.$data['cache_table']['current'], 'Total > '.$data['cache_table']['size']],
                     ]);
                     $table->render();
                 }

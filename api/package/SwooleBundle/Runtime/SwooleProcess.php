@@ -13,7 +13,7 @@ class SwooleProcess
     public function __construct(
         private SymfonyStyle $output,
         private string $rootDir,
-        private string $entryPoint = '/bin/index.php',
+        private string $entryPoint = '/bin/server',
         private string $pidFile = '/var/server.pid',
     ) {
     }

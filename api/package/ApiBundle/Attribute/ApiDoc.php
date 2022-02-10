@@ -8,11 +8,12 @@ namespace Package\ApiBundle\Attribute;
 #[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::TARGET_METHOD)]
 final class ApiDoc
 {
-    public function __construct(protected string $description,
-                                protected ?string $apiDto = null,
-                                protected array $query = [],
-                                protected array $body = [],
-                                protected array $response = []
+    public function __construct(
+        protected string $description,
+        protected ?string $apiDto = null,
+        protected array $query = [],
+        protected array $body = [],
+        protected array $response = []
     ) {
     }
 }

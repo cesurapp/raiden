@@ -14,10 +14,11 @@ class ApiDocController extends AbstractController
     /**
      * View Developer API Documentation.
      */
-    public function index(RouterInterface $router,
-                          ValidatorInterface $validator,
-                          Environment $twig): Response
-    {
+    public function index(
+        RouterInterface $router,
+        ValidatorInterface $validator,
+        Environment $twig
+    ): Response {
         $exporter = new ApiDocExporter($router, $validator, $twig);
 
         return (new Response())->setContent($exporter->render());

@@ -7,7 +7,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 use Symfony\Component\Console\Application;
 
 /**
- * Swoole Cache Table Factory
+ * Swoole Cache Table Factory.
  */
 class SwooleCacheFactory
 {

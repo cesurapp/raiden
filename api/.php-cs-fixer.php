@@ -9,4 +9,5 @@ return (new PhpCsFixer\Config())
         '@Symfony' => true,
         '@PSR12' => true
     ])
+    ->setCacheFile(__DIR__ . '/var/cache/.php-cs-fixer.cache')
     ->setFinder($finder);

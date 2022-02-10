@@ -21,8 +21,6 @@
   },
   "require-dev": {
     "openswoole/ide-helper": "@dev",
-    "phpstan/phpstan": "^1.2",
-    "phpstan/phpstan-symfony": "^1.0",
     "phpunit/phpunit": "^9.5",
     "symfony/browser-kit": "6.0.*",
     "symfony/maker-bundle": "^1.36",
@@ -69,15 +67,14 @@
     "auto-scripts": {
       "cache:clear": "symfony-cmd"
     },
-    "post-install-cmd": [
-      "@auto-scripts"
-    ],
-    "post-update-cmd": [
-      "@auto-scripts"
-    ],
-    "analyse": "vendor/bin/phpstan analyse",
-    "fix": "vendor/bin/php-cs-fix fix",
-    "test": "bin/phpunit"
+    "post-install-cmd": "@auto-scripts",
+    "post-update-cmd": "@auto-scripts",
+    "analyse": "bin/tool/vendor/bin/phpstan analyse",
+    "fix": "bin/tool/vendor/bin/php-cs-fixer fix",
+    "test": "bin/phpunit",
+    "install-tool": [
+        "composer require --working-dir=bin/tool friendsofphp/php-cs-fixer phpstan/phpstan phpstan/phpstan-symfony"
+    ]
   },
   "conflict": {
     "symfony/symfony": "*"

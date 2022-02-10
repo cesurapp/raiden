@@ -26,7 +26,7 @@ class StartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var KernelInterface $kernel */
-        $kernel = $this->getApplication()->getKernel(); // @phpstan-ignore-line
+        $kernel = $this->getApplication()->getKernel();
         $output = new SymfonyStyle($input, $output);
         $server = new SwooleProcess($output, $kernel->getProjectDir());
 

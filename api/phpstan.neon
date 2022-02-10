@@ -6,5 +6,5 @@ parameters:
         - package
 
 includes:
-    - vendor/phpstan/phpstan-symfony/extension.neon
-    - vendor/phpstan/phpstan-symfony/rules.neon
+    - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon
+    - bin/tool/vendor/phpstan/phpstan-symfony/rules.neon
