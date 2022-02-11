@@ -3,6 +3,7 @@
 namespace Package\SwooleBundle\Runtime;
 
 use App\Kernel;
+use Package\SwooleBundle\Cron\CronWorker;
 use Package\SwooleBundle\Task\TaskWorker;
 use Swoole\Constant;
 use Swoole\Http\Request;
@@ -139,6 +140,10 @@ class SwooleRunner implements RunnerInterface
 
     private function initCron(): void
     {
+        /** @var Kernel $kernel */
+        $kernel = clone $this->application;
+        $kernel->boot();
+        $kernel->getContainer()->get(CronWorker::class)->run();
     }
 
     private function initTask(): void
