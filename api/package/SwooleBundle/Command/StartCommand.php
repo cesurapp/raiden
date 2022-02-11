@@ -36,7 +36,7 @@ class StartCommand extends Command
                 'port' => (int) explode(':', $input->getOption('host'))[1],
                 'settings' => [
                     Constant::OPTION_WORKER_NUM => swoole_cpu_num() * 2,
-                    Constant::OPTION_TASK_WORKER_NUM => swoole_cpu_num() / 2,
+                    Constant::OPTION_TASK_WORKER_NUM => swoole_cpu_num(),
                     Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_ERROR,
                     Constant::OPTION_PID_FILE => $kernel->getProjectDir().'/var/server.pid',
                     Constant::OPTION_LOG_FILE => sprintf('%s/var/log/%s_server.log', $kernel->getProjectDir(), $kernel->getEnvironment()),

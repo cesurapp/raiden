@@ -89,7 +89,7 @@ class SwooleProcess
 
         // Kill Server
         try {
-            if (!Process::kill($pid, $force ? SIGKILL : SIGTERM)) {
+            if (!Process::kill($pid, $force ? 9 : 15)) {
                 $this->output->error("Warning: Swoole\Process::kill({$pid}) failed, Error: No such process[3]");
             }
         } catch (\Exception $exception) {

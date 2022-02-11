@@ -7,14 +7,13 @@ use App\Core\Request\LoginRequest;
 use App\Core\Task\TestTask;
 use Package\ApiBundle\Attribute\ApiDoc;
 use Package\ApiBundle\Utils\ApiResponse;
+use Package\SwooleBundle\Task\TaskHandler;
 use Package\SwooleBundle\Task\TaskLocator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class AuthController extends AbstractController
 {
@@ -26,9 +25,11 @@ class AuthController extends AbstractController
         'id' => 222,
         'name' => 'FakOff',
     ])]
-    public function index(Request $request, CacheInterface $adapter, TestTask $locator): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        dump($locator);
+        for ($i = 0; $i < 100; $i++) {
+            TaskHandler::dispatch(TestTask::class, ['deneme', 'nalet']);
+        }
         //dump($GLOBALS['server']);
         //  dump($adapter);
 

@@ -2,23 +2,17 @@
 
 namespace Package\SwooleBundle\Task;
 
-use Swoole\Http\Server;
-use Symfony\Component\HttpKernel\KernelInterface;
-
 class TaskHandler
 {
-    private Server $server;
-
-    public function __construct(KernelInterface $kernel)
+    public static function dispatch(TaskInterface|string $task, mixed $payload = null, ): void
     {
-        $this->server = $kernel->getServer(); // @phpstan-ignore-line
-    }
+        if (empty($server = $GLOBALS['http_server'])) {
+            throw new \RuntimeException('HTTP Server not found!');
+        }
 
-    public function dispatch(TaskInterface|string $task, mixed $payload = null, ?callable $finishCallback = null): void
-    {
-        $this->server->task([
+        $server->task([
             'class' => is_string($task) ? $task : get_class($task),
             'payload' => $payload,
-        ], -1, $finishCallback);
+        ]);
     }
 }

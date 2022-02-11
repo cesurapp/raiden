@@ -38,12 +38,39 @@ class StatusCommand extends Command
                         ['TCP Host', $data['tcp']['host'].':'.$data['tcp']['port'], ''],
                         ['Cron Worker', $data['app']['cron'] ? 'True' : 'False', ''],
                         ['Task Worker', $data['app']['task'] ? 'True' : 'False', ''],
-                        ['Process ID', 'Master > '.$data['metrics']['master_pid'], 'Manager > '.$data['metrics']['manager_pid']],
-                        ['Worker', 'Idle > '.$data['metrics']['workers_idle'], 'Total > '.$data['metrics']['workers_total']],
-                        ['Task Worker', 'Idle > '.$data['metrics']['task_workers_idle'], 'Total > '.$data['metrics']['task_workers_total'], 'Current > '.$data['metrics']['tasking_num']],
-                        ['Connection', 'Max > '.number_format($data['metrics']['max_conn']), 'Total > '.number_format($data['metrics']['requests_total']), 'Active > '.$data['metrics']['connections_active']],
-                        ['Memory', ((int) $data['metrics']['worker_memory_usage'] / (1024 * 1024)).'mb'],
-                        ['Cache Table', 'Current > '.$data['cache_table']['current'], 'Total > '.$data['cache_table']['size']],
+                        [
+                            'Process ID',
+                            'Master > '.$data['metrics']['master_pid'],
+                            'Manager > '.$data['metrics']['manager_pid'],
+                        ],
+                        [
+                            'Worker',
+                            'Idle > '.$data['metrics']['workers_idle'],
+                            'Total > '.$data['metrics']['workers_total'],
+                        ],
+                        [
+                            'Task Worker',
+                            'Idle > '.$data['metrics']['task_workers_idle'],
+                            'Total > '.$data['metrics']['task_workers_total'],
+                            'Queue > '.$data['metrics']['tasking_num'],
+                        ],
+                        [
+                            'Connection',
+                            'Max > '.number_format($data['metrics']['max_conn']),
+                            'Total > '.number_format($data['metrics']['requests_total']),
+                            'Active > '.$data['metrics']['connections_active'],
+                        ],
+                        [
+                            'Cache Table',
+                            'Current > '.$data['cache_table']['current'],
+                            'Total > '.$data['cache_table']['size'],
+                        ],
+                        [
+                            'Memory',
+                            ((int) $data['metrics']['worker_memory_usage'] / (1024 * 1024)).'mb',
+                            'VM Object > '.$data['metrics']['worker_vm_object_num'],
+                            'VM Resource > '.$data['metrics']['worker_vm_resource_num'],
+                        ],
                     ]);
                     $table->render();
                 }

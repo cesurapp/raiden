@@ -3,6 +3,7 @@
 namespace Package\SwooleBundle\Runtime;
 
 use App\Kernel;
+use Package\SwooleBundle\Task\TaskWorker;
 use Swoole\Constant;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -22,6 +23,11 @@ class SwooleRunner implements RunnerInterface
      * Swoole HTTP Server.
      */
     private Server $server;
+
+    /**
+     * Swoole Task Worker.
+     */
+    protected ?TaskWorker $taskWorker;
 
     /**
      * Swoole Config.
@@ -119,13 +125,16 @@ class SwooleRunner implements RunnerInterface
         $server->on('receive', [$this, 'onTcpReceive']);
     }
 
+    /**
+     * Create Swoole Cache Table.
+     */
     private function initCacheTable(): void
     {
         $table = new Table(self::$options['cache_table']['size']);
         $table->column('value', Table::TYPE_STRING, self::$options['cache_table']['size_value']);
         $table->column('expr', Table::TYPE_INT);
         $table->create();
-        $this->server->table = $table;
+        $this->server->table = $table; // @phpstan-ignore-line
     }
 
     private function initCron(): void
@@ -134,10 +143,11 @@ class SwooleRunner implements RunnerInterface
 
     private function initTask(): void
     {
-        // Create Container
-        $kernel = new Kernel(self::$options['app']['env'], self::$options['debug']);
+        /** @var Kernel $kernel */
+        $kernel = clone $this->application;
         $kernel->boot();
-        //$this->locator = $kernel->getContainer();
+        $container = $kernel->getContainer();
+        $this->taskWorker = $container->get(TaskWorker::class);
     }
 
     /**
@@ -165,7 +175,6 @@ class SwooleRunner implements RunnerInterface
      */
     public function onStart(Server $server): void
     {
-        // Info
         if (self::$options['app']['watch'] < 2) {
             $output = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
             $output->definitionList(
@@ -175,16 +184,18 @@ class SwooleRunner implements RunnerInterface
                 ['Worker' => self::$options['http']['settings']['worker_num']],
                 ['Task Worker' => self::$options['http']['settings']['task_worker_num']],
                 ['Debug' => self::$options['debug'] ? 'True' : 'False'],
-                ['Log Level' => match (self::$options['http']['settings']['log_level']) {
-                    0 => 'SWOOLE_LOG_DEBUG',
-                    1 => 'SWOOLE_LOG_TRACE',
-                    2 => 'SWOOLE_LOG_INFO',
-                    3 => 'SWOOLE_LOG_NOTICE',
-                    4 => 'SWOOLE_LOG_WARNING',
-                    5 => 'SWOOLE_LOG_ERROR',
-                    6 => 'SWOOLE_LOG_NONE',
-                    default => '-'
-                }],
+                [
+                    'Log Level' => match (self::$options['http']['settings']['log_level']) {
+                        0 => 'SWOOLE_LOG_DEBUG',
+                        1 => 'SWOOLE_LOG_TRACE',
+                        2 => 'SWOOLE_LOG_INFO',
+                        3 => 'SWOOLE_LOG_NOTICE',
+                        4 => 'SWOOLE_LOG_WARNING',
+                        5 => 'SWOOLE_LOG_ERROR',
+                        6 => 'SWOOLE_LOG_NONE',
+                        default => '-'
+                    },
+                ],
                 ['Log File' => self::$options['http']['settings']['log_file'] ?? 'STDOUT'],
                 ['Environment' => self::$options['app']['env']],
                 ['Cron Worker' => self::$options['app']['cron'] ? 'True' : 'False'],
@@ -198,9 +209,7 @@ class SwooleRunner implements RunnerInterface
      */
     public function onTask(Server $server, int $taskId, int $reactorId, mixed $data): void
     {
-        //dump($data);
-        /*$task = $data['class'];
-        $payload = $data['payload'];*/
+        $this->taskWorker->handle($data);
     }
 
     /**
@@ -212,9 +221,12 @@ class SwooleRunner implements RunnerInterface
         self::$options['cache_table']['current'] = $server->table->count();
 
         $result = match ($cmd) {
-            'metrics' => json_encode(array_merge(self::$options, [
-                'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),
-            ]), JSON_THROW_ON_ERROR),
+            'metrics' => json_encode(
+                array_merge(self::$options, [
+                    'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),
+                ]),
+                JSON_THROW_ON_ERROR
+            ),
             default => 0
         };
 
