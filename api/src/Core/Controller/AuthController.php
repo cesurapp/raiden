@@ -4,8 +4,10 @@ namespace App\Core\Controller;
 
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
+use App\Core\Task\TestTask;
 use Package\ApiBundle\Attribute\ApiDoc;
 use Package\ApiBundle\Utils\ApiResponse;
+use Package\SwooleBundle\Task\TaskLocator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,17 +26,12 @@ class AuthController extends AbstractController
         'id' => 222,
         'name' => 'FakOff',
     ])]
-    public function index(Request $request, CacheInterface $adapter): JsonResponse
+    public function index(Request $request, CacheInterface $adapter, TestTask $locator): JsonResponse
     {
+        dump($locator);
         //dump($GLOBALS['server']);
         //  dump($adapter);
-        $cache = $adapter->get('asdsa', function (ItemInterface $item) {
-            $item->expiresAfter(1400);
 
-            return random_int(100, 4000);
-        });
-
-        dump($cache);
         //$handler->dispatch('sadasd', ['asd', 1,2,3]);
         //$logger->error('sdsadasdas');
         //$logger->info('sdsadasdas');
