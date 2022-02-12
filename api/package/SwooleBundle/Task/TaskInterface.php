@@ -4,5 +4,5 @@ namespace Package\SwooleBundle\Task;
 
 interface TaskInterface
 {
-    public function __invoke(string|array|bool|null $data): void;
+    public function __invoke(mixed $data = null): void;
 }

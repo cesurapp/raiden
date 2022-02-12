@@ -6,5 +6,5 @@ interface CronInterface
 {
     public const time = '';
 
-    public function __invoke(string|array|bool|null $data): void;
+    public function __invoke(): void;
 }

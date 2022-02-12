@@ -12,10 +12,27 @@ class CronWorker
 
     public function run(): void
     {
-        dump('running');
+        dump($this->locator->getProvidedServices());
+        /*foreach ($this->getActiveCron() as $cron) {
+            try {
+                $cron();
+            } catch (\Exception $exception) {
+                $this->failedCron($cron, $exception);
+            }
+        }*/
     }
 
-    public function failedCron(CronInterface $cron, \Exception $exception): void
+    /**
+     * @return CronInterface[]
+     */
+    private function getActiveCron(): array
+    {
+        return array_filter($this->locator->getProvidedServices(), static function (CronInterface $cron) {
+            return true;
+        });
+    }
+
+    private function failedCron(CronInterface $cron, \Exception $exception): void
     {
     }
 }

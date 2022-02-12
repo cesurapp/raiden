@@ -6,9 +6,6 @@ use Swoole\Table;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Cache\PruneableInterface;
 
-/**
- * Swoole Table Symfony Cache Adapter.
- */
 class SwooleCacheAdapter extends AbstractAdapter implements PruneableInterface
 {
     protected ?Table $table;

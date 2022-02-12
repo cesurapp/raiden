@@ -14,8 +14,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * Bridge between Symfony and Swoole Http API.
  *
  * @author Piotr Kugla <piku235@gmail.com>
- *
- * @internal
  */
 final class SymfonyHttpBridge
 {
