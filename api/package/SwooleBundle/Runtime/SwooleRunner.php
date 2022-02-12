@@ -55,6 +55,14 @@ class SwooleRunner implements RunnerInterface
             'size' => 500,
             'size_value' => 500,
         ],
+        'cron' => [
+            'failed' => 0,
+            'completed' => 0,
+        ],
+        'task' => [
+            'failed' => 0,
+            'completed' => 0,
+        ],
         'app' => [
             'env' => 'dev',
             'watch' => 0,

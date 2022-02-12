@@ -2,12 +2,15 @@
 
 namespace Package\SwooleBundle\Task;
 
+use Package\SwooleBundle\Repository\FailedTaskRepository;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class TaskWorker
 {
-    public function __construct(private ServiceLocator $locator)
-    {
+    public function __construct(
+        private ServiceLocator $locator,
+        private FailedTaskRepository $failedTaskRepo
+    ) {
     }
 
     public function handle(array $taskRequest): void
@@ -17,7 +20,7 @@ class TaskWorker
         try {
             $task($taskRequest['payload']);
         } catch (\Exception $exception) {
-            $this->failedTask($taskRequest, $exception);
+            $this->failedTaskRepo->createTask($task, $taskRequest['payload'], $exception);
         }
     }
 
@@ -31,12 +34,5 @@ class TaskWorker
         }
 
         return $this->locator->get($taskRequest['class']);
-    }
-
-    /**
-     * Save to Failed Task.
-     */
-    private function failedTask(array $taskRequest, \Exception $exception): void
-    {
     }
 }

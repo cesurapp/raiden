@@ -1,15 +1,13 @@
+* Swoole Cron
+* Swoole Task
+* Swoole Status
+* 
 * Excel Export - İmport -> STREAM
-* 
-* PHP Unit Test
-* 
-* Concurrent Process -> Test
-* Timed Process
 * 
 * Gitlab CI
 * Logger to File Prod
 
 * Date Formatter
-* Test -> PHP UNIT
 * Translator -> SYMFONY TRANSLATOR
 
 
@@ -17,19 +15,12 @@
 * Core -> JWT Auth
 * Core -> UUID
 
-
-
-## Commands
-```shell
-bin/console app:cache-clear                 # Flush Symfony & Doctrine Cache
-bin/console server start|stop|restart|watch # Server Command
-```
-
 ## Requirement
 * pgSql 14+
 * PHP 8.1+
-  * Swoole 4.8+ (pecl install openswoole | swoole --enable-debug-log)
+  * Swoole 4.9+ (pecl install openswoole)
   * Xlswriter (pecl install xlswriter)
+  * UUID (pecl install uuid)
   * Opcache
     * opcache.enable=1
     * opcache.enable_cli=1
@@ -38,9 +29,16 @@ bin/console server start|stop|restart|watch # Server Command
     * opcache.validate_timestamps=0 (only prod)
     * opcache.preload=../api/config/preload.php (only prod)
 
-## Development Install
+
+## MacOS Dev Requirements
 ```shell
-brew install fswatch # MacOS File Watcher using Hot Reload Swoole Server
+brew install fswatch
+brew install util-linux
+pecl install uuid # directory => /opt/homebrew/opt/util-linux
+pecl install xlswriter
+pecl install redis
+pecl install openswoole
+pecl install redis
 ```
 
 ## Prod Install
@@ -51,5 +49,12 @@ composer install dump-autoload --no-dev --classmap-authoritative
 ## Tests
 ```shell
 composer analyse  # PHPStan Analysis
+composer fix      # PHP-Cs-Fixer Fix
 composer test     # PHPUnit Test
+```
+
+## Commands
+```shell
+bin/console app:cache-clear                 # Flush Symfony & Doctrine Cache
+bin/console server start|stop|restart|watch # Server Command
 ```

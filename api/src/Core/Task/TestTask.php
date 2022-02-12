@@ -11,8 +11,9 @@ class TestTask implements TaskInterface
     {
     }
 
-    public function __invoke(bool|array|string|null $data): void
+    public function __invoke(mixed $data = null): void
     {
-        usleep(10000);
+        // TODO: Implement __invoke() method.
     }
+
 }
