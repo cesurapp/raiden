@@ -55,7 +55,7 @@ class CronWorker
             }
 
             $aliases = CronExpression::getAliases();
-            $this->expression->setExpression($aliases[$cron::TIME] ?? $cron::TIME);
+            $this->expression->setExpression($aliases[strtolower($cron::TIME)] ?? $cron::TIME);
             $cron->isDue = $this->expression->isDue();
             $cron->next = $this->expression->getNextRunDate();
 
