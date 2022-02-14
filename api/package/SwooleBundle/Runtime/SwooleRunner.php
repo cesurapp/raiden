@@ -6,11 +6,14 @@ use App\Kernel;
 use Package\SwooleBundle\Cron\CronWorker;
 use Package\SwooleBundle\Task\TaskWorker;
 use Swoole\Constant;
+use Swoole\Coroutine\System;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
+use Swoole\Process;
 use Swoole\Server as TcpServer;
 use Swoole\Table;
+use Swoole\Timer;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -47,24 +50,26 @@ class SwooleRunner implements RunnerInterface
             ],
         ],
         'tcp' => [
-            'host' => '0.0.0.0',
+            'host' => '127.0.0.1',
             'port' => 9502,
             'sock_type' => SWOOLE_SOCK_TCP,
         ],
         'cache_table' => [
             'size' => 500,
             'size_value' => 500,
+            'current' => 0,
         ],
         'cron' => [
             'failed' => 0,
             'completed' => 0,
+            'interval' => 1000 * 60,
         ],
         'task' => [
             'failed' => 0,
             'completed' => 0,
         ],
         'app' => [
-            'env' => 'dev',
+            'env' => 'prod',
             'watch' => 0,
             'cron' => 1,
             'task' => 1,
@@ -86,10 +91,6 @@ class SwooleRunner implements RunnerInterface
         $this->createHttpServer();
         $this->createTCPServer();
         $this->initCacheTable();
-
-        // Init Task & Cron
-        $this->initTask();
-        $this->initCron();
 
         // Start Server
         return (int) $this->server->start();
@@ -146,21 +147,32 @@ class SwooleRunner implements RunnerInterface
         $this->server->table = $table; // @phpstan-ignore-line
     }
 
+    /**
+     * Start Cron Worker.
+     */
     private function initCron(): void
     {
-        /** @var Kernel $kernel */
-        $kernel = clone $this->application;
-        $kernel->boot();
-        $kernel->getContainer()->get(CronWorker::class)->run();
+        if (self::$options['app']['cron']) {
+            /** @var Kernel $kernel */
+            $kernel = clone $this->application;
+            $kernel->boot();
+            $container = $kernel->getContainer();
+            Timer::tick(self::$options['cron']['interval'], static fn () => $container->get(CronWorker::class)->run());
+        }
     }
 
+    /**
+     * Start Task Worker.
+     */
     private function initTask(): void
     {
-        /** @var Kernel $kernel */
-        $kernel = clone $this->application;
-        $kernel->boot();
-        $container = $kernel->getContainer();
-        $this->taskWorker = $container->get(TaskWorker::class);
+        if (self::$options['app']['task']) {
+            /** @var Kernel $kernel */
+            $kernel = clone $this->application;
+            $kernel->boot();
+            $container = $kernel->getContainer();
+            $this->taskWorker = $container->get(TaskWorker::class);
+        }
     }
 
     /**
@@ -188,6 +200,18 @@ class SwooleRunner implements RunnerInterface
      */
     public function onStart(Server $server): void
     {
+        // Shutdown Timer Clearer
+        go(static function () {
+            if (System::waitSignal(1)) {
+                Timer::clearAll();
+            }
+        });
+
+        // Init Task & Cron
+        $this->initTask();
+        $this->initCron();
+
+        // Information
         if (self::$options['app']['watch'] < 2) {
             $output = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
             $output->definitionList(
@@ -222,7 +246,9 @@ class SwooleRunner implements RunnerInterface
      */
     public function onTask(Server $server, int $taskId, int $reactorId, mixed $data): void
     {
-        $this->taskWorker->handle($data);
+        if (self::$options['app']['task']) {
+            $this->taskWorker->handle($data);
+        }
     }
 
     /**
@@ -235,11 +261,12 @@ class SwooleRunner implements RunnerInterface
 
         $result = match ($cmd) {
             'metrics' => json_encode(
-                array_merge(self::$options, [
+                array_merge(['server' => self::$options], [
                     'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),
                 ]),
                 JSON_THROW_ON_ERROR
             ),
+            'shutdown' => Process::kill($this->server->getMasterPid(), 1) && $this->server->shutdown(),
             default => 0
         };
 

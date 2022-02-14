@@ -2,6 +2,7 @@
 
 namespace Package\SwooleBundle\Runtime;
 
+use Swoole\Client;
 use Swoole\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\ExecutableFinder;
@@ -14,7 +15,6 @@ class SwooleProcess
         private SymfonyStyle $output,
         private string $rootDir,
         private string $entryPoint = '/bin/index',
-        private string $pidFile = '/var/server.pid',
     ) {
     }
 
@@ -23,7 +23,8 @@ class SwooleProcess
      */
     public function start(string $phpBinary, array $options): bool
     {
-        if ($this->getPid()) {
+        $server = $this->getServer($options['tcp']['host'].':'.$options['tcp']['port']);
+        if ($server->isConnected()) {
             $this->output->warning('Swoole HTTP Server is Running');
 
             return false;
@@ -43,8 +44,11 @@ class SwooleProcess
     /**
      * Start Watch Server.
      */
-    public function watch(array $options, array $watchDir = ['/src', '/config', '/package', '/templates'], array $watchExt = ['*.php', '*.yaml', '*.twig']): void
-    {
+    public function watch(
+        array $options,
+        array $watchDir = ['/src', '/config', '/package', '/templates'],
+        array $watchExt = ['*.php', '*.yaml', '*.twig']
+    ): void {
         // Check fswatch Plugin
         $fsWatch = (new ExecutableFinder())->find('fswatch');
         if (!$fsWatch) {
@@ -59,7 +63,8 @@ class SwooleProcess
         $process->start();
 
         // Watcher Server
-        $server = new SymfonyProcess([(new PhpExecutableFinder())->find(),
+        $server = new SymfonyProcess([
+            (new PhpExecutableFinder())->find(),
             $this->rootDir.$this->entryPoint,
             '--config='.base64_encode(json_encode($options, JSON_THROW_ON_ERROR)),
         ], null, null, null, 0);
@@ -69,37 +74,32 @@ class SwooleProcess
         while (true) {
             if ($output = $process->getIncrementalOutput()) {
                 $this->output->write('Changed -> '.str_replace($this->rootDir, '', $output));
+                Process::kill($server->getPid(), 1);
                 $server->stop();
                 $server->start(null, ['watch' => random_int(100, 200)]);
             }
-            usleep(100 * 2500);
+            usleep(100 * 1500);
         }
     }
 
     /**
      * Stop Server.
      */
-    public function stop(bool $force = false): void
+    public function stop(string $host = '127.0.0.1:9502'): void
     {
-        if (!$pid = $this->getPid()) {
+        $server = $this->getServer($host);
+        if (!$server->isConnected()) {
             $this->output->error('Swoole HTTP server not found!');
 
             return;
         }
 
-        // Kill Server
+        // Shutdown
         try {
-            if (!Process::kill($pid, $force ? 9 : 15)) {
-                $this->output->error("Warning: Swoole\Process::kill({$pid}) failed, Error: No such process[3]");
-            }
+            $server->send('shutdown');
+            $server->close();
         } catch (\Exception $exception) {
             $this->output->error($exception->getMessage());
-        }
-
-        // Remove PID
-        sleep(1);
-        if (!Process::kill($pid, 0)) {
-            $this->removePid();
         }
 
         $this->output->success('Swoole HTTP Server is Stopped!');
@@ -108,34 +108,14 @@ class SwooleProcess
     /**
      * Get Current Process ID.
      */
-    public function getPid(): ?int
+    public function getServer(string $host): Client
     {
-        if (!file_exists($this->pidGetPath())) {
-            return null;
+        $tcpClient = new Client(SWOOLE_SOCK_TCP);
+        try {
+            $tcpClient->connect(explode(':', $host)[0], (int) explode(':', $host)[1], 1);
+        } catch (\Exception $exception) {
         }
 
-        if (!is_readable($this->pidGetPath())) {
-            throw new \RuntimeException($this->pidGetPath().' file is not readable!');
-        }
-
-        return (int) file_get_contents($this->pidGetPath());
-    }
-
-    /**
-     * Remove Process ID File.
-     */
-    public function removePid(): void
-    {
-        if (file_exists($this->pidGetPath()) && is_writable($this->pidGetPath())) {
-            unlink($this->pidGetPath());
-        }
-    }
-
-    /**
-     * Get Process ID File Path.
-     */
-    public function pidGetPath(): string
-    {
-        return $this->rootDir.$this->pidFile;
+        return $tcpClient;
     }
 }

@@ -1,3 +1,4 @@
+* 
 * Swoole Cron
 * Swoole Task
 * Swoole Status
@@ -34,7 +35,7 @@
 ```shell
 brew install fswatch
 brew install util-linux
-pecl install uuid # directory => /opt/homebrew/opt/util-linux
+pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
 pecl install xlswriter
 pecl install redis
 pecl install openswoole

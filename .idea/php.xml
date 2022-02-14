@@ -114,6 +114,7 @@
       <path value="$PROJECT_DIR$/api/vendor/php-cs-fixer/diff" />
       <path value="$PROJECT_DIR$/api/vendor/openswoole/ide-helper" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/uid" />
+      <path value="$PROJECT_DIR$/api/vendor/dragonmantank/cron-expression" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

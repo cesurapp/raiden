@@ -14,25 +14,21 @@ class SwooleCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         // Init Task Worker
+        $tasks = $container->findTaggedServiceIds('tasks');
+        array_walk($tasks, static fn (&$val, $id) => $val = new Reference($id));
         $container
             ->register(TaskWorker::class, TaskWorker::class)
-            ->addArgument(
-                ServiceLocatorTagPass::register(
-                    $container,
-                    array_map(static fn ($id) => new Reference($id), array_keys($container->findTaggedServiceIds('tasks')))
-                )
-            )
+            ->addArgument(ServiceLocatorTagPass::register($container, $tasks))
+            ->setAutowired(true)
             ->setPublic(true);
 
         // Init Cron Worker
+        $crons = $container->findTaggedServiceIds('crons');
+        array_walk($crons, static fn (&$val, $id) => $val = new Reference($id));
         $container
             ->register(CronWorker::class, CronWorker::class)
-            ->addArgument(
-                ServiceLocatorTagPass::register(
-                    $container,
-                    array_map(static fn ($id) => new Reference($id), array_keys($container->findTaggedServiceIds('crons')))
-                )
-            )
+            ->addArgument(ServiceLocatorTagPass::register($container, $crons))
+            ->setAutowired(true)
             ->setPublic(true);
     }
 }

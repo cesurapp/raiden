@@ -50,11 +50,11 @@ class FailedTaskRepository extends ServiceEntityRepository
     /**
      * Create Failed Task.
      */
-    public function createTask(TaskInterface $task, mixed $payload, \Exception $exception): void
+    public function createTask(array $taskRequest, \Exception $exception): void
     {
         $failedTask = (new FailedTask())
-            ->setTask(get_class($task))
-            ->setPayload($payload)
+            ->setTask($taskRequest['class'])
+            ->setPayload($taskRequest['payload'] ?? [])
             ->setException($exception->getMessage());
 
         $this->_em->persist($failedTask);

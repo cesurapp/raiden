@@ -26,6 +26,10 @@ return static function (ContainerConfigurator $container) {
     $services
         ->load('Package\\SwooleBundle\\Command\\', '../Command/');
 
+    // Repository
+    $services
+        ->load('Package\\SwooleBundle\\Repository\\', '../Repository');
+
     // Logger
     $container->services()
         ->set('logger', Logger::class)
