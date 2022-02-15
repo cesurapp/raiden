@@ -31,7 +31,7 @@ class SwooleRunner implements RunnerInterface
     /**
      * Swoole Task Worker.
      */
-    protected ?TaskWorker $taskWorker;
+    private TaskWorker $taskWorker;
 
     /**
      * Swoole Config.
@@ -91,6 +91,10 @@ class SwooleRunner implements RunnerInterface
         $this->createHttpServer();
         $this->createTCPServer();
         $this->initCacheTable();
+
+        // Init Task & Cron
+        $this->initCron();
+        $this->initTask();
 
         // Start Server
         return (int) $this->server->start();
@@ -156,8 +160,8 @@ class SwooleRunner implements RunnerInterface
             /** @var Kernel $kernel */
             $kernel = clone $this->application;
             $kernel->boot();
-            $container = $kernel->getContainer();
-            Timer::tick(self::$options['cron']['interval'], static fn () => $container->get(CronWorker::class)->run());
+            $cronWorker = $kernel->getContainer()->get(CronWorker::class);
+            Timer::tick(self::$options['cron']['interval'], static fn () => $cronWorker->run());
         }
     }
 
@@ -170,8 +174,7 @@ class SwooleRunner implements RunnerInterface
             /** @var Kernel $kernel */
             $kernel = clone $this->application;
             $kernel->boot();
-            $container = $kernel->getContainer();
-            $this->taskWorker = $container->get(TaskWorker::class);
+            $this->taskWorker = $kernel->getContainer()->get(TaskWorker::class);
         }
     }
 
@@ -206,10 +209,6 @@ class SwooleRunner implements RunnerInterface
                 Timer::clearAll();
             }
         });
-
-        // Init Task & Cron
-        $this->initTask();
-        $this->initCron();
 
         // Information
         if (self::$options['app']['watch'] < 2) {
@@ -267,10 +266,20 @@ class SwooleRunner implements RunnerInterface
                 JSON_THROW_ON_ERROR
             ),
             'shutdown' => Process::kill($this->server->getMasterPid(), 1) && $this->server->shutdown(),
-            default => 0
+            default => $this->onTcpCommander($cmd)
         };
 
         $server->send($fd, $result);
+    }
+
+    private function onTcpCommander(string $command): int|string
+    {
+        $cmd = explode('::', $command);
+        if ('task-retry' === $cmd[0]) {
+            $this->taskWorker->handle(json_decode($cmd[1], true, 512, JSON_THROW_ON_ERROR));
+        }
+
+        return 0;
     }
 
     /**

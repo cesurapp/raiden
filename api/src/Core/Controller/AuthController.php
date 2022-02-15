@@ -4,8 +4,10 @@ namespace App\Core\Controller;
 
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
+use App\Core\Task\TestTask;
 use Package\ApiBundle\Attribute\ApiDoc;
 use Package\ApiBundle\Utils\ApiResponse;
+use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,9 +26,9 @@ class AuthController extends AbstractController
     ])]
     public function index(Request $request): JsonResponse
     {
-        /*for ($i = 0; $i < 100; ++$i) {
+        for ($i = 0; $i < 100; ++$i) {
             TaskHandler::dispatch(TestTask::class, ['deneme', 'nalet']);
-        }*/
+        }
         //dump($GLOBALS['server']);
         //  dump($adapter);
 

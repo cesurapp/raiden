@@ -5,6 +5,7 @@ namespace Package\SwooleBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Package\SwooleBundle\Repository\FailedTaskRepository;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: FailedTaskRepository::class)]
 class FailedTask
@@ -13,7 +14,7 @@ class FailedTask
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?string $id;
+    private ?Ulid $id;
 
     #[ORM\Column(type: 'string')]
     private string $task;
@@ -32,7 +33,7 @@ class FailedTask
         $this->createdAt = new \DateTime();
     }
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

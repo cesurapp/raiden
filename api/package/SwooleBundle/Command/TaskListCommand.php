@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'task:list', description: 'List Tasks')]
-class ListTasksCommand extends Command
+class TaskListCommand extends Command
 {
     public function __construct(private TaskWorker $taskWorker)
     {

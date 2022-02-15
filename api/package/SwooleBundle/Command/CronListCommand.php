@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'cron:list', description: 'List Crons')]
-class ListCronsCommand extends Command
+class CronListCommand extends Command
 {
     public function __construct(private CronWorker $cronWorker)
     {

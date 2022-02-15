@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'server:status', description: 'Status Swoole Server')]
 class StatusCommand extends Command
 {
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var ConsoleSectionOutput $section */
         $section = $output->section(); // @phpstan-ignore-line
@@ -33,11 +33,11 @@ class StatusCommand extends Command
                     $table = $output->createTable();
                     $table->setRows([
                         ['Version', $data['metrics']['version'], ''],
-                        ['Environment', $data['app']['env'], ''],
-                        ['Host', $data['http']['host'].':'.$data['http']['port'], ''],
-                        ['TCP Host', $data['tcp']['host'].':'.$data['tcp']['port'], ''],
-                        ['Cron Worker', $data['app']['cron'] ? 'True' : 'False', ''],
-                        ['Task Worker', $data['app']['task'] ? 'True' : 'False', ''],
+                        ['Environment', $data['server']['app']['env'], ''],
+                        ['Host', $data['server']['http']['host'].':'.$data['server']['http']['port'], ''],
+                        ['TCP Host', $data['server']['tcp']['host'].':'.$data['server']['tcp']['port'], ''],
+                        ['Cron Worker', $data['server']['app']['cron'] ? 'True' : 'False', ''],
+                        ['Task Worker', $data['server']['app']['task'] ? 'True' : 'False', ''],
                         [
                             'Process ID',
                             'Master > '.$data['metrics']['master_pid'],
@@ -62,8 +62,8 @@ class StatusCommand extends Command
                         ],
                         [
                             'Cache Table',
-                            'Current > '.$data['cache_table']['current'],
-                            'Total > '.$data['cache_table']['size'],
+                            'Current > '.$data['server']['cache_table']['current'],
+                            'Total > '.$data['server']['cache_table']['size'],
                         ],
                         [
                             'Memory',
@@ -82,5 +82,7 @@ class StatusCommand extends Command
 
             usleep(1500000);
         }
+
+        return Command::SUCCESS;
     }
 }

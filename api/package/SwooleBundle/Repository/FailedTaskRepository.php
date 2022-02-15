@@ -3,9 +3,9 @@
 namespace Package\SwooleBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Package\SwooleBundle\Entity\FailedTask;
-use Package\SwooleBundle\Task\TaskInterface;
 
 /**
  * @method FailedTask|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,20 +22,18 @@ class FailedTaskRepository extends ServiceEntityRepository
 
     /**
      * Get Failed Tasks.
-     *
-     * @return FailedTask[]
      */
-    public function getFailedTask(?FailedTask $nextTask = null, int $limit = 100): array
+    public function getFailedTask(?FailedTask $nextTask = null, int $limit = 10): QueryBuilder
     {
         $query = $this->createQueryBuilder('t')
-            ->orderBy('t.createdAt', 'ASC')
+            ->orderBy('t.id', 'DESC')
             ->setMaxResults($limit);
 
         if ($nextTask) {
-            $query->andWhere('t.createdAt > :next')->setParameter('next', $nextTask->getCreatedAt());
+            $query->andWhere('t.id < :next')->setParameter('next', $nextTask->getId(), 'ulid');
         }
 
-        return $query->getQuery()->getResult();
+        return $query;
     }
 
     /**

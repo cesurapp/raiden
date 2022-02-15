@@ -12,11 +12,13 @@ class CronWorker
 
     public function __construct(private ServiceLocator $locator, private LoggerInterface $logger)
     {
+        // Predefined Constants
         CronExpression::registerAlias('@EveryMinute', '* * * * *');
         CronExpression::registerAlias('@EveryMinute5', '*/5 * * * *');
         CronExpression::registerAlias('@EveryMinute10', '*/10 * * * *');
         CronExpression::registerAlias('@EveryMinute15', '*/15 * * * *');
         CronExpression::registerAlias('@EveryMinute30', '*/30 * * * *');
+
         $this->expression = new CronExpression('* * * * *');
     }
 

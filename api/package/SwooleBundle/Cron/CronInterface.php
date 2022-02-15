@@ -15,7 +15,7 @@ interface CronInterface
      * '@weekly'    => '0 0 * * 0',
      * '@daily'     => '0 0 * * *',
      * '@hourly'    => '0 * * * *',
-     * '@EveryMinute'    => '* * * * *',
+     * '@EveryMinute'    => 'w* * * * *',
      * "@EveryMinute5'  => '*\/5 * * * *',
      * '@EveryMinute10'  => '*\/10 * * * *',
      * '@EveryMinute15'  => '*\/15 * * * *',
