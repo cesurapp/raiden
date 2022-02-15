@@ -9,8 +9,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'task:clear-failed', description: 'Clean up failed tasks.')]
-class FailedTaskClearCommand extends Command
+#[AsCommand(name: 'task:failed:clear', description: 'Clean up failed tasks.')]
+class TaskFailedClearCommand extends Command
 {
     public function __construct(private FailedTaskRepository $failedTaskRepo)
     {
@@ -19,8 +19,8 @@ class FailedTaskClearCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->failedTaskRepo->createQueryBuilder('t')
-            ->delete()->getQuery()->execute();
+        // Clear All
+        $this->failedTaskRepo->createQueryBuilder('t')->delete()->getQuery()->execute();
 
         $io = new SymfonyStyle($input, $output);
         $io->success('All failed task have been deleted.');

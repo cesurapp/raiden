@@ -132,10 +132,7 @@ class SwooleRunner implements RunnerInterface
             self::$options['tcp']['port'],
             self::$options['http']['sock_type']
         );
-        $server->set([
-            Constant::OPTION_WORKER_NUM => 1,
-            Constant::OPTION_TASK_WORKER_NUM => 0,
-        ]);
+        $server->set([Constant::OPTION_WORKER_NUM => 1]);
         $server->on('receive', [$this, 'onTcpReceive']);
     }
 
@@ -243,7 +240,7 @@ class SwooleRunner implements RunnerInterface
     /**
      * Handle Task.
      */
-    public function onTask(Server $server, int $taskId, int $reactorId, mixed $data): void
+    public function onTask(Server $server, int $fd, int $reactorId, mixed $data): void
     {
         if (self::$options['app']['task']) {
             $this->taskWorker->handle($data);
@@ -272,7 +269,7 @@ class SwooleRunner implements RunnerInterface
         $server->send($fd, $result);
     }
 
-    private function onTcpCommander(string $command): int|string
+    private function onTcpCommander(string $command): int
     {
         $cmd = explode('::', $command);
         if ('task-retry' === $cmd[0]) {

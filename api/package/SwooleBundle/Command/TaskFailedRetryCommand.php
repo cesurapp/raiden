@@ -3,7 +3,6 @@
 namespace Package\SwooleBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Package\SwooleBundle\Entity\FailedTask;
 use Swoole\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,8 +10,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'task:retry-failed', description: 'Send all failed tasks to queue.')]
-class FailedTaskRetryCommand extends Command
+#[AsCommand(name: 'task:failed:retry', description: 'Send all failed tasks to queue.')]
+class TaskFailedRetryCommand extends Command
 {
     public function __construct(private EntityManagerInterface $entityManager)
     {
@@ -23,6 +22,8 @@ class FailedTaskRetryCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $client = new Client(SWOOLE_SOCK_TCP);
+
+        // Connect Swoole TCP Server
         try {
             $client->connect('0.0.0.0', 9502, 1.5);
             if (!$client->isConnected()) {
@@ -30,24 +31,31 @@ class FailedTaskRetryCommand extends Command
             }
         } catch (\Exception $exception) {
             $io->error($exception->getMessage());
+
+            return Command::FAILURE;
         }
 
-        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger();
         $query = $this->entityManager->createQuery('select f from SwooleBundle:FailedTask f');
-        /** @var FailedTask $task */
-        foreach ($query->toIterable() as $task) {
-            $client->send('task-retry::'.json_encode([
-                'class' => $task->getTask(),
-                'payload' => $task->getPayload(),
-            ], JSON_THROW_ON_ERROR));
 
+        // Send All
+        foreach ($query->toIterable() as $index => $task) {
+            $client->send('task-retry::'.json_encode([
+                    'class' => $task->getTask(),
+                    'payload' => $task->getPayload(),
+                ], JSON_THROW_ON_ERROR));
+
+            $this->entityManager->remove($task);
             usleep(10000);
-            $this->entityManager->detach($task);
+
+            if (0 === $index % 10) {
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            }
         }
 
-        // Delete All Tasks
-        $this->entityManager->getRepository(FailedTask::class)->createQueryBuilder('f')
-            ->delete()->getQuery()->execute();
+        $this->entityManager->flush();
+        $this->entityManager->clear();
 
         return Command::SUCCESS;
     }

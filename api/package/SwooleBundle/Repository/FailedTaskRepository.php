@@ -43,6 +43,7 @@ class FailedTaskRepository extends ServiceEntityRepository
     {
         $this->_em->remove($task);
         $this->_em->flush();
+        $this->_em->detach($task);
     }
 
     /**
@@ -57,5 +58,6 @@ class FailedTaskRepository extends ServiceEntityRepository
 
         $this->_em->persist($failedTask);
         $this->_em->flush();
+        $this->_em->detach($failedTask);
     }
 }

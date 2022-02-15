@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 #[AsCommand(name: 'server:stop', description: 'Stop Swoole Server')]
-class StopCommand extends Command
+class ServerStopCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

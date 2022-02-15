@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'server:status', description: 'Status Swoole Server')]
-class StatusCommand extends Command
+class ServerStatusCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
