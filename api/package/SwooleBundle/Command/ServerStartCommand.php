@@ -18,9 +18,11 @@ class ServerStartCommand extends Command
 {
     protected function configure(): void
     {
-        $this->addOption('host', null, InputOption::VALUE_OPTIONAL, 'Http host', '0.0.0.0:80');
-        $this->addOption('cron', null, InputOption::VALUE_OPTIONAL, 'Enable cron service, default disabled', false);
-        $this->addOption('task', null, InputOption::VALUE_OPTIONAL, 'Enable task service, default enabled', true);
+        $this->addOption('host', 'h', InputOption::VALUE_OPTIONAL, 'Http host', '0.0.0.0:80');
+        $this->addOption('cron', 'c', InputOption::VALUE_OPTIONAL, 'Enable cron service, default disabled', false);
+        $this->addOption('task', 't', InputOption::VALUE_OPTIONAL, 'Enable task service, default enabled', true);
+        $this->addOption('worker', 'w', InputOption::VALUE_OPTIONAL, 'Worker count', 'CPU Count * 2');
+        $this->addOption('task-worker', 'tw', InputOption::VALUE_OPTIONAL, 'Task worker count', 'CPU Count');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
