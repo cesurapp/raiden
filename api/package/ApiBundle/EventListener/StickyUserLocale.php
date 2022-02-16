@@ -6,7 +6,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class LocaleListener implements EventSubscriberInterface
+/**
+ * Sticky User Locale.
+ */
+class StickyUserLocale implements EventSubscriberInterface
 {
     public function __construct(private string $defaultLocale = 'en')
     {
@@ -28,8 +31,6 @@ class LocaleListener implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [
-            KernelEvents::REQUEST => [['onKernelRequest', 20]],
-        ];
+        return [KernelEvents::REQUEST => [['onKernelRequest', 20]]];
     }
 }

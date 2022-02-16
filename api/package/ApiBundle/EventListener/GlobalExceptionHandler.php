@@ -2,7 +2,7 @@
 
 namespace Package\ApiBundle\EventListener;
 
-use Package\ApiBundle\Utils\ApiResponse;
+use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Global Exception Handler.
  */
-class ExceptionListener implements EventSubscriberInterface
+class GlobalExceptionHandler implements EventSubscriberInterface
 {
     public function onKernelException(ExceptionEvent $event): void
     {

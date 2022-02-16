@@ -1,8 +1,7 @@
 <?php
 
-namespace Package\ApiBundle\Controller;
+namespace Package\ApiBundle\ApiDocumentation;
 
-use Package\ApiBundle\Utils\ApiDocExporter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;

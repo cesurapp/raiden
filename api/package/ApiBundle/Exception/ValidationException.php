@@ -3,7 +3,6 @@
 namespace Package\ApiBundle\Exception;
 
 use Package\ApiBundle\AbstractClass\AbstractApiException;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
@@ -11,17 +10,20 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
  */
 class ValidationException extends AbstractApiException
 {
-    public function __construct($message = 'Validation failed', $code = 403, protected array|ConstraintViolationListInterface|null $errors = null)
+    public function __construct(string $message = 'Validation failed', int $code = 403, protected array|ConstraintViolationListInterface|null $errors = null)
     {
+        if ($errors instanceof ConstraintViolationListInterface) {
+            $errors = $this->parseErrors($errors);
+        }
+
         parent::__construct($message, $code, $errors);
     }
 
-    public function getErrors(): ?array
+    private function parseErrors(ConstraintViolationListInterface $errors): ?array
     {
         $fields = [];
 
-        /** @var ConstraintViolation $error */
-        foreach ($this->errors as $error) {
+        foreach ($errors as $error) {
             $fields[$error->getPropertyPath()][] = $error->getMessage();
         }
 

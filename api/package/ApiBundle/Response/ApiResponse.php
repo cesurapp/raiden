@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\ApiBundle\Utils;
+namespace Package\ApiBundle\Response;
 
 use Package\ApiBundle\Contract\ApiResourceInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -25,8 +25,12 @@ class ApiResponse
         return self::json($data, $status, $headers);
     }
 
-    public static function jsonResource(ApiResourceInterface|array $resource, string $type = 'default', int $status = 200, array $headers = []): JsonResponse
-    {
+    public static function jsonResource(
+        ApiResourceInterface|array $resource,
+        string $type = 'default',
+        int $status = 200,
+        array $headers = []
+    ): JsonResponse {
         if (is_array($resource)) {
             return self::json(array_map(static fn ($res) => $res->{"{$type}Resource"}(), $resource));
         }
@@ -37,8 +41,11 @@ class ApiResponse
     /**
      * Download Binary File.
      */
-    public static function file(\SplFileInfo|string $filePath, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
-    {
+    public static function file(
+        \SplFileInfo|string $filePath,
+        string $fileName = '',
+        string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT
+    ): BinaryFileResponse {
         return (new BinaryFileResponse($filePath))->setContentDisposition($disposition, $fileName);
     }
 
@@ -61,7 +68,10 @@ class ApiResponse
             fclose($handle);
         }, 200, [
             'Content-Type' => $file->getMimeType(),
-            'Content-Disposition' => HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, $fileName ?? $file->getFilename()),
+            'Content-Disposition' => HeaderUtils::makeDisposition(
+                HeaderUtils::DISPOSITION_ATTACHMENT,
+                $fileName ?? $file->getFilename()
+            ),
         ]);
     }
 }

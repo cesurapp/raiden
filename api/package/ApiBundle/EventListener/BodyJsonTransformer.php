@@ -9,11 +9,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Json Request Body to Array Convert.
  */
-class RequestListener implements EventSubscriberInterface
+class BodyJsonTransformer implements EventSubscriberInterface
 {
-    /**
-     * @throws \JsonException
-     */
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
@@ -25,7 +22,7 @@ class RequestListener implements EventSubscriberInterface
         }
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [KernelEvents::REQUEST => ['onKernelRequest', 100]];
     }

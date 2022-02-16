@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\EventListener;
 
+use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -20,7 +21,7 @@ class CorsListener implements EventSubscriberInterface
         }
 
         if (!in_array($event->getRequest()->getRealMethod(), ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) {
-            $event->setResponse(new Response());
+            $event->setResponse(ApiResponse::json([]));
         }
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\ApiBundle\Attribute;
+namespace Package\ApiBundle\ApiDocumentation;
 
 /**
  * Api Documentation Generator.

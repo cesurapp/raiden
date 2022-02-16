@@ -1,9 +1,8 @@
 <?php
 
-namespace Package\ApiBundle\Utils;
+namespace Package\ApiBundle\ApiDocumentation;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDtoRequest;
-use Package\ApiBundle\Attribute\ApiDoc;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionUnionType;
@@ -13,7 +12,7 @@ use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 
-class ApiDocExporter
+class ApiDocGenerator
 {
     public function __construct(
         private RouterInterface $router,
@@ -27,13 +26,11 @@ class ApiDocExporter
      */
     public function render(): string
     {
-        return $this->twig->render('api-doc.html.twig', ['data' => $this->extractData(true)]);
+        return $this->twig->render('./api-doc.html.twig', ['data' => $this->extractData(true)]);
     }
 
     /**
      * Read All Attributes from Routes.
-     *
-     * @throws \ReflectionException
      */
     public function extractData($grouped = false): array
     {
@@ -54,7 +51,7 @@ class ApiDocExporter
                     'fileLine' => $method->getStartLine(),
                     'method' => $route['router']->getMethods() ?: ['GET', 'POST'],
                     /* @phpstan-ignore-next-line */
-                    'responseType' => Util::baseClass($method->getReturnType()?->getName()) ?? 'Mixed',
+                    'responseType' => $this->baseClass($method->getReturnType()?->getName()) ?? 'Mixed',
                     'response' => $docAttr['response'] ?? [],
                     'description' => $docAttr['description'] ?? '',
                     'query' => array_merge($this->argumentResolver($route['router'], $method), $docAttr['query'] ?? []),
@@ -109,7 +106,7 @@ class ApiDocExporter
             $parameters[$property->getName()] = implode(' | ', array_map(static function ($attr) {
                 $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
 
-                return Util::baseClass($attr->getName()).$args;
+                return $this->baseClass($attr->getName()).$args;
             }, $property->getAttributes()));
         }
 
@@ -126,7 +123,7 @@ class ApiDocExporter
         /*** @var PropertyMetadataInterface $metaData */
         if (!empty($this->validator->getMetadataFor($class)->properties)) {
             foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
-                $parameters[$name] = array_map(static fn ($class) => Util::baseClass($class), $metaData->getConstraints());
+                $parameters[$name] = array_map(static fn ($class) => $this->baseClass($class), $metaData->getConstraints());
             }
         }
 
@@ -172,7 +169,7 @@ class ApiDocExporter
                     $type = $controllerArgs[$index]->getType()->getName();
                 }
 
-                $matched[$key] = Util::baseClass($type).($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
+                $matched[$key] = $this->baseClass($type).($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
             }
         }
 
@@ -202,5 +199,13 @@ class ApiDocExporter
         }
 
         return $list;
+    }
+
+    /**
+     * Extract Class Name.
+     */
+    public function baseClass(string|object|null $class): string|null
+    {
+        return $class ? basename(str_replace('\\', '/', is_object($class) ? get_class($class) : $class)) : null;
     }
 }
