@@ -14,6 +14,7 @@
     "doctrine/orm": "^2.10",
     "dragonmantank/cron-expression": "^3.3",
     "symfony/console": "6.0.*",
+    "symfony/debug-bundle": "6.0.*",
     "symfony/dotenv": "6.0.*",
     "symfony/flex": "^2",
     "symfony/framework-bundle": "6.0.*",

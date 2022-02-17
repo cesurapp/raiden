@@ -13,8 +13,16 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class GlobalExceptionHandler implements EventSubscriberInterface
 {
+    public function __construct()
+    {
+    }
+
     public function onKernelException(ExceptionEvent $event): void
     {
+        if ('dev' === $_ENV['APP_ENV'] && 'application/json' !== $event->getRequest()->getContentType()) {
+            return;
+        }
+
         // Create Exception Message
         $exception = $event->getThrowable();
         $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : $exception->getCode();

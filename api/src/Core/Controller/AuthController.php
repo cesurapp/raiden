@@ -5,7 +5,7 @@ namespace App\Core\Controller;
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
 use App\Core\Task\TestTask;
-use Package\ApiBundle\ApiDocumentation\ApiDoc;
+use Package\ApiBundle\Documentation\ApiDoc;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

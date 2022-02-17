@@ -16,4 +16,9 @@ return static function (ContainerConfigurator $container) {
 
     // Argument Resolver
     $services->load('Package\\ApiBundle\\ArgumentResolver\\', '../ArgumentResolver/');
+
+    // Api-DOC
+    if ('prod' !== $container->env()) {
+        $services->load('Package\\ApiBundle\\Documentation\\', '../Documentation/');
+    }
 };

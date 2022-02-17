@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Proxy Cache Response.
  */
-class CachedJsonResponse extends JsonResponse
+class CachedResponse extends JsonResponse
 {
-    public static function create(array $data, int $ageSecond = 60): CachedJsonResponse
+    public static function create(array $data, int $ageSecond = 60): CachedResponse
     {
         $response = new self($data, 200, []);
 

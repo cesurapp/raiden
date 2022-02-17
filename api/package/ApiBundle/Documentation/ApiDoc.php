@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\ApiBundle\ApiDocumentation;
+namespace Package\ApiBundle\Documentation;
 
 /**
  * Api Documentation Generator.
@@ -13,7 +13,8 @@ final class ApiDoc
         protected ?string $apiDto = null,
         protected array $query = [],
         protected array $body = [],
-        protected array $response = []
+        protected array $response = [],
+        protected bool $hidden = false
     ) {
     }
 }

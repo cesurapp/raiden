@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\ApiBundle\ApiDocumentation;
+namespace Package\ApiBundle\Documentation;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDtoRequest;
 use ReflectionAttribute;
@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 
-class ApiDocGenerator
+class Generator
 {
     public function __construct(
         private RouterInterface $router,
@@ -26,7 +26,9 @@ class ApiDocGenerator
      */
     public function render(): string
     {
-        return $this->twig->render('./api-doc.html.twig', ['data' => $this->extractData(true)]);
+        return $this->twig->render('@Api/documentation.html.twig', [
+            'data' => $this->extractData(true),
+        ]);
     }
 
     /**
@@ -103,7 +105,7 @@ class ApiDocGenerator
     {
         $parameters = [];
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $parameters[$property->getName()] = implode(' | ', array_map(static function ($attr) {
+            $parameters[$property->getName()] = implode(' | ', array_map(function ($attr) {
                 $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
 
                 return $this->baseClass($attr->getName()).$args;

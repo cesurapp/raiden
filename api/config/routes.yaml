@@ -11,7 +11,7 @@ when@dev:
     prefix: /_profiler
   api_doc:
     path: /api-doc
-    controller: Package\ApiBundle\Controller\ApiDocController::index
+    controller: Package\ApiBundle\Documentation\Controller::index
 
 # App Core Routing
 app_core:
