@@ -2,11 +2,11 @@
 
 namespace Package\ApiBundle\Response;
 
-use Package\ApiBundle\Contract\ApiResourceInterface;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -15,38 +15,90 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  */
 class ApiResponse
 {
-    public static function json(array $data, int $status = 200, array $headers = []): JsonResponse
+    public static function create(mixed $data, int $status = 200, array $headers = []): array
     {
-        return new JsonResponse($data, $status, $headers);
+        return [
+            'type' => 'ApiResult',
+            'data' => $data,
+            'options' => [
+                'status' => $status,
+                'headers' => $headers,
+            ],
+        ];
     }
 
-    public static function jsonError(array $data, int $status = 403, array $headers = []): JsonResponse
+    public static function errorMsg(array $messages, int $status = 403, array $headers = []): array
     {
-        return self::json($data, $status, $headers);
+        return [
+            'type' => 'ApiError',
+            'data' => $messages,
+            'options' => [
+                'status' => $status,
+                'headers' => $headers,
+            ],
+        ];
     }
 
-    public static function jsonResource(
-        ApiResourceInterface|array $resource,
-        string $type = 'default',
-        int $status = 200,
-        array $headers = []
-    ): JsonResponse {
-        if (is_array($resource)) {
-            return self::json(array_map(static fn ($res) => $res->{"{$type}Resource"}(), $resource));
-        }
+    public static function infoMsg(array $messages, int $status = 403, array $headers = []): array
+    {
+        return [
+            'type' => 'ApiInfo',
+            'data' => $messages,
+            'options' => [
+                'status' => $status,
+                'headers' => $headers,
+            ],
+        ];
+    }
 
-        return self::json($resource->{"{$type}Resource"}(), $status, $headers);
+    public static function warnMsg(array $messages, int $status = 403, array $headers = []): array
+    {
+        return [
+            'type' => 'ApiWarning',
+            'data' => $messages,
+            'options' => [
+                'status' => $status,
+                'headers' => $headers,
+            ],
+        ];
+    }
+
+    public static function paginate(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+    {
+        return [
+            'type' => 'ApiResult',
+            'data' => $query,
+            'options' => [
+                'status' => 200,
+                'headers' => $headers,
+                'pager' => 'Offset',
+                'pagerMax' => $max,
+                'pagerPage' => null,
+                'fetchJoin' => true,
+            ],
+        ];
+    }
+
+    public static function paginateCursor(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+    {
+        return [
+            'type' => 'ApiResult',
+            'data' => $query,
+            'options' => [
+                'status' => 200,
+                'headers' => $headers,
+                'pager' => 'Cursor',
+                'pagerMax' => $max,
+            ],
+        ];
     }
 
     /**
      * Download Binary File.
      */
-    public static function file(
-        \SplFileInfo|string $filePath,
-        string $fileName = '',
-        string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT
-    ): BinaryFileResponse {
-        return (new BinaryFileResponse($filePath))->setContentDisposition($disposition, $fileName);
+    public static function file(\SplFileInfo|string $path, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
+    {
+        return (new BinaryFileResponse($path))->setContentDisposition($disposition, $fileName);
     }
 
     /**

@@ -9,11 +9,12 @@ namespace Package\ApiBundle\Documentation;
 final class ApiDoc
 {
     public function __construct(
-        protected string $description,
-        protected ?string $apiDto = null,
+        protected string $desc = '',
+        protected string $dto = '',
         protected array $query = [],
-        protected array $body = [],
-        protected array $response = [],
+        protected array $post = [],
+        protected array $rSuccess = [],
+        protected array $rException = [],
         protected bool $hidden = false
     ) {
     }

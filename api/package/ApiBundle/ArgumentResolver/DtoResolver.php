@@ -2,7 +2,7 @@
 
 namespace Package\ApiBundle\ArgumentResolver;
 
-use Package\ApiBundle\AbstractClass\AbstractApiDtoRequest;
+use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * Controller Resolve DTO Request Object.
  */
-class DtoRequestResolver implements ArgumentValueResolverInterface
+class DtoResolver implements ArgumentValueResolverInterface
 {
     public function __construct(private ValidatorInterface $validator)
     {
@@ -19,7 +19,7 @@ class DtoRequestResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        return is_subclass_of($argument->getType(), AbstractApiDtoRequest::class);
+        return is_subclass_of($argument->getType(), AbstractApiDto::class);
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable

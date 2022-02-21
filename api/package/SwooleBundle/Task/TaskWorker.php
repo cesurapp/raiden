@@ -26,8 +26,7 @@ class TaskWorker
             ++SwooleRunner::$options['task']['completed'];
         } catch (\Exception $exception) {
             $this->failedTaskRepo->createTask($taskRequest, $exception);
-
-            $this->logger->critical('Failed Task: '.$taskRequest['class'], $taskRequest);
+            $this->logger->critical('Failed Task: '.$taskRequest['class'].' Exception: '.$exception->getMessage(), $taskRequest);
             ++SwooleRunner::$options['task']['failed'];
         }
     }

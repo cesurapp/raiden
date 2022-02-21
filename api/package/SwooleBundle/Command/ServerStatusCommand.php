@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'server:status', description: 'Status Swoole Server')]
 class ServerStatusCommand extends Command
 {
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var ConsoleSectionOutput $section */
         $section = $output->section(); // @phpstan-ignore-line
@@ -82,7 +82,5 @@ class ServerStatusCommand extends Command
 
             usleep(1500000);
         }
-
-        return Command::SUCCESS;
     }
 }

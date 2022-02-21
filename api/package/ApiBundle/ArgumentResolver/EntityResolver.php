@@ -31,6 +31,7 @@ class EntityResolver implements ArgumentValueResolverInterface
         $attrs = $request->attributes->get('_route_params');
         $key = array_key_first($attrs);
 
+        /* @phpstan-ignore-next-line */
         if (!$object = $this->em->getRepository($argument->getType())->findOneBy([$key => $attrs[$key]])) {
             throw new NotFoundHttpException(sprintf('%s %s object not found', ucfirst($argument->getName()), $attrs[$key]));
         }

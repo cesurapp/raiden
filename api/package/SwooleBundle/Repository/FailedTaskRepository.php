@@ -12,6 +12,8 @@ use Package\SwooleBundle\Entity\FailedTask;
  * @method FailedTask|null findOneBy(array $criteria, array $orderBy = null)
  * @method FailedTask[]    findAll()
  * @method FailedTask[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ *
+ * @extends ServiceEntityRepository<FailedTask>
  */
 class FailedTaskRepository extends ServiceEntityRepository
 {

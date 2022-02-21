@@ -1,7 +1,4 @@
 {
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.4"
-    },
     "composer/pcre": {
         "version": "1.0.1"
     },
@@ -306,9 +303,6 @@
             "src/Controller/.gitignore"
         ]
     },
-    "symfony/http-client-contracts": {
-        "version": "v2.4.0"
-    },
     "symfony/http-foundation": {
         "version": "v6.0.0-BETA1"
     },
@@ -396,9 +390,6 @@
     },
     "symfony/security-csrf": {
         "version": "v6.0.0-BETA1"
-    },
-    "symfony/security-guard": {
-        "version": "v5.4.0-BETA1"
     },
     "symfony/security-http": {
         "version": "v6.0.0-BETA2"

@@ -18,11 +18,11 @@ class ServerStartCommand extends Command
 {
     protected function configure(): void
     {
-        $this->addOption('host', 'h', InputOption::VALUE_OPTIONAL, 'Http host', '0.0.0.0:80');
-        $this->addOption('cron', 'c', InputOption::VALUE_OPTIONAL, 'Enable cron service, default disabled', false);
-        $this->addOption('task', 't', InputOption::VALUE_OPTIONAL, 'Enable task service, default enabled', true);
-        $this->addOption('worker', 'w', InputOption::VALUE_OPTIONAL, 'Worker count', 'CPU Count * 2');
-        $this->addOption('task-worker', 'tw', InputOption::VALUE_OPTIONAL, 'Task worker count', 'CPU Count');
+        $this->addOption('host', null, InputOption::VALUE_OPTIONAL, 'Http host', '0.0.0.0:80');
+        $this->addOption('cron', null, InputOption::VALUE_OPTIONAL, 'Enable cron service, default disabled', false);
+        $this->addOption('task', null, InputOption::VALUE_OPTIONAL, 'Enable task service, default enabled', true);
+        $this->addOption('worker', null, InputOption::VALUE_OPTIONAL, 'Worker count', swoole_cpu_num() * 2);
+        $this->addOption('task-worker', null, InputOption::VALUE_OPTIONAL, 'Task worker count', swoole_cpu_num());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -37,8 +37,8 @@ class ServerStartCommand extends Command
                 'host' => explode(':', $input->getOption('host'))[0],
                 'port' => (int) explode(':', $input->getOption('host'))[1],
                 'settings' => [
-                    Constant::OPTION_WORKER_NUM => swoole_cpu_num() * 2,
-                    Constant::OPTION_TASK_WORKER_NUM => swoole_cpu_num(),
+                    Constant::OPTION_WORKER_NUM => $input->getOption('worker'),
+                    Constant::OPTION_TASK_WORKER_NUM => $input->getOption('task-worker'),
                     Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_ERROR,
                     Constant::OPTION_PID_FILE => $kernel->getProjectDir().'/var/server.pid',
                     Constant::OPTION_LOG_FILE => sprintf('%s/var/log/%s_server.log', $kernel->getProjectDir(), $kernel->getEnvironment()),

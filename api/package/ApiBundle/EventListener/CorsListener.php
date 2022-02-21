@@ -20,7 +20,7 @@ class CorsListener implements EventSubscriberInterface
         }
 
         if (!in_array($event->getRequest()->getRealMethod(), ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], true)) {
-            $event->setResponse(ApiResponse::json([]));
+            $event->setResponse(ApiResponse::create([]));
         }
     }
 

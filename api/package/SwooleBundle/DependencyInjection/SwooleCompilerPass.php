@@ -18,7 +18,7 @@ class SwooleCompilerPass implements CompilerPassInterface
         array_walk($tasks, static fn (&$val, $id) => $val = new Reference($id));
         $container
             ->register(TaskWorker::class, TaskWorker::class)
-            ->addArgument(ServiceLocatorTagPass::register($container, $tasks))
+            ->addArgument(ServiceLocatorTagPass::register($container, $tasks)) // @phpstan-ignore-line
             ->setAutowired(true)
             ->setPublic(true);
 
@@ -27,7 +27,7 @@ class SwooleCompilerPass implements CompilerPassInterface
         array_walk($crons, static fn (&$val, $id) => $val = new Reference($id));
         $container
             ->register(CronWorker::class, CronWorker::class)
-            ->addArgument(ServiceLocatorTagPass::register($container, $crons))
+            ->addArgument(ServiceLocatorTagPass::register($container, $crons)) // @phpstan-ignore-line
             ->setAutowired(true)
             ->setPublic(true);
     }

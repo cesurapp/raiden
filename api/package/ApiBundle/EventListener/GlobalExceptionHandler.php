@@ -38,7 +38,7 @@ class GlobalExceptionHandler implements EventSubscriberInterface
         }
 
         // Json Response
-        $event->setResponse(ApiResponse::json($message, $message['code']));
+        $event->setResponse(ApiResponse::create($message, $message['code']));
     }
 
     public static function getSubscribedEvents(): array

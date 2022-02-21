@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * Data Transfer Object for Validation.
  */
-abstract class AbstractApiDtoRequest
+abstract class AbstractApiDto
 {
     protected bool $auto = true;
 

@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
  */
 class CachedResponse extends JsonResponse
 {
-    public static function create(array $data, int $ageSecond = 60, ?array $tags = null): CachedResponse
+    public static function json(array $data, int $ageSecond = 60, ?array $tags = null): CachedResponse
     {
         $response = new self($data, 200, []);
 

@@ -1,9 +1,12 @@
 parameters:
     level: 6
     checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
     paths:
         - src
         - package
+    ignoreErrors:
+        - '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
 
 includes:
     - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon

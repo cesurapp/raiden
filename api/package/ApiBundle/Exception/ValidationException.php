@@ -19,7 +19,7 @@ class ValidationException extends AbstractApiException
         parent::__construct($message, $code, $errors);
     }
 
-    private function parseErrors(ConstraintViolationListInterface $errors): ?array
+    private function parseErrors(ConstraintViolationListInterface $errors): array
     {
         $fields = [];
 

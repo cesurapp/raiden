@@ -16,62 +16,71 @@ class ControllerResultConverter implements EventSubscriberInterface
 {
     public const PAGER_MAX = 20;
 
-    /**
-     * Response Data.
-     */
-    private array $data = [];
-
     public function onKernelView(ViewEvent $event): void
     {
-        $this->data = [];
         $result = $event->getControllerResult();
+        $data = ['type' => $result['type']];
 
         // Paginate Data
-        $this->paginateData($event->getRequest(), $result);
+        $this->paginateData($event->getRequest(), $data, $result);
 
         // Prepare Data
-        $this->prepareData($event->getRequest());
-
-        $this->data['type'] = $result['type'];
+        $this->prepareData($data, $result);
 
         // Create Response
-        $event->setResponse(new JsonResponse(
-            $this->data,
-            $result['options']['status'] ?? 200,
-            $result['options']['headers'] ?? [],
-        ));
+        $event->setResponse(
+            new JsonResponse(
+                $data,
+                $result['options']['status'] ?? 200,
+                $result['options']['headers'] ?? [],
+            )
+        );
     }
 
-    private function paginateData(Request $request, mixed $data): void
+    /**
+     * Paginate Query.
+     */
+    private function paginateData(Request $request, array &$data, mixed $result): void
     {
-        if (!isset($data['options']['pager'])) {
+        if (!isset($result['options']['pager'])) {
             return;
         }
 
-        $data['options']['pagerMax'] ??= self::PAGER_MAX;
-        $data['options']['pagerPage'] ??= $request->query->getInt('page', 1);
+        $result['options']['pagerMax'] ??= self::PAGER_MAX;
+        $result['options']['pagerPage'] ??= $request->query->getInt('page', 1);
 
         // Paginate
-        $data['data']
-            ->setFirstResult($data['options']['pagerPage'] - 1)
-            ->setMaxResults($data['options']['pagerMax'] + 1);
+        $result['data']
+            ->setFirstResult($result['options']['pagerPage'] - 1)
+            ->setMaxResults($result['options']['pagerMax'] + 1);
 
-        $paginator = new Paginator($data['data'], $data['options']['fetchJoin'] ?? true);
+        $paginator = new Paginator($result['data'], $result['options']['fetchJoin'] ?? true);
         $iterator = $paginator->getIterator();
 
-        $this->data['data'] = (array) $iterator;
-        $this->data['pager'] = [
-            'max' => $data['options']['pagerMax'],
-            'prevPage' => $data['options']['pagerPage'] > 1 ? $data['options']['pagerPage'] - 1 : null,
-            'nextPage' => $iterator > $data['options']['pagerMax'] ? $data['options']['pagerPage'] + 1 : null,
-            'currentPage' => $data['options']['pagerPage'],
+        $data['data'] = (array) $iterator;
+        $data['pager'] = [
+            'max' => $result['options']['pagerMax'],
+            'prevPage' => $result['options']['pagerPage'] > 1 ? $result['options']['pagerPage'] - 1 : null,
+            'nextPage' => $iterator->count(
+            ) > $result['options']['pagerMax'] ? $result['options']['pagerPage'] + 1 : null,
+            'currentPage' => $result['options']['pagerPage'],
         ];
     }
 
-    private function prepareData(mixed $data): array|string|int|bool
+    /**
+     * Serialize Object.
+     */
+    private function prepareData(array &$data, mixed $result): void
     {
-        // Process Object Resource
-        return array_walk_recursive($data['data'], static function ($item) {
+        $data['data'] ??= $result['data'];
+        if (!is_array($data['data'])) {
+            return;
+        }
+
+        array_walk_recursive($data['data'], static function ($item, $key) {
+            if (is_object($item)) {
+                dump($key, $item);
+            }
         });
     }
 
