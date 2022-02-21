@@ -5,6 +5,7 @@ namespace Package\ApiBundle\Documentation;
 use Package\ApiBundle\AbstractClass\AbstractApiDtoRequest;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionMethod;
 use ReflectionUnionType;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -34,7 +35,7 @@ class Generator
     /**
      * Read All Attributes from Routes.
      */
-    public function extractData($grouped = false): array
+    public function extractData(bool $grouped = false): array
     {
         $apiDoc = [];
 
@@ -48,16 +49,26 @@ class Generator
                 $docAttr = isset($docAttribute[0]) ? $docAttribute[0]->getArguments() : null;
 
                 $apiDoc[$path] = [
+                    // Description
+                    'desc' => $docAttr['desc'] ?? '',
+                    'hidden' => $docAttr['hidden'] ?? false,
+
+                    // Router
+                    'endpointMethod' => $route['router']->getMethods() ?: ['GET', 'POST'],
+                    'endpointAttr' => $route['router']->getMethods() ?: ['GET', 'POST'],
+
+                    // Controller
                     'controller' => $route['controller'].'::'.$route['method'],
-                    'filePath' => $controller->getFileName(),
-                    'fileLine' => $method->getStartLine(),
-                    'method' => $route['router']->getMethods() ?: ['GET', 'POST'],
-                    /* @phpstan-ignore-next-line */
-                    'responseType' => $this->baseClass($method->getReturnType()?->getName()) ?? 'Mixed',
-                    'response' => $docAttr['response'] ?? [],
-                    'description' => $docAttr['description'] ?? '',
+                    'controllerPath' => $controller->getFileName(),
+                    'controllerLine' => $method->getStartLine(),
+                    'controllerResponse' => $this->extractControllerResponse($docAttr, $method),
+                    'controllerResponseType' => $this->extractControllerResponseType($docAttr, $method),
+
                     'query' => array_merge($this->argumentResolver($route['router'], $method), $docAttr['query'] ?? []),
-                    'body' => $docAttr ? array_merge($this->extractDto($docAttribute[0]), $docAttr['body'] ?? []) : null,
+                    'body' => $docAttr ? array_merge(
+                        $this->extractDto($docAttribute[0]),
+                        $docAttr['body'] ?? []
+                    ) : null,
                 ];
             }
         }
@@ -75,6 +86,26 @@ class Generator
         }
 
         return $apiDoc;
+    }
+
+    /**
+     * Extract Controller Response Structure.
+     */
+    public function extractControllerResponse(array $docAttr, ReflectionMethod $method): array
+    {
+        return $docAttr['response'] ?? [];
+    }
+
+    /**
+     * Extract Controller Response Type.
+     */
+    public function extractControllerResponseType(array $docAttr, ReflectionMethod $method): string
+    {
+        if (!$method->getReturnType()) {
+            return 'Mixed';
+        }
+
+        return $this->baseClass($method->getReturnType());
     }
 
     /**
@@ -99,17 +130,20 @@ class Generator
     }
 
     /**
-     * Extract Request Validation Parameters using AbstractApiDtoRequest.
+     * Extract Request Validation Parameters using AbstractApiDto.
      */
     private function extractDTOClass(ReflectionClass $class): array
     {
         $parameters = [];
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $parameters[$property->getName()] = implode(' | ', array_map(function ($attr) {
-                $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
+            $parameters[$property->getName()] = implode(
+                ' | ',
+                array_map(function ($attr) {
+                    $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
 
-                return $this->baseClass($attr->getName()).$args;
-            }, $property->getAttributes()));
+                    return $this->baseClass($attr->getName()).$args;
+                }, $property->getAttributes())
+            );
         }
 
         return $parameters;
@@ -125,14 +159,14 @@ class Generator
         /*** @var PropertyMetadataInterface $metaData */
         if (!empty($this->validator->getMetadataFor($class)->properties)) {
             foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
-                $parameters[$name] = array_map(static fn ($class) => $this->baseClass($class), $metaData->getConstraints());
+                $parameters[$name] = array_map(fn ($class) => $this->baseClass($class), $metaData->getConstraints());
             }
         }
 
         return $parameters;
     }
 
-    private function argumentResolver(Route $route, \ReflectionMethod $method): array
+    private function argumentResolver(Route $route, ReflectionMethod $method): array
     {
         $routerVars = $route->compile()->getVariables();
         if (!count($routerVars)) {
@@ -140,38 +174,45 @@ class Generator
         }
 
         /** @var \ReflectionParameter[] $controllerArgs */
-        $controllerArgs = array_values(array_filter($method->getParameters(), static function ($p) {
-            $check = static function ($typeName) {
-                if (strpos($typeName, 'Entity\\')) {
+        $controllerArgs = array_values(
+            array_filter($method->getParameters(), static function ($p) {
+                $check = static function ($typeName) {
+                    if (strpos($typeName, 'Entity\\')) {
+                        return true;
+                    }
+
+                    if (class_exists($typeName) || in_array($typeName, get_declared_interfaces(), true)) {
+                        return false;
+                    }
+
                     return true;
+                };
+
+                if ($p->getType() instanceof ReflectionUnionType) {
+                    return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
                 }
 
-                if (class_exists($typeName) || in_array($typeName, get_declared_interfaces(), true)) {
-                    return false;
-                }
-
-                return true;
-            };
-
-            if ($p->getType() instanceof ReflectionUnionType) {
-                return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
-            }
-
-            /* @phpstan-ignore-next-line */
-            return $check($p->getType()->getName());
-        }));
+                /* @phpstan-ignore-next-line */
+                return $check($p->getType()->getName());
+            })
+        );
 
         $matched = [];
         if (count($routerVars) === count($controllerArgs)) {
             foreach ($routerVars as $index => $key) {
                 if ($controllerArgs[$index]->getType() instanceof ReflectionUnionType) {
-                    $type = implode('|', array_map(static fn ($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes()));
+                    $type = implode(
+                        '|',
+                        array_map(static fn ($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes())
+                    );
                 } else {
                     /** @phpstan-ignore-next-line */
                     $type = $controllerArgs[$index]->getType()->getName();
                 }
 
-                $matched[$key] = $this->baseClass($type).($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
+                $matched[$key] = $this->baseClass($type).($route->getRequirement(
+                    $key
+                ) ? " ({$route->getRequirement($key)})" : '');
             }
         }
 
