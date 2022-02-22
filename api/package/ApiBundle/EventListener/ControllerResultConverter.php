@@ -3,6 +3,7 @@
 namespace Package\ApiBundle\EventListener;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,35 +19,37 @@ class ControllerResultConverter implements EventSubscriberInterface
 
     public function onKernelView(ViewEvent $event): void
     {
-        $result = $event->getControllerResult();
-        $data = ['type' => $result['type']];
+        /** @var ApiResponse $apiResponse */
+        $apiResponse = $event->getControllerResult();
 
-        // Paginate Data
-        $this->paginateData($event->getRequest(), $data, $result);
+        // Paginate Query
+        if ($apiResponse->isPaginate() && $apiResponse->getQuery()) {
+            $this->{'paginate'.$apiResponse->getPaginate()->name}($event->getRequest(), $apiResponse);
+        }
 
-        // Prepare Data
-        $this->prepareData($data, $result);
+        // Process Api Response
+        $this->processResource($apiResponse);
 
         // Create Response
-        $event->setResponse(
-            new JsonResponse(
-                $data,
-                $result['options']['status'] ?? 200,
-                $result['options']['headers'] ?? [],
-            )
-        );
+        $response = new JsonResponse([
+            'type' => $apiResponse->getType()->name,
+            'data' => $apiResponse->getData(),
+        ], $apiResponse->getStatus(), $apiResponse->getHeaders());
+
+        // HTTP Cache
+        if ($apiResponse->isHTTPCache()) {
+            $response->setCache($apiResponse->getHTTPCache());
+        }
+
+        $event->setResponse($response);
     }
 
     /**
-     * Paginate Query.
+     * Paginate Query to Offset.
      */
-    private function paginateData(Request $request, array &$data, mixed $result): void
+    private function paginateOffset(Request $request, ApiResponse $apiResponse): void
     {
-        if (!isset($result['options']['pager'])) {
-            return;
-        }
-
-        $result['options']['pagerMax'] ??= self::PAGER_MAX;
+        /*$result['options']['pagerMax'] ??= self::PAGER_MAX;
         $result['options']['pagerPage'] ??= $request->query->getInt('page', 1);
 
         // Paginate
@@ -64,15 +67,22 @@ class ControllerResultConverter implements EventSubscriberInterface
             'nextPage' => $iterator->count(
             ) > $result['options']['pagerMax'] ? $result['options']['pagerPage'] + 1 : null,
             'currentPage' => $result['options']['pagerPage'],
-        ];
+        ];*/
     }
 
     /**
-     * Serialize Object.
+     * Paginate Query to Cursor.
      */
-    private function prepareData(array &$data, mixed $result): void
+    private function paginateCursor(Request $request, ApiResponse $apiResponse): void
     {
-        $data['data'] ??= $result['data'];
+    }
+
+    /**
+     * Process Object Array Serialzie.
+     */
+    private function processResource(ApiResponse $apiResponse): void
+    {
+        /*$data['data'] ??= $result['data'];
         if (!is_array($data['data'])) {
             return;
         }
@@ -81,7 +91,7 @@ class ControllerResultConverter implements EventSubscriberInterface
             if (is_object($item)) {
                 dump($key, $item);
             }
-        });
+        });*/
     }
 
     public static function getSubscribedEvents(): array

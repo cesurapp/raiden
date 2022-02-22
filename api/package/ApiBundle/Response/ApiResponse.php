@@ -11,87 +11,169 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Symfony Simple Response.
+ * Symfony Global Response | Paginator.
  */
 class ApiResponse
 {
-    public static function create(mixed $data, int $status = 200, array $headers = []): array
+    private ResponseTypeEnum $type = ResponseTypeEnum::ApiResult;
+
+    private int $status = 200;
+
+    private array $headers = [];
+
+    private array|string|int|bool|null $data = null;
+
+    private Query|QueryBuilder|null $query = null;
+
+    private array $options = [];
+
+    public static function create(ResponseTypeEnum $type = ResponseTypeEnum::ApiResult, int $status = 200): self
     {
-        return [
-            'type' => 'ApiResult',
-            'data' => $data,
-            'options' => [
-                'status' => $status,
-                'headers' => $headers,
-            ],
-        ];
+        return (new self())
+            ->setType($type)
+            ->setStatus($status);
     }
 
-    public static function errorMsg(array $messages, int $status = 403, array $headers = []): array
+    public function getType(): ResponseTypeEnum
     {
-        return [
-            'type' => 'ApiError',
-            'data' => $messages,
-            'options' => [
-                'status' => $status,
-                'headers' => $headers,
-            ],
-        ];
+        return $this->type;
     }
 
-    public static function infoMsg(array $messages, int $status = 403, array $headers = []): array
+    public function setType(ResponseTypeEnum $type): self
     {
-        return [
-            'type' => 'ApiInfo',
-            'data' => $messages,
-            'options' => [
-                'status' => $status,
-                'headers' => $headers,
-            ],
-        ];
+        $this->type = $type;
+
+        return $this;
     }
 
-    public static function warnMsg(array $messages, int $status = 403, array $headers = []): array
+    public function getStatus(): int
     {
-        return [
-            'type' => 'ApiWarning',
-            'data' => $messages,
-            'options' => [
-                'status' => $status,
-                'headers' => $headers,
-            ],
-        ];
+        return $this->status;
     }
 
-    public static function paginate(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+    public function setStatus(int $status): self
     {
-        return [
-            'type' => 'ApiResult',
-            'data' => $query,
-            'options' => [
-                'status' => 200,
-                'headers' => $headers,
-                'pager' => 'Offset',
-                'pagerMax' => $max,
-                'pagerPage' => null,
-                'fetchJoin' => true,
-            ],
-        ];
+        $this->status = $status;
+
+        return $this;
     }
 
-    public static function paginateCursor(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+    public function getHeaders(): array
     {
-        return [
-            'type' => 'ApiResult',
-            'data' => $query,
-            'options' => [
-                'status' => 200,
-                'headers' => $headers,
-                'pager' => 'Cursor',
-                'pagerMax' => $max,
-            ],
-        ];
+        return $this->headers;
     }
+
+    public function setHeaders(array $headers): self
+    {
+        $this->headers = $headers;
+
+        return $this;
+    }
+
+    public function addHeader(string $key, string $value): self
+    {
+        $this->headers[$key] = $value;
+
+        return $this;
+    }
+
+    public function getData(): array|bool|int|string|null
+    {
+        return $this->data;
+    }
+
+    public function setData(array|bool|int|string|null $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function getQuery(): Query|QueryBuilder|null
+    {
+        return $this->query;
+    }
+
+    public function setQuery(Query|QueryBuilder $query): self
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    public function isPaginate(): bool
+    {
+        return isset($this->options['pager']);
+    }
+
+    public function getPaginate(): ResponsePaginateEnum
+    {
+        return $this->options['pager'];
+    }
+
+    public function setPaginate(?int $max = 20, ResponsePaginateEnum $paginate = ResponsePaginateEnum::Offset): self
+    {
+        $this->options['pager'] = $paginate;
+        $this->options['pagerMax'] = $max;
+
+        return $this;
+    }
+
+    public function isHTTPCache(): bool
+    {
+        return isset($this->options['http_cache']);
+    }
+
+    public function getHTTPCache(): array
+    {
+        return $this->options['http_cache_options'];
+    }
+
+    public function setHTTPCache(int $lifetime = 60, ?array $tags = null): self
+    {
+        $this->options['http_cache'] = true;
+        $this->options['http_cache_options'] = [
+            'max-age' => $lifetime,
+            'public' => '',
+            's-maxage' => $lifetime,
+        ];
+        if ($tags) {
+            $this->headers['Cache-Tag'] = implode(',', array_map(fn ($tag) => hash('crc32b', (string) $tag), $tags));
+        }
+
+        return $this;
+    }
+
+    /* public static function create(mixed $data, int $status = 200, array $headers = []): array
+
+     public static function paginate(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+     {
+         return [
+             'type' => 'ApiResult',
+             'data' => $query,
+             'options' => [
+                 'pager' => 'Offset',
+                 'pagerMax' => $max,
+                 'pagerPage' => null,
+                 'fetchJoin' => true,
+             ],
+         ];
+     }
+
+     public static function paginateCursor(QueryBuilder|Query $query, ?int $max = null, array $headers = []): array
+     {
+         return [
+             'type' => 'ApiResult',
+             'data' => $query,
+             'options' => [
+                 'status' => 200,
+                 'headers' => $headers,
+                 'pager' => 'Cursor',
+                 'pagerMax' => $max,
+             ],
+         ];
+     }
+*/
 
     /**
      * Download Binary File.
@@ -126,4 +208,10 @@ class ApiResponse
             ),
         ]);
     }
+
+    /*    public static function json(array $data, int $ageSecond = 60, ?array $tags = null): CachedResponse
+        {
+            // Enable Session Cache
+            $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
+        }*/
 }

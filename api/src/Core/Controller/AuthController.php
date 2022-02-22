@@ -4,9 +4,10 @@ namespace App\Core\Controller;
 
 use App\Core\Entity\UserEntity;
 use App\Core\Request\LoginRequest;
-use App\Core\Task\TestTask;
 use Package\ApiBundle\Documentation\ApiDoc;
 use Package\ApiBundle\Response\ApiResponse;
+use Package\ApiBundle\Response\ResponseTypeEnum;
+use Package\SwooleBundle\Repository\FailedTaskRepository;
 use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,19 +17,23 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AuthController extends AbstractController
 {
+    /**
+     * @param Request $request
+     * @return ApiResponse
+     */
     #[Route(path: '/', name: 'home')]
-    #[ApiDoc(description: 'View Home Page', apiDto: LoginRequest::class, query: [
+    #[ApiDoc(desc: 'View Home Page', dto: LoginRequest::class, query: [
         'id' => 'asdsad',
         'name' => 'int',
-    ], response: [
+    ], rSuccess: [
         'id' => 222,
         'name' => 'FakOff',
     ])]
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, FailedTaskRepository $f): ApiResponse
     {
-       // for ($i = 0; $i < 100; ++$i) {
-       //     TaskHandler::dispatch(TestTask::class, ['deneme', 'nalet']);
-      //  }
+        /*for ($i = 0; $i < 100; ++$i) {
+            TaskHandler::dispatch(TestTask::class, ['deneme', 'nalet']);
+        }*/
         //dump($GLOBALS['server']);
         //  dump($adapter);
 
@@ -51,13 +56,17 @@ class AuthController extends AbstractController
         //Process::kill($server->master_pid, SIGUSR1);
         //dump($handler->dispatch());
 
-        return ApiResponse::json(['asdddddsa']);
+        return ApiResponse::create()
+            //->setQuery($f->createQueryBuilder('f'))
+                ->setType(ResponseTypeEnum::ApiInfo)
+            ->setData(['tamam', 'asdasdasd asdasdas'])
+            ;
     }
 
     #[Route(path: '/post/{id}/{nm}', name: 'show_all', requirements: ['id' => "\d+"], methods: ['GET'])]
     #[Route(path: '/post/show/{id}/{nm}', name: 'show_post', requirements: ['id' => "\d+"], methods: ['GET'])]
     #[Route(path: '/post/edit/{id}/{nm}', name: 'show_edit', requirements: ['id' => "\d+"], methods: ['GET'])]
-    #[ApiDoc(description: '', query: ['page' => 'asdas', 'limit' => '10'])]
+    #[ApiDoc(desc: '', query: ['page' => 'asdas', 'limit' => '10'])]
     public function show(Request $request, ValidatorInterface $validator, int|UserEntity $id, int $a = 0): JsonResponse
     {
         return ApiResponse::json(['asdsa']);

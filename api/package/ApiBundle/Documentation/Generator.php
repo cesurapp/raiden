@@ -2,7 +2,6 @@
 
 namespace Package\ApiBundle\Documentation;
 
-use Package\ApiBundle\AbstractClass\AbstractApiDtoRequest;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
