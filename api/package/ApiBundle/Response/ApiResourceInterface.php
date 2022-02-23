@@ -7,4 +7,5 @@ namespace Package\ApiBundle\Response;
  */
 interface ApiResourceInterface
 {
+    public function toArray(mixed $item): array;
 }

@@ -20,12 +20,14 @@ class ApiResourceLocator
         throw new ResourceNotFoundException();
     }
 
-    public function process(object|array $object, ?string $resource = null): mixed
+    public function process(object|array $object, ?string $resource = null): ?array
     {
-        if (is_object($object)) {
-            return $this->get($resource)->handle($object); // @phpstan-ignore-line
+        $res = $this->get($resource);
+
+        if (is_array($object)) {
+            return array_map(static fn ($item) => $res->toArray($item), $object);
         }
 
-        return null;
+        return $res->toArray($object);
     }
 }

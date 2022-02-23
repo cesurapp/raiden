@@ -12,13 +12,11 @@ class ApiCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        // Init Task Worker
+        // Init Resource Locator
         $resources = $container->findTaggedServiceIds('resources');
         array_walk($resources, static fn (&$val, $id) => $val = new Reference($id));
         $container
             ->register(ApiResourceLocator::class, ApiResourceLocator::class)
-            ->addArgument(ServiceLocatorTagPass::register($container, $resources))
-            ->setAutowired(true)
-            ->setPublic(true);
+            ->addArgument(ServiceLocatorTagPass::register($container, $resources)); // @phpstan-ignore-line
     }
 }

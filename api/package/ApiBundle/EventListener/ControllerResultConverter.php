@@ -3,6 +3,7 @@
 namespace Package\ApiBundle\EventListener;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Package\ApiBundle\Response\ApiResourceLocator;
 use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +16,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ControllerResultConverter implements EventSubscriberInterface
 {
-    public const PAGER_MAX = 20;
+    public function __construct(private ApiResourceLocator $resourceLocator)
+    {
+    }
 
     public function onKernelView(ViewEvent $event): void
     {
@@ -23,18 +26,18 @@ class ControllerResultConverter implements EventSubscriberInterface
         $apiResponse = $event->getControllerResult();
 
         // Paginate Query
-        if ($apiResponse->isPaginate() && $apiResponse->getQuery()) {
-            $this->{'paginate'.$apiResponse->getPaginate()->name}($event->getRequest(), $apiResponse);
+        if ($apiResponse->isPaginate()) {
+            $this->{'paginate'.$apiResponse->getPaginate()['type']}($event->getRequest(), $apiResponse);
         }
 
         // Process Api Response
         $this->processResource($apiResponse);
 
+        // Add Type
+        $apiResponse->addData('type', $apiResponse->getType()->name);
+
         // Create Response
-        $response = new JsonResponse([
-            'type' => $apiResponse->getType()->name,
-            'data' => $apiResponse->getData(),
-        ], $apiResponse->getStatus(), $apiResponse->getHeaders());
+        $response = new JsonResponse($apiResponse->getData(), $apiResponse->getStatus(), $apiResponse->getHeaders());
 
         // HTTP Cache
         if ($apiResponse->isHTTPCache()) {
@@ -49,25 +52,29 @@ class ControllerResultConverter implements EventSubscriberInterface
      */
     private function paginateOffset(Request $request, ApiResponse $apiResponse): void
     {
-        /*$result['options']['pagerMax'] ??= self::PAGER_MAX;
-        $result['options']['pagerPage'] ??= $request->query->getInt('page', 1);
+        $config = $apiResponse->getPaginate();
+        $max = $config['max'];
+        $page = $request->query->getInt('page', 1);
 
         // Paginate
-        $result['data']
-            ->setFirstResult($result['options']['pagerPage'] - 1)
-            ->setMaxResults($result['options']['pagerMax'] + 1);
-
-        $paginator = new Paginator($result['data'], $result['options']['fetchJoin'] ?? true);
+        $apiResponse->getQuery()?->setFirstResult(($page - 1) * $max)->setMaxResults($max + 1);
+        $paginator = new Paginator($apiResponse->getQuery(), $config['fetchJoin']);
         $iterator = $paginator->getIterator();
 
-        $data['data'] = (array) $iterator;
-        $data['pager'] = [
-            'max' => $result['options']['pagerMax'],
-            'prevPage' => $result['options']['pagerPage'] > 1 ? $result['options']['pagerPage'] - 1 : null,
-            'nextPage' => $iterator->count(
-            ) > $result['options']['pagerMax'] ? $result['options']['pagerPage'] + 1 : null,
-            'currentPage' => $result['options']['pagerPage'],
-        ];*/
+        $pager = [
+            'max' => $max,
+            'prev' => $page > 1 ? $page - 1 : null,
+            'next' => $iterator->count() > $max ? $page + 1 : null,
+            'current' => $page,
+        ];
+
+        if ($config['total']) {
+            $pager['total'] = $paginator->count();
+        }
+
+        // Append Pager Data
+        $apiResponse->addData('data', array_slice((array) $iterator, 0, $max));
+        $apiResponse->addData('pager', $pager);
     }
 
     /**
@@ -78,20 +85,31 @@ class ControllerResultConverter implements EventSubscriberInterface
     }
 
     /**
-     * Process Object Array Serialzie.
+     * Process Object Array Serialize.
      */
     private function processResource(ApiResponse $apiResponse): void
     {
-        /*$data['data'] ??= $result['data'];
-        if (!is_array($data['data'])) {
+        if (!$apiResponse->getResource()) {
+            $apiResponse->setData(['data' => $apiResponse->getData()]);
+
             return;
         }
 
-        array_walk_recursive($data['data'], static function ($item, $key) {
-            if (is_object($item)) {
-                dump($key, $item);
-            }
-        });*/
+        if ($apiResponse->isPaginate()) {
+            $apiResponse->addData(
+                'data',
+                $this->resourceLocator->process($apiResponse->getData()['data'], $apiResponse->getResource())
+            );
+
+            return;
+        }
+
+        $data = $apiResponse->getData();
+        if (is_object($data) || is_array($data)) {
+            $apiResponse->setData([
+                'data' => $this->resourceLocator->process($data, $apiResponse->getResource()),
+            ]);
+        }
     }
 
     public static function getSubscribedEvents(): array

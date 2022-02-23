@@ -1,10 +1,6 @@
 * Improvement Status Command
 * Server Log Merge App
 * 
-* DTO
-* ApiResponse
-* ApiCacheResponse
-* Paginator
 * Data Filters
 * Doctrine Shortcuts
 * -- Count
