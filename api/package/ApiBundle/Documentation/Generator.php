@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Documentation;
 
+use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -120,7 +121,7 @@ class Generator
         $dto = new ReflectionClass($requestClass['apiDto']);
 
         // Extract DTO
-        if ($dto->isSubclassOf(AbstractApiDtoRequest::class)) {
+        if ($dto->isSubclassOf(AbstractApiDto::class)) {
             return $this->extractDTOClass($dto);
         }
 

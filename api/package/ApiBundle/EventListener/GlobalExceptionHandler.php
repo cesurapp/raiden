@@ -4,6 +4,7 @@ namespace Package\ApiBundle\EventListener;
 
 use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -38,7 +39,7 @@ class GlobalExceptionHandler implements EventSubscriberInterface
         }
 
         // Json Response
-        $event->setResponse(ApiResponse::create($message, $message['code']));
+        $event->setResponse(new JsonResponse($message, $message['code']));
     }
 
     public static function getSubscribedEvents(): array
