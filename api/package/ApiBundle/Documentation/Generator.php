@@ -3,10 +3,11 @@
 namespace Package\ApiBundle\Documentation;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
-use ReflectionAttribute;
+use Package\ApiBundle\Exception\ValidationException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
@@ -15,11 +16,17 @@ use Twig\Environment;
 
 class Generator
 {
+    protected array $defaultDoc = [];
+
     public function __construct(
         private RouterInterface $router,
         private ValidatorInterface $validator,
-        private Environment $twig
+        private Environment $twig,
+        string $defaultDocFile = null
     ) {
+        if ($defaultDocFile) {
+            $this->defaultDoc = require $defaultDocFile;
+        }
     }
 
     /**
@@ -29,6 +36,7 @@ class Generator
     {
         return $this->twig->render('@Api/documentation.html.twig', [
             'data' => $this->extractData(true),
+            'statusText' => Response::$statusTexts,
         ]);
     }
 
@@ -46,16 +54,25 @@ class Generator
 
             // Append Route
             if (!isset($apiDoc[$path])) {
-                $docAttr = isset($docAttribute[0]) ? $docAttribute[0]->getArguments() : null;
+                $docAttr = isset($docAttribute[0]) ? $docAttribute[0]->getArguments() : [];
+                $docAttr = array_replace_recursive($this->defaultDoc, $docAttr);
+
+                // Hidden
+                if (!empty($docAttr['hidden'])) {
+                    continue;
+                }
 
                 $apiDoc[$path] = [
-                    // Description
+                    // Options
                     'desc' => $docAttr['desc'] ?? '',
                     'hidden' => $docAttr['hidden'] ?? false,
+                    'paginate' => $docAttr['paginate'] ?? false,
+                    'paginateCursor' => $docAttr['paginateCursor'] ?? false,
+                    'requireAuth' => $docAttr['requireAuth'] ?? true,
 
                     // Router
                     'endpointMethod' => $route['router']->getMethods() ?: ['GET', 'POST'],
-                    'endpointAttr' => $route['router']->getMethods() ?: ['GET', 'POST'],
+                    'endpointAttr' => $this->extractEndpointAttr($route['router'], $method, $docAttr),
 
                     // Controller
                     'controller' => $route['controller'].'::'.$route['method'],
@@ -64,11 +81,11 @@ class Generator
                     'controllerResponse' => $this->extractControllerResponse($docAttr, $method),
                     'controllerResponseType' => $this->extractControllerResponseType($docAttr, $method),
 
-                    'query' => array_merge($this->argumentResolver($route['router'], $method), $docAttr['query'] ?? []),
-                    'body' => $docAttr ? array_merge(
-                        $this->extractDto($docAttribute[0]),
-                        $docAttr['body'] ?? []
-                    ) : null,
+                    // DTO
+                    'get' => $this->extractGetParameters($docAttr),
+                    'post' => $this->extractPostParameters($docAttr),
+                    'header' => $this->extractHeaderParameters($docAttr),
+                    'exception' => $this->extractExceptions($docAttr),
                 ];
             }
         }
@@ -89,84 +106,9 @@ class Generator
     }
 
     /**
-     * Extract Controller Response Structure.
+     * Extract Route Attributes.
      */
-    public function extractControllerResponse(array $docAttr, ReflectionMethod $method): array
-    {
-        return $docAttr['response'] ?? [];
-    }
-
-    /**
-     * Extract Controller Response Type.
-     */
-    public function extractControllerResponseType(array $docAttr, ReflectionMethod $method): string
-    {
-        if (!$method->getReturnType()) {
-            return 'Mixed';
-        }
-
-        return $this->baseClass($method->getReturnType());
-    }
-
-    /**
-     * Extract DTO Parameters.
-     */
-    private function extractDto(ReflectionAttribute $attribute): array
-    {
-        $requestClass = $attribute->getArguments();
-        if (!isset($requestClass['apiDto'])) {
-            return [];
-        }
-
-        $dto = new ReflectionClass($requestClass['apiDto']);
-
-        // Extract DTO
-        if ($dto->isSubclassOf(AbstractApiDto::class)) {
-            return $this->extractDTOClass($dto);
-        }
-
-        // Extract Entity DTO
-        return $this->extractEntityClass($dto);
-    }
-
-    /**
-     * Extract Request Validation Parameters using AbstractApiDto.
-     */
-    private function extractDTOClass(ReflectionClass $class): array
-    {
-        $parameters = [];
-        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $parameters[$property->getName()] = implode(
-                ' | ',
-                array_map(function ($attr) {
-                    $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
-
-                    return $this->baseClass($attr->getName()).$args;
-                }, $property->getAttributes())
-            );
-        }
-
-        return $parameters;
-    }
-
-    /**
-     * Extract Request Validation Parameters using Entity Object.
-     */
-    private function extractEntityClass(ReflectionClass $class): array
-    {
-        $parameters = [];
-
-        /*** @var PropertyMetadataInterface $metaData */
-        if (!empty($this->validator->getMetadataFor($class)->properties)) {
-            foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
-                $parameters[$name] = array_map(fn ($class) => $this->baseClass($class), $metaData->getConstraints());
-            }
-        }
-
-        return $parameters;
-    }
-
-    private function argumentResolver(Route $route, ReflectionMethod $method): array
+    public function extractEndpointAttr(Route $route, ReflectionMethod $method, array $docAttr): array|null
     {
         $routerVars = $route->compile()->getVariables();
         if (!count($routerVars)) {
@@ -192,8 +134,7 @@ class Generator
                     return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
                 }
 
-                /* @phpstan-ignore-next-line */
-                return $check($p->getType()->getName());
+                return $check($p->getType()->getName()); // @phpstan-ignore-line
             })
         );
 
@@ -217,6 +158,192 @@ class Generator
         }
 
         return $matched;
+    }
+
+    /**
+     * Extract Controller Response Type.
+     */
+    public function extractControllerResponseType(array $docAttr, ReflectionMethod $method): string
+    {
+        if (!$method->getReturnType()) {
+            return 'Mixed';
+        }
+
+        return $this->baseClass($method->getReturnType()->getName()); // @phpstan-ignore-line
+    }
+
+    /**
+     * Extract Controller Response Structure.
+     */
+    public function extractControllerResponse(array $docAttr, ReflectionMethod $method): array
+    {
+        $response = [];
+
+        // Extract Resource
+        if (!empty($docAttr['resource'])) {
+            $resource = new ReflectionClass($docAttr['resource']);
+            $apiResource = $resource->getMethod('toArray')->getAttributes(ApiResource::class);
+            if (count($apiResource) > 0) {
+                $response[200] = $apiResource[0]->getArguments()['data'];
+            }
+        }
+
+        // Api Response
+        if ('ApiResponse' === $this->extractControllerResponseType($docAttr, $method)) {
+            $response[200] = [
+                'type' => 'ApiResult',
+                'data' => array_replace_recursive($response[200] ?? [], $docAttr['success'][200] ?? []),
+            ];
+
+            if (!empty($docAttr['paginate'])) {
+                $response[200]['pager'] = [
+                    'max' => 'int',
+                    'prev' => 'int|null',
+                    'next' => 'int|null',
+                    'current' => 'int',
+                    'total' => 'int|null',
+                ];
+
+                if (!empty($docAttr['paginateCursor'])) {
+                    // todo Paginate Cursor
+                }
+            }
+        }
+
+        return array_replace_recursive($response, $docAttr['success'] ?? []);
+    }
+
+    /**
+     * Generate Get|Query Parameters.
+     */
+    public function extractGetParameters(array $docAttr): array
+    {
+        $attr = [];
+
+        // Append Paginator Query
+        if (!empty($docAttr['paginate'])) {
+            if (empty($docAttr['paginateCursor'])) {
+                $attr['page'] = 'int';
+            } else {
+                $attr['next'] = 'string';
+            }
+        }
+
+        return array_replace_recursive($attr, $docAttr['get'] ?? []);
+    }
+
+    /**
+     * Generate Post|DTO Parameters.
+     */
+    public function extractPostParameters(array $docAttr): array
+    {
+        $attr = [];
+
+        // Extract DTO Parameters
+        if (isset($docAttr['dto'])) {
+            $dto = new ReflectionClass($docAttr['dto']);
+            if ($dto->isSubclassOf(AbstractApiDto::class)) {
+                $attr = array_replace_recursive($attr, $this->extractDTOClass($dto));
+            }
+        }
+
+        return array_replace_recursive($attr, $docAttr['post'] ?? []);
+    }
+
+    /**
+     * Generate Header Parameters.
+     */
+    public function extractHeaderParameters(array $docAttr): array
+    {
+        $attr = [];
+
+        // Append Auth Header
+        if (!empty($docAttr['requireAuth'])) {
+            $attr = $docAttr['authHeader'] ?? [];
+        }
+
+        return array_replace_recursive($attr, $docAttr['header'] ?? []);
+    }
+
+    /**
+     * Generate Exceptions.
+     */
+    public function extractExceptions(array $docAttr): array
+    {
+        $attr = [];
+
+        // Extract Resource Validation Exception
+        if (!empty($docAttr['resource'])) {
+            $docAttr['exception'] = array_merge_recursive($docAttr['exception'] ?? [], [ValidationException::class]);
+        }
+
+        if (!empty($docAttr['exception'])) {
+            foreach ($docAttr['exception'] as $exceptionClass => $customException) {
+                $exceptionClass = !is_array($customException) ? $customException : $exceptionClass;
+
+                if (class_exists($exceptionClass)) {
+                    /** @var \Exception $exception */
+                    $exception = new $exceptionClass();
+
+                    $e = [
+                        'type' => $this->baseClass($exceptionClass),
+                        'code' => $exception->getCode(),
+                        'message' => $exception->getMessage(),
+                    ];
+
+                    if (method_exists($exception, 'getErrors')) {
+                        $e['errors'] = [];
+                    }
+
+                    if (is_array($customException)) {
+                        $e = array_replace($e, $customException);
+                    }
+
+                    $attr[$this->baseClass($exceptionClass)] = $e;
+                } else {
+                    $attr[$exceptionClass] = $customException;
+                }
+            }
+        }
+
+        return $attr;
+    }
+
+    /**
+     * Extract Request Validation Parameters using AbstractApiDto.
+     */
+    private function extractDTOClass(ReflectionClass $class): array
+    {
+        $parameters = [];
+        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            $parameters[$property->getName()] = implode(
+                ' | ',
+                array_map(function ($attr) {
+                    $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
+
+                    return $this->baseClass($attr->getName()).$args;
+                }, $property->getAttributes())
+            );
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Extract Request Validation Parameters using Entity Object.
+     */
+    private function extractDTOEntity(ReflectionClass $class): array
+    {
+        $parameters = [];
+
+        /*** @var PropertyMetadataInterface $metaData */
+        if (!empty($this->validator->getMetadataFor($class)->properties)) {
+            foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
+                $parameters[$name] = array_map(fn ($class) => $this->baseClass($class), $metaData->getConstraints());
+            }
+        }
+
+        return $parameters;
     }
 
     /**
@@ -247,7 +374,7 @@ class Generator
     /**
      * Extract Class Name.
      */
-    public function baseClass(string|object|null $class): string|null
+    private function baseClass(string|object|null $class): string|null
     {
         return $class ? basename(str_replace('\\', '/', is_object($class) ? get_class($class) : $class)) : null;
     }

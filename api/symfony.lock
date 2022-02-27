@@ -1,13 +1,4 @@
 {
-    "composer/pcre": {
-        "version": "1.0.1"
-    },
-    "composer/semver": {
-        "version": "3.2.7"
-    },
-    "composer/xdebug-handler": {
-        "version": "2.0.2"
-    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -75,18 +66,6 @@
     "dragonmantank/cron-expression": {
         "version": "v3.3.1"
     },
-    "friendsofphp/php-cs-fixer": {
-        "version": "3.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.0",
-            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
-        },
-        "files": [
-            ".php-cs-fixer.dist.php"
-        ]
-    },
     "myclabs/deep-copy": {
         "version": "1.10.2"
     },
@@ -94,16 +73,13 @@
         "version": "v4.13.1"
     },
     "openswoole/ide-helper": {
-        "version": "4.10.0"
+        "version": "4.10.1"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
     },
     "phar-io/version": {
         "version": "3.1.0"
-    },
-    "php-cs-fixer/diff": {
-        "version": "v2.0.2"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -318,9 +294,6 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
-    "symfony/options-resolver": {
-        "version": "v6.0.3"
-    },
     "symfony/password-hasher": {
         "version": "v6.0.0-BETA1"
     },
@@ -396,9 +369,6 @@
     },
     "symfony/service-contracts": {
         "version": "v2.4.0"
-    },
-    "symfony/stopwatch": {
-        "version": "v6.0.3"
     },
     "symfony/string": {
         "version": "v6.0.0-BETA1"

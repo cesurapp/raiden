@@ -29,4 +29,9 @@ class ValidationException extends AbstractApiException
 
         return $fields;
     }
+
+    public function getErrors(): ?array
+    {
+        return $this->errors;
+    }
 }

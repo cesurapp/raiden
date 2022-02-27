@@ -16,9 +16,4 @@ abstract class AbstractApiException extends \Exception
     ) {
         parent::__construct($message, $code);
     }
-
-    public function getErrors(): ?array
-    {
-        return $this->errors;
-    }
 }

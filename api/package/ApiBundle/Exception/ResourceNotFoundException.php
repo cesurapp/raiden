@@ -12,7 +12,7 @@ class ResourceNotFoundException extends AbstractApiException
 {
     public function __construct(
         string $message = 'Api Resource Not Found!',
-        int $code = 0,
+        int $code = 424,
         ConstraintViolationListInterface|array|null $errors = null
     ) {
         parent::__construct($message, $code, $errors);

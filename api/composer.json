@@ -24,7 +24,7 @@
     "symfony/yaml": "6.0.*"
   },
   "require-dev": {
-    "openswoole/ide-helper": "@dev",
+    "openswoole/ide-helper": "^4.10",
     "phpunit/phpunit": "^9.5",
     "symfony/browser-kit": "6.0.*",
     "symfony/debug-bundle": "6.0.*",

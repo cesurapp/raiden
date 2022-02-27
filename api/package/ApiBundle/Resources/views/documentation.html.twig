@@ -10,17 +10,32 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <script>
+        window.addEventListener('DOMContentLoaded', function (){
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        })
+    </script>
     <!-- Custom Style -->
     <style>
+        * {
+            font-size: .95rem;
+        }
         .btn:focus,
         .accordion-button:focus {
             outline: none;
             box-shadow: none;
         }
-
+        .px-3{
+            padding-left: .75rem !important;
+            padding-right: .75rem !important;
+        }
         .accordion-button {
-            padding: .5rem .75rem;
+            padding: .4rem .6rem;
         }
 
         .accordion-button::after{
@@ -55,8 +70,8 @@
         }
 
         .route .method {
-            border-radius: .25rem;
-            padding: .25rem .5rem;
+            border-radius: .2rem;
+            padding: .2rem .4rem;
             font-weight: 500;
             color: #FFF;
         }
@@ -77,7 +92,7 @@
         }
         .route .uri {
             font-weight: 500;
-            padding: .25rem .5rem;
+            padding: .2rem .4rem;
             border: 1px solid rgba(0,0,0,.1);
             border-radius: .25rem;
             color: rgba(0,0,0,.75);
@@ -98,11 +113,9 @@
         Header
     #}
     <div class="d-flex align-items-center p-3 my-3 text-white bg-primary rounded shadow-sm">
-        <svg class="me-3" width="48" height="38" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-            <path fill="currentColor" d="M278.9 511.5l-61-17.7c-6.4-1.8-10-8.5-8.2-14.9L346.2 8.7c1.8-6.4 8.5-10 14.9-8.2l61 17.7c6.4 1.8 10 8.5 8.2 14.9L293.8 503.3c-1.9 6.4-8.5 10.1-14.9 8.2zm-114-112.2l43.5-46.4c4.6-4.9 4.3-12.7-.8-17.2L117 256l90.6-79.7c5.1-4.5 5.5-12.3.8-17.2l-43.5-46.4c-4.5-4.8-12.1-5.1-17-.5L3.8 247.2c-5.1 4.7-5.1 12.8 0 17.5l144.1 135.1c4.9 4.6 12.5 4.4 17-.5zm327.2.6l144.1-135.1c5.1-4.7 5.1-12.8 0-17.5L492.1 112.1c-4.8-4.5-12.4-4.3-17 .5L431.6 159c-4.6 4.9-4.3 12.7.8 17.2L523 256l-90.6 79.7c-5.1 4.5-5.5 12.3-.8 17.2l43.5 46.4c4.5 4.9 12.1 5.1 17 .6z"></path>
-        </svg>
-        <div>
-            <h1 class="h5 mb-0 text-white lh-1">Developer API Documentation</h1>
+        <i class="fa-solid fa-book fa-2xl"></i>
+        <div class="ms-3">
+            <h1 class="h5 mb-1 text-white lh-1">Developer API Documentation</h1>
             <small>Last Update: 05.01.2022</small>
         </div>
         <div class="ms-auto">
@@ -132,53 +145,120 @@
                     <div class="accordion shadow-sm rounded mb-3">
                         {% for routeUri, route in routes %}
                             <div class="accordion-item">
-                                <h3 class="accordion-header">
+                                <h3 class="accordion-header small">
                                     <button class="accordion-button route collapsed" data-bs-toggle="collapse" data-bs-target="#panel{{ groupName ~ loop.index }}">
-                                        {% for method in route.method %}
+                                        {% for method in route.endpointMethod %}
                                             <span class="method {{ method|lower }}">{{ method }}</span>
                                         {% endfor %}
+                                        {% if route.requireAuth %}
+                                            <a class="method auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
+                                        {% endif %}
                                         <span class="uri">{{ routeUri }}</span>
-                                        <span class="desc">{{ route.description }}</span>
-                                        <span class="ms-auto">{{ route.responseType }}</span>
+                                        <span class="desc">{{ route.desc }}</span>
+                                        <span class="ms-auto">{{ route.controllerResponseType }}</span>
                                     </button>
                                 </h3>
 
                                 <div id="panel{{ groupName ~ loop.index }}" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         {#Controller#}
-                                        <p class="alert rounded-0 alert-warning"><b>Controller: </b> <a href="phpstorm://open?file={{ route.filePath }}&line={{ route.fileLine }}">{{ route.controller }}</a></p>
+                                        <p class="alert bg-light"><b>Controller: </b> <a href="phpstorm://open?file={{ route.controllerPath }}&line={{ route.controllerLine }}">{{ route.controller }}</a></p>
 
-                                        {#Query#}
-                                        <div class="p-2 px-3 alert-info">
-                                            <div class="d-flex fw-bold mb-2">Query Attribute/Parameter <span class="ms-auto">GET</span></div>
-                                            {% for name, type in route.query %}
-                                                <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span><code>{{ type }}</code></p>
-                                            {% else %}
-                                                <span class="text-muted">No parameters found!</span>
-                                            {% endfor %}
-                                        </div>
-
-                                        {#Body#}
-                                        {% if 'POST' in route.method or 'PUT' in route.method or 'PATCH' in route.method %}
-                                            <div class="p-2 px-3 alert-info">
-                                                <div class="d-flex fw-bold mb-2">Body Parameters <span class="ms-auto">POST/PUT/PATCH</span></div>
-                                                {% for name, type in route.query %}
+                                        {#Attributes#}
+                                        {% if route.endpointAttr is not empty %}
+                                            <div class="mt-3">
+                                                <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info">
+                                                    <i class="fa-solid fa-code me-2"></i>
+                                                    Route Attributes
+                                                </div>
+                                                {% for name, type in route.endpointAttr %}
                                                     <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span><code>{{ type }}</code></p>
-                                                {% else %}
-                                                    <span class="text-muted">No parameters found!</span>
                                                 {% endfor %}
                                             </div>
                                         {% endif %}
 
+                                        {#Header#}
+                                        {% if route.header is not empty %}
+                                            <div class="mt-3">
+                                                <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info">
+                                                    <i class="fa-solid fa-shield me-2"></i> Header Parameters
+                                                    <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">HEADER</span>
+                                                </div>
+                                                {% for name, type in route.header %}
+                                                    <p class="mb-0">
+                                                        <span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span>
+                                                        <code>{{ type }}</code>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+
+                                        {#Query#}
+                                        {% if route.get is not empty %}
+                                            <div class="mt-3">
+                                                <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info">
+                                                    <i class="fa-solid fa-filter me-2"></i> Query Parameters
+                                                    <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">GET</span>
+                                                </div>
+                                                {% for name, type in route.get %}
+                                                    <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span><code>{{ type }}</code></p>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+
+                                        {#Body#}
+                                        {% if 'POST' in route.endpointMethod or 'PUT' in route.endpointMethod or 'PATCH' in route.endpointMethod %}
+                                            {% if route.post is not empty %}
+                                                <div class="mt-3">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info">
+                                                        <i class="fa-solid fa-database me-2"></i> Body Parameters
+                                                        <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">{{ route.endpointMethod|filter(v => v != 'GET')|join('|') }}</span>
+                                                    </div>
+                                                    {% for name, type in route.post %}
+                                                        <div class="mb-0 d-flex">
+                                                            <span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span>
+                                                            {% if type is iterable %}
+                                                                <code><pre class="mb-0">{{ type|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></code>
+                                                            {% else %}
+                                                                <code>{{ type }}</code>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+
                                         {# Response #}
-                                        <div class="p-2 px-3 alert-success">
-                                            <div class="d-flex fw-bold mb-2">Response (Sample) <span class="ms-auto">{{ route.responseType }}</span></div>
-                                            {% for name, type in route.response %}
-                                                <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span><code>{{ type }}</code></p>
-                                            {% else %}
-                                                <span class="text-muted">No parameters found!</span>
-                                            {% endfor %}
-                                        </div>
+                                        {% if route.controllerResponse is not empty %}
+                                            <div class="mt-3">
+                                                <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success">
+                                                    <i class="fa-solid fa-reply me-2"></i> Response
+                                                    <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">{{ route.controllerResponseType == 'ApiResponse' ? 'JSON' : route.controllerResponseType }}</span>
+                                                </div>
+                                                {% for code, response in route.controllerResponse %}
+                                                    <div class="mb-0 d-flex">
+                                                        <span class="d-inline-block" style="min-width: 30%;">{{ statusText[code] }} {{ code }}:</span>
+                                                        <code><pre class="mb-0">{{ response|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></code>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+
+                                        {# Exception Response #}
+                                        {% if route.exception is not empty %}
+                                            <div class="mt-3">
+                                                <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success">
+                                                    <i class="fa-solid fa-bug me-2"></i> Exception Response
+                                                    <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">JSON</span>
+                                                </div>
+                                                {% for type, response in route.exception %}
+                                                    <div class="mb-0 d-flex">
+                                                        <span class="d-inline-block" style="min-width: 30%;">{{ type }} ({{ response.code }}):</span>
+                                                        <code><pre class="mb-0">{{ response|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre></code>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

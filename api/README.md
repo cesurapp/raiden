@@ -1,12 +1,12 @@
-* Improvement Status Command
-* Server Log Merge App
+* Syntax Highlight Stop App Fix
+* Console Debug Fix CLI DUMP
 * 
 * Data Filters
 * Doctrine Shortcuts
 * -- Count
 * -- 
 * -- 
-* Gitlab CI
+* Github CI Test
 
 * DataTable
 * -- Columns & Filter System
@@ -15,7 +15,6 @@
 * Core -> JWT Auth
 
 ## Requirement
-* pgSql 14+
 * Composer 2+
 * PHP 8.1+
   * Swoole 4.9+ (`pecl install openswoole`)

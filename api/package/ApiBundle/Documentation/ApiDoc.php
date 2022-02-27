@@ -11,11 +11,16 @@ final class ApiDoc
     public function __construct(
         protected string $desc = '',
         protected string $dto = '',
-        protected array $query = [],
+        protected array $get = [],
         protected array $post = [],
-        protected array $rSuccess = [],
-        protected array $rException = [],
-        protected bool $hidden = false
+        protected array $header = [],
+        protected array $success = [],
+        protected array $exception = [],
+        protected string $resource = '',
+        protected bool $hidden = false,
+        protected bool $paginate = false,
+        protected bool $paginateCursor = false,
+        protected bool $requireAuth = false
     ) {
     }
 }
