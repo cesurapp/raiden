@@ -112,6 +112,7 @@
       <path value="$PROJECT_DIR$/api/vendor/dragonmantank/cron-expression" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/debug-bundle" />
       <path value="$PROJECT_DIR$/api/vendor/openswoole/ide-helper" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/stopwatch" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

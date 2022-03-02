@@ -9,6 +9,7 @@ namespace Package\ApiBundle\Documentation;
 final class ApiDoc
 {
     public function __construct(
+        protected string $group = '',
         protected string $desc = '',
         protected string $dto = '',
         protected array $get = [],

@@ -370,6 +370,9 @@
     "symfony/service-contracts": {
         "version": "v2.4.0"
     },
+    "symfony/stopwatch": {
+        "version": "v6.0.3"
+    },
     "symfony/string": {
         "version": "v6.0.0-BETA1"
     },

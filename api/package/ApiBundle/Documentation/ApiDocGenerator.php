@@ -7,6 +7,7 @@ use Package\ApiBundle\Exception\ValidationException;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
@@ -14,7 +15,7 @@ use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 
-class Generator
+class ApiDocGenerator
 {
     protected array $defaultDoc = [];
 
@@ -22,21 +23,24 @@ class Generator
         private RouterInterface $router,
         private ValidatorInterface $validator,
         private Environment $twig,
-        string $defaultDocFile = null
+        protected ParameterBagInterface $bag
     ) {
-        if ($defaultDocFile) {
-            $this->defaultDoc = require $defaultDocFile;
+        if (file_exists($bag->get('apidoc_global_config'))) {
+            $config = require $bag->get('apidoc_global_config');
+            $this->defaultDoc = $config();
         }
     }
 
     /**
      * Render Documentation.
      */
-    public function render(): string
+    public function render(bool $devMode = true, array $customData = []): string
     {
         return $this->twig->render('@Api/documentation.html.twig', [
             'data' => $this->extractData(true),
             'statusText' => Response::$statusTexts,
+            'devMode' => $devMode,
+            'customData' => $customData
         ]);
     }
 
@@ -64,6 +68,7 @@ class Generator
 
                 $apiDoc[$path] = [
                     // Options
+                    'group' => $docAttr['group'] ?? '',
                     'desc' => $docAttr['desc'] ?? '',
                     'hidden' => $docAttr['hidden'] ?? false,
                     'paginate' => $docAttr['paginate'] ?? false,
@@ -95,6 +100,11 @@ class Generator
         if ($grouped) {
             $newDoc = [];
             foreach ($apiDoc as $uri => $doc) {
+                if ($doc['group']) {
+                    $newDoc[$doc['group']][$uri] = $doc;
+                    continue;
+                }
+
                 $first = explode('/', $uri)[1];
                 $newDoc[ucfirst($first)][$uri] = $doc;
             }
@@ -108,7 +118,7 @@ class Generator
     /**
      * Extract Route Attributes.
      */
-    public function extractEndpointAttr(Route $route, ReflectionMethod $method, array $docAttr): array|null
+    private function extractEndpointAttr(Route $route, ReflectionMethod $method, array $docAttr): array
     {
         $routerVars = $route->compile()->getVariables();
         if (!count($routerVars)) {
@@ -163,7 +173,7 @@ class Generator
     /**
      * Extract Controller Response Type.
      */
-    public function extractControllerResponseType(array $docAttr, ReflectionMethod $method): string
+    private function extractControllerResponseType(array $docAttr, ReflectionMethod $method): string
     {
         if (!$method->getReturnType()) {
             return 'Mixed';
@@ -175,7 +185,7 @@ class Generator
     /**
      * Extract Controller Response Structure.
      */
-    public function extractControllerResponse(array $docAttr, ReflectionMethod $method): array
+    private function extractControllerResponse(array $docAttr, ReflectionMethod $method): array
     {
         $response = [];
 
@@ -216,7 +226,7 @@ class Generator
     /**
      * Generate Get|Query Parameters.
      */
-    public function extractGetParameters(array $docAttr): array
+    private function extractGetParameters(array $docAttr): array
     {
         $attr = [];
 
@@ -235,7 +245,7 @@ class Generator
     /**
      * Generate Post|DTO Parameters.
      */
-    public function extractPostParameters(array $docAttr): array
+    private function extractPostParameters(array $docAttr): array
     {
         $attr = [];
 
@@ -253,7 +263,7 @@ class Generator
     /**
      * Generate Header Parameters.
      */
-    public function extractHeaderParameters(array $docAttr): array
+    private function extractHeaderParameters(array $docAttr): array
     {
         $attr = [];
 
@@ -268,7 +278,7 @@ class Generator
     /**
      * Generate Exceptions.
      */
-    public function extractExceptions(array $docAttr): array
+    private function extractExceptions(array $docAttr): array
     {
         $attr = [];
 

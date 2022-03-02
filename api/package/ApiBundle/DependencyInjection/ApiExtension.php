@@ -12,6 +12,9 @@ class ApiExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        // Register Configuration
+        $container->getParameterBag()->add($this->processConfiguration(new ApiConfiguration(), $configs));
+
         // Register Api Resources
         $container->registerForAutoconfiguration(ApiResourceInterface::class)
             ->addTag('resources')

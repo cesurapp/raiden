@@ -3,6 +3,7 @@
 namespace Package\ApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Package\ApiBundle\Documentation\ApiDocController;
 
 return static function (ContainerConfigurator $container) {
     // Set Autoconfigure
@@ -17,8 +18,6 @@ return static function (ContainerConfigurator $container) {
     // Argument Resolver
     $services->load('Package\\ApiBundle\\ArgumentResolver\\', '../ArgumentResolver/');
 
-    // API-DOC
-    if ('prod' !== $container->env()) {
-        $services->load('Package\\ApiBundle\\Documentation\\', '../Documentation/');
-    }
+    // ApiDoc
+    $services->set(ApiDocController::class, ApiDocController::class);
 };

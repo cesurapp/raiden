@@ -31,6 +31,7 @@
     "symfony/maker-bundle": "^1.36",
     "symfony/phpunit-bridge": "^6.0",
     "symfony/process": "6.0.*",
+    "symfony/stopwatch": "6.0.*",
     "symfony/web-profiler-bundle": "6.0.*"
   },
   "config": {
@@ -75,9 +76,13 @@
     },
     "post-install-cmd": "@auto-scripts",
     "post-update-cmd": "@auto-scripts",
-    "analyse": "bin/tool/vendor/bin/phpstan analyse",
-    "fix": "bin/tool/vendor/bin/php-cs-fixer fix",
-    "test": "bin/phpunit",
+    "analyse": "bin/tool/vendor/bin/phpstan analyse --no-progress --ansi",
+    "lint": "bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
+    "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
+    "test": "bin/phpunit --testdox --colors=always",
+    "ci": [
+      "@analyse", "@lint", "@test"
+    ],
     "install-tool": [
         "composer require --working-dir=bin/tool friendsofphp/php-cs-fixer phpstan/phpstan phpstan/phpstan-symfony"
     ]
