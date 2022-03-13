@@ -35,8 +35,8 @@ return static function (ContainerConfigurator $container) {
         ->set('logger', Logger::class)
         ->args([
             '$formatter' => null,
-            '$minLevel' => '%env(LOG_LEVEL)%',
+            '$minLevel' => '%env(APP_LOG_LEVEL)%',
             '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
-            '$stdin' => '%env(LOG_STDIN)%',
+            '$stdin' => '%env(APP_LOG_STDIN)%',
         ]);
 };

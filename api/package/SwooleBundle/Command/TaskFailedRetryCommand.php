@@ -40,14 +40,15 @@ class TaskFailedRetryCommand extends Command
 
         // Send All
         foreach ($query->toIterable() as $index => $task) {
-            $client->send('task-retry::'.json_encode([
+            $client->send('taskRetry::'.json_encode([
                     'class' => $task->getTask(),
                     'payload' => $task->getPayload(),
                 ], JSON_THROW_ON_ERROR));
+            if ('1' === $client->recv()) {
+                $this->entityManager->remove($task);
+            }
 
-            $this->entityManager->remove($task);
-            usleep(10000);
-
+            usleep(10 * 1000);
             if (0 === $index % 10) {
                 $this->entityManager->flush();
                 $this->entityManager->clear();

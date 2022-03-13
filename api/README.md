@@ -1,7 +1,3 @@
-* Swoole Shutdown Wait Queue
-* Swoole Shutdown Force
-* 
-* 
 * DataTable
 * -- Filters
 * -- Excel Export
@@ -14,11 +10,15 @@
 * 
 * Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> JWT Auth
+* Core -> Permissions
+* Core -> User Management
+* Core -> User Group Management
+* Core -> UI
 
 ## Requirement
 * Composer 2+
 * PHP 8.1+
-  * Swoole 4.9+ (`pecl install openswoole`)
+  * Swoole 4.10+ (`pecl install openswoole`)
   * Xlswriter (`pecl install xlswriter`)
   * UUID (`pecl install uuid`)
   * Opcache

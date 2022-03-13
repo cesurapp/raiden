@@ -12,7 +12,7 @@ class SwooleCacheAdapter extends AbstractAdapter implements PruneableInterface
 
     public function __construct(string $namespace = '', int $defaultLifetime = 0)
     {
-        $this->table = isset($GLOBALS['http_server']) ? $GLOBALS['http_server']->table : null;
+        $this->table = isset($GLOBALS['httpServer']) ? $GLOBALS['httpServer']->appCache : null;
         parent::__construct($namespace, $defaultLifetime);
     }
 

@@ -3,8 +3,6 @@
 namespace Package\SwooleBundle\Command;
 
 use Package\SwooleBundle\Runtime\SwooleProcess;
-use Package\SwooleBundle\Runtime\SwooleRunner;
-use Swoole\Constant;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,9 +16,9 @@ class ServerWatchCommand extends Command
 {
     protected function configure(): void
     {
-        $this->addOption('host', null, InputOption::VALUE_OPTIONAL, 'Http host', '0.0.0.0:8000');
-        $this->addOption('cron', null, InputOption::VALUE_OPTIONAL, 'Enable cron service, default disabled', false);
-        $this->addOption('task', null, InputOption::VALUE_OPTIONAL, 'Enable task service, default enabled', true);
+        $this->addOption('host', null, InputOption::VALUE_OPTIONAL, 'HTTP host 127.0.0.1:8000');
+        $this->addOption('cron', null, InputOption::VALUE_OPTIONAL, 'Enable cron service');
+        $this->addOption('task', null, InputOption::VALUE_OPTIONAL, 'Enable task service');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -30,25 +28,21 @@ class ServerWatchCommand extends Command
         $output = new SymfonyStyle($input, $output);
         $server = new SwooleProcess($output, $kernel->getProjectDir());
 
-        $server->watch(array_replace_recursive(SwooleRunner::$options, [
-            'http' => [
-                'host' => explode(':', $input->getOption('host'))[0],
-                'port' => (int) explode(':', $input->getOption('host'))[1],
-                'settings' => [
-                    Constant::OPTION_WORKER_NUM => 1,
-                    Constant::OPTION_TASK_WORKER_NUM => 1,
-                    Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_DEBUG,
-                    Constant::OPTION_DOCUMENT_ROOT => $kernel->getProjectDir().'/bin',
-                    Constant::OPTION_ENABLE_STATIC_HANDLER => true,
-                ],
-            ],
-            'app' => [
-                'env' => $kernel->getEnvironment(),
-                'watch' => 1,
-                'cron' => (int) $input->getOption('cron'),
-                'task' => (int) $input->getOption('task'),
-            ],
-        ]));
+        $options = ['app' => ['watch' => 1]];
+
+        // Init Parameters
+        if ($input->getOption('host')) {
+            $options['http']['host'] = explode(':', $input->getOption('host'))[0];
+            $options['http']['port'] = (int) explode(':', $input->getOption('host'))[1];
+        }
+        if ($input->getOption('cron')) {
+            $options['app']['cron'] = $input->getOption('cron');
+        }
+        if ($input->getOption('task')) {
+            $options['app']['task'] = $input->getOption('task');
+        }
+
+        $server->watch($options);
 
         return Command::SUCCESS;
     }

@@ -22,13 +22,13 @@ class CronListCommand extends Command
     {
         $output = new SymfonyStyle($input, $output);
 
-        if ($crons = $this->cronWorker->getAll()) {
+        if (iterator_count($this->cronWorker->getAll())) {
             $output->table(['Cron Services', 'Enable', 'Time', 'Next'], array_map(static fn (CronInterface $cron) => [
                 get_class($cron),
                 $cron::ENABLE ? 'True' : 'False',
                 $cron::TIME,
                 $cron->next->format('Y-m-d H:i:s'), // @phpstan-ignore-line
-            ], [...$crons]));
+            ], [...$this->cronWorker->getAll()]));
         } else {
             $output->warning('Cron job not found!');
         }

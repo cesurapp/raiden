@@ -3,7 +3,6 @@
 namespace Package\SwooleBundle\Task;
 
 use Package\SwooleBundle\Repository\FailedTaskRepository;
-use Package\SwooleBundle\Runtime\SwooleRunner;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
@@ -23,11 +22,9 @@ class TaskWorker
             $task($taskRequest['payload']);
 
             $this->logger->info('Success Task: '.$taskRequest['class'], $taskRequest);
-            ++SwooleRunner::$options['task']['completed'];
         } catch (\Exception $exception) {
             $this->failedTaskRepo->createTask($taskRequest, $exception);
             $this->logger->critical('Failed Task: '.$taskRequest['class'].' Exception: '.$exception->getMessage(), $taskRequest);
-            ++SwooleRunner::$options['task']['failed'];
         }
     }
 
@@ -46,7 +43,7 @@ class TaskWorker
     /**
      * Get All Tasks.
      */
-    public function getAll(): ?iterable
+    public function getAll(): \Traversable
     {
         foreach ($this->locator->getProvidedServices() as $id => $val) {
             yield $this->locator->get($id);

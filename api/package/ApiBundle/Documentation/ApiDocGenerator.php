@@ -40,7 +40,7 @@ class ApiDocGenerator
             'data' => $this->extractData(true),
             'statusText' => Response::$statusTexts,
             'devMode' => $devMode,
-            'customData' => $customData
+            'customData' => $customData,
         ]);
     }
 

@@ -28,13 +28,13 @@ class CronWorker
             go(function () use ($cron) {
                 try {
                     if ($cron::ENABLE && $cron->isDue) {
-                        $this->logger->info('Cron Job Process: '.get_class($cron));
+                        $this->logger->info('Cron Job Process: '.get_class($cron ?? ''));
                         $cron();
-                        $this->logger->info('Cron Job Finish: '.get_class($cron));
+                        $this->logger->info('Cron Job Finish: '.get_class($cron ?? ''));
                     }
                 } catch (\Exception $exception) {
                     $this->logger->error(
-                        sprintf('CRON Job Failed: %s, exception: %s', get_class($cron), $exception->getMessage())
+                        sprintf('CRON Job Failed: %s, exception: %s', get_class($cron ?? ''), $exception->getMessage())
                     );
                 }
             });
@@ -67,10 +67,7 @@ class CronWorker
         return null;
     }
 
-    /**
-     * @return iterable|CronInterface[]
-     */
-    public function getAll(): ?iterable
+    public function getAll(): \Traversable
     {
         foreach ($this->locator->getProvidedServices() as $cron => $value) {
             yield $this->get($cron);

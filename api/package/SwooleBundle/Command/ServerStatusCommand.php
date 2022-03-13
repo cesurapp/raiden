@@ -13,24 +13,31 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'server:status', description: 'Status Swoole Server')]
 class ServerStatusCommand extends Command
 {
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         /** @var ConsoleSectionOutput $section */
         $section = $output->section(); // @phpstan-ignore-line
         $output = new SymfonyStyle($input, $section);
         $client = new Client(SWOOLE_SOCK_TCP);
 
-        /* @phpstan-ignore-next-line */
+        // Load Configuration
+        $rootDir = $this->getApplication()->getKernel()->getProjectDir(); //@phpstan-ignore-line
+        $config = $rootDir.'/.server.local.php';
+        if (!file_exists($config)) {
+            $config = $rootDir.'/.server.php';
+        }
+        $options = (require $config)();
+
         while (true) {
             try {
                 if (!$client->isConnected()) {
-                    $client->connect('0.0.0.0', 9502, 1.5);
+                    $client->connect($options['tcp']['host'], $options['tcp']['port'], 1.5);
                 } else {
-                    $client->send('metrics');
+                    $client->send('getMetrics');
                     $data = json_decode($client->recv(), true, 512, JSON_THROW_ON_ERROR);
-
                     $section->clear();
                     $table = $output->createTable();
+
                     $table->setRows([
                         ['Version', $data['metrics']['version'], ''],
                         ['Environment', $data['server']['app']['env'], ''],
@@ -64,6 +71,7 @@ class ServerStatusCommand extends Command
                             'Cache Table',
                             'Current > '.$data['server']['cache_table']['current'],
                             'Total > '.$data['server']['cache_table']['size'],
+                            'Memory Size > '.round(((int) $data['server']['cache_table']['memory_size'] / (1024 * 1024)), 2).'mb',
                         ],
                         [
                             'Memory',

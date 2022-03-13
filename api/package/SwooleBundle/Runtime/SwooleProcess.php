@@ -11,11 +11,16 @@ use Symfony\Component\Process\Process as SymfonyProcess;
 
 class SwooleProcess
 {
-    public function __construct(
-        private SymfonyStyle $output,
-        private string $rootDir,
-        private string $entryPoint = '/bin/index.php',
-    ) {
+    private array $options;
+
+    public function __construct(private SymfonyStyle $output, private string $rootDir)
+    {
+        // Load Configuration
+        $config = $rootDir.'/.server.local.php';
+        if (!file_exists($config)) {
+            $config = $rootDir.'/.server.php';
+        }
+        $this->options = (require $config)();
     }
 
     /**
@@ -23,8 +28,7 @@ class SwooleProcess
      */
     public function start(string $phpBinary, array $options): bool
     {
-        $server = $this->getServer($options['tcp']['host'].':'.$options['tcp']['port']);
-        if ($server->isConnected()) {
+        if ($this->getServer()->isConnected()) {
             $this->output->warning('Swoole HTTP Server is Running');
 
             return false;
@@ -32,7 +36,7 @@ class SwooleProcess
 
         // Start
         (new Process(fn (Process $p) => $p->exec($phpBinary, [
-            $this->rootDir.$this->entryPoint,
+            $this->rootDir.$this->options['entrypoint'],
             '--config='.base64_encode(json_encode($options, JSON_THROW_ON_ERROR)),
         ])))->start();
 
@@ -50,8 +54,7 @@ class SwooleProcess
         array $watchExt = ['*.php', '*.yaml', '*.twig']
     ): void {
         // Check fswatch Plugin
-        $fsWatch = (new ExecutableFinder())->find('fswatch');
-        if (!$fsWatch) {
+        if (!$fsWatch = (new ExecutableFinder())->find('fswatch')) {
             $this->output->error('fswatch plugin not found!');
 
             return;
@@ -59,35 +62,34 @@ class SwooleProcess
 
         // Start File Watcher
         $paths = array_map(fn ($path) => $this->rootDir.$path, $watchDir);
-        $process = new SymfonyProcess([$fsWatch, ...$watchExt, '-r', '-e', '.*~', ...$paths], null, null, null, 0);
-        $process->start();
+        $watcher = new SymfonyProcess([$fsWatch, ...$watchExt, '-r', '-e', '.*~', ...$paths], null, null, null, 0);
+        $watcher->start();
 
-        // Watcher Server
+        // App Server
         $server = new SymfonyProcess([
             (new PhpExecutableFinder())->find(),
-            $this->rootDir.$this->entryPoint,
+            $this->rootDir.$this->options['entrypoint'],
             '--config='.base64_encode(json_encode($options, JSON_THROW_ON_ERROR)),
         ], null, null, null, 0);
         $server->setTty(true)->start();
 
         /* @phpstan-ignore-next-line */
         while (true) {
-            if ($output = $process->getIncrementalOutput()) {
+            if ($output = $watcher->getIncrementalOutput()) {
                 $this->output->write('Changed -> '.str_replace($this->rootDir, '', $output));
-                Process::kill($server->getPid(), 1);
                 $server->stop();
                 $server->start(null, ['watch' => random_int(100, 200)]);
             }
-            usleep(100 * 1500);
+            usleep(100 * 1000);
         }
     }
 
     /**
      * Stop Server.
      */
-    public function stop(string $host = '127.0.0.1:9502'): void
+    public function stop(): void
     {
-        $server = $this->getServer($host);
+        $server = $this->getServer();
         if (!$server->isConnected()) {
             $this->output->error('Swoole HTTP server not found!');
 
@@ -108,11 +110,15 @@ class SwooleProcess
     /**
      * Get Current Process ID.
      */
-    public function getServer(string $host): Client
+    public function getServer(): Client
     {
         $tcpClient = new Client(SWOOLE_SOCK_TCP);
         try {
-            $tcpClient->connect(explode(':', $host)[0], (int) explode(':', $host)[1], 1);
+            $tcpClient->connect(
+                $this->options['tcp']['host'],
+                $this->options['tcp']['port'],
+                1
+            );
         } catch (\Exception $exception) {
         }
 

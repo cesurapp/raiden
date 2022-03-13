@@ -21,8 +21,8 @@ class TaskListCommand extends Command
     {
         $output = new SymfonyStyle($input, $output);
 
-        if ($tasks = $this->taskWorker->getAll()) {
-            $tasks = array_map(static fn ($cron) => get_class($cron), [...$tasks]);
+        if (iterator_count($this->taskWorker->getAll())) {
+            $tasks = array_map(static fn ($cron) => get_class($cron), [...$this->taskWorker->getAll()]);
             $output->table(['Task Service'], [[...$tasks]]);
         } else {
             $output->warning('Task not found!');

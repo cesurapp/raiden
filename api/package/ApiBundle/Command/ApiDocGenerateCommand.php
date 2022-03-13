@@ -2,7 +2,6 @@
 
 namespace Package\ApiBundle\Command;
 
-use Package\ApiBundle\Documentation\ApiDocController;
 use Package\ApiBundle\Documentation\ApiDocGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

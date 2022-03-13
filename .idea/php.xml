@@ -14,14 +14,12 @@
     <include_path>
       <path value="$PROJECT_DIR$/api/vendor/psr/container" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/runtime" />
-      <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/yaml" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/string" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/service-contracts" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/flex" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/console" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-mbstring" />
-      <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-intl-grapheme" />
       <path value="$PROJECT_DIR$/api/vendor/composer" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/var-exporter" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/config" />
@@ -56,10 +54,8 @@
       <path value="$PROJECT_DIR$/api/vendor/doctrine/event-manager" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/persistence" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/annotations" />
-      <path value="$PROJECT_DIR$/api/vendor/doctrine/doctrine-bundle" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/deprecations" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/sql-formatter" />
-      <path value="$PROJECT_DIR$/api/vendor/doctrine/instantiator" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/common" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/orm" />
       <path value="$PROJECT_DIR$/api/vendor/doctrine/inflector" />
@@ -113,6 +109,10 @@
       <path value="$PROJECT_DIR$/api/vendor/symfony/debug-bundle" />
       <path value="$PROJECT_DIR$/api/vendor/openswoole/ide-helper" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/stopwatch" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-intl-grapheme" />
+      <path value="$PROJECT_DIR$/api/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/api/vendor/doctrine/doctrine-bundle" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-intl-normalizer" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
