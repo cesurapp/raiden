@@ -162,7 +162,7 @@
                                         {% if route.requireAuth %}
                                             <a class="method auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
                                         {% endif %}
-                                        <span class="uri">{{ routeUri }}</span>
+                                        <span class="uri">{{ route.path }}</span>
                                         <span class="desc">{{ route.desc }}</span>
                                         <span class="ms-auto">{{ route.controllerResponseType }}</span>
                                     </button>

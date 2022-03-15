@@ -22,7 +22,7 @@ class ApiDocController extends AbstractController
     /**
      * View Developer API Documentation.
      */
-    #[ApiDoc(desc: 'Api Documentation', requireAuth: false)]
+    #[ApiDoc(desc: 'Api Documentation', hidden: true, requireAuth: false)]
     public function index(?string $version): Response
     {
         // Disable ENV

@@ -57,7 +57,9 @@ class ApiDocGenerator
             $docAttribute = $method->getAttributes(ApiDoc::class);
 
             // Append Route
-            if (!isset($apiDoc[$path])) {
+            [$key, $path] = explode('::', $path);
+
+            if (!isset($apiDoc[$key])) {
                 $docAttr = isset($docAttribute[0]) ? $docAttribute[0]->getArguments() : [];
                 $docAttr = array_replace_recursive($this->defaultDoc, $docAttr);
 
@@ -66,7 +68,11 @@ class ApiDocGenerator
                     continue;
                 }
 
-                $apiDoc[$path] = [
+                $apiDoc[$key] = [
+                    'path' => $path,
+                    'shortController' => ucfirst(str_replace('Controller', '', $controller->getShortName())),
+                    'shortName' => lcfirst(str_replace('Controller', '', $controller->getShortName())).ucfirst($method->getShortName()),
+
                     // Options
                     'group' => $docAttr['group'] ?? '',
                     'desc' => $docAttr['desc'] ?? '',
@@ -90,23 +96,23 @@ class ApiDocGenerator
                     'get' => $this->extractGetParameters($docAttr),
                     'post' => $this->extractPostParameters($docAttr),
                     'header' => $this->extractHeaderParameters($docAttr),
-                    'exception' => $this->extractExceptions($docAttr),
+                    'exception' => $this->extractExceptions($docAttr, $route['router']->getMethods() ?: ['GET', 'POST']),
                 ];
             }
         }
 
-        ksort($apiDoc);
+        sort($apiDoc);
 
         if ($grouped) {
             $newDoc = [];
-            foreach ($apiDoc as $uri => $doc) {
+            foreach ($apiDoc as $name => $doc) {
                 if ($doc['group']) {
-                    $newDoc[$doc['group']][$uri] = $doc;
+                    $newDoc[$doc['group']][$name] = $doc;
                     continue;
                 }
 
-                $first = explode('/', $uri)[1];
-                $newDoc[ucfirst($first)][$uri] = $doc;
+                $first = explode('/', $doc['path'])[1];
+                $newDoc[ucfirst($first)][$name] = $doc;
             }
 
             return $newDoc;
@@ -278,12 +284,12 @@ class ApiDocGenerator
     /**
      * Generate Exceptions.
      */
-    private function extractExceptions(array $docAttr): array
+    private function extractExceptions(array $docAttr, array $methods): array
     {
         $attr = [];
 
         // Extract Resource Validation Exception
-        if (!empty($docAttr['resource'])) {
+        if (!empty($docAttr['resource']) && !in_array('GET', $methods, true)) {
             $docAttr['exception'] = array_merge_recursive($docAttr['exception'] ?? [], [ValidationException::class]);
         }
 
@@ -363,14 +369,14 @@ class ApiDocGenerator
     {
         $list = [];
 
-        foreach ($this->router->getRouteCollection()->all() as $router) {
+        foreach ($this->router->getRouteCollection()->all() as $index => $router) {
             if ($router->getDefault('_controller')) {
                 [$controller, $method] = explode('::', $router->getDefault('_controller'));
                 if (!class_exists($controller)) {
                     continue;
                 }
 
-                $list[$router->getPath()] = [
+                $list[$index.'::'.$router->getPath()] = [
                     'controller' => $controller,
                     'method' => $method,
                     'router' => $router,
