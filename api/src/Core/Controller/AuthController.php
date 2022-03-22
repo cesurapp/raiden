@@ -3,103 +3,70 @@
 namespace App\Core\Controller;
 
 use App\Core\Entity\UserEntity;
-use App\Core\Request\LoginRequest;
+use App\Core\Repository\UserEntityRepository;
+use App\Core\Request\Login;
+use App\Core\Resources\UserResource;
 use Package\ApiBundle\Documentation\ApiDoc;
 use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Response\ResponseTypeEnum;
-use Package\SwooleBundle\Repository\FailedTaskRepository;
-use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AuthController extends AbstractController
 {
-    /**
-     * @param Request $request
-     * @return ApiResponse
-     */
-    #[Route(path: '/', name: 'home')]
-    #[ApiDoc(desc: 'View Home Page', dto: LoginRequest::class, query: [
-        'id' => 'asdsad',
-        'name' => 'int',
-    ], rSuccess: [
-        'id' => 222,
-        'name' => 'FakOff',
+    #[Route(path: '/')]
+    #[ApiDoc(group: 'Homepage', desc: 'View Home Page', success: [
+        200 => [
+            'sdsad' => 'asdsadasas',
+        ],
     ])]
-    public function index(Request $request, FailedTaskRepository $f): ApiResponse
+    public function home(): ApiResponse
     {
-        /*for ($i = 0; $i < 100; ++$i) {
-            TaskHandler::dispatch(TestTask::class, ['deneme', 'nalet']);
-        }*/
-        //dump($GLOBALS['server']);
-        //  dump($adapter);
-
-        //$handler->dispatch('sadasd', ['asd', 1,2,3]);
-        //$logger->error('sdsadasdas');
-        //$logger->info('sdsadasdas');
-        //$logger->warning('sdsadasdas');
-        //$client = new Client(SWOOLE_SOCK_TCP);
-        //dump($client->connect('swoole://task'));
-        //$server = $request->attributes->get('_server');
-        //$server->task(['asd']);
-        //$server->task(['asd']);
-        //$server->task(['asd']);
-        //$server->task(['asd']);
-        //$server->task(['asd']);
-        //dump($server->master_pid);
-        /*go(function (){
-            Coroutine::sleep(60);
-        });*/
-        //Process::kill($server->master_pid, SIGUSR1);
-        //dump($handler->dispatch());
-
         return ApiResponse::create()
-            //->setQuery($f->createQueryBuilder('f'))
-                ->setType(ResponseTypeEnum::ApiInfo)
-            ->setData(['tamam', 'asdasdasd asdasdas'])
-            ;
+            ->setData(['tama']);
     }
 
-    #[Route(path: '/post/{id}/{nm}', name: 'show_all', requirements: ['id' => "\d+"], methods: ['GET'])]
-    #[Route(path: '/post/show/{id}/{nm}', name: 'show_post', requirements: ['id' => "\d+"], methods: ['GET'])]
-    #[Route(path: '/post/edit/{id}/{nm}', name: 'show_edit', requirements: ['id' => "\d+"], methods: ['GET'])]
-    #[ApiDoc(desc: '', query: ['page' => 'asdas', 'limit' => '10'])]
-    public function show(Request $request, ValidatorInterface $validator, int|UserEntity $id, int $a = 0): JsonResponse
+    #[Route(path: '/user', methods: ['GET'])]
+    #[ApiDoc(desc: 'User List', get: [
+        'name' => '?string',
+        'fullName' => '?string',
+        'filter' => [
+            'id' => '?int',
+            'name' => '?string',
+            'fullName' => '?string',
+        ],
+        'data' => '?array',
+        'data2' => [],
+    ], resource: UserResource::class, paginate: true)]
+    public function list(UserEntityRepository $userRepo): ApiResponse
     {
-        return ApiResponse::json(['asdsa']);
+        return ApiResponse::create()
+            ->setQuery($userRepo->createQueryBuilder('q'))
+            ->setResource(UserResource::class)
+            ->setPaginate(10, false);
     }
 
-    #[Route(path: '/test', name: 'test', methods: ['GET'])]
-    public function test(): JsonResponse
+    #[Route(path: '/user/{id}', methods: ['GET'])]
+    public function show(UserEntity|int|null $user): ApiResponse
     {
-        /* $wg = new WaitGroup();
-         $results = [];
-
-         go(static function () use ($wg, &$results) {
-             $wg->add();
-             Coroutine::sleep(2);
-             $results[] = 'a';
-             $wg->done();
-         });
-
-         go(static function () use ($wg, &$results) {
-             $wg->add();
-             Coroutine::sleep(1);
-             $results[] = 'b';
-             $wg->done();
-         });
-
-         $wg->wait();*/
-
-        return ApiResponse::json(['sds']);
+        return ApiResponse::create()
+            ->setResource(UserResource::class)
+            ->setData($user);
     }
 
-    #[Route(path: '/test2', name: 'test', methods: ['GET'])]
-    public function test2(): JsonResponse
+    #[Route(path: '/user/{id}', methods: ['PUT'])]
+    #[ApiDoc(dto: Login::class)]
+    public function edit(UserEntity $user): ApiResponse
     {
-        return ApiResponse::json(['fakoff']);
+        return ApiResponse::create()
+            ->setResource(UserResource::class)
+            ->setData($user);
+    }
+
+    #[Route(path: '/user/{id}', methods: ['DELETE'])]
+    public function delete(UserEntity $user): ApiResponse
+    {
+        return ApiResponse::create()
+            ->setResource(UserResource::class)
+            ->setData($user);
     }
 }

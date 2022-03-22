@@ -8,13 +8,11 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ApiDocController extends AbstractController
 {
     public function __construct(
         private RouterInterface $router,
-        private ValidatorInterface $validator,
         private ParameterBagInterface $bag
     ) {
     }
@@ -52,7 +50,7 @@ class ApiDocController extends AbstractController
 
         // Dev Mode
         if ('dev' === $this->getParameter('kernel.environment')) {
-            $generator = new ApiDocGenerator($this->router, $this->validator, $this->container->get('twig'), $this->bag);
+            $generator = new ApiDocGenerator($this->router, $this->container->get('twig'), $this->bag);
 
             return $response->setContent($generator->render(true, [
                 'baseUrl' => $this->bag->get('apidoc_base_url'),

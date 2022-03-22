@@ -2,17 +2,16 @@
 * -- Filters
 * -- Excel Export
 * -- Excel Import
-* -- Shortcuts
 * 
 * 
 * Github CI Test
 * 
 * 
-* Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> JWT Auth
-* Core -> Permissions
 * Core -> User Management
 * Core -> User Group Management
+* Core -> Notification {SMS, MAIL, SYSTEM }
+* Core -> Permissions
 * Core -> UI
 
 ## Requirement

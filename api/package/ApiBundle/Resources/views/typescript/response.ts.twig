@@ -1,0 +1,8 @@
+import type { AxiosResponse } from 'axios';
+
+{% for code, responseData in data['controllerResponse'] %}
+interface {{ data['shortName']|ucfirst }}Response{{ code }} {
+{{ renderQueryAttributes(responseData)|raw }}
+}
+{% endfor %}
+export type {{ data['shortName']|ucfirst }}Response = AxiosResponse<{% for code, responseData in data['controllerResponse'] %}{{ data['shortName']|ucfirst }}Response{{ code }}{% endfor %}>;

@@ -1,0 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-useless-constructor */
+
+import type { Axios } from 'axios';
+{% for groupedRoutes in data %}{% for route in groupedRoutes %}
+{% if route.controllerResponse %}
+import { {{ route.shortName|ucfirst }}Response } from './Response/{{ route.shortName|ucfirst }}Response';
+{% endif %}
+{% if route.post %}
+import { {{ route.shortName|ucfirst }}Request } from './Request/{{ route.shortName|ucfirst }}Request';
+{% endif %}
+{% if route.get %}
+import { {{ route.shortName|ucfirst }}Query } from './Query/{{ route.shortName|ucfirst }}Query';
+{% endif %}
+{% endfor %}{% endfor %}
+
+export default class Api {
+  constructor(private client: Axios) {}
+
+{% for groupedRoutes in data %}{% for route in groupedRoutes %}
+  {{ route.shortName }}({{ renderAttibutes(route) }}): Promise<{{ route.shortName|ucfirst }}Response> {
+    return this.client
+      .{{ route.endpointMethod[0]|lower }}({{ renderEndpointPath(route.endpointPath)|raw }})
+      .then((r) => r.data as {{ route.shortName|ucfirst }}Response);
+  }
+
+{% endfor %}{% endfor %}
+}

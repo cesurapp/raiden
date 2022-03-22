@@ -215,8 +215,22 @@
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">GET</span>
                                                     </div>
                                                     <div id="panelQuery{{ loop.parent.loop.index ~ loop.index }}" class="accordion-collapse collapse">
+                                                        {% macro recursiveQuery(name,type) %}
+                                                            <div class="mb-1 d-flex ">
+                                                                <span style="min-width: 20%;">{{ name }}:</span>
+                                                                {% if type is iterable %}
+                                                                    <div class="d-flex flex-column flex-fill">
+                                                                        {% for subName, subType in type %}
+                                                                            {{ _self.recursiveQuery(subName, subType) }}
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                {% else %}
+                                                                    <code>{{ type }}</code>
+                                                                {% endif %}
+                                                            </div>
+                                                        {% endmacro %}
                                                         {% for name, type in route.get %}
-                                                            <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;">{{ name }}:</span><code>{{ type }}</code></p>
+                                                            {{ _self.recursiveQuery(name, type) }}
                                                         {% endfor %}
                                                     </div>
                                                 </div>

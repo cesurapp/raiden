@@ -11,8 +11,6 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Validator\Mapping\PropertyMetadataInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Twig\Environment;
 
 class ApiDocGenerator
@@ -21,7 +19,6 @@ class ApiDocGenerator
 
     public function __construct(
         private RouterInterface $router,
-        private ValidatorInterface $validator,
         private Environment $twig,
         protected ParameterBagInterface $bag
     ) {
@@ -84,6 +81,7 @@ class ApiDocGenerator
                     // Router
                     'endpointMethod' => $route['router']->getMethods() ?: ['GET', 'POST'],
                     'endpointAttr' => $this->extractEndpointAttr($route['router'], $method, $docAttr),
+                    'endpointPath' => $route['router']->getPath(),
 
                     // Controller
                     'controller' => $route['controller'].'::'.$route['method'],
@@ -157,19 +155,38 @@ class ApiDocGenerator
         $matched = [];
         if (count($routerVars) === count($controllerArgs)) {
             foreach ($routerVars as $index => $key) {
+                $isNull = false;
+
                 if ($controllerArgs[$index]->getType() instanceof ReflectionUnionType) {
-                    $type = implode(
-                        '|',
-                        array_map(static fn ($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes())
-                    );
+                    if ($controllerArgs[$index]->getType()->allowsNull()) {
+                        $isNull = true;
+                    }
+                    $types = array_map(static fn ($p) => $p->getName(), $controllerArgs[$index]->getType()->getTypes());
                 } else {
-                    /** @phpstan-ignore-next-line */
-                    $type = $controllerArgs[$index]->getType()->getName();
+                    if ($controllerArgs[$index]->getType()->allowsNull()) {
+                        $isNull = true;
+                    }
+                    $types = [$controllerArgs[$index]->getType()->getName()]; //@phpstan-ignore-line
                 }
 
-                $matched[$key] = $this->baseClass($type).($route->getRequirement(
-                    $key
-                ) ? " ({$route->getRequirement($key)})" : '');
+                // Remove Null
+                if (in_array('null', $types, true)) {
+                    unset($types[array_search('null', $types, true)]);
+                }
+
+                $matched[$key] = implode('|', array_unique(array_map(function ($type) use ($key, $isNull) {
+                    if (class_exists($type)) {
+                        $ref = new ReflectionClass($type);
+                        if ($ref->hasProperty($key)) {
+                            return implode('|', $this->extractTypes($ref->getProperty($key)->getType(), $isNull));
+                        }
+
+                        return ($isNull ? '?' : '').'mixed';
+                    }
+
+                    return ($isNull ? '?' : '').$type;
+                }, $types)));
+                //($route->getRequirement($key) ? " ({$route->getRequirement($key)})" : '');
             }
         }
 
@@ -214,10 +231,10 @@ class ApiDocGenerator
             if (!empty($docAttr['paginate'])) {
                 $response[200]['pager'] = [
                     'max' => 'int',
-                    'prev' => 'int|null',
-                    'next' => 'int|null',
+                    'prev' => '?int',
+                    'next' => '?int',
                     'current' => 'int',
-                    'total' => 'int|null',
+                    'total' => '?int',
                 ];
 
                 if (!empty($docAttr['paginateCursor'])) {
@@ -331,35 +348,83 @@ class ApiDocGenerator
     private function extractDTOClass(ReflectionClass $class): array
     {
         $parameters = [];
-        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $parameters[$property->getName()] = implode(
-                ' | ',
-                array_map(function ($attr) {
-                    $args = $attr->getArguments() ? '('.http_build_query($attr->getArguments(), '', ', ').')' : '';
 
-                    return $this->baseClass($attr->getName()).$args;
-                }, $property->getAttributes())
-            );
+        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            $values = [];
+
+            // Extract Types
+            $types = implode('|', $this->extractTypes($property->getType()));
+            if ($types) {
+                $values[] = $types;
+            }
+
+            // Validation
+            $valids = $this->renderValidationAttributes($property->getAttributes());
+            if ($valids['validations']) {
+                //$values[] = $valids['validations'];
+            }
+
+            // Append Extra Keys
+            if ($valids['items']) {
+                //$values[] = $valids['items'];
+            }
+
+            $parameters[$property->getName()] = implode(';', $values);
         }
 
         return $parameters;
     }
 
     /**
-     * Extract Request Validation Parameters using Entity Object.
+     * @param \ReflectionAttribute[] $attributes
      */
-    private function extractDTOEntity(ReflectionClass $class): array
+    private function renderValidationAttributes(array $attributes): array
     {
-        $parameters = [];
-
-        /*** @var PropertyMetadataInterface $metaData */
-        if (!empty($this->validator->getMetadataFor($class)->properties)) {
-            foreach ($this->validator->getMetadataFor($class)->properties as $name => $metaData) {
-                $parameters[$name] = array_map(fn ($class) => $this->baseClass($class), $metaData->getConstraints());
+        $validations = implode('|', array_map(function ($attribute) {
+            // Find Constants
+            foreach ($attribute->getArguments() as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $constant) {
+                    }
+                }
             }
+
+            $args = $attribute->getArguments() ? '('.http_build_query($attribute->getArguments(), '', ', ').')' : '';
+
+            return $this->baseClass($attribute->getName()).$args;
+        }, $attributes));
+
+        return [
+            'validations' => [],
+            'items' => [],
+        ];
+    }
+
+    private function extractValidations()
+    {
+        
+    }
+
+    private function extractTypes(\ReflectionType|\ReflectionNamedType $type, bool $isNull = false): array
+    {
+        $types = [];
+
+        if ($type instanceof ReflectionUnionType) {
+            $isNull = !$isNull ? $type->allowsNull() : true;
+
+            foreach ($type->getTypes() as $item) {
+                if (class_exists($item->getName())) {
+                    $types[] = $isNull ? '?string' : 'string';
+                    $types[] = $isNull ? '?int' : 'int';
+                } else {
+                    $types[] = ($isNull ? '?' : '').$item->getName();
+                }
+            }
+        } else {
+            $types[] = ($type->allowsNull() ? '?' : '').$type->getName(); //@phpstan-ignore-line
         }
 
-        return $parameters;
+        return array_unique($types);
     }
 
     /**
