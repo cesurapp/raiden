@@ -82,9 +82,9 @@ class ApiDocTwigHelper extends AbstractExtension
                     $isNull = true;
                 }
                 if (array_is_list($value)) {
-                    $value = "[\n".implode(",\n", $r['items'])."\n".str_repeat('    ', $sub).']';
+                    $value = "[\n".implode(",\n", $r['items'])."\n".str_repeat('  ', $sub).']';
                 } else {
-                    $value = "{\n".implode(",\n", $r['items'])."\n".str_repeat('    ', $sub).'}';
+                    $value = "{\n".implode(",\n", $r['items'])."\n".str_repeat('  ', $sub).'}';
                 }
             } else {
                 $isNull = str_contains($value, '?');
