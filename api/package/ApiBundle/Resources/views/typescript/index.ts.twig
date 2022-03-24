@@ -5,13 +5,13 @@
 import type { Axios } from 'axios';
 {% for groupedRoutes in data %}{% for route in groupedRoutes %}
 {% if route.controllerResponse %}
-import { {{ route.shortName|ucfirst }}Response } from './Response/{{ route.shortName|ucfirst }}Response';
+import type { {{ route.shortName|ucfirst }}Response } from './Response/{{ route.shortName|ucfirst }}Response';
 {% endif %}
 {% if route.post %}
-import { {{ route.shortName|ucfirst }}Request } from './Request/{{ route.shortName|ucfirst }}Request';
+import type { {{ route.shortName|ucfirst }}Request } from './Request/{{ route.shortName|ucfirst }}Request';
 {% endif %}
 {% if route.get %}
-import { {{ route.shortName|ucfirst }}Query } from './Query/{{ route.shortName|ucfirst }}Query';
+import type { {{ route.shortName|ucfirst }}Query } from './Query/{{ route.shortName|ucfirst }}Query';
 {% endif %}
 {% endfor %}{% endfor %}
 
