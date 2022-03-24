@@ -6,7 +6,7 @@ use App\Core\Entity\UserEntity;
 use App\Core\Repository\UserEntityRepository;
 use App\Core\Request\Login;
 use App\Core\Resources\UserResource;
-use Package\ApiBundle\Documentation\ApiDoc;
+use Package\ApiBundle\Documentation\Api;
 use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AuthController extends AbstractController
 {
     #[Route(path: '/')]
-    #[ApiDoc(group: 'Homepage', desc: 'View Home Page', success: [
+    #[Api(group: 'Homepage', desc: 'View Home Page', success: [
         200 => [
             'sdsad' => 'asdsadasas',
         ],
@@ -26,7 +26,7 @@ class AuthController extends AbstractController
     }
 
     #[Route(path: '/user', methods: ['GET'])]
-    #[ApiDoc(desc: 'User List', get: [
+    #[Api(desc: 'User List', get: [
         'name' => '?string',
         'fullName' => '?string',
         'filter' => [
@@ -54,7 +54,7 @@ class AuthController extends AbstractController
     }
 
     #[Route(path: '/user/{id}', methods: ['PUT'])]
-    #[ApiDoc(dto: Login::class)]
+    #[Api(dto: Login::class)]
     public function edit(UserEntity $user): ApiResponse
     {
         return ApiResponse::create()

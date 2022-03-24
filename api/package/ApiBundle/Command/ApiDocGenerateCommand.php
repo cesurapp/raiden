@@ -8,6 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
 
@@ -31,10 +32,16 @@ class ApiDocGenerateCommand extends Command
     {
         // Generate
         $path = $this->bag->get('apidoc_path');
-        $generator = new ApiDocGenerator($this->router, $this->twig, $this->bag);
-        $documentation = $generator->render(false, [
-            'baseUrl' => $this->bag->get('apidoc_base_url'),
-        ]);
+        $generator = new ApiDocGenerator($this->router, $this->bag);
+        $data = $generator->extractData(true);
+        /*$documentation = $this->twig->render('@Api/documentation.html.twig', [
+            'data' => $data,
+            'statusText' => Response::$statusTexts,
+            'devMode' => false,
+            'customData' => [
+                'baseUrl' => $this->bag->get('apidoc_base_url'),
+            ],
+        ]);*/
 
         // Create Directory
         /*$path .= '/'.time();
@@ -46,7 +53,7 @@ class ApiDocGenerateCommand extends Command
         /*$file = $path.'/'.time().'.html';
         file_put_contents($file, $documentation);*/
 
-        $tsGenerator = new ApiDocTsGenerator($generator->extractData(true), $this->twig);
+        $tsGenerator = new ApiDocTsGenerator($data, $this->twig);
         $tsGenerator->generate();
 
         return Command::SUCCESS;

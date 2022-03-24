@@ -24,6 +24,5 @@ export default class Api {
       .{{ route.endpointMethod[0]|lower }}({{ renderEndpointPath(route.endpointPath)|raw }})
       .then((r) => r.data as {{ route.shortName|ucfirst }}Response);
   }
-
 {% endfor %}{% endfor %}
 }

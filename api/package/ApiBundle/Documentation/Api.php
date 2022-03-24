@@ -6,7 +6,7 @@ namespace Package\ApiBundle\Documentation;
  * Api Documentation Generator.
  */
 #[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::TARGET_METHOD)]
-final class ApiDoc
+final class Api
 {
     public function __construct(
         protected string $group = '',

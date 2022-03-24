@@ -81,7 +81,11 @@ class ApiDocTwigHelper extends AbstractExtension
                 if ($r['nullable']) {
                     $isNull = true;
                 }
-                $value = "{\n".$r['items']."\n".str_repeat('    ', $sub).'}';
+                if (array_is_list($value)) {
+                    $value = "[\n".implode(",\n", $r['items'])."\n".str_repeat('    ', $sub).']';
+                } else {
+                    $value = "{\n".implode(",\n", $r['items'])."\n".str_repeat('    ', $sub).'}';
+                }
             } else {
                 $isNull = str_contains($value, '?');
                 if (!$isNull) {
@@ -92,13 +96,17 @@ class ApiDocTwigHelper extends AbstractExtension
                 }, explode('|', explode(';', $value)[0]))));
             }
 
-            $attrs[] = str_repeat('    ', $sub).$key.($isNull ? '?: ' : ': ').$value;
+            if (is_array($attributes[$key]) && is_int($key)) {
+                $attrs[] = str_repeat('  ', $sub).$value;
+            } else {
+                $attrs[] = str_repeat('  ', $sub).$key.($isNull ? '?: ' : ': ').$value;
+            }
         }
 
         if ($parent) {
             return [
                 'nullable' => $allNull,
-                'items' => $attrs ? implode(",\n", $attrs) : null,
+                'items' => $attrs ?: null,
             ];
         }
 
@@ -110,6 +118,7 @@ class ApiDocTwigHelper extends AbstractExtension
         return match ($type) {
             'int' => 'number',
             'bool' => 'boolean',
+            'boolean' => 'boolean',
             'string' => 'string',
             'null' => 'null',
             'array' => 'Array<string|number|boolean>',

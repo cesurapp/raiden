@@ -20,7 +20,7 @@ class ApiDocController extends AbstractController
     /**
      * View Developer API Documentation.
      */
-    #[ApiDoc(desc: 'Api Documentation', hidden: true, requireAuth: false)]
+    #[Api(desc: 'Api Documentation', hidden: true, requireAuth: false)]
     public function index(?string $version): Response
     {
         // Disable ENV
@@ -50,11 +50,17 @@ class ApiDocController extends AbstractController
 
         // Dev Mode
         if ('dev' === $this->getParameter('kernel.environment')) {
-            $generator = new ApiDocGenerator($this->router, $this->container->get('twig'), $this->bag);
+            $generator = new ApiDocGenerator($this->router, $this->bag);
+            $content = $this->renderView('@Api/documentation.html.twig', [
+                'data' => $generator->extractData(true),
+                'statusText' => Response::$statusTexts,
+                'devMode' => true,
+                'customData' => [
+                    'baseUrl' => $this->bag->get('apidoc_base_url'),
+                ],
+            ]);
 
-            return $response->setContent($generator->render(true, [
-                'baseUrl' => $this->bag->get('apidoc_base_url'),
-            ]));
+            return $response->setContent($content);
         }
 
         // Latest Version

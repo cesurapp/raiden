@@ -8,10 +8,8 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionUnionType;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
-use Twig\Environment;
 
 class ApiDocGenerator
 {
@@ -19,26 +17,12 @@ class ApiDocGenerator
 
     public function __construct(
         private RouterInterface $router,
-        private Environment $twig,
         protected ParameterBagInterface $bag
     ) {
         if (file_exists($bag->get('apidoc_global_config'))) {
             $config = require $bag->get('apidoc_global_config');
             $this->defaultDoc = $config();
         }
-    }
-
-    /**
-     * Render Documentation.
-     */
-    public function render(bool $devMode = true, array $customData = []): string
-    {
-        return $this->twig->render('@Api/documentation.html.twig', [
-            'data' => $this->extractData(true),
-            'statusText' => Response::$statusTexts,
-            'devMode' => $devMode,
-            'customData' => $customData,
-        ]);
     }
 
     /**
@@ -51,7 +35,7 @@ class ApiDocGenerator
         foreach ($this->routerList() as $path => $route) {
             $controller = new ReflectionClass($route['controller']);
             $method = $controller->getMethod($route['method']);
-            $docAttribute = $method->getAttributes(ApiDoc::class);
+            $docAttribute = $method->getAttributes(Api::class);
 
             // Append Route
             [$key, $path] = explode('::', $path);
@@ -217,7 +201,8 @@ class ApiDocGenerator
             $resource = new ReflectionClass($docAttr['resource']);
             $apiResource = $resource->getMethod('toArray')->getAttributes(ApiResource::class);
             if (count($apiResource) > 0) {
-                $response[200] = $apiResource[0]->getArguments()['data'];
+                $r = $apiResource[0]->getArguments()['data'];
+                $response[200] = !empty($docAttr['paginate']) ? [$r] : $r;
             }
         }
 
@@ -355,18 +340,21 @@ class ApiDocGenerator
             // Extract Types
             $types = implode('|', $this->extractTypes($property->getType()));
             if ($types) {
-                $values[] = $types;
+                $values['types'] = $types;
+            }
+
+            // Api Resource
+            $apiResource = $property->getAttributes(ApiResource::class);
+            if (str_contains($types, 'array') && count($apiResource)) {
+                $r = $apiResource[0]->getArguments()['data'];
+                $parameters[$property->getName()] = $r;
+                continue;
             }
 
             // Validation
             $valids = $this->renderValidationAttributes($property->getAttributes());
             if ($valids['validations']) {
-                //$values[] = $valids['validations'];
-            }
-
-            // Append Extra Keys
-            if ($valids['items']) {
-                //$values[] = $valids['items'];
+                $values['validations'] = $valids['validations'];
             }
 
             $parameters[$property->getName()] = implode(';', $values);
@@ -382,10 +370,10 @@ class ApiDocGenerator
     {
         $validations = implode('|', array_map(function ($attribute) {
             // Find Constants
+            $valids = [];
             foreach ($attribute->getArguments() as $key => $value) {
                 if (is_array($value)) {
-                    foreach ($value as $constant) {
-                    }
+                    // $valids[] = $this->extractValidations($value);
                 }
             }
 
@@ -395,14 +383,9 @@ class ApiDocGenerator
         }, $attributes));
 
         return [
-            'validations' => [],
+            'validations' => $validations,
             'items' => [],
         ];
-    }
-
-    private function extractValidations()
-    {
-        
     }
 
     private function extractTypes(\ReflectionType|\ReflectionNamedType $type, bool $isNull = false): array
