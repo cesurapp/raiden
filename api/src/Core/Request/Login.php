@@ -32,9 +32,9 @@ class Login extends AbstractApiDto
             ]),
         ]),
     ])]
-    #[ApiResource(data: [
+    #[ApiResource(data: [[
         'slug' => 'string',
         'label' => 'string|int|boolean',
-    ])]
+    ]])]
     public ?array $data;
 }

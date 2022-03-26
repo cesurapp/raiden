@@ -31,30 +31,27 @@ class ApiDocGenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Generate
-        $path = $this->bag->get('apidoc_path');
         $generator = new ApiDocGenerator($this->router, $this->bag);
         $data = $generator->extractData(true);
-        /*$documentation = $this->twig->render('@Api/documentation.html.twig', [
+        $documentation = $this->twig->render('@Api/documentation.html.twig', [
             'data' => $data,
             'statusText' => Response::$statusTexts,
             'devMode' => false,
             'customData' => [
                 'baseUrl' => $this->bag->get('apidoc_base_url'),
             ],
-        ]);*/
+        ]);
 
-        // Create Directory
-        /*$path .= '/'.time();
+        // Dump Documentation to HTML
+        $path = $this->bag->get('apidoc_path').'/'.time();
         if (!mkdir($path) && !is_dir($path)) {
             throw new \RuntimeException(sprintf('Directory "%s" was not created', $path));
-        }*/
+        }
+        file_put_contents($path.'/documentation.html', $documentation);
 
-        // Write to File
-        /*$file = $path.'/'.time().'.html';
-        file_put_contents($file, $documentation);*/
-
+        // TypeScript Generator
         $tsGenerator = new ApiDocTsGenerator($data, $this->twig);
-        $tsGenerator->generate();
+        $tsGenerator->generate()->compress($path);
 
         return Command::SUCCESS;
     }

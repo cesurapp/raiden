@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Documentation;
 
+use Swoole\Process;
 use Twig\Environment;
 
 class ApiDocTsGenerator
@@ -16,7 +17,7 @@ class ApiDocTsGenerator
         $this->twig->addExtension(new ApiDocTwigHelper());
 
         // Generate Path
-        $this->path = __DIR__.'/../../../storage/apidoc/'.uniqid('', false).'/Api';
+        $this->path = sys_get_temp_dir().uniqid('', false);
         $this->pathResponse = $this->path.'/Response';
         $this->pathRequest = $this->path.'/Request';
         $this->pathQuery = $this->path.'/Query';
@@ -28,7 +29,7 @@ class ApiDocTsGenerator
         }
     }
 
-    public function generate(): string
+    public function generate(): self
     {
         foreach ($this->data as $groupName => $groupRoutes) {
             foreach ($groupRoutes as $route) {
@@ -43,7 +44,27 @@ class ApiDocTsGenerator
             'data' => $this->data,
         ]));
 
-        return '';
+        return $this;
+    }
+
+    public function compress(string $path): self
+    {
+        $cmd = new Process(function (Process $p) use ($path) {
+            $p->exec(exec('which tar'), ['-czvf', "$path/Api.tar.bz2", '-C', $this->path, '.']);
+        });
+        $cmd->start();
+
+        return $this;
+    }
+
+    public function copyFiles(string $path): self
+    {
+        $cmd = new Process(function (Process $p) use ($path) {
+            $p->exec(exec('which tar'), ['-czvf', "$path/Api.tar.bz2", '-C', $this->path, '.']);
+        });
+        $cmd->start();
+
+        return $this;
     }
 
     public function createResponse(array $route): void

@@ -370,10 +370,9 @@ class ApiDocGenerator
     {
         $validations = implode('|', array_map(function ($attribute) {
             // Find Constants
-            $valids = [];
             foreach ($attribute->getArguments() as $key => $value) {
                 if (is_array($value)) {
-                    // $valids[] = $this->extractValidations($value);
+                    continue;
                 }
             }
 
