@@ -10,12 +10,10 @@ when@dev:
     resource: '@WebProfilerBundle/Resources/config/routing/profiler.xml'
     prefix: /_profiler
 
-# ApiDoc
-api_doc:
-  path: /api-doc/{version}
-  controller: Package\ApiBundle\Documentation\ApiDocController::index
-  defaults:
-    version: null
+# Api Documentation
+thor:
+  resource: '@ApiBundle/Thor/Controller'
+  type: annotation
 
 # App Core Routing
 app_core:

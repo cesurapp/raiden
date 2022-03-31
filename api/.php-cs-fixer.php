@@ -2,7 +2,7 @@
 
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
-    ->exclude(['var', 'vendor']);
+    ->exclude(['var', 'vendor', 'package/ApiBundle/Thor/Template']);
 
 return (new PhpCsFixer\Config())
     ->setRules([

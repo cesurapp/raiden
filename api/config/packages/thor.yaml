@@ -1,0 +1,5 @@
+api:
+  storage_path: "%kernel.project_dir%/storage/thor"
+  globals: "%kernel.project_dir%/config/thor.php"
+  base_url: "%env(APP_DEFAULT_URI)%"
+  ts_extra_path: "%kernel.project_dir%/storage/thor"

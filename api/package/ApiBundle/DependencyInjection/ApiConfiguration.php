@@ -9,14 +9,15 @@ class ApiConfiguration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('api_bundle');
+        $treeBuilder = new TreeBuilder('thor');
 
+        // Thor Configuration
         $treeBuilder->getRootNode()
             ->children()
-                ->booleanNode('apidoc_prod')->defaultFalse()->end()
-                ->scalarNode('apidoc_path')->defaultValue('')->end()
-                ->scalarNode('apidoc_global_config')->defaultValue('')->end()
-                ->scalarNode('apidoc_base_url')->defaultValue('')->end()
+                ->scalarNode('storage_path')->defaultValue('')->end()
+                ->scalarNode('globals')->defaultValue('')->end()
+                ->scalarNode('base_url')->defaultValue('')->end()
+                ->scalarNode('ts_extra_path')->defaultValue('')->end()
             ->end();
 
         return $treeBuilder;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Global Api Documentation Configuration.
+ * Thor Global Api Documentation Configuration.
  */
 return static function () {
     return [
@@ -10,10 +10,11 @@ return static function () {
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer %Token%',
         ],
-        'get' => [],
-        'post' => [],
+        'query' => [],
+        'request' => [],
         'header' => [],
-        'success' => [],
-        'exception' => [],
+        'response' => [],
+        'hidden' => false,
+        'paginate' => false,
     ];
 };

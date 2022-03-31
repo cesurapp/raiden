@@ -1,7 +1,4 @@
-* DataTable
-* -- Filters
-* -- Excel Export
-* -- Excel Import
+* DTO -> UUID Not Found Exception
 * 
 * 
 * Github CI Test
@@ -13,6 +10,19 @@
 * Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> Permissions
 * Core -> UI
+* 
+* 
+* * DataTable
+* -- Filters
+* -- Excel Export
+* -- Excel Import
+* 
+* File Storage Manager (Test Wasabi)
+* Image Compressor (imagick)
+* Upload Manager
+* HttpClient Swoole Based
+* 
+* 
 
 ## Requirement
 * Composer 2+
@@ -20,6 +30,7 @@
   * Swoole 4.10+ (`pecl install openswoole`)
   * Xlswriter (`pecl install xlswriter`)
   * UUID (`pecl install uuid`)
+  * UUID (`pecl install imagick`)
   * Opcache
     * opcache.enable=1
     * opcache.enable_cli=1

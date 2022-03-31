@@ -1,26 +1,23 @@
 <?php
 
-namespace Package\ApiBundle\Documentation;
+namespace Package\ApiBundle\Thor\Attribute;
 
 /**
- * Api Documentation Generator.
+ * Thor Api Documentation Generator.
  */
 #[\Attribute(\Attribute::TARGET_FUNCTION | \Attribute::TARGET_METHOD)]
-final class Api
+final class Thor
 {
     public function __construct(
         protected string $group = '',
         protected string $desc = '',
-        protected string $dto = '',
-        protected array $get = [],
-        protected array $post = [],
+        protected array $query = [],
+        protected array $request = [],
         protected array $header = [],
-        protected array $success = [],
-        protected array $exception = [],
-        protected string $resource = '',
+        protected array $response = [],
+        protected string $dto = '',
         protected bool $hidden = false,
         protected bool $paginate = false,
-        protected bool $paginateCursor = false,
         protected bool $requireAuth = false
     ) {
     }

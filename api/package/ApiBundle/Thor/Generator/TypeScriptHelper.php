@@ -1,40 +1,15 @@
 <?php
 
-namespace Package\ApiBundle\Documentation;
+namespace Package\ApiBundle\Thor\Generator;
 
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-
-class ApiDocTwigHelper extends AbstractExtension
+class TypeScriptHelper
 {
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('ucfirst', [$this, 'ucfirst']),
-        ];
-    }
-
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('renderAttibutes', [$this, 'renderAttibutes']),
-            new TwigFunction('renderEndpointPath', [$this, 'renderEndpointPath']),
-            new TwigFunction('renderQueryAttributes', [$this, 'renderQueryAttributes']),
-        ];
-    }
-
-    public function ucfirst(string $text): string
-    {
-        return ucfirst($text);
-    }
-
-    public function renderAttibutes(array $data): string
+    public function renderAttributes(array $data): string
     {
         $attrs = [];
 
         // Attr
-        foreach ($data['endpointAttr'] as $key => $value) {
+        foreach ($data['routerAttr'] as $key => $value) {
             if (str_starts_with($value, '?')) {
                 $key .= '?';
             }
@@ -42,30 +17,46 @@ class ApiDocTwigHelper extends AbstractExtension
         }
 
         // Query
-        if ($data['get']) {
+        if ($data['query']) {
             $attrs[] = 'query?: '.ucfirst($data['shortName']).'Query';
         }
 
         // DTO/Post
-        if ($data['post']) {
+        if ($data['request']) {
             $attrs[] = 'request?: '.ucfirst($data['shortName']).'Request';
         }
+
+        usort($attrs, static function ($a, $b) {
+            if (str_contains($a, '?:') === str_contains($b, '?:')) {
+                return 0;
+            }
+
+            return str_contains($a, '?:') ? 1 : -1;
+        });
+
+        // Append Axios Configurator
+        $attrs[] = 'config: AxiosRequestConfig = {}';
 
         return implode(', ', $attrs);
     }
 
-    public function renderEndpointPath(string $path): string
+    public function renderEndpointPath(string $path, string $attributes): string
     {
-        $isVars = str_contains($path, '{');
-        if ($isVars) {
+        $newPath = '';
+
+        if (($qs = str_contains($attributes, 'query')) || str_contains($path, '{')) {
             $path = str_replace('{', '${', $path);
-            return "`$path`";
+            $qs = $qs ? '?${toQueryString(query)}' : '';
+
+            $newPath = "`{$path}{$qs}`";
+        } else {
+            $newPath = "'$path'";
         }
 
-        return "'$path'";
+        return $newPath;
     }
 
-    public function renderQueryAttributes(array $attributes, int $sub = 1, bool $parent = false): string|array|null
+    public function renderVariables(array $attributes, int $sub = 1, bool $parent = false): string|array|null
     {
         $attrs = [];
         $allNull = true;
@@ -74,7 +65,7 @@ class ApiDocTwigHelper extends AbstractExtension
             $isNull = false;
 
             if (is_array($value)) {
-                $r = $this->renderQueryAttributes($value, $sub + 1, true);
+                $r = $this->renderVariables($value, $sub + 1, true);
                 if (!$r['items']) {
                     continue;
                 }
@@ -101,6 +92,14 @@ class ApiDocTwigHelper extends AbstractExtension
             } else {
                 $attrs[] = str_repeat('  ', $sub).$key.($isNull ? '?: ' : ': ').$value;
             }
+
+            usort($attrs, static function ($a, $b) {
+                if (str_contains($a, '?:') === str_contains($b, '?:')) {
+                    return 0;
+                }
+
+                return str_contains($a, '?:') ? 1 : -1;
+            });
         }
 
         if ($parent) {

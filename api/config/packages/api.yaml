@@ -1,5 +1,0 @@
-api:
-  apidoc_prod: "%env(APP_APIDOC_PROD)%"
-  apidoc_path: "%kernel.project_dir%/storage/apidoc"
-  apidoc_global_config: "%kernel.project_dir%/config/api-doc.php"
-  apidoc_base_url: "%env(APP_DEFAULT_URI)%"

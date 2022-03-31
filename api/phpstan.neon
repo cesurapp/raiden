@@ -8,6 +8,8 @@ parameters:
     ignoreErrors:
         - '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
         - '#While loop condition is always true.#'
+    excludePaths:
+        - 'package/ApiBundle/Thor/Template/*'
 
 includes:
     - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon
