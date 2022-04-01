@@ -16,11 +16,11 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/console" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/polyfill-mbstring" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/composer" />
-      <excludeFolder url="file://$MODULE_DIR$/api/var" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/ui/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/api/bin/tool" />
+      <excludeFolder url="file://$MODULE_DIR$/api/var/log" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

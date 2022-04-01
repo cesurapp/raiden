@@ -9,7 +9,7 @@ class ApiConfiguration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('thor');
+        $treeBuilder = new TreeBuilder('api');
 
         // Thor Configuration
         $treeBuilder->getRootNode()
