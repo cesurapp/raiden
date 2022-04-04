@@ -3,10 +3,12 @@
 namespace Package\ApiBundle\ArgumentResolver;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Package\ApiBundle\Exception\UuidNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Controller Resolve Entity Object.
@@ -30,6 +32,11 @@ class EntityResolver implements ArgumentValueResolverInterface
     {
         $attrs = $request->attributes->get('_route_params');
         $key = array_key_first($attrs);
+
+        // Check ID is Uuid
+        if ('id' === strtolower($key) && !Uuid::isValid($attrs[$key])) {
+            throw new UuidNotFoundException();
+        }
 
         /* @phpstan-ignore-next-line */
         if (!$object = $this->em->getRepository($argument->getType())->findOneBy([$key => $attrs[$key]])) {

@@ -1,6 +1,3 @@
-* DTO -> UUID Not Found Exception
-* 
-* 
 * Github CI Test
 * 
 * 
@@ -17,12 +14,9 @@
 * -- Excel Export
 * -- Excel Import
 * 
-* File Storage Manager (Test Wasabi)
 * Image Compressor (imagick)
 * Upload Manager
 * HttpClient Swoole Based
-* 
-* 
 
 ## Requirement
 * Composer 2+
@@ -38,6 +32,8 @@
     * opcache.max_accelerated_files=50000
     * opcache.validate_timestamps=0 (only prod)
     * opcache.preload=../api/config/preload.php (only prod)
+    * opcache.jit_buffer_size=512M
+    * opcache.jit=tracing
 
 
 ## 1. Install

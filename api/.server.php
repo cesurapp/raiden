@@ -19,7 +19,7 @@ return static function () {
                 Constant::OPTION_WORKER_NUM => 8,
                 Constant::OPTION_TASK_WORKER_NUM => 4,
                 Constant::OPTION_ENABLE_STATIC_HANDLER => false,
-                Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_ERROR,
+                Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_WARNING,
                 Constant::OPTION_MAX_WAIT_TIME => 60,
             ],
         ],

@@ -28,7 +28,7 @@ class SwooleProcess
      */
     public function start(string $phpBinary, array $options): bool
     {
-        if ($this->getServer()->isConnected()) {
+        if ($this->getServer()?->isConnected()) {
             $this->output->warning('Swoole HTTP Server is Running');
 
             return false;
@@ -90,7 +90,7 @@ class SwooleProcess
     public function stop(): void
     {
         $server = $this->getServer();
-        if (!$server->isConnected()) {
+        if (!$server?->isConnected()) {
             $this->output->error('Swoole HTTP server not found!');
 
             return;
@@ -110,7 +110,7 @@ class SwooleProcess
     /**
      * Get Current Process ID.
      */
-    public function getServer(): Client
+    public function getServer(): ?Client
     {
         $tcpClient = new Client(SWOOLE_SOCK_TCP);
         try {
@@ -120,6 +120,7 @@ class SwooleProcess
                 1
             );
         } catch (\Exception $exception) {
+            return null;
         }
 
         return $tcpClient;
