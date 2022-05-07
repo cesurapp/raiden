@@ -2,6 +2,8 @@ doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
         #charset: UTF-8
+        options:
+            !php/const \PDO::ATTR_PERSISTENT: true
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware

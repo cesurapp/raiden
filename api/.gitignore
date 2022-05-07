@@ -16,4 +16,5 @@
 
 ###> Custom ###
 .DS_store
+storage/files
 ###< Custom ###

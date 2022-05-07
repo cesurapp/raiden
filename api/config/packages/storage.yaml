@@ -1,0 +1,19 @@
+storage:
+  default: local
+  devices:
+    local:
+      driver: local
+      root: "%kernel.project_dir%/storage/files/"
+
+    main:
+      driver: backblaze
+      root: /
+      accessKey: "00489aac55fc62a0000000003"
+      secretKey: "K004c+Raz+dT1jImNH38TrmBg1Uwz6M"
+      bucket: "main"
+      region: !php/const Package\StorageBundle\Driver\BackBlaze::US_WEST_004
+      acl: !php/const Package\StorageBundle\Driver\S3::ACL_PRIVATE
+
+when@prod:
+  storage:
+    default: main

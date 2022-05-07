@@ -21,6 +21,7 @@
       <excludeFolder url="file://$MODULE_DIR$/ui/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/api/bin/tool" />
       <excludeFolder url="file://$MODULE_DIR$/api/var/log" />
+      <excludeFolder url="file://$MODULE_DIR$/api/var/cache" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

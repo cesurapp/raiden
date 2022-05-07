@@ -25,7 +25,7 @@
     "symfony/security-bundle": "6.0.*",
     "symfony/uid": "6.0.*",
     "symfony/validator": "6.0.*",
-    "symfony/yaml": "6.0.*",
+    "symfony/yaml": "6.0.*"
   },
   "require-dev": {
     "openswoole/ide-helper": "^4.10",
@@ -84,7 +84,7 @@
     "analyse": "bin/tool/vendor/bin/phpstan analyse --no-progress --ansi",
     "lint": "bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
     "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
-    "test": "bin/phpunit --testdox --colors=always",
+    "test": "bin/phpunit",
     "ci": [
       "@analyse", "@lint", "@test"
     ],
