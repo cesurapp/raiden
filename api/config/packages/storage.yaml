@@ -1,5 +1,5 @@
 storage:
-  default: local
+  default: "%env(APP_STORAGE)%"
   devices:
     local:
       driver: local
@@ -13,7 +13,3 @@ storage:
       bucket: "main"
       region: !php/const Package\StorageBundle\Driver\BackBlaze::US_WEST_004
       acl: !php/const Package\StorageBundle\Driver\S3::ACL_PRIVATE
-
-when@prod:
-  storage:
-    default: main

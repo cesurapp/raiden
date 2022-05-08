@@ -15,11 +15,12 @@
 * -- Excel Import
 * 
 * Upload Manager (Bundle)
+* Task Coroutine Client
 
 ## Requirement
 * Composer 2+
 * PHP 8.1+
-  * Swoole 4.10+ (`pecl install openswoole`)
+  * Swoole 4.11+ (`pecl install openswoole`)
   * Xlswriter (`pecl install xlswriter`)
   * UUID (`pecl install uuid`)
   * Imagick (`pecl install imagick`)
@@ -39,7 +40,8 @@
 * ### Dev for Macos
 ```shell
 brew install fswatch
-brew install util-linux && pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
+brew install util-linux
+pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
 cp .env .env.local
 composer install-tool
 composer install

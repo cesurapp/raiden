@@ -9,14 +9,14 @@ class WasabiTest extends S3Base
 {
     protected function init(): void
     {
-        if ('wasabi' !== $_SERVER['TEST_STORAGE']) {
-            $this->markTestSkipped();
-        }
-
         $this->root = 'root';
         $key = $_SERVER['WASABI_ACCESS_KEY'] ?? '';
         $secret = $_SERVER['WASABI_SECRET'] ?? '';
         $bucket = 'phpunit-test';
+
+        if (!$key) {
+            $this->markTestSkipped();
+        }
 
         $this->object = new Wasabi($this->root, $key, $secret, $bucket, Wasabi::EU_CENTRAL_1, S3::ACL_PRIVATE);
     }

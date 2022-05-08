@@ -9,14 +9,14 @@ class DOSpacesTest extends S3Base
 {
     protected function init(): void
     {
-        if ('dospaces' !== $_SERVER['TEST_STORAGE']) {
-            $this->markTestSkipped();
-        }
-
         $this->root = '/root';
         $key = $_SERVER['DO_ACCESS_KEY'] ?? '';
         $secret = $_SERVER['DO_SECRET'] ?? '';
         $bucket = 'phpunit-test';
+
+        if (!$key) {
+            $this->markTestSkipped();
+        }
 
         $this->object = new DOSpaces($this->root, $key, $secret, $bucket, DOSpaces::NYC3, S3::ACL_PUBLIC_READ);
     }

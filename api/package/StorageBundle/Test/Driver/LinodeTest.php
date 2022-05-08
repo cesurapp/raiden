@@ -9,14 +9,14 @@ class LinodeTest extends S3Base
 {
     protected function init(): void
     {
-        if ('linode' !== $_SERVER['TEST_STORAGE']) {
-            $this->markTestSkipped();
-        }
-
         $this->root = 'root';
         $key = $_SERVER['LINODE_ACCESS_KEY'] ?? '';
         $secret = $_SERVER['LINODE_SECRET'] ?? '';
         $bucket = 'phpunit-test';
+
+        if (!$key) {
+            $this->markTestSkipped();
+        }
 
         $this->object = new Linode($this->root, $key, $secret, $bucket, Linode::EU_CENTRAL_1, S3::ACL_PRIVATE);
     }

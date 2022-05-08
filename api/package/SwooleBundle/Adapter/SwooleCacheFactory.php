@@ -10,6 +10,6 @@ class SwooleCacheFactory
 {
     public static function createAdapter(string $namespace = '', int $defaultLifetime = 0): AdapterInterface
     {
-        return $GLOBALS['app'] instanceof Application ? new ArrayAdapter() : new SwooleCacheAdapter($namespace, $defaultLifetime);
+        return isset($GLOBALS['app']) && $GLOBALS['app'] instanceof Application ? new ArrayAdapter() : new SwooleCacheAdapter($namespace, $defaultLifetime);
     }
 }

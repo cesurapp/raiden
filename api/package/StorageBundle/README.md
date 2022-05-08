@@ -32,7 +32,6 @@ __Tests__
 
 phpunit.xml.dist
 ```xml
-<server name="TEST_STORAGE" value="s3" />
 <server name="S3_ACCESS_KEY" value="KEY" />
 <server name="S3_SECRET" value="KEY" />
 ```

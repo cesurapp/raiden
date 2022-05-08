@@ -8,14 +8,14 @@ class S3Test extends S3Base
 {
     protected function init(): void
     {
-        if ('s3' !== $_SERVER['TEST_STORAGE']) {
-            $this->markTestSkipped();
-        }
-
         $this->root = '/root';
         $key = $_SERVER['S3_ACCESS_KEY'] ?? '';
         $secret = $_SERVER['S3_SECRET'] ?? '';
         $bucket = 'phpunit-test';
+
+        if (!$key) {
+            $this->markTestSkipped();
+        }
 
         $this->object = new S3($this->root, $key, $secret, $bucket, S3::AP_SOUTH_1, S3::ACL_PRIVATE);
     }

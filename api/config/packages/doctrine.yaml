@@ -1,39 +1,32 @@
 doctrine:
-    dbal:
-        url: '%env(resolve:DATABASE_URL)%'
-        #charset: UTF-8
-        options:
-            !php/const \PDO::ATTR_PERSISTENT: true
-    orm:
-        auto_generate_proxy_classes: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        mappings:
-            Core:
-                is_bundle: false
-                type: attribute
-                dir: '%kernel.project_dir%/src/Core/Entity'
-                prefix: 'App\Core\Entity'
-                alias: Core
+  dbal:
+    url: '%env(resolve:DATABASE_URL)%'
+    #charset: UTF-8
+    options:
+      !php/const \PDO::ATTR_PERSISTENT: true
+  orm:
+    auto_generate_proxy_classes: true
+    naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+    auto_mapping: true
+    mappings:
+      Core:
+        is_bundle: false
+        type: attribute
+        dir: '%kernel.project_dir%/src/Core/Entity'
+        prefix: 'App\Core\Entity'
+        alias: Core
 
 #PROD
 when@prod:
-    doctrine:
-        orm:
-            auto_generate_proxy_classes: false
-            #query_cache_driver: cache.system
-            #metadata_cache_driver: cache.system
-            #result_cache_driver: cache.app
-                #type: pool
-                #pool: doctrine.result_cache_pool
-    #framework:
-    #    cache:
-    #        pools:
-    #            doctrine.result_cache_pool:
-    #                adapter: cache.app
+  doctrine:
+    orm:
+      auto_generate_proxy_classes: false
+      metadata_cache_driver: cache.system
+      query_cache_driver: cache.system
+      result_cache_driver: cache.app
 
 #TEST
 when@test:
-    doctrine:
-        dbal:
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+  doctrine:
+    dbal:
+      dbname_suffix: '_test%env(default::TEST_TOKEN)%'
