@@ -18,13 +18,26 @@ doctrine:
 
 #PROD
 when@prod:
+  framework:
+    cache:
+      pools:
+        doctrine.system_cache_pool:
+          adapter: cache.system
+        doctrine.result_cache_pool:
+          adapter: cache.app
+
   doctrine:
     orm:
       auto_generate_proxy_classes: false
-      metadata_cache_driver: cache.system
-      query_cache_driver: cache.system
-      result_cache_driver: cache.app
-
+      metadata_cache_driver:
+        type: pool
+        pool: doctrine.system_cache_pool
+      query_cache_driver:
+        type: pool
+        pool: doctrine.system_cache_pool
+      result_cache_driver:
+        type: pool
+        pool: doctrine.result_cache_pool
 #TEST
 when@test:
   doctrine:

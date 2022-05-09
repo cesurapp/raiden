@@ -89,7 +89,7 @@
       "@analyse", "@lint", "@test"
     ],
     "install-tool": [
-        "composer require --working-dir=bin/tool friendsofphp/php-cs-fixer phpstan/phpstan phpstan/phpstan-symfony"
+        "composer install --working-dir=bin/tool"
     ]
   },
   "conflict": {
