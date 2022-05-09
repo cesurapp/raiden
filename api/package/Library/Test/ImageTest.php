@@ -10,7 +10,6 @@ class ImageTest extends WebTestCase
     public function testResize(): void
     {
         $imageRoot = __DIR__.'/../../StorageBundle/Test/resources/disk-a/kitten-1.jpg';
-        $fileSize = filesize($imageRoot);
 
         $image = new Image(file_get_contents($imageRoot));
         $image->resize(100, 100);

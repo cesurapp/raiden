@@ -3,12 +3,12 @@
 namespace App\Core\Resources;
 
 use App\Core\Entity\UserEntity;
-use Package\ApiBundle\Documentation\ApiResource;
 use Package\ApiBundle\Response\ApiResourceInterface;
+use Package\ApiBundle\Thor\Attribute\ThorResource;
 
 class UserResource implements ApiResourceInterface
 {
-    #[ApiResource(data: [
+    #[ThorResource(data: [
         'id' => '?string',
         'name' => '?string',
         'data' => [

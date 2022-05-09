@@ -3,30 +3,29 @@
 namespace App\Core\Controller;
 
 use App\Core\Entity\UserEntity;
-use App\Core\Repository\UserEntityRepository;
 use App\Core\Request\Login;
+use App\Core\Resources\FailedTaskResource;
 use App\Core\Resources\UserResource;
-use Package\ApiBundle\Documentation\Api;
 use Package\ApiBundle\Response\ApiResponse;
+use Package\ApiBundle\Thor\Attribute\Thor;
+use Package\StorageBundle\Storage\Storage;
+use Package\SwooleBundle\Repository\FailedTaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AuthController extends AbstractController
 {
     #[Route(path: '/')]
-    #[Api(group: 'Homepage', desc: 'View Home Page', success: [
-        200 => [
-            'sdsad' => 'asdsadasas',
-        ],
-    ])]
-    public function home(): ApiResponse
+    #[Thor(group: 'Homepage', desc: 'View Home Page')]
+    public function home(Request $request, Storage $storage): ApiResponse
     {
         return ApiResponse::create()
             ->setData(['tama']);
     }
 
     #[Route(path: '/user', methods: ['GET'])]
-    #[Api(desc: 'User List', get: [
+    #[Thor(desc: 'User List', query: [
         'name' => '?string',
         'fullName' => '?string',
         'filter' => [
@@ -36,17 +35,20 @@ class AuthController extends AbstractController
         ],
         'data' => '?array',
         'data2' => [],
-    ], resource: UserResource::class, paginate: true)]
-    public function list(UserEntityRepository $userRepo): ApiResponse
+    ], paginate: true)]
+    public function list(FailedTaskRepository $userRepo): ApiResponse
     {
+        $data = $userRepo->createQueryBuilder('q')->where('q.id = :p')->setParameter('p', '017f83b0-5d94-2b32-88a7-044906290a2f')->getQuery()->getResult();
+
         return ApiResponse::create()
-            ->setQuery($userRepo->createQueryBuilder('q'))
-            ->setResource(UserResource::class)
-            ->setPaginate(10, false);
+            ->setData($data)
+            ->setResource(FailedTaskResource::class);
+        //->setPaginate(1, false);
     }
 
     #[Route(path: '/user/{id}', methods: ['GET'])]
-    public function show(UserEntity|int|null $user): ApiResponse
+    #[Thor(response: [UserResource::class])]
+    public function show(int|null $user, Request $request): ApiResponse
     {
         return ApiResponse::create()
             ->setResource(UserResource::class)
@@ -54,16 +56,19 @@ class AuthController extends AbstractController
     }
 
     #[Route(path: '/user/{id}', methods: ['PUT'])]
-    #[Api(dto: Login::class)]
-    public function edit(UserEntity $user): ApiResponse
+    #[Thor(response: [UserResource::class], dto: Login::class)]
+    public function edit(int $id, Login $login): ApiResponse
     {
+        dump($login->validated());
+
         return ApiResponse::create()
-            ->setResource(UserResource::class)
-            ->setData($user);
+            ->setData([]);
+        //->setResource(UserResource::class)
+            //->setData($user);
     }
 
-    #[Route(path: '/user/{id}', methods: ['DELETE'])]
-    public function delete(UserEntity $user): ApiResponse
+    #[Route(path: '/user/{id}/{status}', methods: ['DELETE'])]
+    public function delete(UserEntity $user, string $status): ApiResponse
     {
         return ApiResponse::create()
             ->setResource(UserResource::class)

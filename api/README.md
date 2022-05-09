@@ -14,7 +14,7 @@
 * -- Excel Export
 * -- Excel Import
 * 
-* Upload Manager (Bundle)
+* Upload Manager (MediaBundle)
 * Task Coroutine Client
 
 ## Requirement

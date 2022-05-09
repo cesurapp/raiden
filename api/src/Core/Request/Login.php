@@ -3,7 +3,7 @@
 namespace App\Core\Request;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
-use Package\ApiBundle\Documentation\ApiResource;
+use Package\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Login extends AbstractApiDto
@@ -11,13 +11,14 @@ class Login extends AbstractApiDto
     #[Assert\NotNull]
     public string|int|null|bool $name;
 
-    #[Assert\Length(min: 10, max: 100)]
+    #[Assert\Length(min: 3, max: 100)]
     public ?string $lastName;
 
     #[Assert\Length(min: 10, max: 100)]
-    public ?int $phone;
+    #[Assert\NotNull]
+    public int $phone;
 
-    #[Assert\Unique([
+    #[Assert\Optional([
         new Assert\Type('array'),
         new Assert\Count(['min' => 1]),
         new Assert\All([
@@ -32,7 +33,7 @@ class Login extends AbstractApiDto
             ]),
         ]),
     ])]
-    #[ApiResource(data: [[
+    #[ThorResource(data: [[
         'slug' => 'string',
         'label' => 'string|int|boolean',
     ]])]

@@ -171,7 +171,7 @@ class Image
         return $this;
     }
 
-    public function resize(int $height = 0, int $width = 0)
+    public function resize(int $height = 0, int $width = 0): Image
     {
         $this->image->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1, true);
 

@@ -2,13 +2,13 @@
 
 namespace App\Core\Resources;
 
-use Package\ApiBundle\Documentation\ApiResource;
 use Package\ApiBundle\Response\ApiResourceInterface;
+use Package\ApiBundle\Thor\Attribute\ThorResource;
 use Package\SwooleBundle\Entity\FailedTask;
 
 class FailedTaskResource implements ApiResourceInterface
 {
-    #[ApiResource(data: [
+    #[ThorResource(data: [
         'id' => 'string',
         'task' => FailedTask::class,
         'payload' => 'array',
