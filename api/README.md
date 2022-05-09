@@ -39,17 +39,26 @@
 ## 1. Install
 * ### Dev for Macos
 ```shell
+# MacOS Extension
 brew install fswatch
 brew install util-linux
+
+# PECL Extension
 pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
+pecl install openswoole # openssl - http2 - curl
+pecl install imagick
+pecl install xlswriter
+
 cp .env .env.local
 composer install-tool
 composer install
+bin/console doctrine:database:create
+bin/console doctrine:schema:update
 ```
 * ### Production
 ```shell
-cp .env .env.local
 composer install dump-autoload --no-dev --classmap-authoritative
+cp .env .env.local
 ```
 
 ## 2. Run Tests
