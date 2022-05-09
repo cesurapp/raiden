@@ -66,7 +66,7 @@ class SwooleCacheAdapter extends AbstractAdapter implements PruneableInterface
     {
         $expiresAt = $lifetime ? (time() + $lifetime) : 0;
         foreach ($values as $id => $value) {
-            $this->table->set($id, [
+            $this->table->set(hash('xxh3', $id), [
                 'value' => serialize($value),
                 'expr' => $expiresAt,
             ]);

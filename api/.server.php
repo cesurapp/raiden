@@ -30,7 +30,7 @@ return static function () {
         ],
         'cache_table' => [
             'size' => 500,
-            'column_length' => 500,
+            'column_length' => 3000,
         ],
         'cron' => [
             'interval' => 1000 * 60,

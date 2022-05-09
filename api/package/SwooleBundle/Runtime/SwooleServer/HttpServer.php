@@ -43,7 +43,7 @@ class HttpServer extends Server
     private function initCache(): void
     {
         $this->appCache = new Table($this->options['cache_table']['size']);
-        $this->appCache->column('value', Table::TYPE_STRING, $this->options['cache_table']['column_length']);
+        $this->appCache->column('value', Table::TYPE_STRING, (int) $this->options['cache_table']['column_length']);
         $this->appCache->column('expr', Table::TYPE_INT);
         $this->appCache->create();
     }
