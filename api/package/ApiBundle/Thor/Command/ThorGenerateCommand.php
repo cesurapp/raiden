@@ -19,7 +19,7 @@ class ThorGenerateCommand extends Command
     protected static $defaultName = 'thor:generate';
     protected static $defaultDescription = 'Thor Generate Api Documentation to JSON File';
 
-    public function __construct(private RouterInterface $router, protected ParameterBagInterface $bag, protected ValidatorInterface $validator)
+    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, protected ValidatorInterface $validator)
     {
         parent::__construct();
     }

@@ -10,7 +10,7 @@ class CronWorker
 {
     private CronExpression $expression;
 
-    public function __construct(private ServiceLocator $locator, private LoggerInterface $logger)
+    public function __construct(private readonly ServiceLocator $locator, private readonly LoggerInterface $logger)
     {
         // Predefined Constants
         CronExpression::registerAlias('@EveryMinute', '* * * * *');

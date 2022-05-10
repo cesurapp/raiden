@@ -13,10 +13,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class GlobalExceptionHandler implements EventSubscriberInterface
 {
-    public function __construct()
-    {
-    }
-
     public function onKernelException(ExceptionEvent $event): void
     {
         if ('dev' === $_ENV['APP_ENV'] && 'application/json' !== $event->getRequest()->getContentType()) {

@@ -16,7 +16,7 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ThorController extends AbstractController
 {
-    public function __construct(private RouterInterface $router, private ParameterBagInterface $bag)
+    public function __construct(private readonly RouterInterface $router, private readonly ParameterBagInterface $bag)
     {
     }
 

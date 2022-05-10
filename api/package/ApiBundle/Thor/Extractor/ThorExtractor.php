@@ -21,7 +21,7 @@ class ThorExtractor
 {
     protected array $defaults = [];
 
-    public function __construct(private RouterInterface $router, protected ParameterBagInterface $bag)
+    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag)
     {
         if (file_exists($bag->get('thor.globals'))) {
             $config = require $bag->get('thor.globals');

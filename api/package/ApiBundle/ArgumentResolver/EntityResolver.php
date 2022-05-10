@@ -15,7 +15,7 @@ use Symfony\Component\Uid\Uuid;
  */
 class EntityResolver implements ArgumentValueResolverInterface
 {
-    public function __construct(private EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
     }
 

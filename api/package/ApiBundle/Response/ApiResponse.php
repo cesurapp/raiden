@@ -177,7 +177,7 @@ class ApiResponse
         ];
 
         if ($tags) {
-            $this->headers['Cache-Tag'] = implode(',', array_map(fn ($tag) => hash('crc32b', (string) $tag), $tags));
+            $this->headers['Cache-Tag'] = implode(',', array_map(static fn ($tag) => hash('xxh3', (string) $tag), $tags));
         }
 
         $this->headers[AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER] = true;

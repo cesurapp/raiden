@@ -15,7 +15,6 @@
 * -- Excel Import
 * 
 * Upload Manager (MediaBundle)
-* Client Query
 * Test Task
 * Test Cron
 
