@@ -6,10 +6,12 @@ use App\Core\Entity\UserEntity;
 use App\Core\Request\Login;
 use App\Core\Resources\FailedTaskResource;
 use App\Core\Resources\UserResource;
+use App\Core\Task\TestTask;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\StorageBundle\Storage\Storage;
 use Package\SwooleBundle\Repository\FailedTaskRepository;
+use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,6 +22,9 @@ class AuthController extends AbstractController
     #[Thor(group: 'Homepage', desc: 'View Home Page')]
     public function home(Request $request, Storage $storage): ApiResponse
     {
+        foreach (['','', '', '', '', '', ''] as $item) {
+            TaskHandler::dispatch(TestTask::class, []);
+        }
         return ApiResponse::create()
             ->setData(['tama']);
     }
