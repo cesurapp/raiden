@@ -3,6 +3,7 @@
 namespace Package\SwooleBundle\Runtime\SwooleServer;
 
 use Package\SwooleBundle\Task\TaskWorker;
+use Swoole\Server\Task;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class TaskServer
@@ -25,8 +26,8 @@ class TaskServer
     /**
      * Handle Task.
      */
-    public function onTask(HttpServer $server, int $fd, int $reactorId, mixed $data): void
+    public function onTask(HttpServer $server, Task $task): void
     {
-        $this->taskWorker->handle($data);
+        $this->taskWorker->handle($task->data);
     }
 }

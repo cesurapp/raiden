@@ -6,6 +6,7 @@ use Package\SwooleBundle\Runtime\SwooleServer\CronServer;
 use Package\SwooleBundle\Runtime\SwooleServer\HttpServer;
 use Package\SwooleBundle\Runtime\SwooleServer\TaskServer;
 use Package\SwooleBundle\Runtime\SwooleServer\TcpServer;
+use Swoole\Constant;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -19,6 +20,17 @@ class SwooleRunner implements RunnerInterface
     public CronServer $cronServer;
     public TaskServer $taskServer;
 
+    /**
+     * Required Configuration.
+     */
+    private array $reqConfig = [
+        'http' => [
+            'settings' => [
+                Constant::OPTION_TASK_ENABLE_COROUTINE => true,
+            ],
+        ],
+    ];
+
     public function __construct(private HttpKernelInterface $application, private array $options)
     {
         // Load Configuration
@@ -29,7 +41,7 @@ class SwooleRunner implements RunnerInterface
         $config = (require $config)();
 
         // Configure
-        $this->options = array_replace_recursive($config, $this->options);
+        $this->options = array_replace_recursive($config, $this->reqConfig, $this->options);
         $this->options['app']['env'] = $_ENV[$this->options['env_var_name']];
 
         // Configure Watcher
