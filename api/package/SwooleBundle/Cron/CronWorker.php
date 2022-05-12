@@ -10,14 +10,22 @@ class CronWorker
 {
     private CronExpression $expression;
 
-    public function __construct(private ServiceLocator $locator, private LoggerInterface $logger)
+    public function __construct(private readonly ServiceLocator $locator, private readonly LoggerInterface $logger)
     {
         // Predefined Constants
-        CronExpression::registerAlias('@EveryMinute', '* * * * *');
-        CronExpression::registerAlias('@EveryMinute5', '*/5 * * * *');
-        CronExpression::registerAlias('@EveryMinute10', '*/10 * * * *');
-        CronExpression::registerAlias('@EveryMinute15', '*/15 * * * *');
-        CronExpression::registerAlias('@EveryMinute30', '*/30 * * * *');
+        $aliases = [
+            '@EveryMinute' => '* * * * *',
+            '@EveryMinute5' => '*/5 * * * *',
+            '@EveryMinute10' => '*/10 * * * *',
+            '@EveryMinute15' => '*/15 * * * *',
+            '@EveryMinute30' => '*/30 * * * *',
+        ];
+
+        foreach ($aliases as $alias => $expr) {
+            if (!CronExpression::supportsAlias($alias)) {
+                CronExpression::registerAlias($alias, $expr);
+            }
+        }
 
         $this->expression = new CronExpression('* * * * *');
     }

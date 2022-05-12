@@ -4,6 +4,7 @@
          cacheResultFile="var/cache/.phpunit.result.cache"
          colors="true"
          testdox="true"
+         bootstrap="config/test-bootstrap.php"
 >
     <php>
         <ini name="display_errors" value="1"/>
@@ -17,12 +18,9 @@
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak" />
 
         <!--Database-->
-        <server name="DATABASE_URL" value="sqlite:///%kernel.project_dir%/var/cache/test.sqlite" force="true"/>
+        <server name="DATABASE_URL" value="sqlite:///:memory:" force="true"/>
 
         <!--App ENV-->
-        <env name="APP_NAME" value="Kiraz APP" />
-        <env name="APP_DEFAULT_URI" value="127.0.0.1:80" />
-        <env name="APP_LOG_LEVEL" value="warning" />
         <env name="APP_STORAGE" value="local" />
         <env name="APP_LOG_STDIN" value="1" />
 

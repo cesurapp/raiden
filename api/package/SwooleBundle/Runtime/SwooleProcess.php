@@ -87,13 +87,13 @@ class SwooleProcess
     /**
      * Stop Server.
      */
-    public function stop(): void
+    public function stop(?string $tcpHost = null, ?int $tcpPort = null): bool
     {
-        $server = $this->getServer();
-        if (!$server?->isConnected()) {
+        $server = $this->getServer($tcpHost, $tcpPort);
+        if (!$server || !$server->isConnected()) {
             $this->output->error('Swoole HTTP server not found!');
 
-            return;
+            return false;
         }
 
         // Shutdown
@@ -105,20 +105,18 @@ class SwooleProcess
         }
 
         $this->output->success('Swoole HTTP Server is Stopped!');
+
+        return true;
     }
 
     /**
      * Get Current Process ID.
      */
-    public function getServer(): ?Client
+    public function getServer(?string $tcpHost = null, ?int $tcpPort = null): ?Client
     {
         $tcpClient = new Client(SWOOLE_SOCK_TCP);
         try {
-            $tcpClient->connect(
-                $this->options['tcp']['host'],
-                $this->options['tcp']['port'],
-                1
-            );
+            $tcpClient->connect($tcpHost ?? $this->options['tcp']['host'], $tcpPort ?? (int) $this->options['tcp']['port'], 1);
         } catch (\Exception $exception) {
             return null;
         }

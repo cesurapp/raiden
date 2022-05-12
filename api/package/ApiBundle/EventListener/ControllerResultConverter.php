@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ControllerResultConverter implements EventSubscriberInterface
 {
-    public function __construct(private ApiResourceLocator $resourceLocator)
+    public function __construct(private readonly ApiResourceLocator $resourceLocator)
     {
     }
 

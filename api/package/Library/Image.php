@@ -61,6 +61,11 @@ class Image
         }
     }
 
+    public static function create(string $data): Image
+    {
+        return new self($data);
+    }
+
     public static function getGravityTypes(): array
     {
         return [

@@ -9,9 +9,9 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 class TaskWorker
 {
     public function __construct(
-        private ServiceLocator $locator,
-        private LoggerInterface $logger,
-        private FailedTaskRepository $failedTaskRepo,
+        private readonly ServiceLocator $locator,
+        private readonly LoggerInterface $logger,
+        private readonly FailedTaskRepository $failedTaskRepo,
     ) {
     }
 

@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class ApiResourceLocator
 {
-    public function __construct(private ServiceLocator $locator)
+    public function __construct(private readonly ServiceLocator $locator)
     {
     }
 

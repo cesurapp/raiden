@@ -48,7 +48,6 @@ class Client
     public function __construct(string $uri)
     {
         // Set Header
-        $this->headers['Host'] = $_ENV['APP_DEFAULT_URI'];
         $this->headers['User-Agent'] = $_ENV['APP_NAME'];
 
         // Create Client
@@ -72,15 +71,19 @@ class Client
         $this->client->set($this->options);
     }
 
-    public function get(): SwooleClient
+    public function get(?array $query = null): SwooleClient
     {
+        if ($query) {
+            $this->setQuery($query);
+        }
+
         $this->client->setMethod('GET');
         $this->client->execute($this->requestUri);
 
         return $this->client;
     }
 
-    public function post(string|array $data): SwooleClient
+    public function post(string|array $data = []): SwooleClient
     {
         $this->client->setMethod('POST');
         $this->setData($data);
@@ -89,7 +92,7 @@ class Client
         return $this->client;
     }
 
-    public function put(string|array $data): SwooleClient
+    public function put(string|array $data = []): SwooleClient
     {
         $this->client->setMethod('PUT');
         $this->setData($data);
@@ -98,7 +101,7 @@ class Client
         return $this->client;
     }
 
-    public function patch(string|array $data): SwooleClient
+    public function patch(string|array $data = []): SwooleClient
     {
         $this->client->setMethod('PATCH');
         $this->setData($data);
@@ -107,12 +110,31 @@ class Client
         return $this->client;
     }
 
-    public function delete(): SwooleClient
+    public function delete(?array $query = null): SwooleClient
     {
+        if ($query) {
+            $this->setQuery($query);
+        }
+
         $this->client->setMethod('DELETE');
         $this->client->execute($this->requestUri);
 
         return $this->client;
+    }
+
+    public function setQuery(array $query = [], bool $clearCurrent = false): self
+    {
+        if ($clearCurrent) {
+            $this->requestUri = '/?'.urldecode(http_build_query($query));
+
+            return $this;
+        }
+
+        $current = [];
+        parse_str(ltrim($this->requestUri, '?\\/'), $current);
+        $this->requestUri = '/?'.urldecode(http_build_query(array_merge_recursive($current, $query)));
+
+        return $this;
     }
 
     public function setMethod(string $method): self
@@ -191,9 +213,11 @@ class Client
     /**
      * Execute Request.
      */
-    public function execute(): int|bool
+    public function execute(): SwooleClient
     {
-        return $this->client->execute($this->requestUri);
+        $this->client->execute($this->requestUri);
+
+        return $this->client;
     }
 
     /**

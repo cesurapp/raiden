@@ -25,7 +25,7 @@ class Storage
     /**
      * @param DriverInterface[] $devices
      */
-    public function __construct(private string $default, private array $devices)
+    public function __construct(private readonly string $default, private readonly array $devices)
     {
     }
 

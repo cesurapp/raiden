@@ -35,3 +35,23 @@ phpunit.xml.dist
 <server name="S3_ACCESS_KEY" value="KEY" />
 <server name="S3_SECRET" value="KEY" />
 ```
+
+__Usage:__
+```php
+public function controllerAction(\Package\StorageBundle\Storage\Storage $storage) {
+    // Upload File
+    $storage->upload('source_path', 'upload_path');
+    
+    // Write File
+    $storage->write('upload_path', 'text_content', 'application/text');
+    
+    // Delete
+    $storage->delete('file_path');
+    
+    // Check
+    $storage->exists('file_path');
+    
+    // Read
+    $storage->read('file_path')
+}
+```

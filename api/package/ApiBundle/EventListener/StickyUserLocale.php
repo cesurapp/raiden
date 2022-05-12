@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class StickyUserLocale implements EventSubscriberInterface
 {
-    public function __construct(private string $defaultLocale = 'en')
+    public function __construct(private readonly string $defaultLocale = 'en')
     {
     }
 
