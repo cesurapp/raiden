@@ -213,9 +213,11 @@ class Client
     /**
      * Execute Request.
      */
-    public function execute(): int|bool
+    public function execute(): SwooleClient
     {
-        return $this->client->execute($this->requestUri);
+        $this->client->execute($this->requestUri);
+
+        return $this->client;
     }
 
     /**
