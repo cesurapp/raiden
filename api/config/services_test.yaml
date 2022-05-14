@@ -1,0 +1,4 @@
+services:
+    logger:
+        class: Package\SwooleBundle\Log\Logger
+        public: true
