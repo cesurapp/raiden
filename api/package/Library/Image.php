@@ -258,7 +258,7 @@ class Image
      */
     public function setRotation(int $degree): self
     {
-        if (empty($degree) || 0 == $degree) {
+        if (empty($degree)) {
             return $this;
         }
 

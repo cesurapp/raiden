@@ -61,7 +61,7 @@ class TcpServer
 
         return json_encode([
             'server' => $options,
-            'metrics' => $server->stats(OPENSWOOLE_STATS_DEFAULT),
+            'metrics' => $server->stats(),
         ], JSON_THROW_ON_ERROR);
     }
 }

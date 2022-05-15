@@ -15,8 +15,6 @@
 * -- Excel Import
 * 
 * Upload Manager (MediaBundle)
-* Test Task
-* Test Cron
 
 ## Requirement
 * Composer 2+
