@@ -13,8 +13,6 @@
 * -- Filters
 * -- Excel Export
 * -- Excel Import
-* 
-* Upload Manager (MediaBundle)
 
 ## Requirement
 * Composer 2+

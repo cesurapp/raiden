@@ -15,7 +15,7 @@ class GlobalExceptionHandler implements EventSubscriberInterface
 {
     public function onKernelException(ExceptionEvent $event): void
     {
-        if ('dev' === $_ENV['APP_ENV'] && 'application/json' !== $event->getRequest()->getContentType()) {
+        if ('dev' === $_ENV['APP_ENV']) {
             return;
         }
 
