@@ -20,7 +20,7 @@ class TaskFailedViewCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output = $output->section(); // @phpstan-ignore-line
+        $output = method_exists($output, 'section') ? $output->section() : $output;
         $io = new SymfonyStyle($input, $output);
 
         // Find Total
