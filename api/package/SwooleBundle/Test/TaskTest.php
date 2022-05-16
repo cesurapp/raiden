@@ -46,7 +46,7 @@ class TaskTest extends WebTestCase
             'data' => [],
         ]);
 
-        $this->assertEquals(1, $container->get('doctrine')->getRepository(FailedTask::class)->count([]));
+        $this->assertGreaterThan(1, $container->get('doctrine')->getRepository(FailedTask::class)->count([]));
     }
 
     public function testFailedClear(): void
