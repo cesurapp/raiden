@@ -176,7 +176,7 @@ class ThorExtractor
                     if ($controllerArgs[$index]->getType()->allowsNull()) {
                         $isNull = true;
                     }
-                    $types = [$controllerArgs[$index]->getType()->getName()]; //@phpstan-ignore-line
+                    $types = [$controllerArgs[$index]->getType()->getName()]; // @phpstan-ignore-line
                 }
 
                 // Remove Null
@@ -427,7 +427,7 @@ class ThorExtractor
                 }
             }
         } else {
-            $types[] = ($type->allowsNull() ? '?' : '').$type->getName(); //@phpstan-ignore-line
+            $types[] = ($type->allowsNull() ? '?' : '').$type->getName(); // @phpstan-ignore-line
         }
 
         return array_unique($types);

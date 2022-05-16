@@ -21,7 +21,7 @@ class ServerStatusCommand extends Command
         $client = new Client(SWOOLE_SOCK_TCP);
 
         // Load Configuration
-        $rootDir = $this->getApplication()->getKernel()->getProjectDir(); //@phpstan-ignore-line
+        $rootDir = $this->getApplication()->getKernel()->getProjectDir(); // @phpstan-ignore-line
         $config = $rootDir.'/.server.local.php';
         if (!file_exists($config)) {
             $config = $rootDir.'/.server.php';

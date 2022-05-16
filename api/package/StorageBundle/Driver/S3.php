@@ -245,7 +245,7 @@ class S3 implements DriverInterface
         $uri = '' !== $path ? '/'.\str_replace(['%2F', '%3F'], ['/', '?'], \rawurlencode($path)) : '/';
 
         $this->headers['content-type'] = $contentType;
-        $this->headers['content-md5'] = \base64_encode(md5($data, true)); //TODO whould this work well with big file? can we skip it?
+        $this->headers['content-md5'] = \base64_encode(md5($data, true)); // TODO whould this work well with big file? can we skip it?
         $this->amzHeaders['x-amz-content-sha256'] = \hash('sha256', $data);
         $this->amzHeaders['x-amz-acl'] = $this->acl;
 

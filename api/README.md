@@ -13,6 +13,7 @@
 * -- Filters
 * -- Excel Export
 * -- Excel Import
+* Upload Manager (File-Base64-Validation-Link)
 
 ## Requirement
 * Composer 2+

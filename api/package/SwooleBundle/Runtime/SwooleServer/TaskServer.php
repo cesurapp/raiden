@@ -15,8 +15,8 @@ class TaskServer
         if ($this->options['app']['task']) {
             // Init Worker
             $kernel = clone $this->application;
-            $kernel->boot(); //@phpstan-ignore-line
-            $this->taskWorker = $kernel->getContainer()->get(TaskWorker::class); //@phpstan-ignore-line
+            $kernel->boot(); // @phpstan-ignore-line
+            $this->taskWorker = $kernel->getContainer()->get(TaskWorker::class); // @phpstan-ignore-line
 
             // Add Task Event
             $this->server->on('task', [$this, 'onTask']);

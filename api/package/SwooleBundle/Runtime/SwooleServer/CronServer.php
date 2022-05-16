@@ -12,8 +12,8 @@ class CronServer
     {
         if ($options['app']['cron']) {
             $kernel = clone $application;
-            $kernel->boot(); //@phpstan-ignore-line
-            $worker = $kernel->getContainer()->get(CronWorker::class); //@phpstan-ignore-line
+            $kernel->boot(); // @phpstan-ignore-line
+            $worker = $kernel->getContainer()->get(CronWorker::class); // @phpstan-ignore-line
 
             // Work
             $server->on('managerstart', function () use ($options, $worker) {

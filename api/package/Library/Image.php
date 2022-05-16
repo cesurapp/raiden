@@ -329,7 +329,7 @@ class Image
                     $this->image->clear();
                     $this->image->destroy();
 
-                    //delete webp
+                    // delete webp
                     \unlink($output);
                     \unlink($temp);
 
