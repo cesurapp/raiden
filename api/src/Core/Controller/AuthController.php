@@ -22,9 +22,10 @@ class AuthController extends AbstractController
     #[Thor(group: 'Homepage', desc: 'View Home Page')]
     public function home(Request $request, Storage $storage): ApiResponse
     {
-        foreach (['','', '', '', '', '', ''] as $item) {
-            TaskHandler::dispatch(TestTask::class, []);
-        }
+        // foreach (['', '', '', '', '', '', ''] as $item) {
+        //    TaskHandler::dispatch(TestTask::class, []);
+        // }
+
         return ApiResponse::create()
             ->setData(['tama']);
     }
@@ -48,7 +49,7 @@ class AuthController extends AbstractController
         return ApiResponse::create()
             ->setData($data)
             ->setResource(FailedTaskResource::class);
-        //->setPaginate(1, false);
+        // ->setPaginate(1, false);
     }
 
     #[Route(path: '/user/{id}', methods: ['GET'])]
@@ -68,8 +69,8 @@ class AuthController extends AbstractController
 
         return ApiResponse::create()
             ->setData([]);
-        //->setResource(UserResource::class)
-            //->setData($user);
+        // ->setResource(UserResource::class)
+            // ->setData($user);
     }
 
     #[Route(path: '/user/{id}/{status}', methods: ['DELETE'])]
