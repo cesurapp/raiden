@@ -7,6 +7,7 @@ return [
     Package\SwooleBundle\SwooleBundle::class => ['all' => true],
     Package\ApiBundle\ApiBundle::class => ['all' => true],
     Package\StorageBundle\StorageBundle::class => ['all' => true],
+    Package\MediaBundle\MediaBundle::class => ['all' => true],
 
     Symfony\Bundle\TwigBundle\TwigBundle::class => ['dev' => true, 'test' => true],
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],

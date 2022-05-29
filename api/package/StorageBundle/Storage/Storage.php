@@ -34,6 +34,11 @@ class Storage
         return $this->devices[$deviceKey];
     }
 
+    public function getStorageKey(): string
+    {
+        return $this->default;
+    }
+
     public function __call(string $name, array $parameters = null): mixed
     {
         return $this->devices[$this->default]->{$name}(...$parameters);
