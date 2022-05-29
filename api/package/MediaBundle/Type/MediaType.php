@@ -2,7 +2,6 @@
 
 namespace Package\MediaBundle\Type;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -51,12 +50,12 @@ class MediaType extends Type
         }
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?ArrayCollection
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?array
     {
-        $collection = new ArrayCollection();
+        $array = [];
 
         if (null === $value || '' === $value) {
-            return $collection;
+            return $array;
         }
 
         if (is_resource($value)) {
@@ -66,10 +65,10 @@ class MediaType extends Type
         try {
             $ids = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
             foreach ($ids as $id) {
-                $collection->add($this->entityManager->getReference(Media::class, Ulid::fromString($id)));
+                $array[$id] = $this->entityManager->getReference(Media::class, Ulid::fromString($id));
             }
 
-            return $collection;
+            return $array;
         } catch (\JsonException $e) {
             throw ConversionException::conversionFailed($value, $this->getName(), $e);
         }

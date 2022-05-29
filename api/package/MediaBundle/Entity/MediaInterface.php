@@ -2,7 +2,7 @@
 
 namespace Package\MediaBundle\Entity;
 
-interface MediaEntity
+interface MediaInterface
 {
     public function getMediaColumns(): array;
 }

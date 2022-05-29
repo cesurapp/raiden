@@ -3,55 +3,44 @@
 namespace Package\MediaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 trait MediaTrait
 {
     #[ORM\Column(type: 'media', nullable: true)]
-    private ?ArrayCollection $media;
+    private ?array $media = [];
 
     /**
-     * @return ArrayCollection|Media[]
+     * @return array|Media[]
      */
-    public function getMedia(): ?ArrayCollection
+    public function getMedia(): ?array
     {
         return $this->media;
     }
 
-    public function addMedia(Media|array $media): self
+    public function addMedia(Media $media): self
     {
-        if (!is_array($media)) {
-            $media = [$media];
-        }
-
-        foreach ($media as $item) {
-            $this->media->add($item);
+        if (!in_array($media, $this->media, true)) {
+            $this->media[] = $media;
         }
 
         return $this;
     }
 
-    public function removeMedia(Media|array $media): self
+    public function removeMedia(Media $media): self
     {
-        if (!is_array($media)) {
-            $media = [$media];
-        }
-
-        foreach ($media as $item) {
-            if ($this->media->contains($item)) {
-                $this->media->removeElement($item);
-            }
+        if ($key = array_search($media, $this->media, true)) {
+            unset($this->media[$key]);
         }
 
         return $this;
     }
 
-    public function setMedia(ArrayCollection|array|null $media): self
+    public function setMedia(array $media): self
     {
-        if (is_array($media)) {
-            $this->media = new ArrayCollection($media);
-        } else {
-            $this->media = $media;
+        $this->media = [];
+
+        foreach ($media as $item) {
+            $this->media[] = $item;
         }
 
         return $this;

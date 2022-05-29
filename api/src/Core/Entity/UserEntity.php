@@ -4,14 +4,14 @@ namespace App\Core\Entity;
 
 use App\Core\Repository\UserEntityRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Package\MediaBundle\Entity\MediaEntity;
+use Package\MediaBundle\Entity\MediaInterface;
 use Package\MediaBundle\Entity\MediaTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: UserEntityRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class UserEntity implements MediaEntity
+class UserEntity implements MediaInterface
 {
     use MediaTrait;
 

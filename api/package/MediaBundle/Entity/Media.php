@@ -4,6 +4,7 @@ namespace Package\MediaBundle\Entity;
 
 use Package\MediaBundle\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Package\StorageBundle\Storage\Storage;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
@@ -138,8 +139,21 @@ class Media
         return $this;
     }
 
+    /**
+     * Read Content.
+     */
+    public function getContent(Storage $storage): string
+    {
+        return $storage->device($this->getStorage())->read($this->getPath());
+    }
+
+    public function setContent(Storage $storage, string $data, string $mime): bool
+    {
+        return $storage->write($this->getPath(), $data, $mime);
+    }
+
     public function __toString(): string
     {
-        return $this->id->toRfc4122();
+        return $this->id->toBase32();
     }
 }
