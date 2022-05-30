@@ -26,36 +26,26 @@ class MediaManager
      */
     public function uploadFile(Request $request, ?array $keys = null): array
     {
-        $medias = [];
+        $data = $keys ? array_intersect_key($request->files->all(), $keys) : $request->files->all();
 
-        if ($request->files->count() > 0) {
-            if (null !== $keys) {
-                foreach ($keys as $key) {
-                    dump($request->files->get($key));
-                }
+        // Convert to Media Entity
+        array_walk_recursive($data, function (&$item) {
+            try {
+                $item = $this->createMedia(
+                    $item->getMimeType(),
+                    $item->getExtension(),
+                    $item->getContent(),
+                    $item->getSize()
+                );
+            } catch (\Exception $exception) {
+                $this->logger->error('HTTP File Upload Failed: '.$exception->getMessage());
             }
-            dump($request->files->all());
-            /* foreach ($request->files->all() as $file) {
-                 // Create Media
-                 $media = (new Media())
-                     ->setMime($file->getMimeType())
-                     ->setStorage($this->storage->getStorageKey())
-                     ->setSize($file->getSize())
-                     ->setPath($this->getPath(Ulid::generate(), $file->getExtension()));
-                 $this->em->persist($media);
+        });
 
-                 // Write Storage
-                 $this->storage->write($media->getPath(), $file->getContent(), $media->getMime());
+        // Save
+        $this->em->flush();
 
-                 // Append
-                 $files[] = $media;
-             }*/
-
-            // Save
-            $this->em->flush();
-        }
-
-        return $medias;
+        return $data;
     }
 
     public function uploadBase64(Request $request, array $keys): array
@@ -74,6 +64,9 @@ class MediaManager
                 $this->logger->error('Base64 File Upload Failed: '.$exception->getMessage());
             }
         });
+
+        // Save
+        $this->em->flush();
 
         return $data;
     }
@@ -94,6 +87,9 @@ class MediaManager
                 $this->logger->error('Link File Upload Failed: '.$exception->getMessage());
             }
         });
+
+        // Save
+        $this->em->flush();
 
         return $data;
     }
