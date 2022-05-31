@@ -26,7 +26,6 @@ class AuthController extends AbstractController
         //    TaskHandler::dispatch(TestTask::class, []);
         // }
 
-
         return ApiResponse::create()
             ->setData(['tama']);
     }

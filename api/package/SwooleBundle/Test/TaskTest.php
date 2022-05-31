@@ -4,7 +4,6 @@ namespace Package\SwooleBundle\Test;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Package\SwooleBundle\Entity\FailedTask;
-use Package\SwooleBundle\Log\Logger;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -13,10 +12,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class TaskTest extends WebTestCase
 {
-    protected function setUp(): void
-    {
-    }
-
     public function testTaskHandler(): void
     {
         $client = self::createClient();
@@ -28,9 +23,7 @@ class TaskTest extends WebTestCase
         $client = self::createClient();
 
         // Mock Logger
-        $logger = $this->getMockBuilder(Logger::class)->getMock();
         $container = $client->getContainer();
-        $container->set('logger', $logger);
 
         // Test Worker
         $this->assertTrue($container->has(TaskWorker::class));
@@ -40,7 +33,6 @@ class TaskTest extends WebTestCase
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
-        $logger->expects($this->once())->method('critical');
         $worker->handle([
             'class' => 'TestTaskClass',
             'data' => [],
@@ -54,9 +46,7 @@ class TaskTest extends WebTestCase
         $client = self::createClient();
 
         // Mock Logger
-        $logger = $this->getMockBuilder(Logger::class)->getMock();
         $container = $client->getContainer();
-        $container->set('logger', $logger);
 
         // Test Worker
         $this->assertTrue($container->has(TaskWorker::class));
@@ -66,7 +56,6 @@ class TaskTest extends WebTestCase
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
-        $logger->expects($this->once())->method('critical');
         $worker->handle([
             'class' => 'TestTaskClass',
             'data' => [],
@@ -85,9 +74,7 @@ class TaskTest extends WebTestCase
         $client = self::createClient();
 
         // Mock Logger
-        $logger = $this->getMockBuilder(Logger::class)->getMock();
         $container = $client->getContainer();
-        $container->set('logger', $logger);
 
         // Test Worker
         $this->assertTrue($container->has(TaskWorker::class));
@@ -97,7 +84,6 @@ class TaskTest extends WebTestCase
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
-        $logger->expects($this->once())->method('critical');
         $worker->handle([
             'class' => 'TestTaskClass',
             'data' => [],

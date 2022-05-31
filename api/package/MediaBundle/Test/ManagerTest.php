@@ -20,10 +20,6 @@ class ManagerTest extends KernelTestCase
         $this->initDatabase(self::$kernel);
     }
 
-    public function testMediaEntity(): void
-    {
-    }
-
     public function testUploadFile(): void
     {
         $request = new Request();

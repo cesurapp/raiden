@@ -110,9 +110,11 @@ class Media
         return $this;
     }
 
-    public function setCounter(int $counter): void
+    public function setCounter(int $counter): self
     {
         $this->counter = $counter;
+
+        return $this;
     }
 
     public function getData(): array
