@@ -1,6 +1,6 @@
 <?php
 
-namespace Package\Library;
+namespace Package\MediaBundle\Compressor;
 
 use Imagick;
 use ImagickDraw;

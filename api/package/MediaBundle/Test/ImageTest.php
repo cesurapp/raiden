@@ -1,8 +1,8 @@
 <?php
 
-namespace Package\Library\Test;
+namespace Package\MediaBundle\Test;
 
-use Package\Library\Image;
+use Package\MediaBundle\Compressor\Image;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ImageTest extends WebTestCase

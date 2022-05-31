@@ -1,0 +1,1 @@
+%The "Symfony\\Bridge\\Doctrine\\Logger\\DbalLogger"%
