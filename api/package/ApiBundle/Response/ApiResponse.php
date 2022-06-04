@@ -35,17 +35,17 @@ class ApiResponse
         return (new self())->setType($type)->setStatus($status);
     }
 
-    public static function createError(ResponseTypeEnum $type = ResponseTypeEnum::ApiError, int $status = 403): self
+    public static function createError(ResponseTypeEnum $type = ResponseTypeEnum::MessageError, int $status = 403): self
     {
         return (new self())->setType($type)->setStatus($status);
     }
 
-    public static function createInfo(ResponseTypeEnum $type = ResponseTypeEnum::ApiInfo, int $status = 200): self
+    public static function createInfo(ResponseTypeEnum $type = ResponseTypeEnum::MessageInfo, int $status = 200): self
     {
         return (new self())->setType($type)->setStatus($status);
     }
 
-    public static function createWarn(ResponseTypeEnum $type = ResponseTypeEnum::ApiWarning, int $status = 200): self
+    public static function createWarn(ResponseTypeEnum $type = ResponseTypeEnum::MessageWarning, int $status = 200): self
     {
         return (new self())->setType($type)->setStatus($status);
     }

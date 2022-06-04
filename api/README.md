@@ -1,7 +1,7 @@
 * Github CI Test
 * 
 * 
-* Core -> JWT Auth
+* Core -> JWT Auth - Refresh Token
 * Core -> User Management
 * Core -> User Group Management
 * Core -> Notification {SMS, MAIL, SYSTEM }
@@ -13,8 +13,6 @@
 * -- Filters
 * -- Excel Export
 * -- Excel Import
-* 
-* Upload Manager (File-Base64-Link)
 
 ## Requirement
 * Composer 2+
