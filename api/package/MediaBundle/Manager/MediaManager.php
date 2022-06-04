@@ -149,6 +149,10 @@ class MediaManager
                 'png', 'jpeg' => 'jpg',
                 default => $extension
             };
+            $mimeType = match ($extension) {
+                'jpg' => 'image/jpeg',
+                default => $mimeType
+            };
         }
 
         // Compress

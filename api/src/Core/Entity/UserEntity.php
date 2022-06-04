@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ORM\Entity(repositoryClass: UserEntityRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class UserEntity implements MediaInterface
 {
     use MediaTrait;

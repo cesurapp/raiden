@@ -26,6 +26,15 @@ trait MediaTrait
         return $this;
     }
 
+    public function addMedias(array $medias): self
+    {
+        array_walk_recursive($medias, function (Media $media) {
+            $this->addMedia($media);
+        });
+
+        return $this;
+    }
+
     public function removeMedia(Media $media): self
     {
         if ($key = array_search($media, $this->media, true)) {
@@ -35,13 +44,13 @@ trait MediaTrait
         return $this;
     }
 
-    public function setMedia(array $media): self
+    public function setMedia(array $medias): self
     {
         $this->media = [];
 
-        foreach ($media as $item) {
-            $this->media[] = $item;
-        }
+        array_walk_recursive($medias, function (Media $media) {
+            $this->media[] = $media;
+        });
 
         return $this;
     }
