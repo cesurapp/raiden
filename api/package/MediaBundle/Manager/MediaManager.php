@@ -14,11 +14,58 @@ use Symfony\Component\Uid\Ulid;
 
 class MediaManager
 {
+    private bool $compress = true;
+    private bool $convertJPG = true;
+    private int $imageQuality = 75;
+    private int $imageHeight = 1280;
+    private int $imageWidth = 720;
+
     public function __construct(
         private readonly Storage $storage,
         private readonly EntityManagerInterface $em,
         protected readonly LoggerInterface $logger
     ) {
+    }
+
+    /**
+     * Enable|Disable Compressor.
+     */
+    public function setCompress(bool $compress): self
+    {
+        $this->compress = $compress;
+
+        return $this;
+    }
+
+    /**
+     * PNG to JPG Converter Enable.
+     */
+    public function setConvertJPG(bool $convertJPG): self
+    {
+        $this->convertJPG = $convertJPG;
+
+        return $this;
+    }
+
+    /**
+     * Change Image Quality.
+     */
+    public function setImageQuality(int $quality): self
+    {
+        $this->imageQuality = $quality;
+
+        return $this;
+    }
+
+    /**
+     * Change Max Image Size.
+     */
+    public function setImageSize(int $height, int $width): self
+    {
+        $this->imageHeight = $height;
+        $this->imageWidth = $width;
+
+        return $this;
     }
 
     /**
@@ -96,6 +143,19 @@ class MediaManager
 
     protected function createMedia(string $mimeType, string $extension, string $content, int $size): Media
     {
+        // Convert JPG
+        if ($this->convertJPG) {
+            $extension = match ($extension) {
+                'png', 'jpeg' => 'jpg',
+                default => $extension
+            };
+        }
+
+        // Compress
+        if ($this->compress) {
+            $content = $this->compress($content, $extension);
+        }
+
         // Create Media
         $media = (new Media())
             ->setMime($mimeType)
@@ -115,8 +175,13 @@ class MediaManager
         return strtolower(date('Y/m/d').'/'.$fileName.'.'.$extension);
     }
 
-    protected function compress(string $data, string $extension): bool|string|null
+    protected function compress(string $data, string $extension): string
     {
-        return Image::create($data)->output($extension);
+        return match ($extension) {
+            'jpg', 'jpeg', 'png' => Image::create($data)
+                ->resize($this->imageHeight, $this->imageWidth)
+                ->output($extension, $this->imageQuality),
+            default => $data
+        };
     }
 }
