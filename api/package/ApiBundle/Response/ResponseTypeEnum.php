@@ -9,6 +9,7 @@ enum ResponseTypeEnum
     case ApiRedirect;
     case ApiException;
     // Message
+    case MessageSuccess;
     case MessageError;
     case MessageInfo;
     case MessageWarning;
