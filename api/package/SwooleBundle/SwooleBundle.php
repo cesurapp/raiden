@@ -69,7 +69,7 @@ class SwooleBundle extends AbstractBundle
         $services->load('Package\\SwooleBundle\\Repository\\', 'Repository');
 
         // Logger
-        $container->services()
+        $logger = $container->services()
             ->set('logger', Logger::class)
             ->args([
                 '$formatter' => null,
@@ -77,5 +77,8 @@ class SwooleBundle extends AbstractBundle
                 '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
                 '$stdin' => '%env(APP_LOG_STDIN)%',
             ]);
+        if ('test' === $container->env()) {
+            $logger->public();
+        }
     }
 }

@@ -40,7 +40,10 @@ class MediaBundle extends AbstractBundle
         $services->load('Package\\MediaBundle\\Repository\\', 'Repository');
 
         // Media Manager
-        $services->set(MediaManager::class, MediaManager::class);
+        $manager = $services->set(MediaManager::class, MediaManager::class);
+        if ('test' === $container->env()) {
+            $manager->public();
+        }
 
         // Media Event Listener
         $services->set(MediaColumnListener::class)->tag('doctrine.event_subscriber', [

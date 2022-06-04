@@ -86,10 +86,12 @@
     "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
     "test": "bin/phpunit",
     "ci": [
-      "@analyse", "@lint", "@test"
+      "@analyse",
+      "@lint",
+      "@test"
     ],
     "install-tool": [
-        "composer install --working-dir=bin/tool"
+      "composer install --working-dir=bin/tool"
     ]
   },
   "conflict": {

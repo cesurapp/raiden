@@ -28,6 +28,8 @@ class SwooleProcess
      */
     public function start(string $phpBinary, array $options): bool
     {
+        $this->options = array_replace_recursive($this->options, $options);
+
         if ($this->getServer()?->isConnected()) {
             $this->output->warning('Swoole HTTP Server is Running');
 

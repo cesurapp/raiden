@@ -1,7 +1,0 @@
-services:
-    logger:
-        class: Package\SwooleBundle\Log\Logger
-        public: true
-    Package\MediaBundle\Manager\MediaManager:
-        public: true
-        autowire: true
