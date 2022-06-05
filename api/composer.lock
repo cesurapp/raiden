@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b9b57a78de795cebbc2f7297079ad9d",
+    "content-hash": "90851a2f526ada1422130087db0be583",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -7583,7 +7583,6 @@
         "ext-curl": "*",
         "ext-openswoole": "*",
         "ext-uuid": "*",
-        "ext-xlswriter": "*",
         "ext-imagick": "*",
         "ext-fileinfo": "*"
     },
