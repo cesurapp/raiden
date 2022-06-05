@@ -4,8 +4,8 @@
 * Core -> JWT Auth - Refresh Token
 * Core -> User Management
 * Core -> User Group Management
-* Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> Permissions
+* Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> UI
 * 
 * 
@@ -18,7 +18,6 @@
 * Composer 2+
 * PHP 8.1+
   * Swoole 4.11+ (`pecl install openswoole`)
-  * Xlswriter (`pecl install xlswriter`)
   * UUID (`pecl install uuid`)
   * Imagick (`pecl install imagick`)
   * Opcache
@@ -44,7 +43,6 @@ brew install util-linux
 pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
 pecl install openswoole # openssl - http2 - curl
 pecl install imagick
-pecl install xlswriter
 
 cp .env .env.local
 composer install-tool

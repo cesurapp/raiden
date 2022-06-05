@@ -10,7 +10,6 @@
     "ext-curl": "*",
     "ext-openswoole": "*",
     "ext-uuid": "*",
-    "ext-xlswriter": "*",
     "ext-imagick": "*",
     "ext-fileinfo": "*",
     "doctrine/doctrine-bundle": "^2.5",

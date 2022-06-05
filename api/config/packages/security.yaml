@@ -13,5 +13,5 @@ security:
             provider: users_in_memory
 
     access_control:
-         #- { path: ^/, roles: ROLE_SELLER }
-        # - { path: ^/profile, roles: ROLE_USER }
+        #- { path: ^/, roles: ROLE_SELLER }
+        #- { path: ^/profile, roles: ROLE_USER }
