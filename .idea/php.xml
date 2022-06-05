@@ -115,6 +115,7 @@
       <path value="$PROJECT_DIR$/api/vendor/phpdocumentor/reflection-common" />
       <path value="$PROJECT_DIR$/api/vendor/twig/twig" />
       <path value="$PROJECT_DIR$/api/vendor/masterminds/html5" />
+      <path value="$PROJECT_DIR$/api/vendor/bin/.phpunit" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
@@ -200,7 +201,7 @@
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
-      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/api/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/api/bin/phpunit" phpunit_phar_path="" use_configuration_file="true" />
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/api/phpunit.xml" custom_loader_path="$PROJECT_DIR$/api/bin/phpunit" phpunit_phar_path="" use_configuration_file="true" />
     </phpunit_settings>
   </component>
 </project>
