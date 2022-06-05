@@ -7,6 +7,8 @@
 * Core -> Permissions
 * Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> UI
+* Core -> Translation
+* Core -> Mailer
 * 
 * 
 * * DataTable
