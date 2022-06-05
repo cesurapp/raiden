@@ -15,15 +15,6 @@ framework:
     php_errors:
         log: "%kernel.debug%"
 
-    # Default Locale
-    default_locale: tr
-
-    # Enabled Locales
-    enabled_locales: ['en', 'tr']
-
-    # Request Language to Accept Language
-    set_locale_from_accept_language: true
-
 # TEST
 when@test:
     framework:

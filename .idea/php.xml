@@ -116,6 +116,8 @@
       <path value="$PROJECT_DIR$/api/vendor/twig/twig" />
       <path value="$PROJECT_DIR$/api/vendor/masterminds/html5" />
       <path value="$PROJECT_DIR$/api/vendor/bin/.phpunit" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/translation" />
+      <path value="$PROJECT_DIR$/api/vendor/adhocore/jwt" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

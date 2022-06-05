@@ -39,6 +39,7 @@
         <!--Package Test-->
         <testsuite name="Package Test Suite">
             <directory>package/*/Test</directory>
+            <!--<exclude>package/StorageBundle/Test</exclude>-->
         </testsuite>
     </testsuites>
 

@@ -1,0 +1,21 @@
+framework:
+    # Default Locale
+    default_locale: tr
+
+    # Enabled Locales
+    enabled_locales: [ 'en', 'tr' ]
+
+    # Request Language to Accept Language
+    set_locale_from_accept_language: true
+
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - tr
+#        providers:
+#            crowdin:
+#                dsn: '%env(CROWDIN_DSN)%'
+#            loco:
+#                dsn: '%env(LOCO_DSN)%'
+#            lokalise:
+#                dsn: '%env(LOKALISE_DSN)%'

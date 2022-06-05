@@ -3,6 +3,7 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    # Services All Modules
     App\:
         resource: '../src/*'
         exclude:
@@ -10,4 +11,6 @@ services:
             - '../src/*/Entity'
             - '../src/*/Test'
             - '../src/*/Enum'
+            - '../src/*/Security'
+            - '../src/*/Request'
             - '../src/Kernel.php'
