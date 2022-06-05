@@ -10,103 +10,89 @@ class ClientTest extends WebTestCase
 {
     public function testGet(): void
     {
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->get();
-            $this->assertEquals(200, $client->statusCode);
+        $client = Client::create('https://www.google.com')->get();
+        $this->assertEquals(200, $client->statusCode);
 
-            $client = Client::create('http://www.google.com')->get();
-            $this->assertEquals(200, $client->statusCode);
+        $client = Client::create('http://www.google.com')->get();
+        $this->assertEquals(200, $client->statusCode);
 
-            $client = Client::create('https://google.com')->get();
-            $this->assertEquals(301, $client->statusCode);
-            $this->assertEquals('GET', $client->requestMethod);
-        }));
+        $client = Client::create('https://google.com')->get();
+        $this->assertEquals(301, $client->statusCode);
+        $this->assertEquals('GET', $client->requestMethod);
     }
 
     public function testGetQuery(): void
     {
         // SSL
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->setQuery([
-                'filter' => [
-                    'test' => 1,
-                    'active' => 'ok',
-                ],
-            ]);
-            $clientArr = (array) $client;
-            $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
-            $this->assertEquals('www.google.com', $client->client->host);
-            $this->assertEquals(true, $client->client->ssl);
-            $this->assertEquals(443, $client->client->port);
-        }));
+        $client = Client::create('https://www.google.com')->setQuery([
+            'filter' => [
+                'test' => 1,
+                'active' => 'ok',
+            ],
+        ]);
+        $clientArr = (array) $client;
+        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
+        $this->assertEquals('www.google.com', $client->client->host);
+        $this->assertEquals(true, $client->client->ssl);
+        $this->assertEquals(443, $client->client->port);
 
         // HTTP
-        run(fn () => go(function () {
-            $client = Client::create('http://www.google.com')->setQuery([
-                'filter' => [
-                    'test' => 1,
-                    'active' => 'ok',
-                ],
-            ]);
-            $clientArr = (array) $client;
-            $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
-            $this->assertEquals('www.google.com', $client->client->host);
-            $this->assertEquals(false, $client->client->ssl);
-            $this->assertEquals(80, $client->client->port);
-        }));
+        $client = Client::create('http://www.google.com')->setQuery([
+            'filter' => [
+                'test' => 1,
+                'active' => 'ok',
+            ],
+        ]);
+        $clientArr = (array) $client;
+        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
+        $this->assertEquals('www.google.com', $client->client->host);
+        $this->assertEquals(false, $client->client->ssl);
+        $this->assertEquals(80, $client->client->port);
     }
 
     public function testPost(): void
     {
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->post([
-                'data' => 'test',
-            ]);
+        $client = Client::create('https://www.google.com')->post([
+            'data' => 'test',
+        ]);
 
-            $this->assertEquals(['data' => 'test'], $client->requestBody);
-            $this->assertEquals(405, $client->statusCode);
-            $this->assertEquals('POST', $client->requestMethod);
-            $this->assertStringContainsString('<code>POST</code>', $client->body);
-        }));
+        $this->assertEquals(['data' => 'test'], $client->requestBody);
+        $this->assertEquals(405, $client->statusCode);
+        $this->assertEquals('POST', $client->requestMethod);
+        $this->assertStringContainsString('<code>POST</code>', $client->body);
     }
 
     public function testPut(): void
     {
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->put([
-                'data' => 'test',
-            ]);
+        $client = Client::create('https://www.google.com')->put([
+            'data' => 'test',
+        ]);
 
-            $this->assertEquals(['data' => 'test'], $client->requestBody);
-            $this->assertEquals(405, $client->statusCode);
-            $this->assertEquals('PUT', $client->requestMethod);
-            $this->assertStringContainsString('<code>PUT</code>', $client->body);
-        }));
+        $this->assertEquals(['data' => 'test'], $client->requestBody);
+        $this->assertEquals(405, $client->statusCode);
+        $this->assertEquals('PUT', $client->requestMethod);
+        $this->assertStringContainsString('<code>PUT</code>', $client->body);
     }
 
     public function testPatch(): void
     {
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->patch([
-                'data' => 'test',
-            ]);
+        $client = Client::create('https://www.google.com')->patch([
+            'data' => 'test',
+        ]);
 
-            $this->assertEquals(['data' => 'test'], $client->requestBody);
-            $this->assertEquals(405, $client->statusCode);
-            $this->assertEquals('PATCH', $client->requestMethod);
-            $this->assertStringContainsString('<code>PATCH</code>', $client->body);
-        }));
+        $this->assertEquals(['data' => 'test'], $client->requestBody);
+        $this->assertEquals(405, $client->statusCode);
+        $this->assertEquals('PATCH', $client->requestMethod);
+        $this->assertStringContainsString('<code>PATCH</code>', $client->body);
     }
 
     public function testDelete(): void
     {
-        run(fn () => go(function () {
-            $client = Client::create('https://www.google.com')->delete();
+        $client = Client::create('https://www.google.com')->delete();
 
-            $this->assertEquals(true, $client->ssl);
-            $this->assertEquals(405, $client->statusCode);
-            $this->assertEquals('DELETE', $client->requestMethod);
-            $this->assertStringContainsString('<code>DELETE</code>', $client->body);
-        }));
+        $this->assertEquals(true, $client->ssl);
+        $this->assertEquals(405, $client->statusCode);
+        $this->assertEquals('DELETE', $client->requestMethod);
+        $this->assertStringContainsString('<code>DELETE</code>', $client->body);
     }
 }

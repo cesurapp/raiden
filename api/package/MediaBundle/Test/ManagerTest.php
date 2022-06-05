@@ -91,19 +91,17 @@ class ManagerTest extends KernelTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
 
         // Upload All
-        run(function () use ($manager, $request, $storage, $em) {
-            $medias = $manager->uploadLink($request, ['filesLink' => '']);
+        $medias = $manager->uploadLink($request, ['filesLink' => '']);
 
-            $this->assertInstanceOf(Media::class, $medias['filesLink']);
-            $this->assertTrue($storage->device($medias['filesLink']->getStorage())->exists($medias['filesLink']->getPath()));
+        $this->assertInstanceOf(Media::class, $medias['filesLink']);
+        $this->assertTrue($storage->device($medias['filesLink']->getStorage())->exists($medias['filesLink']->getPath()));
 
-            array_walk_recursive($medias, static function ($media) use ($em) {
-                $em->remove($media);
-            });
-            $em->flush();
-
-            $this->assertFalse($storage->device($medias['filesLink']->getStorage())->exists($medias['filesLink']->getPath()));
+        array_walk_recursive($medias, static function ($media) use ($em) {
+            $em->remove($media);
         });
+        $em->flush();
+
+        $this->assertFalse($storage->device($medias['filesLink']->getStorage())->exists($medias['filesLink']->getPath()));
     }
 
     private function initDatabase(KernelInterface $kernel): void

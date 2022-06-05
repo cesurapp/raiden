@@ -37,10 +37,13 @@ class SwooleProcess
         }
 
         // Start
-        (new Process(fn (Process $p) => $p->exec($phpBinary, [
-            $this->rootDir.$this->options['entrypoint'],
-            '--config='.base64_encode(json_encode($options, JSON_THROW_ON_ERROR)),
-        ])))->start();
+        exec(
+            "$phpBinary ".implode(' ', [
+                $this->rootDir.$this->options['entrypoint'],
+                '--config='.base64_encode(json_encode($options, JSON_THROW_ON_ERROR)),
+                ' > /dev/null &',
+            ])
+        );
 
         $this->output->success('Swoole HTTP Server is Started');
 
