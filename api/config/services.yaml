@@ -11,6 +11,5 @@ services:
             - '../src/*/Entity'
             - '../src/*/Test'
             - '../src/*/Enum'
-            - '../src/*/Security'
             - '../src/*/Request'
             - '../src/Kernel.php'

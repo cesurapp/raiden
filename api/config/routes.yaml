@@ -19,3 +19,4 @@ thor:
 app_core:
   resource: "../src/Core/Controller"
   type: annotation
+  prefix: "api"

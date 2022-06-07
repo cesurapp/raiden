@@ -2,10 +2,7 @@
 
 namespace App\Core\Controller;
 
-use App\Core\Entity\UserEntity;
 use App\Core\Request\Login;
-use App\Core\Resources\FailedTaskResource;
-use App\Core\Resources\UserResource;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\StorageBundle\Storage\Storage;
@@ -74,7 +71,7 @@ class AuthController extends AbstractController
     }
 
     #[Route(path: '/user/{id}/{status}', methods: ['DELETE'])]
-    public function delete(UserEntity $user, string $status): ApiResponse
+    public function delete( $user, string $status): ApiResponse
     {
         return ApiResponse::create()
             ->setResource(UserResource::class)
