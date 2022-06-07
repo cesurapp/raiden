@@ -2,7 +2,7 @@
 
 namespace App\Core\Enum;
 
-enum UserRoles: string
+enum UserPermission: string
 {
     case ORG_ADMIN = 'org_admin';
 }

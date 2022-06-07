@@ -2,79 +2,74 @@
 
 namespace App\Core\Controller;
 
-use App\Core\Request\Login;
+use Ahc\Jwt\JWT;
+use App\Core\Entity\User;
 use Package\ApiBundle\Response\ApiResponse;
+use Package\ApiBundle\Response\ResponseTypeEnum;
 use Package\ApiBundle\Thor\Attribute\Thor;
-use Package\StorageBundle\Storage\Storage;
-use Package\SwooleBundle\Repository\FailedTaskRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class AuthController extends AbstractController
+class SecurityController extends AbstractController
 {
-    #[Route(path: '/')]
-    #[Thor(group: 'Homepage', desc: 'View Home Page')]
-    public function home(Request $request, Storage $storage): ApiResponse
+    #[Route(path: '/login', name: 'api_login')]
+    #[Thor(group: 'Security', desc: 'Login')]
+    public function login(#[CurrentUser] ?User $user): ApiResponse
     {
-        dump($request->files->count());
-        dump($request->files->get('filesss'));
-        // foreach (['', '', '', '', '', '', ''] as $item) {
-        //    TaskHandler::dispatch(TestTask::class, []);
-        // }
+        if (!$user) {
+            return ApiResponse::create(ResponseTypeEnum::ApiException, Response::HTTP_UNAUTHORIZED)
+                ->setData('Invalid credentials.');
+        }
 
-        return ApiResponse::create()
-            ->setData(['tama']);
+        // Create Token
+        $token = new JWT('secret', 'HS256', 1);
+
+        return ApiResponse::create()->setData([
+            'user' => $user,
+            'token' => $token->encode(['id' => $user->getId()->toBase32()]),
+        ]);
     }
 
-    #[Route(path: '/user', methods: ['GET'])]
-    #[Thor(desc: 'User List', query: [
-        'name' => '?string',
-        'fullName' => '?string',
-        'filter' => [
-            'id' => '?int',
-            'name' => '?string',
-            'fullName' => '?string',
-        ],
-        'data' => '?array',
-        'data2' => [],
-    ], paginate: true)]
-    public function list(FailedTaskRepository $userRepo): ApiResponse
+    #[Route(path: '/logout', name: 'api_logout')]
+    #[Thor(group: 'Security', desc: 'Logout')]
+    public function logout(): void
     {
-        $data = $userRepo->createQueryBuilder('q')->where('q.id = :p')->setParameter('p', '017f83b0-5d94-2b32-88a7-044906290a2f')->getQuery()->getResult();
-
-        return ApiResponse::create()
-            ->setData($data)
-            ->setResource(FailedTaskResource::class);
-        // ->setPaginate(1, false);
     }
 
-    #[Route(path: '/user/{id}', methods: ['GET'])]
-    #[Thor(response: [UserResource::class])]
-    public function show(int|null $user, Request $request): ApiResponse
+    #[Route(path: '/refresh-token', name: 'api_refresh_token')]
+    #[Thor(group: 'Security', desc: 'Login Refresh Token')]
+    public function refreshToken(): ApiResponse
     {
-        return ApiResponse::create()
-            ->setResource(UserResource::class)
-            ->setData($user);
+        return ApiResponse::create();
     }
 
-    #[Route(path: '/user/{id}', methods: ['PUT'])]
-    #[Thor(response: [UserResource::class], dto: Login::class)]
-    public function edit(int $id, Login $login): ApiResponse
+    #[Route(path: '/register', name: 'api_register')]
+    #[Thor(group: 'Security', desc: 'Register')]
+    public function register(): ApiResponse
     {
-        dump($login->validated());
-
-        return ApiResponse::create()
-            ->setData([]);
-        // ->setResource(UserResource::class)
-            // ->setData($user);
+        return ApiResponse::create()->setData(['']);
     }
 
-    #[Route(path: '/user/{id}/{status}', methods: ['DELETE'])]
-    public function delete( $user, string $status): ApiResponse
+    #[Route(path: '/confirm', name: 'api_confirm')]
+    #[Thor(group: 'Security', desc: 'Account Confirmation')]
+    public function confirmation(): ApiResponse
     {
-        return ApiResponse::create()
-            ->setResource(UserResource::class)
-            ->setData($user);
+        return ApiResponse::create()->setData(['']);
+    }
+
+    #[Route(path: '/resetting', name: 'api_resetting')]
+    #[Thor(group: 'Security', desc: 'Reset Password Request')]
+    public function resetRequest(): ApiResponse
+    {
+        return ApiResponse::create()->setData(['']);
+    }
+
+    #[Route(path: '/reset-password', name: 'api_reset_password')]
+    #[Thor(group: 'Security', desc: 'Change Password')]
+    public function resetPassword(): ApiResponse
+    {
+        return ApiResponse::create()->setData(['']);
     }
 }
