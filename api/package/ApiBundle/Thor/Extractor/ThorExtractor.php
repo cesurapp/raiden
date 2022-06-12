@@ -255,11 +255,11 @@ class ThorExtractor
             try {
                 $eClass = new ($refClass->getName())();
 
-                if ($refClass->hasMethod('getMessageKey')) {
-                    $message = $eClass->getMessageKey();
-                }
                 if ($refClass->hasMethod('getMessage')) {
                     $message = $eClass->getMessage();
+                }
+                if ($refClass->hasMethod('getMessageKey')) {
+                    $message = $eClass->getMessageKey();
                 }
             } catch (\Exception $exception) {
             }

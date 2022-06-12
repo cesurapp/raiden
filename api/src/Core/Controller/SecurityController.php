@@ -45,48 +45,53 @@ class SecurityController extends AbstractController
             ->setResource(UserResource::class);
     }
 
-    #[Route(path: '/logout', name: 'api_logout', methods: ['GET'])]
-    #[Thor(group: 'Security', desc: 'Logout', response: [
-        200 => [
-            'Operation successful.',
+    #[Route(path: '/logout', name: 'api_logout', methods: ['POST'])]
+    #[Thor(
+        group: 'Security',
+        desc: 'Logout',
+        response: [
+            200 => [
+                'Operation successful.',
+            ],
         ],
-    ])]
+        requireAuth: false
+    )]
     public function logout(): ApiResponse
     {
         return ApiResponse::msgSuccess()->setData('Operation successful.');
     }
 
-    #[Route(path: '/refresh-token', name: 'api_refresh_token')]
-    #[Thor(group: 'Security', desc: 'Login Refresh Token')]
+    #[Route(path: '/refresh-token', name: 'api_refresh_token', methods: ['POST'])]
+    #[Thor(group: 'Security', desc: 'Login with Refresh Token', requireAuth: false)]
     public function refreshToken(): ApiResponse
     {
         return ApiResponse::result();
     }
 
-    #[Route(path: '/register', name: 'api_register')]
-    #[Thor(group: 'Security', desc: 'Register')]
+    #[Route(path: '/register', name: 'api_register', methods: ['POST'])]
+    #[Thor(group: 'Security', desc: 'Register', requireAuth: false)]
     public function register(): ApiResponse
     {
         return ApiResponse::result()->setData(['']);
     }
 
-    #[Route(path: '/confirm', name: 'api_confirm')]
-    #[Thor(group: 'Security', desc: 'Account Confirmation')]
-    public function confirmation(): ApiResponse
+    #[Route(path: '/register-confirm/{token}', name: 'api_register_confirm', methods: ['GET'])]
+    #[Thor(group: 'Security', desc: 'Account Confirmation', requireAuth: false)]
+    public function confirmation(string $token): ApiResponse
     {
         return ApiResponse::result()->setData(['']);
     }
 
-    #[Route(path: '/resetting', name: 'api_resetting')]
-    #[Thor(group: 'Security', desc: 'Reset Password Request')]
+    #[Route(path: '/reset-request', name: 'api_reset_request', methods: ['POST'])]
+    #[Thor(group: 'Security', desc: 'Reset Password Request', requireAuth: false)]
     public function resetRequest(): ApiResponse
     {
         return ApiResponse::result()->setData(['']);
     }
 
-    #[Route(path: '/reset-password', name: 'api_reset_password')]
-    #[Thor(group: 'Security', desc: 'Change Password')]
-    public function resetPassword(): ApiResponse
+    #[Route(path: '/reset-password/{token}', name: 'api_reset_password', methods: ['POST'])]
+    #[Thor(group: 'Security', desc: 'Change Password', requireAuth: false)]
+    public function resetPassword(string $token): ApiResponse
     {
         return ApiResponse::result()->setData(['']);
     }
