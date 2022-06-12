@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Core\Security;
+namespace App\Core\Voter;
 
 use App\Core\Entity\User;
 use App\Core\Enum\UserType;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * SuperAdmin|Root User Voter.
+ */
 class RootVoter extends Voter
 {
     protected function supports(string $attribute, mixed $subject): bool

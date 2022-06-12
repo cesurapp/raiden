@@ -11,22 +11,22 @@ use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Organization
 {
+    use TimeStampTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id;
 
-    #[ORM\Column(type: 'string', length: 100, unique: true)]
+    #[ORM\Column(type: 'string')]
     private ?string $name;
 
     #[ORM\Column(type: 'boolean')]
     private bool $frozen = false;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: User::class)]
     private Collection $users;
@@ -62,18 +62,6 @@ class Organization
     public function setFrozen(bool $frozen): self
     {
         $this->frozen = $frozen;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): self
-    {
-        $this->createdAt = $createdAt;
 
         return $this;
     }

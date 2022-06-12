@@ -2,12 +2,13 @@
 
 namespace Package\ApiBundle\Response;
 
-enum ResponseTypeEnum
+enum ResponseStatusEnum
 {
     // Response
-    case ApiResult;
-    case ApiRedirect;
-    case ApiException;
+    case Result;
+    case Redirect;
+    case Exception;
+
     // Message
     case MessageSuccess;
     case MessageError;

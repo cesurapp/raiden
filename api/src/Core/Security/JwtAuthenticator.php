@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPasspor
 
 class JwtAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(private UserRepository $userRepo)
+    public function __construct(private UserRepository $userRepo, private JWT $jwt)
     {
     }
 
@@ -49,12 +49,11 @@ class JwtAuthenticator extends AbstractAuthenticator
 
     private function decodeJWT(string $bearer): array
     {
-        $jwt = new JWT('secret');
         $token = explode(' ', $bearer);
         if (!isset($token[1])) {
             throw new JWTException('Authorization token format incorrect.');
         }
 
-        return $jwt->decode($token[1]);
+        return $this->jwt->decode($token[1]);
     }
 }

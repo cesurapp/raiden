@@ -4,9 +4,12 @@ namespace Package\ApiBundle\Response;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
@@ -16,9 +19,9 @@ use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
  */
 class ApiResponse
 {
-    private ResponseTypeEnum $type = ResponseTypeEnum::ApiResult;
+    private ResponseStatusEnum $status = ResponseStatusEnum::Result;
 
-    private int $status = 200;
+    private int $statusCode = 200;
 
     private array $headers = [];
 
@@ -30,46 +33,26 @@ class ApiResponse
 
     private ?string $resource = null;
 
-    public static function create(ResponseTypeEnum $type = ResponseTypeEnum::ApiResult, int $status = 200): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public static function createError(ResponseTypeEnum $type = ResponseTypeEnum::MessageError, int $status = 403): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public static function createInfo(ResponseTypeEnum $type = ResponseTypeEnum::MessageInfo, int $status = 200): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public static function createWarn(ResponseTypeEnum $type = ResponseTypeEnum::MessageWarning, int $status = 200): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public function getType(): ResponseTypeEnum
-    {
-        return $this->type;
-    }
-
-    public function setType(ResponseTypeEnum $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getStatus(): int
+    public function getStatus(): ResponseStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(ResponseStatusEnum $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    public function setStatusCode(int $code): self
+    {
+        $this->statusCode = $code;
 
         return $this;
     }
@@ -158,6 +141,9 @@ class ApiResponse
         return $this;
     }
 
+    /**
+     * Check HTTP Proxy Cache.
+     */
     public function isHTTPCache(): bool
     {
         return $this->options['httpCache'] ?? false;
@@ -168,6 +154,9 @@ class ApiResponse
         return $this->options['httpCache'] ?? null;
     }
 
+    /**
+     * Enable HTTP Proxy Cache.
+     */
     public function setHTTPCache(int $lifetime = 60, ?array $tags = null): self
     {
         $this->options['httpCache'] = [
@@ -193,11 +182,8 @@ class ApiResponse
     /**
      * Download Binary File.
      */
-    public static function file(
-        \SplFileInfo|string $path,
-        string $fileName = '',
-        string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT
-    ): BinaryFileResponse {
+    public static function file(\SplFileInfo|string $path, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
+    {
         return (new BinaryFileResponse($path))->setContentDisposition($disposition, $fileName);
     }
 
@@ -225,5 +211,96 @@ class ApiResponse
                 $fileName ?? $file->getFilename()
             ),
         ]);
+    }
+
+    public static function result(ResponseStatusEnum $status = ResponseStatusEnum::Result, int $statusCode = 200): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    public static function exception(ResponseStatusEnum $status = ResponseStatusEnum::Exception, int $statusCode = 400): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    public static function msgSuccess(ResponseStatusEnum $status = ResponseStatusEnum::MessageSuccess, int $statusCode = 200): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    public static function msgError(ResponseStatusEnum $status = ResponseStatusEnum::MessageError, int $statusCode = 403): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    public static function msgInfo(ResponseStatusEnum $status = ResponseStatusEnum::MessageInfo, int $statusCode = 200): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    public static function msgWarn(ResponseStatusEnum $status = ResponseStatusEnum::MessageWarning, int $statusCode = 200): self
+    {
+        return (new self())->setStatus($status)->setStatusCode($statusCode);
+    }
+
+    /**
+     * Process Object Array Serialize.
+     */
+    public function processResponse(Request $request, ApiResourceLocator $resourceLocator): JsonResponse
+    {
+        // Init Paginator
+        if ($this->isPaginate()) {
+            $this->paginate($request);
+        }
+
+        // Process Resource
+        array_walk_recursive($this->data, function (&$data) use ($resourceLocator) {
+            if (is_object($data)) {
+                $data = $resourceLocator->process($data, $this->getResource());
+            }
+        });
+
+        // Add Status Type
+        $this->addData('status', $this->status->name);
+
+        // Create Response
+        $response = new JsonResponse($this->getData(), $this->getStatusCode(), $this->getHeaders());
+
+        // HTTP Cache
+        if ($this->isHTTPCache()) {
+            $response->setCache($this->getHTTPCache());
+        }
+
+        return $response;
+    }
+
+    /**
+     * Paginate Query to Offset.
+     */
+    private function paginate(Request $request): void
+    {
+        $config = $this->getPaginate();
+        $max = $config['max'];
+        $page = $request->query->getInt('page', 1);
+
+        // Paginate
+        $this->getQuery()?->setFirstResult(($page - 1) * $max)->setMaxResults($max + 1);
+        $paginator = new Paginator($this->getQuery(), $config['fetchJoin']);
+        $iterator = $paginator->getIterator();
+
+        $pager = [
+            'max' => $max,
+            'prev' => $page > 1 ? $page - 1 : null,
+            'next' => $iterator->count() > $max ? $page + 1 : null,
+            'current' => $page,
+        ];
+
+        if ($config['total']) {
+            $pager['total'] = $paginator->count();
+        }
+
+        // Append Pager Data
+        $this->addData('data', array_slice((array) $iterator, 0, $max));
+        $this->addData('pager', $pager);
     }
 }

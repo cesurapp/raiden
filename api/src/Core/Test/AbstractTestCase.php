@@ -25,6 +25,78 @@ abstract class AbstractTestCase extends WebTestCase
         $this->initDB();
     }
 
+    /**
+     * Validate & Decoded Array.
+     */
+    public function json(?string $content = null, ?string $key = null): string|array
+    {
+        try {
+            $decodedResponse = json_decode(
+                $content ?? $this->client()->getResponse()->getContent(),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        } catch (\Exception $e) {
+            $this->fail('Invalid JSON was returned from the route.');
+        }
+
+        return $key ? $decodedResponse[$key] : $decodedResponse;
+    }
+
+    /**
+     * Assert that the response has the exact given JSON.
+     */
+    public function assertExactJson(array $data, ?array $content = null): self
+    {
+        $this->assertEquals(
+            json_encode($data, JSON_THROW_ON_ERROR),
+            json_encode($content ?? $this->json(), JSON_THROW_ON_ERROR)
+        );
+
+        return $this;
+    }
+
+    /**
+     * Assert that the response JSON has the expected count of items at the given key.
+     */
+    public function assertJsonCount(int $count, string $key = null, ?array $content = null): self
+    {
+        $this->assertCount($count, $key ? $this->json(key: $key) : $this->json(), "Failed to assert that the response count matched the expected {$count}");
+
+        return $this;
+    }
+
+    /**
+     * Assert that the response has a given JSON structure.
+     */
+    public function assertJsonStructure(array $structure, array $responseData = null): self
+    {
+        if (is_null($responseData)) {
+            $responseData = $this->json();
+        }
+
+        foreach ($structure as $key => $value) {
+            if (is_array($value) && '*' === $key) {
+                $this->assertIsArray($responseData);
+
+                foreach ($responseData as $responseDataItem) {
+                    $this->assertJsonStructure($structure['*'], $responseDataItem);
+                }
+            } elseif (is_array($value)) {
+                $this->assertArrayHasKey($key, $responseData);
+                $this->assertJsonStructure($value, $responseData[$key]);
+            } else {
+                $this->assertArrayHasKey($value, $responseData);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Create Application User.
+     */
     public function createUser(bool $login = true, bool $createOrganization = true, string $password = '123123'): User
     {
         $user = (new User())
@@ -37,6 +109,7 @@ abstract class AbstractTestCase extends WebTestCase
             ->setPassword('123123')
             ->setEmail(Ulid::generate().'@test.com');
 
+        // Hash Password
         $passwordHasherFactory = new PasswordHasherFactory([
             PasswordAuthenticatedUserInterface::class => ['algorithm' => 'auto'],
         ]);
@@ -52,12 +125,18 @@ abstract class AbstractTestCase extends WebTestCase
         return $user;
     }
 
-    public function getClient(): KernelBrowser
+    /**
+     * Get HTTP Client.
+     */
+    public function client(): KernelBrowser
     {
         return $this->client;
     }
 
-    public function getManager(): EntityManagerInterface
+    /**
+     * Get Entity Manager.
+     */
+    public function manager(): EntityManagerInterface
     {
         if (!$this->manager) {
             $this->manager = self::getContainer()->get('doctrine')->getManager();
@@ -66,13 +145,16 @@ abstract class AbstractTestCase extends WebTestCase
         return $this->manager;
     }
 
+    /**
+     * Initialize DB.
+     */
     public function initDB(): void
     {
         if ('test' !== self::$kernel->getEnvironment()) {
             throw new \LogicException('Execution only in Test environment possible!');
         }
 
-        $con = $this->getManager()->getConnection();
+        $con = $this->manager()->getConnection();
         $name = $con->getParams()['dbname'];
 
         // Create DB
@@ -82,8 +164,8 @@ abstract class AbstractTestCase extends WebTestCase
         }
 
         // Update Schema
-        $metaData = $this->getManager()->getMetadataFactory()->getAllMetadata();
-        $schemaTool = new SchemaTool($this->getManager());
+        $metaData = $this->manager()->getMetadataFactory()->getAllMetadata();
+        $schemaTool = new SchemaTool($this->manager());
         $schemaTool->dropSchema($metaData);
         $schemaTool->updateSchema($metaData);
     }

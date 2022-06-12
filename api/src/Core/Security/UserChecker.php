@@ -11,7 +11,6 @@ class UserChecker implements UserCheckerInterface
 {
     /**
      * @param User $user
-     * @return void
      */
     public function checkPreAuth(UserInterface $user): void
     {

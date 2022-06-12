@@ -6,7 +6,7 @@ use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Response\ResponseTypeEnum;
+use Package\ApiBundle\Response\ResponseStatusEnum;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 use ReflectionClass;
@@ -214,7 +214,7 @@ class ThorExtractor
             $attr['page'] = 'int';
         }
 
-        return array_replace_recursive($attr, $attrThor['get'] ?? []);
+        return array_replace_recursive($attr, $attrThor['query'] ?? []);
     }
 
     /**
@@ -237,10 +237,8 @@ class ThorExtractor
      */
     private function extractResponse(array $thorAttr, ReflectionMethod $refMethod, array $methods): array
     {
-        $response = [];
-
         // Render Exception Class
-        $renderException = static function (ReflectionClass|string $refClass) {
+        $renderException = static function (ReflectionClass|string $refClass, int|string $code) {
             if (is_string($refClass)) {
                 $refClass = new ReflectionClass($refClass);
             }
@@ -250,10 +248,27 @@ class ThorExtractor
                 return $result;
             }, []);
 
+            $exceptionCode = $parameters['code']->getDefaultValue();
+            $message = $parameters['message']->getDefaultValue();
+
+            // Create Class
+            try {
+                $eClass = new ($refClass->getName())();
+
+                if ($refClass->hasMethod('getMessageKey')) {
+                    $message = $eClass->getMessageKey();
+                }
+                if ($refClass->hasMethod('getMessage')) {
+                    $message = $eClass->getMessage();
+                }
+            } catch (\Exception $exception) {
+            }
+
             $exception = [
-                'type' => ResponseTypeEnum::ApiException->name,
-                'code' => $parameters['code']->getDefaultValue(),
-                'message' => $parameters['message']->getDefaultValue(),
+                'status' => ResponseStatusEnum::Exception->name,
+                'type' => $refClass->getShortName(),
+                'code' => $exceptionCode > 0 ? $exceptionCode : $code,
+                'message' => $message,
             ];
 
             if (isset($parameters['errors'])) {
@@ -272,39 +287,33 @@ class ThorExtractor
             if (count($thorResource)) {
                 $data = $thorResource[0]->getArguments()['data'];
 
-                return [
-                    'type' => 'ApiResult',
-                    'data' => !empty($thorAttr['paginate']) ? [$data] : $data,
-                ];
+                return !empty($thorAttr['paginate']) ? [$data] : $data;
             }
 
             return [];
         };
 
-        foreach ($thorAttr['response'] as $resKey => $resValue) {
+        array_walk_recursive($thorAttr['response'], static function (&$resValue, $resKey) use ($renderResource, $renderException) {
             // Class
             if (!is_array($resValue) && class_exists($resValue)) {
                 $refClass = new ReflectionClass($resValue);
 
                 // Resources
                 if ($refClass->implementsInterface(ApiResourceInterface::class)) {
-                    $response[$resKey > 50 ? $resKey : 200] = $renderResource($refClass);
+                    $resValue = $renderResource($refClass);
                 }
 
                 // Exceptions
                 if ($refClass->implementsInterface(\Throwable::class)) {
-                    $exception = $renderException($resValue);
-                    $response[$exception['code']] = $exception;
+                    $resValue = $renderException($resValue, $resKey);
                 }
-            } else {
-                // Custom
-                $response[$resKey] = $resValue;
             }
-        }
+        });
+        $response = $thorAttr['response'];
 
         // Append DTO Exception Response
         if (isset($thorAttr['dto']) && !in_array('GET', $methods, false)) {
-            $exception = $renderException(ValidationException::class);
+            $exception = $renderException(ValidationException::class, 403);
             $response[$exception['code']] = $exception;
         }
 
@@ -323,7 +332,7 @@ class ThorExtractor
         if (ApiResponse::class === $refMethod->getReturnType()?->getName()) { // @phpstan-ignore-line
             if (!$response) {
                 $response[200] = [
-                    'type' => ResponseTypeEnum::ApiResult->name,
+                    'type' => ResponseStatusEnum::Result->name,
                 ];
             }
         }
@@ -348,7 +357,7 @@ class ThorExtractor
             }
         }
 
-        return array_replace_recursive($attr, $attrThor['post'] ?? []);
+        return array_replace_recursive($attr, $attrThor['request'] ?? []);
     }
 
     /**

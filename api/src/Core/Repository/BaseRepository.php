@@ -6,6 +6,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Global Main Repository.
+ */
 abstract class BaseRepository extends ServiceEntityRepository
 {
     public function add(object $object, bool $flush): void

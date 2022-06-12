@@ -13,7 +13,6 @@ class AccountController extends AbstractApiController
     #[Route(path: 'profile')]
     public function getProfile(#[CurrentUser] ?User $user): ApiResponse
     {
-        return ApiResponse::create()
-            ->setData(['asdas']);
+        return ApiResponse::result()->setData(['asdas']);
     }
 }

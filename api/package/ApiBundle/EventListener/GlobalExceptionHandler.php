@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\EventListener;
 
+use Package\ApiBundle\Response\ResponseStatusEnum;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ class GlobalExceptionHandler implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : $exception->getCode();
         $message = [
+            'status' => ResponseStatusEnum::Exception->name,
             'type' => (new \ReflectionClass($exception))->getShortName(),
             'code' => isset(Response::$statusTexts[$code]) ? $code : 500,
             'message' => $exception->getMessage(),

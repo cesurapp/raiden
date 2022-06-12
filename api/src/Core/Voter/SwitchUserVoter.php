@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Security;
+namespace App\Core\Voter;
 
 class SwitchUserVoter
 {
