@@ -22,7 +22,7 @@ use Symfony\Contracts\Service\ServiceSubscriberInterface;
  */
 abstract class AbstractApiController implements ServiceSubscriberInterface
 {
-    protected ContainerInterface $container;
+    protected ?ContainerInterface $container = null;
 
     /**
      * @required

@@ -6,16 +6,16 @@ use Ahc\Jwt\JWT;
 use App\Core\Entity\User;
 use App\Core\Repository\RefreshTokenRepository;
 use App\Core\Resource\UserResource;
+use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
  * Global Authorization Management.
  */
-class SecurityController extends AbstractController
+class SecurityController extends AbstractApiController
 {
     #[Route(path: '/login', name: 'api_login', methods: ['POST'])]
     #[Thor(

@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\DependencyInjection;
 
+use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,6 +13,9 @@ class ApiExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $container->registerForAutoconfiguration(AbstractApiController::class)
+            ->addTag('controller.service_arguments');
+
         // Register Configuration
         foreach ($this->processConfiguration(new ApiConfiguration(), $configs) as $key => $value) {
             $container->getParameterBag()->set('thor.'.$key, $value);
