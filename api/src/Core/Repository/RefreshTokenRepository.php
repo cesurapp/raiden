@@ -44,7 +44,10 @@ class RefreshTokenRepository extends BaseRepository
         }
 
         $token = (new RefreshToken())
-            ->setToken($jwt->encode(['exp' => time() + (86400 * $this->bag->get('core.refresh_token_exp'))]))
+            ->setToken($jwt->encode([
+                'id' => $user->getId()->toBase32(),
+                'exp' => time() + (86400 * $this->bag->get('core.refresh_token_exp')),
+            ]))
             ->setOwner($user);
 
         $this->em()->persist($token);

@@ -3,12 +3,15 @@
 namespace App\Core\Controller;
 
 use Ahc\Jwt\JWT;
+use Ahc\Jwt\JWTException;
 use App\Core\Entity\User;
+use App\Core\Exception\TokenExpiredException;
 use App\Core\Repository\RefreshTokenRepository;
 use App\Core\Resource\UserResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -17,7 +20,6 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
  */
 class SecurityController extends AbstractApiController
 {
-    #[Route(path: '/login', name: 'api_login', methods: ['POST'])]
     #[Thor(
         group: 'Security',
         desc: 'Login User',
@@ -34,6 +36,7 @@ class SecurityController extends AbstractApiController
         ],
         requireAuth: false
     )]
+    #[Route(path: '/login', name: 'api_login', methods: ['POST'])]
     public function login(#[CurrentUser] User $user, JWT $jwt, RefreshTokenRepository $repo): ApiResponse
     {
         return ApiResponse::result()
@@ -45,7 +48,6 @@ class SecurityController extends AbstractApiController
             ->setResource(UserResource::class);
     }
 
-    #[Route(path: '/logout', name: 'api_logout', methods: ['POST'])]
     #[Thor(
         group: 'Security',
         desc: 'Logout',
@@ -56,16 +58,29 @@ class SecurityController extends AbstractApiController
         ],
         requireAuth: false
     )]
+    #[Route(path: '/logout', name: 'api_logout', methods: ['POST'])]
     public function logout(): ApiResponse
     {
         return ApiResponse::msgSuccess()->setData('Operation successful.');
     }
 
-    #[Route(path: '/refresh-token', name: 'api_refresh_token', methods: ['POST'])]
     #[Thor(group: 'Security', desc: 'Login with Refresh Token', requireAuth: false)]
-    public function refreshToken(): ApiResponse
+    #[Route(path: '/refresh-token', name: 'api_refresh_token', methods: ['POST'])]
+    public function refreshToken(Request $request, JWT $jwt, RefreshTokenRepository $repo): ApiResponse
     {
-        return ApiResponse::result();
+        // Verify Refresh Token
+        try {
+            $token = $jwt->decode($request->request->get('token', ''));
+        } catch (JWTException $exception) {
+            if (JWT::ERROR_TOKEN_EXPIRED === $exception->getCode()) {
+                throw new TokenExpiredException();
+            }
+
+            throw $exception;
+        }
+
+        // Generate New Token
+        return ApiResponse::result()->setData(['token' => $jwt->encode(['id' => $token['id']])]);
     }
 
     #[Route(path: '/register', name: 'api_register', methods: ['POST'])]

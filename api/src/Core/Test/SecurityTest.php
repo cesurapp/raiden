@@ -2,6 +2,8 @@
 
 namespace App\Core\Test;
 
+use Ahc\Jwt\JWT;
+
 class SecurityTest extends AbstractTestCase
 {
     public function testLogin(): void
@@ -37,6 +39,7 @@ class SecurityTest extends AbstractTestCase
     public function testRefreshToken(): void
     {
         $user = $this->createUser(false);
+        $jwt = self::getContainer()->get(JWT::class);
 
         // Login Api
         $this->client()->jsonRequest('POST', '/api/v1/login', ['username' => $user->getEmail(), 'password' => '123123']);
@@ -44,10 +47,24 @@ class SecurityTest extends AbstractTestCase
         $this->assertJsonStructure(['token', 'refresh-token']);
 
         $token = $this->json(key: 'token');
+        $refreshToken = $this->json(key: 'refresh-token');
 
-        // Login with Token
+        // Validate Refresh Token Expiry
+        $jwt->setTestTimestamp(time() + (86400 * 29));
+        $jwt->decode($refreshToken);
+
+        // Generate New Token
+        sleep(1);
+        $this->client()->jsonRequest('POST', '/api/v1/refresh-token', [
+            'token' => $refreshToken,
+        ]);
+        $newToken = $this->json(key: 'token');
+        $this->assertEquals(200, $this->client()->getResponse()->getStatusCode());
+        $this->assertNotSame($token, $newToken);
+
+        // Login with New Token
         $this->client()->jsonRequest('GET', '/api/v1/profile', server: [
-            'HTTP_AUTHORIZATION' => 'Bearer '.$token,
+            'HTTP_AUTHORIZATION' => 'Bearer '.$newToken,
         ]);
         $this->assertEquals(200, $this->client()->getResponse()->getStatusCode());
     }
