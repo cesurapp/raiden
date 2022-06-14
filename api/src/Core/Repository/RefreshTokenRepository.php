@@ -6,6 +6,7 @@ use Ahc\Jwt\JWT;
 use App\Core\Entity\RefreshToken;
 use App\Core\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * @method RefreshToken|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RefreshTokenRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private ParameterBagInterface $bag)
     {
         parent::__construct($registry, RefreshToken::class);
     }
@@ -43,9 +44,7 @@ class RefreshTokenRepository extends BaseRepository
         }
 
         $token = (new RefreshToken())
-            ->setToken($jwt->encode([
-                'exp' => time() + (86400 * 30),
-            ]))
+            ->setToken($jwt->encode(['exp' => time() + (86400 * $this->bag->get('core.refresh_token_exp'))]))
             ->setOwner($user);
 
         $this->em()->persist($token);

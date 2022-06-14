@@ -1,3 +1,6 @@
+parameters:
+    core.refresh_token_exp: "%env(APP_JWT_REFRESH_TOKEN_EXP)%"
+
 services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -17,6 +20,6 @@ services:
     # JWT Token Manager
     Ahc\Jwt\JWT:
         arguments:
-            $key: '%env(APP_JWT_SECRET)%'
+            $key: "%env(APP_JWT_SECRET)%"
             $algo: 'HS256'
-            $maxAge: 3600
+            $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
