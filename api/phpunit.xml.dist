@@ -18,9 +18,6 @@
         <server name="KERNEL_CLASS" value="App\Kernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
 
-        <!--Database-->
-        <server name="DATABASE_URL" value="postgresql://:@127.0.0.1:5432/ecommerce?serverVersion=14" force="true"/>
-
         <!--App ENV-->
         <env name="APP_STORAGE" value="local"/>
         <env name="APP_LOG_STDIN" value="1"/>
