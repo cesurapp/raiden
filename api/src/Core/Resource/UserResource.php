@@ -2,11 +2,15 @@
 
 namespace App\Core\Resource;
 
+use App\Core\Entity\User;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 
 class UserResource implements ApiResourceInterface
 {
+    /**
+     * @param User $item
+     */
     #[ThorResource(data: [
         'id' => 'string',
         'first_name' => 'string',

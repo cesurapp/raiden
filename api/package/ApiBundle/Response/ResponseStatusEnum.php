@@ -8,7 +8,6 @@ enum ResponseStatusEnum
     case Result;
     case Redirect;
     case Exception;
-
     // Message
     case MessageSuccess;
     case MessageError;
