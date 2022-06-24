@@ -13,46 +13,28 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Symfony Global Response | Paginator.
  */
 class ApiResponse
 {
-    private ResponseStatusEnum $status = ResponseStatusEnum::Result;
-
-    private int $statusCode = 200;
-
+    private int $code = 200;
     private array $headers = [];
-
-    private array|string|int|bool|object|null $data = [];
-
+    private mixed $data = [];
+    private array $options = [];
+    private ?string $resource = null;
     private Query|QueryBuilder|null $query = null;
 
-    private array $options = [];
-
-    private ?string $resource = null;
-
-    public function getStatus(): ResponseStatusEnum
+    public function getCode(): int
     {
-        return $this->status;
+        return $this->code;
     }
 
-    public function setStatus(ResponseStatusEnum $status): self
+    public function setCode(int $code): self
     {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->statusCode;
-    }
-
-    public function setStatusCode(int $code): self
-    {
-        $this->statusCode = $code;
+        $this->code = $code;
 
         return $this;
     }
@@ -76,12 +58,19 @@ class ApiResponse
         return $this;
     }
 
-    public function getData(): array|bool|int|string|object|null
+    public function setCorsOrigin(?string $domain = null): self
+    {
+        $this->headers['Access-Control-Allow-Origin'] = $domain ?? getenv('APP_DEFAULT_URI');
+
+        return $this;
+    }
+
+    public function getData(): mixed
     {
         return $this->data;
     }
 
-    public function setData(array|bool|int|string|object|null $data): self
+    public function setData(mixed $data): self
     {
         $this->data = $data;
 
@@ -179,6 +168,17 @@ class ApiResponse
         return $this->options[$key];
     }
 
+    public function addMessage(string $message, MessageType $messageType = MessageType::SUCCESS): self
+    {
+        if (!isset($this->data['message'][$messageType->value])) {
+            $this->data['message'][$messageType->value] = [];
+        }
+
+        $this->data['message'][$messageType->value][] = $message;
+
+        return $this;
+    }
+
     /**
      * Download Binary File.
      */
@@ -213,40 +213,15 @@ class ApiResponse
         ]);
     }
 
-    public static function result(ResponseStatusEnum $status = ResponseStatusEnum::Result, int $statusCode = 200): self
+    public static function create(int $code = 200): self
     {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
-    }
-
-    public static function exception(ResponseStatusEnum $status = ResponseStatusEnum::Exception, int $statusCode = 400): self
-    {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
-    }
-
-    public static function msgSuccess(ResponseStatusEnum $status = ResponseStatusEnum::MessageSuccess, int $statusCode = 200): self
-    {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
-    }
-
-    public static function msgError(ResponseStatusEnum $status = ResponseStatusEnum::MessageError, int $statusCode = 403): self
-    {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
-    }
-
-    public static function msgInfo(ResponseStatusEnum $status = ResponseStatusEnum::MessageInfo, int $statusCode = 200): self
-    {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
-    }
-
-    public static function msgWarn(ResponseStatusEnum $status = ResponseStatusEnum::MessageWarning, int $statusCode = 200): self
-    {
-        return (new self())->setStatus($status)->setStatusCode($statusCode);
+        return (new self())->setCode($code);
     }
 
     /**
      * Process Object Array Serialize.
      */
-    public function processResponse(Request $request, ApiResourceLocator $resourceLocator): JsonResponse
+    public function processResponse(Request $request, ApiResourceLocator $resourceLocator, TranslatorInterface $translator): JsonResponse
     {
         // Init Paginator
         if ($this->isPaginate()) {
@@ -260,11 +235,17 @@ class ApiResponse
             }
         });
 
-        // Add Status Type
-        $this->addData('status', $this->status->name);
+        // Message Translator
+        if (isset($this->data['message'])) {
+            foreach ($this->data['message'] as $type => $messages) {
+                $this->data['message'][$type] = array_map(static function ($message) use ($translator) {
+                    return $translator->trans($message);
+                }, $messages);
+            }
+        }
 
         // Create Response
-        $response = new JsonResponse($this->getData(), $this->getStatusCode(), $this->getHeaders());
+        $response = new JsonResponse($this->getData(), $this->getCode(), $this->getHeaders());
 
         // HTTP Cache
         if ($this->isHTTPCache()) {
@@ -280,18 +261,17 @@ class ApiResponse
     private function paginate(Request $request): void
     {
         $config = $this->getPaginate();
-        $max = $config['max'];
         $page = $request->query->getInt('page', 1);
 
         // Paginate
-        $this->getQuery()?->setFirstResult(($page - 1) * $max)->setMaxResults($max + 1);
+        $this->getQuery()?->setFirstResult(($page - 1) * $config['max'])->setMaxResults($config['max'] + 1);
         $paginator = new Paginator($this->getQuery(), $config['fetchJoin']);
         $iterator = $paginator->getIterator();
 
         $pager = [
-            'max' => $max,
+            'max' => $config['max'],
             'prev' => $page > 1 ? $page - 1 : null,
-            'next' => $iterator->count() > $max ? $page + 1 : null,
+            'next' => $iterator->count() > $config['max'] ? $page + 1 : null,
             'current' => $page,
         ];
 
@@ -300,7 +280,7 @@ class ApiResponse
         }
 
         // Append Pager Data
-        $this->addData('data', array_slice((array) $iterator, 0, $max));
+        $this->addData('data', array_slice((array) $iterator, 0, $config['max']));
         $this->addData('pager', $pager);
     }
 }

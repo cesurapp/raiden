@@ -4,8 +4,6 @@
  * Thor Global Api Documentation Configuration.
  */
 
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-
 return static function () {
     return [
         'requireAuth' => true,
@@ -19,9 +17,7 @@ return static function () {
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
         ],
-        'response' => [
-            401 => BadCredentialsException::class,
-        ],
+        'response' => [],
         'hidden' => false,
         'paginate' => false,
     ];

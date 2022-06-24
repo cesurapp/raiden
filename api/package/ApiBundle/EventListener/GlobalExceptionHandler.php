@@ -2,18 +2,22 @@
 
 namespace Package\ApiBundle\EventListener;
 
-use Package\ApiBundle\Response\ResponseStatusEnum;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Global Exception Handler.
  */
 class GlobalExceptionHandler implements EventSubscriberInterface
 {
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function onKernelException(ExceptionEvent $event): void
     {
         if ('dev' === $_ENV['APP_ENV']) {
@@ -24,10 +28,9 @@ class GlobalExceptionHandler implements EventSubscriberInterface
         $exception = $event->getThrowable();
         $code = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : $exception->getCode();
         $message = [
-            'status' => ResponseStatusEnum::Exception->name,
             'type' => (new \ReflectionClass($exception))->getShortName(),
             'code' => isset(Response::$statusTexts[$code]) ? $code : 500,
-            'message' => $exception->getMessage(),
+            'message' => $this->translator->trans($exception->getMessage(), domain: 'exception'),
         ];
 
         // Append Fields

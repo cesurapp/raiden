@@ -11,7 +11,6 @@
         <ini name="error_reporting" value="-1"/>
         <server name="APP_ENV" value="test" force="true"/>
         <server name="APP_SECRET" value="f3ca4e95684cbae9f79891651296816e" force="true"/>
-        <server name="APP_LOG_LEVEL" value="warning" force="true"/>
         <server name="SHELL_VERBOSITY" value="-1"/>
         <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
@@ -21,6 +20,7 @@
         <!--App ENV-->
         <env name="APP_STORAGE" value="local"/>
         <env name="APP_LOG_STDIN" value="1"/>
+        <server name="APP_LOG_LEVEL" value="warning" force="true"/>
 
         <!--Storage Bundle Test-->
         <server name="BACKBLAZE_ACCESS_KEY" value="00489aac55fc62a0000000003"/>

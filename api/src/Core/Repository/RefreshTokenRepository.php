@@ -5,6 +5,7 @@ namespace App\Core\Repository;
 use Ahc\Jwt\JWT;
 use App\Core\Entity\RefreshToken;
 use App\Core\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -43,13 +44,29 @@ class RefreshTokenRepository extends BaseRepository
             $this->clearToken($user);
         }
 
+        $exp = time() + (86400 * $this->bag->get('core.refresh_token_exp'));
+
         $token = (new RefreshToken())
-            ->setToken($jwt->encode(['exp' => time() + (86400 * $this->bag->get('core.refresh_token_exp'))]))
-            ->setOwner($user);
+            ->setToken($jwt->encode([
+                'id' => $user->getId()->toBase32(),
+                'exp' => $exp,
+            ]))
+            ->setOwner($user)
+            ->setExpiredAt(\DateTimeImmutable::createFromFormat('U', (string) $exp));
 
         $this->em()->persist($token);
         $this->em()->flush();
 
         return $token;
+    }
+
+    public function checkToken(string $token, int $expiredTimeStamp): bool
+    {
+        return (bool) $this->createQueryBuilder('t')
+            ->where('t.token = :token')
+            ->andWhere('t.expiredAt <= :expiredAt')
+            ->setParameter('token', $token)
+            ->setParameter('expiredAt', DateTimeImmutable::createFromFormat('U', (string) $expiredTimeStamp))
+            ->getQuery()->getOneOrNullResult();
     }
 }

@@ -7,11 +7,15 @@ security:
             entity:
                 class: App\Core\Entity\User
     firewalls:
+        # Profiler
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # API Firewall
         main:
-            pattern: ^/api
+            security: true
+            pattern: ^/(v1|v2)
             provider: user_provider
             lazy: true
             stateless: true
@@ -22,5 +26,8 @@ security:
                 check_path: api_login
 
     access_control:
-        - { path: ^/api/(login|logout|register|resetting|reset-password), roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # Auth
+        - { path: ^/(v1|v2)/auth, roles: PUBLIC_ACCESS }
+
+        # Global
+        - { path: ^/(v1|v2), roles: IS_AUTHENTICATED_FULLY }

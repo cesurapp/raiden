@@ -6,6 +6,7 @@ use App\Core\Repository\RefreshTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -25,6 +26,9 @@ class RefreshToken
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private User $owner;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    private DateTimeImmutable $expiredAt;
 
     public function getId(): ?Ulid
     {
@@ -51,6 +55,18 @@ class RefreshToken
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getExpiredAt(): DateTimeImmutable
+    {
+        return $this->expiredAt;
+    }
+
+    public function setExpiredAt(DateTimeImmutable $expiredAt): self
+    {
+        $this->expiredAt = $expiredAt;
 
         return $this;
     }

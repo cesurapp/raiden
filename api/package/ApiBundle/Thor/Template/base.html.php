@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Developer API Documentation</title>
+    <title>API Documentation</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -78,24 +78,31 @@
         }
 
         .route .method {
+            min-width: 65px;
+        }
+        .route .method.clear {
+            min-width: inherit;
+        }
+        .route .method a,
+        .route .method span {
             border-radius: .2rem;
             padding: .2rem .4rem;
             font-weight: 500;
             color: #FFF;
         }
-        .route .method.get {
+        .route .method.get span {
             background: #49cc90;
         }
-        .route .method.post {
+        .route .method.post span {
             background: #61affe;
         }
-        .route .method.put {
+        .route .method.put span {
             background: #fca130;
         }
-        .route .method.patch {
+        .route .method.patch span {
             background: #a730fc;
         }
-        .route .method.delete {
+        .route .method.delete span {
             background: #f93e3e;
         }
         .route .uri {
@@ -123,7 +130,7 @@
     <div class="d-flex align-items-center p-3 my-3 text-white rounded shadow-sm header">
         <i class="fa-solid fa-book fa-2xl"></i>
         <div class="ms-3">
-            <h1 class="h5 mb-1 text-white lh-1">Developer API Documentation</h1>
+            <h1 class="h5 mb-1 text-white lh-1">API Documentation</h1>
             <small>Version: <?php echo $version ? date('d.m.Y H:i', $version) : 'Latest'; ?></small>
         </div>
         <div class="ms-auto">
@@ -179,14 +186,17 @@
                                 <h3 class="accordion-header small">
                                     <button class="accordion-button route collapsed" data-bs-toggle="collapse" data-bs-target="#panel<?php echo $groupName.$routeUri; ?>">
                                         <?php foreach ($route['routerMethod'] as $method) { ?>
-                                            <span class="method <?php echo strtolower($method); ?>"><?php echo $method; ?></span>
-                                        <?php } ?>
-                                        <?php if ($route['requireAuth']) { ?>
-                                            <a class="method auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
+                                            <div class="method <?php echo strtolower($method); ?>"><span><?php echo $method; ?></span></div>
                                         <?php } ?>
                                         <span class="uri"><?php echo $route['path']; ?></span>
                                         <span class="desc"><?php echo $route['desc']; ?></span>
-                                        <span class="ms-auto"><?php echo $route['controllerResponseType']; ?></span>
+                                        <span class="ms-auto"></span>
+                                        <?php if ($route['requireAuth']) { ?>
+                                            <div class="method clear">
+                                                <a class="auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
+                                            </div>
+                                        <?php } ?>
+                                        <span><?php echo $route['controllerResponseType']; ?></span>
                                     </button>
                                 </h3>
 
@@ -286,7 +296,7 @@
                                                     <div id="panelResponse<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['response'] as $code => $response) { ?>
                                                             <div class="mb-0 d-flex">
-                                                                <span class="d-inline-block" style="min-width: 30%;"><?php echo($statusText[$code] ?? '').' '.$code; ?>:</span>
+                                                                <span class="d-inline-block" style="min-width: 30%;"><?php echo($statusText[$response['code'] ?? $code] ?? '').' '.($response['code'] ?? $code); ?>:</span>
                                                                 <code><pre class="mb-0"><?php echo json_encode($response, JSON_PRETTY_PRINT); ?></pre></code>
                                                             </div>
                                                         <?php } ?>

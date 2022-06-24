@@ -4,6 +4,7 @@ namespace App\Core\Security;
 
 use Ahc\Jwt\JWT;
 use Ahc\Jwt\JWTException;
+use App\Core\Exception\TokenExpiredException;
 use App\Core\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +55,14 @@ class JwtAuthenticator extends AbstractAuthenticator
             throw new JWTException('Authorization token format incorrect.');
         }
 
-        return $this->jwt->decode($token[1]);
+        try {
+            return $this->jwt->decode($token[1]);
+        } catch (JWTException $exception) {
+            if (JWT::ERROR_TOKEN_EXPIRED === $exception->getCode()) {
+                throw new TokenExpiredException();
+            }
+
+            throw $exception;
+        }
     }
 }

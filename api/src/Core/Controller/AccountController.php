@@ -10,9 +10,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AccountController extends AbstractApiController
 {
-    #[Route(path: 'profile')]
+    #[Route(path: '/v1/profile')]
     public function getProfile(#[CurrentUser] ?User $user): ApiResponse
     {
-        return ApiResponse::result()->setData(['asdas']);
+        return ApiResponse::create()->setData(['asdas']);
     }
 }

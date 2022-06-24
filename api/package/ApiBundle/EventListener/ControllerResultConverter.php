@@ -7,13 +7,14 @@ use Package\ApiBundle\Response\ApiResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Controller Result Convert to Symfony Response.
  */
 class ControllerResultConverter implements EventSubscriberInterface
 {
-    public function __construct(private readonly ApiResourceLocator $resourceLocator)
+    public function __construct(private readonly ApiResourceLocator $resourceLocator, private TranslatorInterface $translator)
     {
     }
 
@@ -22,7 +23,7 @@ class ControllerResultConverter implements EventSubscriberInterface
         /** @var ApiResponse $apiResponse */
         $apiResponse = $event->getControllerResult();
         if ($apiResponse instanceof ApiResponse) {
-            $event->setResponse($apiResponse->processResponse($event->getRequest(), $this->resourceLocator));
+            $event->setResponse($apiResponse->processResponse($event->getRequest(), $this->resourceLocator, $this->translator));
         }
     }
 

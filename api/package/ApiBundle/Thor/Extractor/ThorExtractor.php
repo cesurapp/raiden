@@ -5,8 +5,6 @@ namespace Package\ApiBundle\Thor\Extractor;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Response\ResponseStatusEnum;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 use ReflectionClass;
@@ -261,14 +259,16 @@ class ThorExtractor
                 if ($refClass->hasMethod('getMessageKey')) {
                     $message = $eClass->getMessageKey();
                 }
+                if ($eClass->getCode()) {
+                    $exceptionCode = $eClass->getCode();
+                }
             } catch (\Exception $exception) {
             }
 
             $exception = [
-                'status' => ResponseStatusEnum::Exception->name,
                 'type' => $refClass->getShortName(),
-                'code' => $exceptionCode > 0 ? $exceptionCode : $code,
-                'message' => $message,
+                'code' => 'int',
+                'message' => 'string',
             ];
 
             if (isset($parameters['errors'])) {
@@ -309,17 +309,37 @@ class ThorExtractor
                 }
             }
         });
-        $response = $thorAttr['response'];
+
+        // Append Message Format
+        $source = $this->getMethodSource($refMethod);
+        if (str_contains($source, '->addMessage(')) {
+            $content = ['message' => []];
+
+            if (str_contains($source, 'MessageType::ERROR')) {
+                $content['message']['error'] = '?array';
+            }
+            if (str_contains($source, 'MessageType::WARNING')) {
+                $content['message']['error'] = '?array';
+            }
+            if (str_contains($source, 'MessageType::INFO')) {
+                $content['message']['error'] = '?array';
+            }
+            if (str_contains($source, 'MessageType::SUCCESS') || false !== preg_match('/addMessage[^\:\:]+$/', $source)) {
+                $content['message']['error'] = '?array';
+            }
+
+            $thorAttr['response'][200] = array_merge($thorAttr['response'][200] ?? [], $content);
+        }
 
         // Append DTO Exception Response
         if (isset($thorAttr['dto']) && !in_array('GET', $methods, false)) {
             $exception = $renderException(ValidationException::class, 403);
-            $response[$exception['code']] = $exception;
+            $thorAttr['response'][$exception['code']] = $exception;
         }
 
         // Append Pagination
         if (!empty($thorAttr['paginate'])) {
-            $response[200]['pager'] = [
+            $thorAttr['response'][200]['pager'] = [
                 'max' => 'int',
                 'current' => 'int',
                 'prev' => '?int',
@@ -328,18 +348,9 @@ class ThorExtractor
             ];
         }
 
-        // Empty Response
-        if (ApiResponse::class === $refMethod->getReturnType()?->getName()) { // @phpstan-ignore-line
-            if (!$response) {
-                $response[200] = [
-                    'type' => ResponseStatusEnum::Result->name,
-                ];
-            }
-        }
+        ksort($thorAttr['response']);
 
-        ksort($response);
-
-        return $response;
+        return $thorAttr['response'];
     }
 
     /**
@@ -473,5 +484,17 @@ class ThorExtractor
     private function baseClass(string|object|null $class): string|null
     {
         return $class ? basename(str_replace('\\', '/', is_object($class) ? get_class($class) : $class)) : null;
+    }
+
+    /**
+     * ReflectionMethod Get Source Code.
+     */
+    private function getMethodSource(ReflectionMethod $method): string
+    {
+        $start_line = $method->getStartLine() - 1;
+        $length = $method->getEndLine() - $start_line;
+        $source = file($method->getFileName());
+
+        return trim(implode('', array_slice($source, $start_line, $length)));
     }
 }
