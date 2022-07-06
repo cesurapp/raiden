@@ -1,6 +1,6 @@
 framework:
     # Default Locale
-    default_locale: tr
+    default_locale: en
 
     # Enabled Locales
     enabled_locales: [ 'en', 'tr' ]
@@ -9,13 +9,6 @@ framework:
     set_locale_from_accept_language: true
 
     translator:
-        default_path: '%kernel.project_dir%/translations'
-        fallbacks:
-            - tr
-#        providers:
-#            crowdin:
-#                dsn: '%env(CROWDIN_DSN)%'
-#            loco:
-#                dsn: '%env(LOCO_DSN)%'
-#            lokalise:
-#                dsn: '%env(LOKALISE_DSN)%'
+        fallbacks: ['en']
+        paths:
+            - '%kernel.project_dir%/src/Admin/Core/translation'

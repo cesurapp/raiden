@@ -3,7 +3,6 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          cacheResultFile="var/cache/.phpunit.result.cache"
          colors="true"
-         testdox="true"
          bootstrap="config/test-bootstrap.php"
 >
     <php>
@@ -30,7 +29,7 @@
     <testsuites>
         <!--App Test-->
         <testsuite name="App Test Suite">
-            <directory>src/*/Test</directory>
+            <directory>src/*/*/Test</directory>
         </testsuite>
 
         <!--Package Test-->
@@ -44,7 +43,15 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">src/*/*/Test/Setup</directory>
+            <directory suffix=".php">src/*/*/Enum</directory>
+        </exclude>
     </coverage>
+
+    <extensions>
+        <extension class="App\Admin\Core\Test\Setup\PhpunitExtension"/>
+    </extensions>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>

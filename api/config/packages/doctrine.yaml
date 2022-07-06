@@ -2,6 +2,7 @@ doctrine:
   dbal:
     url: '%env(resolve:DATABASE_URL)%'
     #charset: UTF-8
+    #logging: false
     options:
       !php/const \PDO::ATTR_PERSISTENT: true
   orm:
@@ -18,8 +19,8 @@ doctrine:
       Core:
         is_bundle: false
         type: attribute
-        dir: '%kernel.project_dir%/src/Core/Entity'
-        prefix: 'App\Core\Entity'
+        dir: '%kernel.project_dir%/src/Admin/Core/Entity'
+        prefix: 'App\Admin\Core\Entity'
         alias: Core
 
 #PROD

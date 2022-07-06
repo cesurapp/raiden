@@ -44,6 +44,6 @@ class GlobalExceptionHandler implements EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::EXCEPTION => [['onKernelException', 50]]];
+        return [KernelEvents::EXCEPTION => [['onKernelException', 2]]];
     }
 }

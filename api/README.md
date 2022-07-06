@@ -1,10 +1,6 @@
 * Github CI Test
 * 
-* 
-* Core -> JWT Auth - Refresh Token
 * Core -> User Management
-* Core -> User Group Management
-* Core -> Permissions
 * 
 * Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> UI

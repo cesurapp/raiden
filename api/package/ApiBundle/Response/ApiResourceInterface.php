@@ -7,5 +7,5 @@ namespace Package\ApiBundle\Response;
  */
 interface ApiResourceInterface
 {
-    public function toArray(object|array $item): array;
+    public function toArray(object $item): array;
 }

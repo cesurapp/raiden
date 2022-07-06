@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -21,7 +22,7 @@ class EntityResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        if (!strpos($argument->getType(), 'Entity\\')) {
+        if ($argument->getAttributes(CurrentUser::class) || !strpos($argument->getType(), 'Entity\\')) {
             return false;
         }
 

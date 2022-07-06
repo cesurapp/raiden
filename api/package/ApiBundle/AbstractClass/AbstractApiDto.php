@@ -15,6 +15,8 @@ abstract class AbstractApiDto
 
     protected array $validationGroup = ['Default'];
 
+    protected array $validated = [];
+
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
         // Set Parameters
@@ -60,11 +62,15 @@ abstract class AbstractApiDto
     /**
      * Get Validated Data.
      */
-    final public function validated(): array
+    final public function validated(?string $key = null): null|int|string|bool|array
     {
-        return array_filter(get_object_vars($this), static function ($value, $key) {
-            return !in_array($key, ['request', 'validator', 'auto', 'validationGroup']);
-        }, ARRAY_FILTER_USE_BOTH);
+        if (!$this->validated) {
+            $this->validated = array_filter(get_object_vars($this), static function ($value, $key) {
+                return !in_array($key, ['request', 'validator', 'auto', 'validationGroup', 'validated']);
+            }, ARRAY_FILTER_USE_BOTH);
+        }
+
+        return $key ? ($this->validated[$key] ?? null) : $this->validated;
     }
 
     /**
@@ -79,5 +85,13 @@ abstract class AbstractApiDto
      */
     protected function endValidated(): void
     {
+    }
+
+    /**
+     * Validated Data to Object Setter.
+     */
+    public function initObject(mixed $object): mixed
+    {
+        return $object;
     }
 }

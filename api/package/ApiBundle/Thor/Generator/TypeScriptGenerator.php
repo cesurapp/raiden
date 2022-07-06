@@ -63,7 +63,7 @@ class TypeScriptGenerator
     {
         $tmpPath = $path ?? sys_get_temp_dir();
 
-        shell_exec("tar -czvfv $tmpPath/Api.tar.bz2 -C $this->path . 2> /dev/null");
+        shell_exec("tar -czvf $tmpPath/Api.tar.bz2 -C $this->path . 2>&1");
         while (true) {
             if (file_exists($tmpPath.'/Api.tar.bz2')) {
                 break;

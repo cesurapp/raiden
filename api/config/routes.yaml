@@ -15,7 +15,6 @@ thor:
   resource: '@ApiBundle/Thor/Controller'
   type: annotation
 
-# Core
-app_core:
-  resource: "../src/Core/Controller"
-  type: annotation
+# All Modules
+panel:
+  resource: "../src/*/routes.yaml"

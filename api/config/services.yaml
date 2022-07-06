@@ -1,26 +1,2 @@
-parameters:
-    core.refresh_token_exp: "%env(APP_JWT_REFRESH_TOKEN_EXP)%"
-
-services:
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
-    # Services All Modules
-    App\:
-        resource: '../src/*'
-        exclude:
-            - '../src/*/DependencyInjection'
-            - '../src/*/Entity'
-            - '../src/*/Test'
-            - '../src/*/Enum'
-            - '../src/*/Request'
-            - '../src/Kernel.php'
-
-    # JWT Token Manager
-    Ahc\Jwt\JWT:
-        arguments:
-            $key: "%env(APP_JWT_SECRET)%"
-            $algo: 'HS256'
-            $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
-        public: true
+imports:
+    - { resource: "../src/*/services.{yaml,php}" }
