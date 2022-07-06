@@ -61,17 +61,17 @@ class TypeScriptGenerator
      */
     public function compress(?string $path = null): File
     {
-        $path ??= $this->path;
+        $tmpPath = $path ?? sys_get_temp_dir();
 
-        exec("tar -czvf $path/Api.tar.bz2 -C $this->path .");
+        shell_exec("tar -czvf $tmpPath/Api.tar.bz2 -C $this->path . 2>&1");
         while (true) {
-            if (file_exists($path.'/Api.tar.bz2')) {
+            if (file_exists($tmpPath.'/Api.tar.bz2')) {
                 break;
             }
             usleep(50000);
         }
 
-        return new File($path.'/Api.tar.bz2');
+        return new File($tmpPath.'/Api.tar.bz2');
     }
 
     /**

@@ -4,72 +4,37 @@ namespace Package\ApiBundle\Response;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Symfony Global Response | Paginator.
  */
 class ApiResponse
 {
-    private ResponseTypeEnum $type = ResponseTypeEnum::ApiResult;
-
-    private int $status = 200;
-
+    private int $code = 200;
     private array $headers = [];
-
-    private array|string|int|bool|object|null $data = [];
-
+    private mixed $data = [];
+    private array $options = [];
+    private ?string $resource = null;
     private Query|QueryBuilder|null $query = null;
 
-    private array $options = [];
-
-    private ?string $resource = null;
-
-    public static function create(ResponseTypeEnum $type = ResponseTypeEnum::ApiResult, int $status = 200): self
+    public function getCode(): int
     {
-        return (new self())->setType($type)->setStatus($status);
+        return $this->code;
     }
 
-    public static function createError(ResponseTypeEnum $type = ResponseTypeEnum::MessageError, int $status = 403): self
+    public function setCode(int $code): self
     {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public static function createInfo(ResponseTypeEnum $type = ResponseTypeEnum::MessageInfo, int $status = 200): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public static function createWarn(ResponseTypeEnum $type = ResponseTypeEnum::MessageWarning, int $status = 200): self
-    {
-        return (new self())->setType($type)->setStatus($status);
-    }
-
-    public function getType(): ResponseTypeEnum
-    {
-        return $this->type;
-    }
-
-    public function setType(ResponseTypeEnum $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    public function getStatus(): int
-    {
-        return $this->status;
-    }
-
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
+        $this->code = $code;
 
         return $this;
     }
@@ -93,12 +58,19 @@ class ApiResponse
         return $this;
     }
 
-    public function getData(): array|bool|int|string|object|null
+    public function setCorsOrigin(?string $domain = null): self
+    {
+        $this->headers['Access-Control-Allow-Origin'] = $domain ?? getenv('APP_DEFAULT_URI');
+
+        return $this;
+    }
+
+    public function getData(): mixed
     {
         return $this->data;
     }
 
-    public function setData(array|bool|int|string|object|null $data): self
+    public function setData(mixed $data): self
     {
         $this->data = $data;
 
@@ -158,6 +130,9 @@ class ApiResponse
         return $this;
     }
 
+    /**
+     * Check HTTP Proxy Cache.
+     */
     public function isHTTPCache(): bool
     {
         return $this->options['httpCache'] ?? false;
@@ -168,6 +143,9 @@ class ApiResponse
         return $this->options['httpCache'] ?? null;
     }
 
+    /**
+     * Enable HTTP Proxy Cache.
+     */
     public function setHTTPCache(int $lifetime = 60, ?array $tags = null): self
     {
         $this->options['httpCache'] = [
@@ -190,14 +168,22 @@ class ApiResponse
         return $this->options[$key];
     }
 
+    public function addMessage(string $message, MessageType $messageType = MessageType::SUCCESS): self
+    {
+        if (!isset($this->data['message'][$messageType->value])) {
+            $this->data['message'][$messageType->value] = [];
+        }
+
+        $this->data['message'][$messageType->value][] = $message;
+
+        return $this;
+    }
+
     /**
      * Download Binary File.
      */
-    public static function file(
-        \SplFileInfo|string $path,
-        string $fileName = '',
-        string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT
-    ): BinaryFileResponse {
+    public static function file(\SplFileInfo|string $path, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
+    {
         return (new BinaryFileResponse($path))->setContentDisposition($disposition, $fileName);
     }
 
@@ -225,5 +211,76 @@ class ApiResponse
                 $fileName ?? $file->getFilename()
             ),
         ]);
+    }
+
+    public static function create(int $code = 200): self
+    {
+        return (new self())->setCode($code);
+    }
+
+    /**
+     * Process Object Array Serialize.
+     */
+    public function processResponse(Request $request, ApiResourceLocator $resourceLocator, TranslatorInterface $translator): JsonResponse
+    {
+        // Init Paginator
+        if ($this->isPaginate()) {
+            $this->paginate($request);
+        }
+
+        // Process Resource
+        array_walk_recursive($this->data, function (&$data) use ($resourceLocator) {
+            if (is_object($data)) {
+                $data = $resourceLocator->process($data, $this->getResource());
+            }
+        });
+
+        // Message Translator
+        if (isset($this->data['message'])) {
+            foreach ($this->data['message'] as $type => $messages) {
+                $this->data['message'][$type] = array_map(static function ($message) use ($translator) {
+                    return $translator->trans($message);
+                }, $messages);
+            }
+        }
+
+        // Create Response
+        $response = new JsonResponse($this->getData(), $this->getCode(), $this->getHeaders());
+
+        // HTTP Cache
+        if ($this->isHTTPCache()) {
+            $response->setCache($this->getHTTPCache());
+        }
+
+        return $response;
+    }
+
+    /**
+     * Paginate Query to Offset.
+     */
+    private function paginate(Request $request): void
+    {
+        $config = $this->getPaginate();
+        $page = $request->query->getInt('page', 1);
+
+        // Paginate
+        $this->getQuery()?->setFirstResult(($page - 1) * $config['max'])->setMaxResults($config['max'] + 1);
+        $paginator = new Paginator($this->getQuery(), $config['fetchJoin']);
+        $iterator = $paginator->getIterator();
+
+        $pager = [
+            'max' => $config['max'],
+            'prev' => $page > 1 ? $page - 1 : null,
+            'next' => $iterator->count() > $config['max'] ? $page + 1 : null,
+            'current' => $page,
+        ];
+
+        if ($config['total']) {
+            $pager['total'] = $paginator->count();
+        }
+
+        // Append Pager Data
+        $this->addData('data', array_slice((array) $iterator, 0, $config['max']));
+        $this->addData('pager', $pager);
     }
 }

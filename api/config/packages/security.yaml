@@ -3,15 +3,34 @@ security:
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     providers:
-        users_in_memory: { memory: null }
+        user_provider:
+            entity:
+                class: App\Admin\Core\Entity\User
     firewalls:
+        # Profiler
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        # API Firewall
         main:
+            security: true
             lazy: true
-            provider: users_in_memory
+            stateless: true
+            pattern: ^/(v1|v2)/(auth|admin)
+            provider: user_provider
+            custom_authenticator: App\Admin\Core\Security\JwtAuthenticator
+            user_checker: App\Admin\Core\Security\UserChecker
+            switch_user: {
+                role: CAN_SWITCH_USER,
+                parameter: Switch-User
+            }
+            json_login:
+                check_path: api_login
 
     access_control:
-        #- { path: ^/, roles: ROLE_SELLER }
-        #- { path: ^/profile, roles: ROLE_USER }
+        # Auth
+        - { path: ^/(v1|v2)/auth, roles: PUBLIC_ACCESS }
+
+        # Admin
+        - { path: ^/(v1|v2)/admin, roles: ROLE_ADMIN }

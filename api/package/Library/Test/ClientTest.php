@@ -4,7 +4,6 @@ namespace Package\Library\Test;
 
 use Package\Library\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use function Co\run;
 
 class ClientTest extends WebTestCase
 {

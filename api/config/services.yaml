@@ -1,15 +1,2 @@
-services:
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
-    # Services All Modules
-    App\:
-        resource: '../src/*'
-        exclude:
-            - '../src/*/DependencyInjection'
-            - '../src/*/Entity'
-            - '../src/*/Test'
-            - '../src/*/Enum'
-            - '../src/*/Request'
-            - '../src/Kernel.php'
+imports:
+    - { resource: "../src/*/services.{yaml,php}" }

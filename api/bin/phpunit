@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php
 
+use PHPUnit\TextUI\Command;
+use Swoole\Coroutine\Scheduler;
+use Swoole\Timer;
+
 if (!ini_get('date.timezone')) {
     ini_set('date.timezone', 'UTC');
 }
@@ -9,10 +13,20 @@ if (is_file(dirname(__DIR__).'/vendor/phpunit/phpunit/phpunit')) {
     define('PHPUNIT_COMPOSER_INSTALL', dirname(__DIR__).'/vendor/autoload.php');
     require PHPUNIT_COMPOSER_INSTALL;
 
-    co::set(['hook_flags' => \SWOOLE_HOOK_ALL]);
-    Co\run(function () {
-        PHPUnit\TextUI\Command::main(false);
+    $exitCode = null;
+    $scheduler = new Scheduler();
+    $scheduler->add(function () use (&$exitCode) {
+        try {
+            $exitCode = Command::main(false);
+        } catch (Throwable $throwable) {
+            if (!str_contains($throwable->getMessage(), 'swoole exit')) {
+                throw $throwable;
+            }
+        } finally {
+            Timer::clearAll();
+        }
     });
+    $scheduler->start();
     exit();
 }
 

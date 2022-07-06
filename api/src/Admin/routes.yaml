@@ -1,0 +1,4 @@
+# Core
+app_core:
+  resource: "Core/Controller"
+  type: annotation

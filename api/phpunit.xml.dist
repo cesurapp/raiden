@@ -3,7 +3,6 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          cacheResultFile="var/cache/.phpunit.result.cache"
          colors="true"
-         testdox="true"
          bootstrap="config/test-bootstrap.php"
 >
     <php>
@@ -17,12 +16,10 @@
         <server name="KERNEL_CLASS" value="App\Kernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
 
-        <!--Database-->
-        <server name="DATABASE_URL" value="postgresql://:@127.0.0.1:5432/ecommerce?serverVersion=14" force="true"/>
-
         <!--App ENV-->
         <env name="APP_STORAGE" value="local"/>
         <env name="APP_LOG_STDIN" value="1"/>
+        <server name="APP_LOG_LEVEL" value="warning" force="true"/>
 
         <!--Storage Bundle Test-->
         <server name="BACKBLAZE_ACCESS_KEY" value="00489aac55fc62a0000000003"/>
@@ -32,7 +29,7 @@
     <testsuites>
         <!--App Test-->
         <testsuite name="App Test Suite">
-            <directory>src/*/Test</directory>
+            <directory>src/*/*/Test</directory>
         </testsuite>
 
         <!--Package Test-->
@@ -46,7 +43,15 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <directory suffix=".php">src/*/*/Test/Setup</directory>
+            <directory suffix=".php">src/*/*/Enum</directory>
+        </exclude>
     </coverage>
+
+    <extensions>
+        <extension class="App\Admin\Core\Test\Setup\PhpunitExtension"/>
+    </extensions>
 
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>

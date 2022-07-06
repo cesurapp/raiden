@@ -3,6 +3,7 @@
 /**
  * Thor Global Api Documentation Configuration.
  */
+
 return static function () {
     return [
         'requireAuth' => true,
@@ -12,7 +13,10 @@ return static function () {
         ],
         'query' => [],
         'request' => [],
-        'header' => [],
+        'header' => [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ],
         'response' => [],
         'hidden' => false,
         'paginate' => false,

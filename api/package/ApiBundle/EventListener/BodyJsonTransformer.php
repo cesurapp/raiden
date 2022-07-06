@@ -15,7 +15,7 @@ class BodyJsonTransformer implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-        $content = $request->getContent();
+        $content = trim($request->getContent());
 
         if ((str_starts_with($content, '{') && str_ends_with($content, '}')) ||
             (str_starts_with($content, '[') && str_ends_with($content, ']'))) {

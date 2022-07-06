@@ -2,34 +2,36 @@
 
 namespace Package\SwooleBundle\Test;
 
+use App\Kernel;
 use Doctrine\ORM\Tools\SchemaTool;
 use Package\SwooleBundle\Entity\FailedTask;
+use Package\SwooleBundle\Log\Logger;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
-class TaskTest extends WebTestCase
+class TaskTest extends KernelTestCase
 {
     public function testTaskHandler(): void
     {
-        $client = self::createClient();
+        $client = self::bootKernel();
         $this->assertTrue($client->getContainer()->has(TaskWorker::class));
     }
 
     public function testFailedCreate(): void
     {
-        $client = self::createClient();
-
-        // Mock Logger
-        $container = $client->getContainer();
+        $kernel = new CustomKernel('test', true);
+        $kernel->boot();
 
         // Test Worker
+        $container = $kernel->getContainer();
         $this->assertTrue($container->has(TaskWorker::class));
 
         // Init DB
-        $this->initDatabase($client->getKernel());
+        $this->initDatabase($kernel);
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
@@ -43,16 +45,15 @@ class TaskTest extends WebTestCase
 
     public function testFailedClear(): void
     {
-        $client = self::createClient();
-
-        // Mock Logger
-        $container = $client->getContainer();
+        $kernel = new CustomKernel('test', true);
+        $kernel->boot();
 
         // Test Worker
+        $container = $kernel->getContainer();
         $this->assertTrue($container->has(TaskWorker::class));
 
         // Init DB
-        $this->initDatabase($client->getKernel());
+        $this->initDatabase($kernel);
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
@@ -61,7 +62,7 @@ class TaskTest extends WebTestCase
             'data' => [],
         ]);
 
-        $application = new Application(static::$kernel);
+        $application = new Application($kernel);
 
         $cmd = $application->find('task:failed:clear');
         $cmdTester = new CommandTester($cmd);
@@ -71,16 +72,16 @@ class TaskTest extends WebTestCase
 
     public function testFailedView(): void
     {
-        $client = self::createClient();
+        $kernel = new CustomKernel('test', true);
+        $kernel->boot();
 
-        // Mock Logger
-        $container = $client->getContainer();
 
         // Test Worker
+        $container = $kernel->getContainer();
         $this->assertTrue($container->has(TaskWorker::class));
 
         // Init DB
-        $this->initDatabase($client->getKernel());
+        $this->initDatabase($kernel);
 
         /** @var TaskWorker $worker */
         $worker = $container->get(TaskWorker::class);
@@ -89,7 +90,7 @@ class TaskTest extends WebTestCase
             'data' => [],
         ]);
 
-        $application = new Application(static::$kernel);
+        $application = new Application($kernel);
 
         $cmd = $application->find('task:failed:view');
         $cmdTester = new CommandTester($cmd);
@@ -108,5 +109,19 @@ class TaskTest extends WebTestCase
         $metaData = $entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($entityManager);
         $schemaTool->updateSchema($metaData);
+    }
+}
+
+class CustomKernel extends Kernel
+{
+    protected function build(ContainerBuilder $container): void
+    {
+        $container->register('logger', Logger::class)
+            ->setArguments([
+                '$formatter' => null,
+                '$minLevel' => 'debug',
+                '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
+                '$stdin' => 0,
+            ]);
     }
 }
