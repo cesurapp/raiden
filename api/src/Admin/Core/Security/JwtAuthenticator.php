@@ -9,8 +9,8 @@ use App\Admin\Core\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -30,7 +30,7 @@ class JwtAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         if (!$apiToken = $request->headers->get('Authorization')) {
-            throw new CustomUserMessageAuthenticationException('No API token provided');
+            throw new AccessDeniedException('No API token provided');
         }
 
         return new SelfValidatingPassport(new UserBadge($apiToken, function (string $token) {

@@ -134,7 +134,10 @@ class SecurityController extends AbstractApiController
         // Dispacth Event
         $this->dispatcher->dispatch(new RegisterEvent($user), RegisterEvent::NAME);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()
+            ->setData($user)
+            ->setResource(UserResource::class)
+            ->addMessage('Operation successful.');
     }
 
     #[Thor(group: 'Security', desc: 'Account Confirmation', requireAuth: false)]

@@ -19,7 +19,13 @@ class UserResource implements ApiResourceInterface
     public function toArray(object $item): array
     {
         return [
-            'id' => $item->getId()->toRfc4122(),
+            'id' => $item->getId()->toBase32(),
+            'type' => $item->getType()->value,
+            'email' => $item->getEmail(),
+            'roles' => $item->getRoles(),
+            'language' => $item->getLanguage(),
+            'phone' => $item->getPhone(),
+            'approved' => $item->isApproved(),
             'first_name' => $item->getFirstName(),
             'last_name' => $item->getLastName(),
         ];

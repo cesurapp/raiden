@@ -56,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $approved = false;
 
     #[ORM\Column(type: 'string', length: 3, nullable: true)]
-    private ?string $language;
+    private ?string $language = null;
 
     #[ORM\Column(type: 'string', length: 50)]
     private string $firstName;

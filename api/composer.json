@@ -85,7 +85,7 @@
     "analyse": "bin/tool/vendor/bin/phpstan analyse --no-progress --ansi --memory-limit 512m",
     "lint": "bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
     "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
-    "test": "bin/phpunit --testdox",
+    "test": "bin/phpunit",
     "test-coverage": "bin/phpunit --coverage-text",
     "ci": [
       "@analyse",

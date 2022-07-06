@@ -72,6 +72,10 @@ class ApiResponse
 
     public function setData(mixed $data): self
     {
+        if (!is_array($data)) {
+            $data = ['data' => $data];
+        }
+
         $this->data = $data;
 
         return $this;

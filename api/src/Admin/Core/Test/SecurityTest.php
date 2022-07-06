@@ -217,6 +217,12 @@ class SecurityTest extends AbstractWebTestCase
         ]);
         $this->isOk();
         $this->assertEventFired(ResetRequestEvent::NAME);
+
+        // Retry Request Failed TTL
+        $this->client()->jsonRequest('POST', '/v1/auth/reset-request', [
+            'identity' => $user->getEmail(),
+        ]);
+        $this->isForbidden();
     }
 
     public function testResetPassword(): void
@@ -269,7 +275,7 @@ class SecurityTest extends AbstractWebTestCase
             ->request('GET', '/v1/admin/profile', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ]);
-        $this->assertEquals($user2->getId()->toRfc4122(), $this->json()[0]['id']);
+        $this->assertEquals($user2->getId()->toBase32(), $this->json()[0]['id']);
 
         static::ensureKernelShutdown();
         static::createClient();
