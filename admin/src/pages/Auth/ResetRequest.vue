@@ -3,7 +3,7 @@
     <!--Header-->
     <div class="q-mb-xl">
       <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">Forgot Password</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">Login to continue</h6>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">Reset password by Email or Phone.</h6>
     </div>
 
     <!-- Login Form-->

@@ -1,31 +1,56 @@
 <template>
-  <q-page class="bg-light-green window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-white q-my-md">Company & Co</h5>
-      </div>
-      <div class="row">
-        <q-card square bordered class="q-pa-lg shadow-1">
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input square filled clearable v-model="email" type="email" label="email" />
-              <q-input square filled clearable v-model="password" type="password" label="password" />
-            </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn unelevated color="light-green-7" size="lg" class="full-width" label="Login" />
-          </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not reigistered? Created an Account</p>
-          </q-card-section>
-        </q-card>
-      </div>
+  <div>
+    <!--Header-->
+    <div class="q-mb-xl">
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">Register</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">Sign up by e-mail.</h6>
     </div>
-  </q-page>
+
+    <!-- Login Form-->
+    <q-form @submit="onSubmit" class="q-gutter-sm" ref="form">
+      <!--Username-->
+      <q-input outlined bottom-slots v-model="identity" label="Kullanıcı Adı" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']">
+        <template v-slot:prepend><q-icon name="person"/></template>
+      </q-input>
+
+      <div>
+        <q-btn label="Kaydol" type="submit" color="primary" icon="login"/>
+        <q-btn label="Giriş" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+      </div>
+    </q-form>
+  </div>
 </template>
 
 <script lang="ts">
-export default {
-  name: 'Login'
-}
+import { defineComponent } from 'vue'
+export default defineComponent({
+  name: 'Login',
+  data() {
+    return {
+      username: null,
+      password: null,
+    }
+  },
+  methods: {
+    onSubmit() {
+      this.$refs.form.validate().then(success => {
+        if (success) {
+          this.$q.notify({
+            position: 'top',
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'You need to accept the license and terms first'
+          })
+        }
+        else {
+        }
+      })
+    },
+    onReset() {
+      this.username = null;
+      this.password = null;
+    }
+  }
+})
 </script>

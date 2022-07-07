@@ -7,7 +7,7 @@
     </div>
 
     <!-- Login Form-->
-    <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-sm" ref="form">
+    <q-form @submit="onSubmit" class="q-gutter-sm" ref="form">
       <!--Username-->
       <q-input outlined bottom-slots v-model="username" label="Kullanıcı Adı" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']">
         <template v-slot:prepend><q-icon name="person"/></template>
@@ -20,7 +20,7 @@
 
       <div>
         <q-btn label="Giriş" type="submit" color="primary" icon="login"/>
-        <q-btn label="Şifremi Unuttum" size="sm" color="primary" flat :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
+        <q-btn label="Şifremi Unuttum" color="primary" flat :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
       </div>
     </q-form>
 
@@ -30,7 +30,7 @@
 
       <!-- Register Link-->
       <div class="register-actions">
-        <q-btn label="Kayıt Ol" type="button" color="primary" icon="fa-solid fa-envelope" padding="sm" class="full-width"/>
+        <q-btn :to="{ name: 'auth.register' }" label="Kayıt Ol" type="button" color="primary" icon="fa-solid fa-envelope" padding="sm" class="full-width"/>
         <q-btn label="Google ile Giriş" type="button" color="primary" icon="fa-brands fa-google" padding="sm" class="full-width q-mt-sm"/>
       </div>
     </div>
@@ -62,10 +62,6 @@ export default defineComponent({
         else {
         }
       })
-    },
-    onReset() {
-      this.username = null;
-      this.password = null;
     }
   }
 })

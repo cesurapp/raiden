@@ -23,10 +23,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .auth-wrapper {
   max-width: 1200px;
-  //height: 60vh;
   width: 100%;
 }
 </style>
