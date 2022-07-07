@@ -18,10 +18,10 @@
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
-      <excludeFolder url="file://$MODULE_DIR$/ui/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/api/bin/tool" />
       <excludeFolder url="file://$MODULE_DIR$/api/var/log" />
       <excludeFolder url="file://$MODULE_DIR$/api/var/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/admin/.vscode" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
