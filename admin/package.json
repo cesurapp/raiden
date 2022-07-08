@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.14.2",
+    "@vuelidate/core": "^2.0.0-alpha.42",
+    "@vuelidate/validators": "^2.0.0-alpha.30",
     "autoprefixer": "^10.4.7",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
@@ -28,7 +30,8 @@
     "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.14.0",
     "eslint-config-prettier": "^8.1.0",
-    "eslint-plugin-vue": "^7.0.0"
+    "eslint-plugin-vue": "^7.0.0",
+    "quasar-app-extension-vuelidate-rules": "^0.5.1"
   },
   "browserslist": [
     "last 10 Chrome versions",

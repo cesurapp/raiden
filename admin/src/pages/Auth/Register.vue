@@ -2,20 +2,35 @@
   <div>
     <!--Header-->
     <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">Register</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">Sign up by e-mail.</h6>
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Register') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Create a new account.') }}</h6>
     </div>
 
-    <!-- Login Form-->
-    <q-form @submit="onSubmit" class="q-gutter-sm" ref="form">
-      <!--Username-->
-      <q-input outlined bottom-slots v-model="identity" label="Kullanıcı Adı" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']">
+    <q-form @submit.stop="onSubmit" ref="form">
+      <!--Email-->
+      <q-input outlined dense v-model="email" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+        <template v-slot:prepend><q-icon name="email"/></template>
+      </q-input>
+      <!--Phone-->
+      <q-input outlined dense type="tel" v-model="phone" :label="$t('Phone')" lazy-rules :rules="[$rules.required()]">
+        <template v-slot:prepend><q-icon name="phone"/></template>
+      </q-input>
+      <!--Password-->
+      <q-input outlined dense type="password" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+        <template v-slot:prepend><q-icon name="key"/></template>
+      </q-input>
+      <!--FirstName-->
+      <q-input outlined dense v-model="firstName" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
-
+      <!--LastName-->
+      <q-input outlined dense v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+        <template v-slot:prepend><q-icon name="person"/></template>
+      </q-input>
+      
       <div>
-        <q-btn label="Kaydol" type="submit" color="primary" icon="login"/>
-        <q-btn label="Giriş" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Register')" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
@@ -23,33 +38,28 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 export default defineComponent({
-  name: 'Login',
-  data() {
-    return {
-      username: null,
-      password: null,
-    }
-  },
+  name: 'Register',
+  data: () => ({
+    email: null,
+    phone: null,
+    password: null,
+    firstName: null,
+    lastName: null,
+  }),
   methods: {
     onSubmit() {
-      this.$refs.form.validate().then(success => {
+      this.$refs.form.validate().then((success) => {
         if (success) {
           this.$q.notify({
-            position: 'top',
-            color: 'red-5',
+            color: 'red-4',
             textColor: 'white',
             icon: 'warning',
-            message: 'You need to accept the license and terms first'
+            message: success ? 'true' : 'false'
           })
         }
-        else {
-        }
       })
-    },
-    onReset() {
-      this.username = null;
-      this.password = null;
     }
   }
 })
