@@ -31,7 +31,6 @@
       <!-- Register Link-->
       <div class="register-actions">
         <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary"  outline icon="email" padding="sm" class="full-width"/>
-        <q-btn :label="$t('Login with Google')" type="button" color="primary" icon="fa-brands fa-google" outline padding="sm" class="full-width q-mt-sm"/>
       </div>
     </div>
   </div>

@@ -27,7 +27,7 @@
       <q-input outlined dense v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
-      
+
       <div>
         <q-btn :label="$t('Register')" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
         <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>

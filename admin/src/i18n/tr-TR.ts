@@ -11,7 +11,6 @@ export default {
   'Login': 'Giriş',
   'Forgot Password': 'Şifremi Unuttum',
   'Register': 'Kayıt Ol',
-  'Login with Google': 'Google ile Giriş',
   'Reset password by Email or Phone.': 'Telefon yada E-posta ile şifrenizi sıfırlayın.',
   'Send': 'Gönder',
   'Confirmation': 'Hesap Doğrulama',
