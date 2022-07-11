@@ -4,6 +4,7 @@
 export default {
   'tr-TR': 'Türkçe',
   'en-US': 'English',
+  'Copyright': 'Copyright 2022. Tüm hakları saklıdır.',
   'Welcome': 'Merhaba',
   'Login to continue': 'Devam etmek için giriş yapın',
   'Email / Phone': 'E-posta / Telefon',
@@ -18,5 +19,9 @@ export default {
   'Phone': 'Telefon',
   'First Name': 'İsim',
   'Last Name': 'Soyisim',
-  'Create a new account.': 'Yeni bir hesap oluşturun.'
+  'Create a new account.': 'Yeni bir hesap oluşturun.',
+  'Change Password': 'Şifrenizi Değiştirin.',
+  'Reset your password.': 'Şifrenizi sıfırlayın.',
+  'Password Confirm': 'Şifre Onay',
+  'Change': 'Değiştir'
 };

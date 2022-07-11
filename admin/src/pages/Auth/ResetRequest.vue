@@ -6,11 +6,10 @@
       <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Reset password by Email or Phone.') }}</h6>
     </div>
 
-    <!-- Login Form-->
-    <q-form @submit="onSubmit" class="q-gutter-xs" ref="form">
+    <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
       <!--Username-->
-      <q-input outlined bottom-slots v-model="identity" :label="$t('Email / Phone')" lazy-rules :rules="[ val => val && val.length > 6]">
-        <template v-slot:prepend><q-icon name="person"/></template>
+      <q-input outlined v-model="username" :label="$t('Email / Phone')" lazy-rules :rules="[$rules.required(),$rules.isIdentity()]">
+        <template v-slot:prepend><q-icon :name="!getCountry ? 'mail' : `img:/images/flags/${getCountry}.svg`"/></template>
       </q-input>
 
       <div>
@@ -23,26 +22,24 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 export default defineComponent({
   name: 'ResetRequest',
   data() {
     return {
-      identity: null,
+      username: null,
+    }
+  },
+  computed: {
+    getCountry() {
+      return !isNaN(this.username) ? extractPhone(this.username)?.country : null
     }
   },
   methods: {
     onSubmit() {
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$q.notify({
-            position: 'top',
-            color: 'red-5',
-            textColor: 'white',
-            icon: 'warning',
-            message: 'You need to accept the license and terms first'
-          })
-        }
-        else {
+
         }
       })
     }

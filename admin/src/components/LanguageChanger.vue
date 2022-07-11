@@ -2,6 +2,18 @@
   <slot :options="localeOptions">
     <q-select v-model="$i18n.locale" :options="localeOptions" standout="bg-blue-grey text-white" emit-value map-options dense>
       <template v-slot:prepend><q-icon name="language"/></template>
+
+      <template v-slot:option="scope">
+        <q-item v-bind="scope.itemProps">
+          <q-item-section avatar>
+            <q-icon :name="scope.opt.icon" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ scope.opt.label }}</q-item-label>
+            <q-item-label>{{ scope.opt.description }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
     </q-select>
   </slot>
 </template>
@@ -18,7 +30,13 @@ export default defineComponent({
     localeOptions() {
       let locales: Record<any, string>[] = []
       this.$i18n.availableLocales.forEach((locale) => {
-        locales.push({value: locale, label: this.$t(locale)})
+        let country = locale.split('-')[1].toLowerCase();
+
+        locales.push({
+          value: locale,
+          label: this.$t(locale),
+          icon: `img:/images/flags/${String(country)}.svg`
+        })
       });
       return locales;
     }
@@ -26,7 +44,6 @@ export default defineComponent({
   watch: {
     curentLocale(val) {
       localStorage.setItem('locale', val);
-      this.$i18n.locale = val;
     }
   }
 })

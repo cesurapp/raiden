@@ -6,25 +6,26 @@
       <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Create a new account.') }}</h6>
     </div>
 
-    <q-form @submit.stop="onSubmit" ref="form">
+    <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
       <!--Email-->
-      <q-input outlined dense v-model="email" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+      <q-input outlined v-model="email" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
         <template v-slot:prepend><q-icon name="email"/></template>
       </q-input>
       <!--Phone-->
-      <q-input outlined dense type="tel" v-model="phone" :label="$t('Phone')" lazy-rules :rules="[$rules.required()]">
-        <template v-slot:prepend><q-icon name="phone"/></template>
-      </q-input>
+      <PhoneInput v-model="phone" :label="$t('Phone')"></PhoneInput>
       <!--Password-->
-      <q-input outlined dense type="password" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
         <template v-slot:prepend><q-icon name="key"/></template>
+        <template v-slot:append>
+          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
+        </template>
       </q-input>
       <!--FirstName-->
-      <q-input outlined dense v-model="firstName" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="phone" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
       <!--LastName-->
-      <q-input outlined dense v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
 
@@ -38,10 +39,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
 
 export default defineComponent({
   name: 'Register',
+  components: {PhoneInput},
   data: () => ({
+    isPwd: true,
     email: null,
     phone: null,
     password: null,
@@ -52,12 +56,7 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$q.notify({
-            color: 'red-4',
-            textColor: 'white',
-            icon: 'warning',
-            message: success ? 'true' : 'false'
-          })
+
         }
       })
     }

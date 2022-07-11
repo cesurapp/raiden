@@ -1,1 +1,43 @@
-// app global css in SCSS form
+/**
+ * Outline Input for Google Material Design
+ */
+.q-field--outlined {
+  .q-field__label {
+    background: #FFF;
+    padding: 0 3px;
+    z-index: 2;
+  }
+
+  &.q-field--float .q-field__label{
+    transform: translateY(-130%) scale(.85) !important;
+  }
+
+  &.q-field--labeled .q-field__native{
+    padding-top: 12px;
+    padding-left: 3px;
+  }
+
+  &.q-textarea.q-field--labeled .q-field__control-container{
+    padding-top: 10px;
+  }
+
+  // Dense
+  &.q-field--dense {
+    &.q-field--float .q-field__label {
+      transform: translateY(-85%) scale(.8) !important;
+    }
+
+    &.q-field--labeled .q-field__native{
+      padding-top: 4px;
+      font-size: 14px;
+    }
+  }
+}
+
+.body--dark {
+  .q-field--outlined.q-field--labeled {
+    & .q-field__label {
+      background-color: var(--q-dark);
+    }
+  }
+}

@@ -18,7 +18,7 @@
 
       <div class="lang-wrap full-width flex justify-between items-center q-py-md text-white">
         <!--Footer-->
-        <div>Copyright 2022. All right reserved.</div>
+        <div>{{ $t('Copyright') }}</div>
 
         <!--Language Changer-->
         <LanguageChanger></LanguageChanger>
