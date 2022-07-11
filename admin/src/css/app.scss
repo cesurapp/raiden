@@ -41,3 +41,22 @@ body.body--dark {
     }
   }
 }
+
+
+/*
+ * Divider
+ */
+.divider{
+  position: relative;
+  display: inline-flex;
+  background: $grey-4;
+  width: 2px;
+  height: 2rem;
+  border-radius: $generic-border-radius;
+  margin: 0 $flex-gutter-md;
+}
+body.body--dark {
+  .divider{
+    background: $grey-6;
+  }
+}

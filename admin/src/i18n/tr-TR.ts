@@ -1,7 +1,6 @@
 export default {
   'tr-TR': 'Türkçe',
   'en-US': 'English',
-  'Copyright': 'Copyright 2022. Tüm hakları saklıdır.',
   'Welcome': 'Merhaba',
   'Login to continue': 'Devam etmek için giriş yapın',
   'Email / Phone': 'E-posta / Telefon',

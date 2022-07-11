@@ -1,6 +1,6 @@
 <template>
   <slot>
-    <q-btn color="white" round :ripple="false" size="md" flat @click="$q.dark.set(!$q.dark.isActive)" :icon="isDarkMode ? 'dark_mode' : 'mode_night'"/>
+    <q-btn color="white" round :ripple="false" size="md" flat @click="$q.dark.set(!$q.dark.isActive)" :icon="!isDarkMode ? 'dark_mode' : 'mode_night'"/>
   </slot>
 </template>
 

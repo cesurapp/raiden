@@ -16,15 +16,14 @@
         </div>
       </div>
 
-      <div class="lang-wrap full-width flex justify-between items-center q-pt-md text-white">
-        <!--Footer-->
-        <div>{{ $t('Copyright') }}</div>
+      <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
+        <!--Dark Mode Changer-->
+        <DarkModeChanger></DarkModeChanger>
 
+        <span class="divider"></span>
+        
         <!--Language Changer-->
-        <div class="flex row items-center">
-          <DarkModeChanger></DarkModeChanger>
-          <LanguageChanger></LanguageChanger>
-        </div>
+        <LanguageChanger></LanguageChanger>
       </div>
     </div>
   </q-layout>
