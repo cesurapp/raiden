@@ -97,4 +97,15 @@ export default defineComponent({
     line-height: 5px;
   }
 }
+
+body.body--dark {
+  .or-hr {
+    &:before {
+      background: $grey-6;
+    }
+    span {
+      background: var(--q-dark);
+    }
+  }
+}
 </style>

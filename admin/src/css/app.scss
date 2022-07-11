@@ -13,7 +13,7 @@
   }
 
   &.q-field--labeled .q-field__native{
-    padding-top: 12px;
+    padding-top: 10px;
     padding-left: 3px;
   }
 
@@ -34,9 +34,9 @@
   }
 }
 
-.body--dark {
-  .q-field--outlined.q-field--labeled {
-    & .q-field__label {
+body.body--dark {
+  .q-field--outlined {
+    .q-field__label {
       background-color: var(--q-dark);
     }
   }

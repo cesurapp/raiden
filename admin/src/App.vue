@@ -6,6 +6,14 @@
 import {defineComponent} from 'vue';
 
 export default defineComponent({
-  name: 'App'
+  name: 'App',
+  /**
+   * Global Init
+   */
+  created() {
+    if (this.$q.localStorage.has('dark_mode')) {
+      this.$q.dark.set(this.$q.localStorage.getItem('dark_mode'));
+    }
+  }
 });
 </script>

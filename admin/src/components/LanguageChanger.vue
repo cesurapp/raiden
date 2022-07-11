@@ -1,6 +1,6 @@
 <template>
   <slot :options="localeOptions">
-    <q-select v-model="$i18n.locale" :options="localeOptions" standout="bg-blue-grey text-white" emit-value map-options dense>
+    <q-select v-model="$i18n.locale" :options="localeOptions" borderless emit-value map-options dense>
       <template v-slot:prepend><q-icon name="language"/></template>
 
       <template v-slot:option="scope">
