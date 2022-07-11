@@ -16,7 +16,7 @@
         </div>
       </div>
 
-      <div class="lang-wrap full-width flex justify-between items-center q-py-md text-white">
+      <div class="lang-wrap full-width flex justify-between items-center q-pt-md text-white">
         <!--Footer-->
         <div>{{ $t('Copyright') }}</div>
 
@@ -30,10 +30,17 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import LanguageChanger from 'components/LanguageChanger.vue';
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent( {
   name: 'AuthLayout',
   components: {LanguageChanger},
+  mixins: [
+    createMetaMixin({
+      title: 'App',
+      titleTemplate: title => `${title} - Auth`,
+    })
+  ],
 });
 </script>
 

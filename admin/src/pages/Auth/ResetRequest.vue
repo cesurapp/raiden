@@ -37,7 +37,7 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
-      this.$refs.form.validate().then(success => {
+      this.$refs.form.validate().then((success: boolean) => {
         if (success) {
 
         }

@@ -34,8 +34,8 @@ export default defineComponent({
     label: [String],
   },
   data: () => ({
-    country: 90,
-    phone: null,
+    country: '90',
+    phone: '',
     masks: phoneCodes,
   }),
   computed: {
@@ -43,7 +43,7 @@ export default defineComponent({
       get() {
         return String(this.phone);
       },
-      set(val) {
+      set(val: string) {
         this.phone = val;
         this.$emit('update:modelValue', String(this.masks[this.country].code) + String(val));
       }

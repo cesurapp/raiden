@@ -40,10 +40,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
-  name: 'Register',
+  name: 'AuthRegister',
   components: {PhoneInput},
+  mixins: [
+    createMetaMixin({
+      title: 'Register'
+    })
+  ],
   data: () => ({
     isPwd: true,
     email: null,

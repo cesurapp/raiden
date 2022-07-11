@@ -42,14 +42,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
   name: 'AuthLogin',
+  mixins: [
+    createMetaMixin({
+      title: 'Login'
+    })
+  ],
   data() {
     return {
       isPwd: true,
-      username: null,
-      password: null,
+      username: 'sadasd@sadas.com',
+      password: '123123123',
     }
   },
   computed: {

@@ -1,4 +1,4 @@
-const phoneCodes = {
+const phoneCodes: any = {
   90: {label: 'TR', mask: '+90 (###) ### ## ##', length: [10, 10], code: '90', country: 'tr'},
   49: {label: 'DE', mask: '+49 (###) #### ###', length: [6, 13], code: '49', country: 'de'},
   1: {label: 'US', mask: '+1 (###) ### ## ##', length: [10, 10], code: '1', country: 'us'},

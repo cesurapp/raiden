@@ -33,7 +33,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent({
-  name: 'Confirm',
+  name: 'AuthConfirm',
   data() {
     return {
       isPwd: true,

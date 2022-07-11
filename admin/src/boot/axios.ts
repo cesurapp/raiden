@@ -13,47 +13,56 @@ declare module '@vue/runtime-core' {
 import {LoadingBar} from 'quasar';
 
 LoadingBar.setDefaults({
-  color: 'secondary',
-  size: '15px',
+  color: 'info',
+  size: '4px',
   position: 'top'
 });
 
 /**
  * Init Axios
  */
-const axiosInstance = axios.create({baseURL: 'https://api.example.com'});
-axiosInstance.defaults.withCredentials = true;
-axiosInstance.interceptors.request.use(
-  function (config) {
+const client = axios.create({baseURL: process.env.API});
+client.defaults.withCredentials = true;
+
+/**
+ * Request Interceptor.
+ */
+client.interceptors.request.use((config) => {
+    LoadingBar.setDefaults({color: 'info'})
     LoadingBar.start();
+
     return config;
   },
-  function (error) {
+  (error) => {
+    LoadingBar.setDefaults({color: 'negative'})
     LoadingBar.stop();
 
     return Promise.reject(error);
   }
 );
 
-axiosInstance.interceptors.response.use(
-  function (response) {
+/**
+ * Response Interceptor.
+ */
+client.interceptors.response.use((response) => {
     LoadingBar.stop();
+
     return response;
   },
-  function (error) {
+  (error) => {
+    LoadingBar.setDefaults({color: 'negative'})
     LoadingBar.stop();
+
     return Promise.reject(error);
   }
 );
 
+/**
+ * Vue Options Inject => this.$client | this.$axios
+ */
 export default boot(({app}) => {
-  // for use inside Vue files (Options API) through this.$axios and this.$api
   app.config.globalProperties.$axios = axios;
-  // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
-  //       so you won't necessarily have to import axios in each vue file
-  app.config.globalProperties.$api = axiosInstance;
-  // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
-  //       so you can easily perform requests against your app's API
+  app.config.globalProperties.$client = client;
 });
 
-export {axiosInstance};
+export {client, axios};

@@ -74,8 +74,8 @@ module.exports = {
     // TypeScript
     quotes: ['warn', 'single', { avoidEscape: true }],
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-var-requires': 'off',
-    'no-unused-vars': 'off',
+    //'@typescript-eslint/no-var-requires': 'off',
+    //'no-unused-vars': 'off',
 
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
