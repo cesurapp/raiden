@@ -31,6 +31,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
     private ?string $email;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $emailApproved = false;
+
+    #[ORM\Column(type: 'integer', length: 20, unique: true, nullable: true)]
+    private ?string $phone;
+
+    #[ORM\Column(type: 'string', length: 2, nullable: true)]
+    private ?string $phoneCountry;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $phoneApproved = false;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -52,9 +64,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private bool $frozen = false;
 
-    #[ORM\Column(type: 'boolean')]
-    private bool $approved = false;
-
     #[ORM\Column(type: 'string', length: 3, nullable: true)]
     private ?string $language = null;
 
@@ -64,8 +73,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 50)]
     private string $lastName;
 
-    #[ORM\Column(type: 'string', length: 20, unique: true, nullable: true)]
-    private ?string $phone;
+    #[ORM\Column(type: 'json')]
+    private array $meta = [];
 
     #[ORM\ManyToOne(targetEntity: Organization::class, cascade: ['persist'], inversedBy: 'users')]
     private ?Organization $organization = null;
@@ -83,6 +92,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function isEmailApproved(): bool
+    {
+        return $this->emailApproved;
+    }
+
+    public function setEmailApproved(bool $emailApproved): self
+    {
+        $this->emailApproved = $emailApproved;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getPhoneCountry(): string
+    {
+        return $this->phoneCountry;
+    }
+
+    public function setPhoneCountry(string $phoneCountry): self
+    {
+        $this->phoneCountry = $phoneCountry;
+
+        return $this;
+    }
+
+    public function isPhoneApproved(): bool
+    {
+        return $this->phoneApproved;
+    }
+
+    public function setPhoneApproved(bool $phoneApproved): self
+    {
+        $this->phoneApproved = $phoneApproved;
 
         return $this;
     }
@@ -159,14 +216,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isApproved(): bool
     {
-        return $this->approved;
-    }
-
-    public function setApproved(bool $approved): self
-    {
-        $this->approved = $approved;
-
-        return $this;
+        return $this->emailApproved || $this->phoneApproved;
     }
 
     public function getConfirmationToken(): ?string
@@ -255,14 +305,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getMeta(): array
     {
-        return $this->phone;
+        return $this->meta;
     }
 
-    public function setPhone(?string $phone): self
+    public function addMeta(string $key, string|int|bool $value): self
     {
-        $this->phone = $phone;
+        $this->meta[$key] = $value;
+
+        return $this;
+    }
+
+    public function removeMeta(string $key): self
+    {
+        if (array_key_exists($key, $this->meta)) {
+            unset($this->meta[$key]);
+        }
+
+        return $this;
+    }
+
+    public function setMeta(array $meta): self
+    {
+        $this->meta = $meta;
 
         return $this;
     }
