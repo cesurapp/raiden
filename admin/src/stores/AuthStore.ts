@@ -1,15 +1,29 @@
 import { defineStore } from 'pinia';
 
-export const useCounterStore = defineStore('counter', {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
-    counter: 0,
+    user: null,
+    token: null
   }),
   getters: {
-    doubleCount: (state) => state.counter * 2,
+    roles: (state) => state.user,
   },
   actions: {
-    increment() {
-      this.counter++;
+    isLogin(): boolean {
+      return this.user;
     },
+    setLogin() {
+
+    },
+    reloadLogin() {
+
+    },
+    hasRole(role: string): boolean {
+      return false;
+    },
+    hasGranted(role: string): boolean{
+      return false;
+    },
+
   },
 });

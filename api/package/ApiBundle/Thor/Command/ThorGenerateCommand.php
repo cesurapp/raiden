@@ -44,7 +44,7 @@ class ThorGenerateCommand extends Command
 
         // Copy Custom Directory
         if ($this->bag->get('thor.ts_extra_path')) {
-            $tsGenerator->generate()->copyFiles($path.'/Api');
+            $tsGenerator->generate()->copyFiles($this->bag->get('thor.ts_extra_path'));
         }
 
         return Command::SUCCESS;

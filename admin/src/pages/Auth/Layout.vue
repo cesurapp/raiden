@@ -1,7 +1,7 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="auth-layout column justify-center items-center">
+  <q-layout view="lHh Lpr lFf" class="bg-indigo-12 column justify-center items-center" :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-indigo-12']">
     <div class="auth-main flex column no-wrap q-pa-lg">
-      <div class="wrapper row full-width rounded-borders">
+      <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper row full-width rounded-borders" >
         <div class="xs-hide sm-hide col-12 col-md-7 q-pa-lg flex items-center">
           <q-img src="/images/login.svg" style="width: 100%"/>
         </div>
@@ -21,7 +21,7 @@
         <DarkModeChanger></DarkModeChanger>
 
         <span class="divider"></span>
-        
+
         <!--Language Changer-->
         <LanguageChanger></LanguageChanger>
       </div>
@@ -48,22 +48,6 @@ export default defineComponent( {
 </script>
 
 <style lang="scss" scoped>
-.auth-layout{
-  background: $indigo-12;
-  .wrapper{
-    background: white;
-  }
-}
-
-body.body--dark {
-  .auth-layout {
-    background: var(--q-dark-page);
-    .wrapper {
-      background-color: var(--q-dark);
-    }
-  }
-}
-
 .auth-main {
   max-width: 1200px;
   width: 100%;

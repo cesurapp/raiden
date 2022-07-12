@@ -1,32 +1,26 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div class="fullscreen text-white text-center q-pa-md flex flex-center" :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-blue']">
     <div>
-      <div style="font-size: 30vh">
-        404
-      </div>
-
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
-      </div>
-
-      <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        label="Go Home"
-        no-caps
-      />
+      <div class="h1">404</div>
+      <div class="h2 text-h2">{{ $t('Oops. Nothing here...') }}</div>
+      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/" :label="$t('Go Home')" no-caps/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-
+import {defineComponent} from 'vue'
 export default defineComponent({
-  name: 'Error404',
-  methods: {}
+  name: 'ErrorPage404',
 })
 </script>
+
+<style lang="scss" scoped>
+.h1 {
+  font-size: 20rem;
+}
+
+.h2 {
+  opacity: .5;
+}
+</style>

@@ -1,9 +1,12 @@
 import {boot} from 'quasar/wrappers';
 import axios, {AxiosInstance} from 'axios';
+import {ref} from 'vue';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $axios: AxiosInstance;
+    $client: AxiosInstance;
+    $isBusy: boolean
   }
 }
 
@@ -18,11 +21,12 @@ LoadingBar.setDefaults({
   position: 'top'
 });
 
+
 /**
  * Init Axios
  */
 const client = axios.create({baseURL: process.env.API});
-client.defaults.withCredentials = true;
+const isBusy = ref(false);
 
 /**
  * Request Interceptor.
@@ -30,12 +34,14 @@ client.defaults.withCredentials = true;
 client.interceptors.request.use((config) => {
     LoadingBar.setDefaults({color: 'info'})
     LoadingBar.start();
+    isBusy.value = true;
 
     return config;
   },
   (error) => {
     LoadingBar.setDefaults({color: 'negative'})
     LoadingBar.stop();
+    isBusy.value = false;
 
     return Promise.reject(error);
   }
@@ -46,12 +52,14 @@ client.interceptors.request.use((config) => {
  */
 client.interceptors.response.use((response) => {
     LoadingBar.stop();
+    isBusy.value = false;
 
     return response;
   },
   (error) => {
     LoadingBar.setDefaults({color: 'negative'})
     LoadingBar.stop();
+    isBusy.value = false;
 
     return Promise.reject(error);
   }
@@ -63,6 +71,7 @@ client.interceptors.response.use((response) => {
 export default boot(({app}) => {
   app.config.globalProperties.$axios = axios;
   app.config.globalProperties.$client = client;
+  app.config.globalProperties.$isBusy = isBusy;
 });
 
-export {client, axios};
+export {client, axios, isBusy};

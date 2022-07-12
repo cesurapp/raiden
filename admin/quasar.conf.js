@@ -32,6 +32,7 @@ module.exports = configure(function (ctx) {
       'i18n',
       'axios',
       'auth',
+      'api',
       'rules',
     ],
 
@@ -48,9 +49,9 @@ module.exports = configure(function (ctx) {
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
+      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
-      'roboto-font', // optional, you are not bound to it
+      //'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
     ],
 
@@ -104,7 +105,7 @@ module.exports = configure(function (ctx) {
       },
       cssAddon: true,
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: 'en-US', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

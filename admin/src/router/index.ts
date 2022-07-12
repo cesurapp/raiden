@@ -9,6 +9,14 @@ import AuthRoutes from './auth';
 const routes: RouteRecordRaw[] = [...AdminRoutes, ...AuthRoutes];
 
 /**
+ * 404 Page
+ */
+routes.push({
+  path: '/:catchAll(.*)*',
+  component: () => import('pages/404.vue'),
+});
+
+/**
  * Init Router
  */
 export default route(function (/* { store, ssrContext } */) {

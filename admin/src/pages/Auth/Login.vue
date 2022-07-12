@@ -22,7 +22,7 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Login')" type="submit" color="primary" padding="sm md" icon="login"/>
+        <q-btn :label="$t('Login')" :loading="$isBusy.value" type="submit" color="primary" padding="sm md" icon="login"/>
         <q-btn :label="$t('Forgot Password')" color="primary" flat padding="sm md" :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
       </div>
     </q-form>
@@ -54,7 +54,7 @@ export default defineComponent({
   data() {
     return {
       isPwd: true,
-      username: 'sadasd@sadas.com',
+      username: 'demo@demo.com',
       password: '123123123',
     }
   },
@@ -65,6 +65,13 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
+      console.log(
+        this.$api.securityLogin({
+          username: this.username,
+          password: this.password
+        })
+      )
+
       this.$refs.form.validate().then(success => {
         if (success) {
         }

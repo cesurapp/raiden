@@ -72,24 +72,29 @@ export default defineComponent({
 
 <style lang="scss">
 .phone-input {
-  .country-input{
-    &.q-field--outlined .q-field__control{
+  .country-input {
+    &.q-field--outlined .q-field__control {
       padding-left: 3px;
       padding-right: 0;
     }
-    &.q-field--outlined .q-field__control:before{
+
+    &.q-field--outlined .q-field__control:before {
       border: none;
     }
-    &.q-field--outlined .q-field__control:after{
+
+    &.q-field--outlined .q-field__control:after {
       border: none;
     }
-    .q-field__control-container{
+
+    .q-field__control-container {
       display: none;
     }
-    & .q-field__append{
+
+    & .q-field__append {
       display: none;
     }
-    .q-field__prepend{
+
+    .q-field__prepend {
       padding-right: 0;
     }
   }

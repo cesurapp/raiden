@@ -1,6 +1,13 @@
 export default {
+  // Language
   'tr-TR': 'Türkçe',
   'en-US': 'English',
+
+  // 404 Page
+  'Oops. Nothing here...': 'Hata. Hiçbir şey bulamadık...',
+  'Go Home': 'Anasayfa\'ya Dön',
+
+  // Auth
   'Welcome': 'Merhaba',
   'Login to continue': 'Devam etmek için giriş yapın',
   'Email / Phone': 'E-posta / Telefon',
