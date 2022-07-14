@@ -21,7 +21,7 @@ class OtpKey
     private ?Ulid $id;
 
     #[ORM\Column(type: 'integer')]
-    private int $key;
+    private int $otpKey;
 
     #[ORM\Column(type: 'string', enumType: OtpType::class)]
     private OtpType $type;
@@ -37,14 +37,14 @@ class OtpKey
         return $this->id;
     }
 
-    public function getKey(): int
+    public function getOtpKey(): int
     {
-        return $this->key;
+        return $this->otpKey;
     }
 
-    public function setKey(int $key): self
+    public function setOtpKey(int $otpKey): self
     {
-        $this->key = $key;
+        $this->otpKey = $otpKey;
 
         return $this;
     }

@@ -29,7 +29,7 @@ class OtpKeyRepository extends BaseRepository
             ->setOwner($user)
             ->setType($type)
             ->setExpiredAt(new \DateTimeImmutable('+3 minute'))
-            ->setKey(random_int(100000, 999999));
+            ->setOtpKey(random_int(100000, 999999));
 
         $this->add($otp);
 
@@ -39,22 +39,22 @@ class OtpKeyRepository extends BaseRepository
     /**
      * Check OTP Key is Valid.
      */
-    public function check(User $user, OtpType $type, string $key): bool
+    public function check(User $user, OtpType $type, int $key): bool
     {
         /** @var OtpKey|null $otp */
         $otp = $this->createQueryBuilder('o')
-            ->where('o.key = :key')
-            ->andWhere('IDENTITY(o.owner) = :owner')
+            ->andWhere('o.otpKey = :key')
+            ->andWhere('o.owner = :owner')
             ->andWhere('o.type = :type')
             ->andWhere('o.expiredAt >= :expired')
             ->andWhere('o.used = :used')
             ->setParameters([
                 'key' => $key,
-                'owner' => $user->getId()->toRfc4122(),
                 'type' => $type->value,
                 'expired' => new \DateTimeImmutable(),
                 'used' => false,
             ])
+            ->setParameter('owner', $user->getId(), 'ulid')
             ->orderBy('o.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -68,5 +68,16 @@ class OtpKeyRepository extends BaseRepository
         }
 
         return false;
+    }
+
+    /**
+     * Clear All Expired OTP Keys.
+     */
+    public function clearExpired(): void
+    {
+        $this->createQueryBuilder('o')
+            ->where('o.expiredAt <= :expire')
+            ->setParameter('expire', new \DateTimeImmutable('-3 minute'))
+            ->delete()->getQuery()->execute();
     }
 }

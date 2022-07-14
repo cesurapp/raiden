@@ -7,7 +7,7 @@ use App\Admin\Core\Entity\User;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Login OTP Request Event.
+ * Login OTP Request Event Generate OTP Key.
  */
 class LoginOtpRequestEvent extends Event
 {

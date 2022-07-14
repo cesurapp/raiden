@@ -27,6 +27,7 @@ use Package\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,8 +40,10 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
  */
 class SecurityController extends AbstractApiController
 {
-    public function __construct(private EventDispatcherInterface $dispatcher, private UserRepository $userRepo)
-    {
+    public function __construct(
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly UserRepository $userRepo
+    ) {
     }
 
     #[Thor(
@@ -94,8 +97,10 @@ class SecurityController extends AbstractApiController
             throw new NotFoundHttpException('User not found.');
         }
 
-        $otpKey = $otpKeyRepo->create($user, OtpType::LOGIN);
-        $this->dispatcher->dispatch(new LoginOtpRequestEvent($user, $otpKey), LoginOtpRequestEvent::NAME);
+        $this->dispatcher->dispatch(
+            new LoginOtpRequestEvent($user, $otpKeyRepo->create($user, OtpType::LOGIN)),
+            LoginOtpRequestEvent::NAME
+        );
 
         return ApiResponse::create()->addMessage('Operation successful.');
     }
@@ -113,7 +118,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false
     )]
     #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp', methods: ['POST'])]
-    public function loginOtp(LoginOtpDto $otpDto, JWT $jwt, RefreshTokenRepository $refreshTokenRepo, Request $request, OtpKeyRepository $otpKeyRepo): ApiResponse
+    public function loginOtp(LoginOtpDto $otpDto, OtpKeyRepository $otpKeyRepo): ApiResponse|Response
     {
         if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
             throw new NotFoundHttpException('User not found.');
@@ -123,7 +128,9 @@ class SecurityController extends AbstractApiController
             throw new BadCredentialsException('Wrong otp key.', 403);
         }
 
-        return $this->login($user, $jwt, $refreshTokenRepo, $request);
+        return $this->forward('App\Admin\Core\Controller\SecurityController::login', [
+            'user' => $user,
+        ]);
     }
 
     #[Thor(
@@ -190,8 +197,11 @@ class SecurityController extends AbstractApiController
 
     #[Thor(group: 'Security', desc: 'Register', dto: RegisterDto::class, requireAuth: false)]
     #[Route(path: '/v1/auth/register', name: 'api_register', methods: ['POST'])]
-    public function register(RegisterDto $register, UserRepository $userRepo, UserPasswordHasherInterface $hasher): ApiResponse
-    {
+    public function register(
+        RegisterDto $register,
+        UserRepository $userRepo,
+        UserPasswordHasherInterface $hasher
+    ): ApiResponse {
         // Init & Save
         $user = $register->initObject(new User())->setPassword($register->validated('password'), $hasher);
         $userRepo->add($user);
@@ -255,8 +265,12 @@ class SecurityController extends AbstractApiController
 
     #[Thor(group: 'Security', desc: 'Change Password', requireAuth: false)]
     #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]
-    public function resetPassword(User $resetToken, ResetPasswordDto $resetPassword, UserRepository $userRepo, UserPasswordHasherInterface $hasher): ApiResponse
-    {
+    public function resetPassword(
+        User $resetToken,
+        ResetPasswordDto $resetPassword,
+        UserRepository $userRepo,
+        UserPasswordHasherInterface $hasher
+    ): ApiResponse {
         // Update Password
         $userRepo->resetPassword($resetToken, $resetPassword->validated('password'), $hasher);
 

@@ -136,14 +136,14 @@ class SecurityTest extends AbstractWebTestCase
         // Login OTP Key
         $this->client()->request('POST', '/v1/auth/login-otp', [
             'username' => $user->getEmail(),
-            'otp_key' => $key->getKey(),
+            'otp_key' => $key->getOtpKey(),
         ]);
         $this->isOk();
 
         // Retry Failed
         $this->client()->request('POST', '/v1/auth/login-otp', [
             'username' => $user->getEmail(),
-            'otp_key' => $key->getKey(),
+            'otp_key' => $key->getOtpKey(),
         ]);
         $this->isFail();
     }

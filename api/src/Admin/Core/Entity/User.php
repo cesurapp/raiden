@@ -289,18 +289,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
-/*    public function generateApproveKey(int $second = 180): string
-    {
-        return sprintf('%s-%s', time() + $second, random_int(100000, 999999));
-    }
-
-    public function validApproveKey(string $approveKey, string $reqKey): bool
-    {
-        [$time, $key] = explode('-', $approveKey);
-
-        return ($key === $reqKey) && ((int) $time >= time());
-    }*/
-
     #[ORM\PrePersist]
     public function prePersist(LifecycleEventArgs $event): void
     {

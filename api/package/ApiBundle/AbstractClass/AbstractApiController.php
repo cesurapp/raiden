@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\AbstractClass;
 
+use Package\ApiBundle\Response\ApiResponse;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -61,7 +62,7 @@ abstract class AbstractApiController implements ServiceSubscriberInterface
      *
      * @param string $controller The controller name (a string like Bundle\BlogBundle\Controller\PostController::indexAction)
      */
-    protected function forward(string $controller, array $path = [], array $query = []): Response
+    protected function forward(string $controller, array $path = [], array $query = []): ApiResponse|Response
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $path['_controller'] = $controller;
