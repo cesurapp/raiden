@@ -4,16 +4,20 @@ namespace App\Admin\Core\Controller;
 
 use Ahc\Jwt\JWT;
 use Ahc\Jwt\JWTException;
+use App\Admin\Core\Dto\LoginOtpDto;
 use App\Admin\Core\Dto\RegisterDto;
 use App\Admin\Core\Dto\ResetPasswordDto;
-use App\Admin\Core\Dto\ResetRequestDto;
+use App\Admin\Core\Dto\UsernameDto;
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Event\LoginEvent;
+use App\Admin\Core\Event\LoginOtpRequestEvent;
 use App\Admin\Core\Event\RegisterEvent;
 use App\Admin\Core\Event\ResetPasswordEvent;
 use App\Admin\Core\Event\ResetRequestEvent;
 use App\Admin\Core\Exception\RefreshTokenExpiredException;
 use App\Admin\Core\Exception\TokenExpiredException;
+use App\Admin\Core\Repository\OtpKeyRepository;
 use App\Admin\Core\Repository\RefreshTokenRepository;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
@@ -21,6 +25,7 @@ use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -34,7 +39,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
  */
 class SecurityController extends AbstractApiController
 {
-    public function __construct(private EventDispatcherInterface $dispatcher)
+    public function __construct(private EventDispatcherInterface $dispatcher, private UserRepository $userRepo)
     {
     }
 
@@ -76,10 +81,70 @@ class SecurityController extends AbstractApiController
             ->setResource(UserResource::class);
     }
 
-    #[Thor(group: 'Security', desc: 'Logout', requireAuth: false)]
-    #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
-    public function logout(): ApiResponse
+    #[Thor(
+        group: 'Security',
+        desc: 'Login User with OTP Generate Key',
+        requireAuth: false
+    )]
+    #[Route(path: '/v1/auth/login-otp-request', name: 'api_login_otp_request', methods: ['POST'])]
+    public function loginOtpRequest(UsernameDto $usernameDto, OtpKeyRepository $otpKeyRepo): ApiResponse
     {
+        $user = $this->userRepo->loadUserByIdentifier($usernameDto->validated('username'));
+        if (!$user) {
+            throw new NotFoundHttpException('User not found.');
+        }
+
+        $otpKey = $otpKeyRepo->create($user, OtpType::LOGIN);
+        $this->dispatcher->dispatch(new LoginOtpRequestEvent($user, $otpKey), LoginOtpRequestEvent::NAME);
+
+        return ApiResponse::create()->addMessage('Operation successful.');
+    }
+
+    #[Thor(
+        group: 'Security',
+        desc: 'Login User with OTP',
+        response: [
+            200 => [
+                'user' => UserResource::class,
+                'token' => 'string',
+                'refresh_token' => 'string',
+            ],
+        ],
+        requireAuth: false
+    )]
+    #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp', methods: ['POST'])]
+    public function loginOtp(LoginOtpDto $otpDto, JWT $jwt, RefreshTokenRepository $refreshTokenRepo, Request $request, OtpKeyRepository $otpKeyRepo): ApiResponse
+    {
+        if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
+            throw new NotFoundHttpException('User not found.');
+        }
+
+        if (!$otpKeyRepo->check($user, OtpType::LOGIN, $otpDto->validated('otp_key'))) {
+            throw new BadCredentialsException('Wrong otp key.', 403);
+        }
+
+        return $this->login($user, $jwt, $refreshTokenRepo, $request);
+    }
+
+    #[Thor(
+        group: 'Security',
+        desc: 'Logout',
+        request: [
+            'refresh_token' => '?string',
+        ],
+        requireAuth: true
+    )]
+    #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
+    public function logout(Request $request, RefreshTokenRepository $refreshTokenRepo): ApiResponse
+    {
+        if (!$this->getUser()) {
+            throw new AccessDeniedException();
+        }
+
+        if ($token = $request->get('refresh_token')) {
+            $refreshTokenRepo->removeToken($token);
+        }
+
         return ApiResponse::create()->addMessage('Operation successful.');
     }
 
@@ -140,36 +205,46 @@ class SecurityController extends AbstractApiController
             ->addMessage('Operation successful.');
     }
 
-    #[Thor(group: 'Security', desc: 'Account Confirmation', requireAuth: false)]
-    #[Route(path: '/v1/auth/confirm/{token}', name: 'api_register_confirm', methods: ['GET'])]
-    public function confirmation(string $token, UserRepository $userRepo): ApiResponse
+    #[Thor(
+        group: 'Security',
+        desc: 'Account Phone|Email Approve',
+        request: ['approve_key' => 'string'],
+        response: [
+            AccessDeniedException::class,
+            BadCredentialsException::class,
+        ],
+        requireAuth: false
+    )]
+    #[Route(path: '/v1/auth/approve/{id}', name: 'api_approve_account', methods: ['POST'])]
+    public function approve(Request $request, User $user, UserRepository $userRepo): ApiResponse
     {
-        $user = $userRepo->findOneBy(['confirmationToken' => $token]);
-        if (!$user) {
-            throw new NotFoundHttpException('Token not found', code: 404);
+        if (!$approve_key = $request->get('approve_key')) {
+            throw new BadRequestException('approve_key not found!');
         }
 
-        // Confirm
-        $userRepo->confirmUser($user);
+        // Approve
+        if (!$userRepo->approve($user, $approve_key)) {
+            throw new AccessDeniedException();
+        }
 
-        return ApiResponse::create()->addMessage('Your account has been confirmed.');
+        return ApiResponse::create()->addMessage('Your account has been approved.');
     }
 
-    #[Thor(group: 'Security', desc: 'Reset Password Request', requireAuth: false)]
+    #[Thor(
+        group: 'Security',
+        desc: 'Reset Password Request',
+        request: ['username' => 'string'],
+        requireAuth: false
+    )]
     #[Route(path: '/v1/auth/reset-request', name: 'api_reset_request', methods: ['POST'])]
-    public function resetRequest(ResetRequestDto $resetRequest, UserRepository $userRepo): ApiResponse
+    public function resetRequest(UsernameDto $resetRequest, UserRepository $userRepo): ApiResponse
     {
-        $user = $userRepo->loadUserByIdentifier($resetRequest->validated()['identity']);
+        $user = $userRepo->loadUserByIdentifier($resetRequest->validated()['username']);
         if (!$user) {
-            throw new NotFoundHttpException('User not found.', code: 404);
+            throw new NotFoundHttpException('User not found.');
         }
 
-        // Disable 2 Hour
-        if ($user->isPasswordRequestExpired()) {
-            throw new AccessDeniedException('Wait two hours before a new request.');
-        }
-
-        // Create Token
+        // Create Reset Key
         $userRepo->resetRequest($user);
 
         // Dispatch Event
@@ -179,7 +254,7 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(group: 'Security', desc: 'Change Password', requireAuth: false)]
-    #[Route(path: '/v1/auth/reset-password/{resetToken}', name: 'api_reset_password', methods: ['POST'])]
+    #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]
     public function resetPassword(User $resetToken, ResetPasswordDto $resetPassword, UserRepository $userRepo, UserPasswordHasherInterface $hasher): ApiResponse
     {
         // Update Password

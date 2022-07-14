@@ -10,12 +10,12 @@ class UserTest extends AbstractWebTestCase
     {
         static::createClient();
 
-        $user = $this->createUser()->setApproved(false);
+        $user = $this->createUser()->setEmailApproved(false);
         $this->save($user);
 
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isForbidden();
     }
@@ -29,7 +29,7 @@ class UserTest extends AbstractWebTestCase
 
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isForbidden();
     }

@@ -121,15 +121,15 @@ abstract class AbstractKernelTestCase extends KernelTestCase
     /**
      * Create App User.
      */
-    public function createUser(bool $createOrganization = false, string $password = '123123'): User
+    public function createUser(bool $createOrganization = false, string $password = '123123123'): User
     {
         $user = (new User())
             ->setOrganization($createOrganization ? (new Organization())->setName('Test Org') : null)
             ->setLanguage('TR')
-            ->setApproved(true)
+            ->setEmailApproved(true)
             ->setFirstName('John')
             ->setLastName('Doe')
-            ->setPhone((string) random_int(5400000000, 6400000000))
+            ->setPhone(random_int(5400000000, 6400000000))
             ->setEmail(Ulid::generate().'@test.com');
 
         // Hash Password

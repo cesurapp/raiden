@@ -22,12 +22,15 @@ class UserResource implements ApiResourceInterface
             'id' => $item->getId()->toBase32(),
             'type' => $item->getType()->value,
             'email' => $item->getEmail(),
+            'email_approved' => $item->isEmailApproved(),
+            'phone' => $item->getPhone(),
+            'phone_approved' => $item->isPhoneApproved(),
+            'approved' => $item->isApproved(),
             'roles' => $item->getRoles(),
             'language' => $item->getLanguage(),
-            'phone' => $item->getPhone(),
-            'approved' => $item->isApproved(),
             'first_name' => $item->getFirstName(),
             'last_name' => $item->getLastName(),
+            'meta' => $item->getMeta(),
         ];
     }
 }

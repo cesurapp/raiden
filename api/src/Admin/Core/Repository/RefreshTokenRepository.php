@@ -34,14 +34,22 @@ class RefreshTokenRepository extends BaseRepository
     }
 
     /**
+     * Clear Token.
+     */
+    public function removeToken(string $token): void
+    {
+        if ($t = $this->findOneBy(['token' => $token])) {
+            $this->remove($t);
+        }
+    }
+
+    /**
      * Clear All Token.
      */
-    public function clearToken(User $user, ?string $excludeToken = null): void
+    public function clearAllToken(User $user): void
     {
         $this->createQueryBuilder('t')
-            ->where('t.token <> :token')
             ->andWhere('IDENTITY(t.owner) = :ulid')
-            ->setParameter('token', $excludeToken)
             ->setParameter('ulid', $user->getId(), 'ulid')
             ->delete()->getQuery()->execute();
     }
@@ -52,7 +60,7 @@ class RefreshTokenRepository extends BaseRepository
     public function createToken(User $user, JWT $jwt, bool $clearOldToken = false): RefreshToken
     {
         if ($clearOldToken) {
-            $this->clearToken($user);
+            $this->clearAllToken($user);
         }
 
         $exp = time() + (86400 * $this->bag->get('core.refresh_token_exp'));

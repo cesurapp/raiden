@@ -6,6 +6,7 @@ use App\Admin\Core\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -33,30 +34,55 @@ class UserRepository extends BaseRepository implements PasswordUpgraderInterface
         }
 
         $user->setPassword($newHashedPassword);
-
-        $this->add($user, true);
+        $this->add($user);
     }
 
     /**
      * Login User Methods.
      */
-    public function loadUserByIdentifier(string $identifier): ?User
+    public function loadUserByIdentifier(string|int $identifier): ?User
     {
-        return $this->createQueryBuilder('u')
-            ->where('u.email = :identity')
-            ->orWhere('u.phone = :identity')
+        $q = $this->createQueryBuilder('u');
+
+        if (is_numeric($identifier)) {
+            $identifier = (int) $identifier;
+            $q->where('u.phone = :identity');
+        } else {
+            $q->where('u.email = :identity');
+        }
+
+        return $q
             ->setParameter('identity', $identifier)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
     /**
-     * Confirm or Approve User.
+     * Approve User.
      */
-    public function confirmUser(User $user): void
+    public function approve(User $user, string $approveKey): bool
     {
-        $user->setConfirmationToken(null)->setApproved(true);
-        $this->add($user);
+        if ($user->getPhoneApproveKey() && $user->getEmailApproveKey()) {
+            return false;
+        }
+
+        // Email Approve
+        if ($user->getEmailApproveKey() && $user->validApproveKey($user->getEmailApproveKey(), $approveKey)) {
+            $user->setEmailApproved(true)->setEmailApproveKey(null);
+            $this->add($user);
+
+            return true;
+        }
+
+        // Phone Approve
+        if ($user->getPhoneApproveKey() && $user->validApproveKey($user->getPhoneApproveKey(), $approveKey)) {
+            $user->setPhoneApproved(true)->setPhoneApproveKey(null);
+            $this->add($user);
+
+            return true;
+        }
+
+        throw new BadCredentialsException('Expired or wrong approve key');
     }
 
     /**
@@ -64,10 +90,7 @@ class UserRepository extends BaseRepository implements PasswordUpgraderInterface
      */
     public function resetRequest(User $user): void
     {
-        $user
-            ->createResetToken()
-            ->setPasswordRequestedAt(new \DateTimeImmutable());
-
+        $user->setResetKey($user->generateApproveKey());
         $this->add($user);
     }
 
@@ -77,8 +100,7 @@ class UserRepository extends BaseRepository implements PasswordUpgraderInterface
     public function resetPassword(User $user, string $password, UserPasswordHasherInterface $hasher): void
     {
         $user
-            ->setResetToken(null)
-            ->setPasswordRequestedAt(null)
+            ->setResetKey(null)
             ->setPassword($password, $hasher);
 
         $this->add($user);

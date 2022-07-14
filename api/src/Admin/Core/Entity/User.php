@@ -5,7 +5,6 @@ namespace App\Admin\Core\Entity;
 use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Permission\PermissionInterface;
 use App\Admin\Core\Repository\UserRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -18,6 +17,8 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\HasLifecycleCallbacks]
+#[ORM\UniqueConstraint(fields: ['email', 'type'])]
+#[ORM\UniqueConstraint(fields: ['phone', 'type'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimeStampTrait;
@@ -28,14 +29,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
+    #[ORM\Column(type: 'string', length: 180, nullable: true)]
     private ?string $email;
 
     #[ORM\Column(type: 'boolean')]
     private bool $emailApproved = false;
 
-    #[ORM\Column(type: 'integer', length: 20, unique: true, nullable: true)]
-    private ?string $phone;
+    #[ORM\Column(type: 'bigint', length: 20, nullable: true)]
+    private ?int $phone = null;
 
     #[ORM\Column(type: 'string', length: 2, nullable: true)]
     private ?string $phoneCountry;
@@ -51,15 +52,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private string $password;
-
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?DateTimeImmutable $passwordRequestedAt = null;
-
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
-    private ?string $confirmationToken;
-
-    #[ORM\Column(type: 'string', unique: true, nullable: true)]
-    private ?string $resetToken;
 
     #[ORM\Column(type: 'boolean')]
     private bool $frozen = false;
@@ -108,12 +100,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getPhone(): ?int
     {
         return $this->phone;
     }
 
-    public function setPhone(?string $phone): self
+    public function setPhone(?int $phone): self
     {
         $this->phone = $phone;
 
@@ -146,9 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles;
-
-        return array_unique($roles);
+        return $this->roles;
     }
 
     public function hasRoles(PermissionInterface $permission): bool
@@ -197,64 +187,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPasswordRequestedAt(): ?DateTimeImmutable
-    {
-        return $this->passwordRequestedAt;
-    }
-
-    public function setPasswordRequestedAt(?DateTimeImmutable $passwordRequestedAt): self
-    {
-        $this->passwordRequestedAt = $passwordRequestedAt;
-
-        return $this;
-    }
-
-    public function isPasswordRequestExpired(int $ttl = 120): bool
-    {
-        return $this->getPasswordRequestedAt() instanceof \DateTimeImmutable && $this->getPasswordRequestedAt()->getTimestamp() + ($ttl * 60) > time();
-    }
-
     public function isApproved(): bool
     {
         return $this->emailApproved || $this->phoneApproved;
-    }
-
-    public function getConfirmationToken(): ?string
-    {
-        return $this->confirmationToken;
-    }
-
-    public function setConfirmationToken(?string $confirmationToken): self
-    {
-        $this->confirmationToken = $confirmationToken;
-
-        return $this;
-    }
-
-    public function createConfirmationToken(): self
-    {
-        $this->confirmationToken = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-
-        return $this;
-    }
-
-    public function getResetToken(): ?string
-    {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(?string $resetToken): self
-    {
-        $this->resetToken = $resetToken;
-
-        return $this;
-    }
-
-    public function createResetToken(): self
-    {
-        $this->resetToken = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-
-        return $this;
     }
 
     public function isFrozen(): bool
@@ -354,12 +289,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
+/*    public function generateApproveKey(int $second = 180): string
+    {
+        return sprintf('%s-%s', time() + $second, random_int(100000, 999999));
+    }
+
+    public function validApproveKey(string $approveKey, string $reqKey): bool
+    {
+        [$time, $key] = explode('-', $approveKey);
+
+        return ($key === $reqKey) && ((int) $time >= time());
+    }*/
+
     #[ORM\PrePersist]
     public function prePersist(LifecycleEventArgs $event): void
     {
-        if (!$this->isApproved()) {
-            $this->createConfirmationToken();
+       /* if (!$this->isEmailApproved() && $this->getEmail()) {
+            $this->setEmailApproveKey($this->generateApproveKey());
         }
+
+        if (!$this->isPhoneApproved() && $this->getPhone()) {
+            $this->setPhoneApproveKey($this->generateApproveKey());
+        }*/
     }
 
     #[ORM\PreFlush]

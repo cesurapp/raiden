@@ -15,7 +15,7 @@ class OrganizationTest extends AbstractWebTestCase
 
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isOk();
     }
@@ -30,7 +30,7 @@ class OrganizationTest extends AbstractWebTestCase
 
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isForbidden();
     }

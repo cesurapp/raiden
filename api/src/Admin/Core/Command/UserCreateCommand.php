@@ -47,7 +47,7 @@ class UserCreateCommand extends Command
             ->setLastName($data['lastName'])
             ->setPassword($data['password'], $this->passwordHasher)
             ->setRoles([])
-            ->setApproved(true)
+            ->setEmailApproved(true)
             ->setType(UserType::from($data['type']));
 
         $this->userRepo->add($user);

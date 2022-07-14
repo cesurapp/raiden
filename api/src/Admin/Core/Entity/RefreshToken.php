@@ -9,9 +9,10 @@ use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class RefreshToken
 {
+    use OwnerTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'ulid', unique: true)]
@@ -20,10 +21,6 @@ class RefreshToken
 
     #[ORM\Column(type: 'string', unique: true)]
     private string $token;
-
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $owner;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $expiredAt;
@@ -41,18 +38,6 @@ class RefreshToken
     public function setToken(string $token): self
     {
         $this->token = $token;
-
-        return $this;
-    }
-
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?User $owner): self
-    {
-        $this->owner = $owner;
 
         return $this;
     }

@@ -3,8 +3,10 @@
 namespace App\Admin\Core\Test;
 
 use Ahc\Jwt\JWT;
+use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\CorePermission;
+use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Event\LoginEvent;
 use App\Admin\Core\Event\RegisterEvent;
@@ -22,7 +24,7 @@ class SecurityTest extends AbstractWebTestCase
         // Login Api
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
 
         // Assert
@@ -39,7 +41,7 @@ class SecurityTest extends AbstractWebTestCase
         // Login Api
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isOk();
         $this->assertJsonStructure(['token', 'refresh_token']);
@@ -58,17 +60,16 @@ class SecurityTest extends AbstractWebTestCase
         $user = $this->createUser();
 
         // Logout Api
-        $this->client()->jsonRequest('POST', '/v1/auth/logout', [
-            'username' => $user->getEmail(),
-            'password' => '123123',
-        ]);
+        $this->client()->loginUser($user)->jsonRequest('POST', '/v1/auth/logout');
         $this->isOk();
         $this->assertJsonStructure(['message']);
 
         // Language Test
-        $this->client()->jsonRequest('POST', '/v1/auth/logout', [
-            'username' => $user->getEmail(),
-            'password' => '123123',
+        static::ensureKernelShutdown();
+        static::createClient();
+
+        $this->client()->loginUser($user)->jsonRequest('POST', '/v1/auth/logout', [
+            'refresh_token' => 'sdsadasdsasadasdsa',
         ], server: [
             'HTTP_ACCEPT_LANGUAGE' => 'tr-TR',
         ]);
@@ -81,13 +82,13 @@ class SecurityTest extends AbstractWebTestCase
     public function testRefreshToken(): void
     {
         static::createClient();
-        $user = $this->createUser(false);
+        $user = $this->createUser();
         $jwt = self::getContainer()->get(JWT::class);
 
         // Login Api
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
-            'password' => '123123',
+            'password' => '123123123',
         ]);
         $this->isOk();
         $this->assertJsonStructure(['token', 'refresh_token']);
@@ -113,6 +114,38 @@ class SecurityTest extends AbstractWebTestCase
             'HTTP_AUTHORIZATION' => 'Bearer '.$newToken,
         ]);
         $this->isOk();
+    }
+
+    public function testLoginOtp(): void
+    {
+        static::createClient();
+        $user = $this->createUser();
+
+        // Generate OTP Key
+        $this->client()->request('POST', '/v1/auth/login-otp-request', [
+            'username' => $user->getEmail(),
+        ]);
+        $this->isOk();
+
+        /** @var OtpKey $key */
+        $key = $this->manager()->getRepository(OtpKey::class)->findOneBy([
+            'type' => OtpType::LOGIN,
+            'owner' => $user,
+        ], ['id' => 'DESC']);
+
+        // Login OTP Key
+        $this->client()->request('POST', '/v1/auth/login-otp', [
+            'username' => $user->getEmail(),
+            'otp_key' => $key->getKey(),
+        ]);
+        $this->isOk();
+
+        // Retry Failed
+        $this->client()->request('POST', '/v1/auth/login-otp', [
+            'username' => $user->getEmail(),
+            'otp_key' => $key->getKey(),
+        ]);
+        $this->isFail();
     }
 
     public function testRegisterUser(): void

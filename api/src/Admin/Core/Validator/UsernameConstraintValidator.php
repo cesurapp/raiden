@@ -10,12 +10,12 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 /**
  * Identity Validator (Email-Phone).
  */
-class IdentityConstraintValidator extends ConstraintValidator
+class UsernameConstraintValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {
-        if (!$constraint instanceof IdentityConstraint) {
-            throw new UnexpectedTypeException($constraint, IdentityConstraint::class);
+        if (!$constraint instanceof UsernameConstraint) {
+            throw new UnexpectedTypeException($constraint, UsernameConstraint::class);
         }
 
         // Check Number

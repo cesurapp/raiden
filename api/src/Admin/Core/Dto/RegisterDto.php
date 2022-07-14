@@ -17,11 +17,11 @@ class RegisterDto extends AbstractApiDto
 
     #[Assert\Length(max: 25)]
     #[Assert\Type('numeric')]
-    public ?string $phone = null;
+    public ?int $phone = null;
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: 'getTypes')]
-    public string $type = 'user';
+    public ?string $type = 'user';
 
     #[Assert\Length(min: 8)]
     #[Assert\NotNull]

@@ -2,13 +2,13 @@
 
 namespace App\Admin\Core\Dto;
 
-use App\Admin\Core\Validator\IdentityConstraint;
+use App\Admin\Core\Validator\UsernameConstraint;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ResetRequestDto extends AbstractApiDto
+class UsernameDto extends AbstractApiDto
 {
-    #[IdentityConstraint]
+    #[UsernameConstraint]
     #[Assert\NotNull]
-    public string|int $identity;
+    public string|int $username;
 }

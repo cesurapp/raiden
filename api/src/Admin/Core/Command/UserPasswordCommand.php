@@ -30,7 +30,6 @@ class UserPasswordCommand extends Command
         if (!$user = $this->userRepo->loadUserByIdentifier($user)) {
             throw new EntityNotFoundException('User not found!');
         }
-
         $user->setPassword(
             $helper->ask($input, $output, new Question('Password: ', '123123')),
             $this->passwordHasher
