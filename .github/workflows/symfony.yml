@@ -24,6 +24,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          tools: phpunit-bridge
           extensions: imagick, uuid, swoole, :xdebug
         env:
           SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
@@ -47,7 +48,9 @@ jobs:
         run: composer analyse
       - name: Quality Tools - PHPCS Fixer
         run: composer lint
-      - name: Execute PHPUnit
-        run: bin/phpunit --stop-on-failure --stderr
+      - name: Install PHPUnit
+        run: simple-phpunit install
+      - name: Run tests
+        run: simple-phpunit
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
