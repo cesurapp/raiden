@@ -28,7 +28,6 @@ jobs:
           extensions: imagick, uuid, swoole, :xdebug
         env:
           SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
-
       - uses: actions/checkout@v3
       - name: Create Test ENV
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
@@ -48,9 +47,9 @@ jobs:
         run: composer analyse
       - name: Quality Tools - PHPCS Fixer
         run: composer lint
-      - name: Install PHPUnit
-        run: simple-phpunit install
+      #- name: Install PHPUnit
+      #  run: simple-phpunit install
       - name: Run tests
-        run: simple-phpunit
+        run: bin/phpunit --stop-on-failure
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
