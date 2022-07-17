@@ -48,6 +48,6 @@ jobs:
       - name: Quality Tools - PHPCS Fixer
         run: composer lint
       - name: Execute PHPUnit
-        run: bin/phpunit --stop-on-error
+        run: bin/phpunit --stop-on-failure --stderr
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
