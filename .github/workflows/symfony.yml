@@ -28,7 +28,11 @@ jobs:
           extensions: imagick, uuid, :xdebug
       - uses: actions/checkout@v3
       - name: Instal OpenSwoole
-        run: pecl install openswoole --enable-openssl --enable-swoole-curl
+        run: |
+          pear clear-cache
+          pear update-channels
+          pear upgrade
+          pecl install openswoole --enable-openssl --enable-swoole-curl
       - name: Create Test ENV
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
       #- name: Install Quality Tools
