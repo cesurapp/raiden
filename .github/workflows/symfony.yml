@@ -25,6 +25,8 @@ jobs:
         with:
           php-version: '8.1'
           extensions: imagick, openswoole, uuid, :xdebug
+        env:
+          OPENSWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl
 
       - uses: actions/checkout@v3
       - name: Create Test ENV
@@ -41,7 +43,11 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-      - name: Execute PHPUnit and Quality Tools
-        run: composer ci
+      - name: Quality Tools - PHPStan
+        run: composer analyse
+      - name: Quality Tools - PHPCs Fixer
+        run: composer lint
+      - name: Execute PHPUnit
+        run: composer test
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14

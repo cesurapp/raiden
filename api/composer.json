@@ -88,11 +88,6 @@
     "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
     "test": "bin/phpunit",
     "test-coverage": "bin/phpunit --coverage-text",
-    "ci": [
-      "@analyse",
-      "@lint",
-      "@test"
-    ],
     "install-tool": [
       "composer install --working-dir=bin/tool"
     ]
