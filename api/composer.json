@@ -86,6 +86,7 @@
     "lint": "bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
     "fix": "bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
     "test": "bin/phpunit",
+    "test-stop": "bin/phpunit --stop-on-failure --verbose --testdox",
     "test-coverage": "bin/phpunit --coverage-text",
     "install-tool": [
       "composer install --working-dir=bin/tool"
