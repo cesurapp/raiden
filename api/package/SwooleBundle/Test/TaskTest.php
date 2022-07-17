@@ -75,7 +75,6 @@ class TaskTest extends KernelTestCase
         $kernel = new CustomKernel('test', true);
         $kernel->boot();
 
-
         // Test Worker
         $container = $kernel->getContainer();
         $this->assertTrue($container->has(TaskWorker::class));

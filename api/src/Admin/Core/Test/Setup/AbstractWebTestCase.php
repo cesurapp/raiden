@@ -43,7 +43,7 @@ abstract class AbstractWebTestCase extends AbstractKernelTestCase
 
         $client->setServerParameters($server);
 
-        return self::$client = self::getClient($client);
+        return self::$client = self::getClient($client); // @phpstan-ignore-line
     }
 
     /**

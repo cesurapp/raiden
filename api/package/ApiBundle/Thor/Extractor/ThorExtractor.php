@@ -93,7 +93,7 @@ class ThorExtractor
                     'controller' => $route['controller'].'::'.$route['method'],
                     'controllerPath' => str_replace($this->bag->get('kernel.project_dir'), '', $refController->getFileName()),
                     'controllerLine' => $refMethod->getStartLine(),
-                    'controllerResponseType' => $this->getResponseType($refMethod->getReturnType()), // @phpstan-ignore-line
+                    'controllerResponseType' => $this->getResponseType($refMethod->getReturnType()),
 
                     // DTO
                     'query' => $this->extractQueryParameters($attrThor),

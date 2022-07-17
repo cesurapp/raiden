@@ -8,7 +8,6 @@ parameters:
         - src
         - package
     ignoreErrors:
-        - '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
         - '#While loop condition is always true.#'
     excludePaths:
         - 'package/ApiBundle/Thor/Template/*'
