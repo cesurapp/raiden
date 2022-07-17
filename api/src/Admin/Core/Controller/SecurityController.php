@@ -4,17 +4,13 @@ namespace App\Admin\Core\Controller;
 
 use Ahc\Jwt\JWT;
 use Ahc\Jwt\JWTException;
-use App\Admin\Core\Dto\LoginOtpDto;
+use App\Admin\Core\Dto\UsernameOtpDto;
 use App\Admin\Core\Dto\RegisterDto;
 use App\Admin\Core\Dto\ResetPasswordDto;
 use App\Admin\Core\Dto\UsernameDto;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
-use App\Admin\Core\Event\LoginEvent;
-use App\Admin\Core\Event\LoginOtpRequestEvent;
-use App\Admin\Core\Event\RegisterEvent;
-use App\Admin\Core\Event\ResetPasswordEvent;
-use App\Admin\Core\Event\ResetRequestEvent;
+use App\Admin\Core\Event\SecurityEvent;
 use App\Admin\Core\Exception\RefreshTokenExpiredException;
 use App\Admin\Core\Exception\TokenExpiredException;
 use App\Admin\Core\Repository\OtpKeyRepository;
@@ -25,9 +21,7 @@ use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +36,9 @@ class SecurityController extends AbstractApiController
 {
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly UserRepository $userRepo
+        private readonly UserRepository $userRepo,
+        private readonly JWT $jwt,
+        private readonly RefreshTokenRepository $refreshTokenRepo,
     ) {
     }
 
@@ -66,48 +62,46 @@ class SecurityController extends AbstractApiController
         requireAuth: false
     )]
     #[Route(path: '/v1/auth/login', name: 'api_login', methods: ['POST'])]
-    public function login(#[CurrentUser] User $user, JWT $jwt, RefreshTokenRepository $repo, Request $request): ApiResponse
+    public function login(#[CurrentUser] User $user, Request $request): ApiResponse
     {
         // Disable Switch User Generate Token
         if ($request->headers->has('switch-user')) {
             throw new AccessDeniedException();
         }
 
-        $this->dispatcher->dispatch(new LoginEvent($user), LoginEvent::NAME);
+        // Trigger Event
+        $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::LOGIN);
 
         return ApiResponse::create()
             ->setData([
                 'user' => $user,
-                'token' => $jwt->encode(['id' => $user->getId()->toBase32()]),
-                'refresh_token' => $repo->createToken($user, $jwt)->getToken(),
+                'token' => $this->jwt->encode(['id' => $user->getId()->toBase32()]),
+                'refresh_token' => $this->refreshTokenRepo->createToken($user, $this->jwt)->getToken(),
             ])
             ->setResource(UserResource::class);
     }
 
     #[Thor(
         group: 'Security',
-        desc: 'Login User with OTP Generate Key',
+        desc: 'Generate OTP key for User Login.',
         requireAuth: false
     )]
-    #[Route(path: '/v1/auth/login-otp-request', name: 'api_login_otp_request', methods: ['POST'])]
-    public function loginOtpRequest(UsernameDto $usernameDto, OtpKeyRepository $otpKeyRepo): ApiResponse
+    #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp_request', methods: ['PUT'])]
+    public function loginOtpRequest(UsernameDto $otpDto, OtpKeyRepository $otpKeyRepo): ApiResponse
     {
-        $user = $this->userRepo->loadUserByIdentifier($usernameDto->validated('username'));
-        if (!$user) {
-            throw new NotFoundHttpException('User not found.');
+        if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
+            throw new NotFoundHttpException('User not found!');
         }
 
-        $this->dispatcher->dispatch(
-            new LoginOtpRequestEvent($user, $otpKeyRepo->create($user, OtpType::LOGIN)),
-            LoginOtpRequestEvent::NAME
-        );
+        // Create OTP Key
+        $otpKeyRepo->create($user, OtpType::LOGIN);
 
         return ApiResponse::create()->addMessage('Operation successful.');
     }
 
     #[Thor(
         group: 'Security',
-        desc: 'Login User with OTP',
+        desc: 'Login User with OTP Key',
         response: [
             200 => [
                 'user' => UserResource::class,
@@ -118,19 +112,17 @@ class SecurityController extends AbstractApiController
         requireAuth: false
     )]
     #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp', methods: ['POST'])]
-    public function loginOtp(LoginOtpDto $otpDto, OtpKeyRepository $otpKeyRepo): ApiResponse|Response
+    public function loginOtp(UsernameOtpDto $otpDto, OtpKeyRepository $otpRepo, Request $request): ApiResponse
     {
         if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
-            throw new NotFoundHttpException('User not found.');
+            throw new NotFoundHttpException('User not found!');
         }
 
-        if (!$otpKeyRepo->check($user, OtpType::LOGIN, $otpDto->validated('otp_key'))) {
-            throw new BadCredentialsException('Wrong otp key.', 403);
+        if (!$otpRepo->check($user, OtpType::LOGIN, $otpDto->validated('otp_key'))) {
+            throw new BadCredentialsException('Wrong OTP key!', 403);
         }
 
-        return $this->forward('App\Admin\Core\Controller\SecurityController::login', [
-            'user' => $user,
-        ]);
+        return $this->login($user, $request);
     }
 
     #[Thor(
@@ -197,17 +189,14 @@ class SecurityController extends AbstractApiController
 
     #[Thor(group: 'Security', desc: 'Register', dto: RegisterDto::class, requireAuth: false)]
     #[Route(path: '/v1/auth/register', name: 'api_register', methods: ['POST'])]
-    public function register(
-        RegisterDto $register,
-        UserRepository $userRepo,
-        UserPasswordHasherInterface $hasher
-    ): ApiResponse {
+    public function register(RegisterDto $register, UserPasswordHasherInterface $hasher): ApiResponse
+    {
         // Init & Save
         $user = $register->initObject(new User())->setPassword($register->validated('password'), $hasher);
-        $userRepo->add($user);
+        $this->userRepo->add($user);
 
         // Dispacth Event
-        $this->dispatcher->dispatch(new RegisterEvent($user), RegisterEvent::NAME);
+        $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::REGISTER);
 
         return ApiResponse::create()
             ->setData($user)
@@ -218,64 +207,66 @@ class SecurityController extends AbstractApiController
     #[Thor(
         group: 'Security',
         desc: 'Account Phone|Email Approve',
-        request: ['approve_key' => 'string'],
         response: [
-            AccessDeniedException::class,
+            NotFoundHttpException::class,
             BadCredentialsException::class,
         ],
         requireAuth: false
     )]
-    #[Route(path: '/v1/auth/approve/{id}', name: 'api_approve_account', methods: ['POST'])]
-    public function approve(Request $request, User $user, UserRepository $userRepo): ApiResponse
+    #[Route(path: '/v1/auth/approve', name: 'api_approve_account', methods: ['POST'])]
+    public function approve(UsernameOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        if (!$approve_key = $request->get('approve_key')) {
-            throw new BadRequestException('approve_key not found!');
+        if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
+            throw new NotFoundHttpException('User not found!');
+        }
+
+        // Check
+        if (!$otp = $otpRepo->check($user, [OtpType::REGISTER_PHONE, OtpType::REGISTER_EMAIL], $dto->validated('otp_key'))) {
+            throw new AccessDeniedException('Wrong OTP key!');
         }
 
         // Approve
-        if (!$userRepo->approve($user, $approve_key)) {
-            throw new AccessDeniedException();
-        }
+        $this->userRepo->approve($user, $otp);
 
         return ApiResponse::create()->addMessage('Your account has been approved.');
     }
 
-    #[Thor(
-        group: 'Security',
-        desc: 'Reset Password Request',
-        request: ['username' => 'string'],
-        requireAuth: false
-    )]
+    #[Thor(group: 'Security', desc: 'Forgot Password - Reset Request', requireAuth: false)]
     #[Route(path: '/v1/auth/reset-request', name: 'api_reset_request', methods: ['POST'])]
-    public function resetRequest(UsernameDto $resetRequest, UserRepository $userRepo): ApiResponse
+    public function resetRequest(UsernameDto $usernameDto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        $user = $userRepo->loadUserByIdentifier($resetRequest->validated()['username']);
-        if (!$user) {
-            throw new NotFoundHttpException('User not found.');
+        if (!$user = $this->userRepo->loadUserByIdentifier($usernameDto->validated('username'))) {
+            throw new NotFoundHttpException('User not found!');
         }
 
-        // Create Reset Key
-        $userRepo->resetRequest($user);
+        // Create OTP Key
+        $otpRepo->create($user, OtpType::RESETTING, 60);
 
         // Dispatch Event
-        $this->dispatcher->dispatch(new ResetRequestEvent($user), ResetRequestEvent::NAME);
+        $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_REQUEST);
 
         return ApiResponse::create()->setData(['Operation successful.']);
     }
 
-    #[Thor(group: 'Security', desc: 'Change Password', requireAuth: false)]
+    #[Thor(group: 'Security', desc: 'Forgot Password - Change Password', requireAuth: false)]
     #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]
-    public function resetPassword(
-        User $resetToken,
-        ResetPasswordDto $resetPassword,
-        UserRepository $userRepo,
-        UserPasswordHasherInterface $hasher
-    ): ApiResponse {
+    public function resetPassword(ResetPasswordDto $dto, OtpKeyRepository $otpRepo, UserPasswordHasherInterface $hasher): ApiResponse
+    {
+        if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
+            throw new NotFoundHttpException('User not found!');
+        }
+
+        // Check
+        if (!$otpRepo->check($user, OtpType::RESETTING, $dto->validated('otp_key'))) {
+            throw new AccessDeniedException('Wrong OTP key!');
+        }
+
         // Update Password
-        $userRepo->resetPassword($resetToken, $resetPassword->validated('password'), $hasher);
+        $user->setPassword($dto->validated('password'), $hasher);
+        $this->userRepo->add($user);
 
         // Dispatch Event
-        $this->dispatcher->dispatch(new ResetPasswordEvent($resetToken), ResetPasswordEvent::NAME);
+        $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_PASSWORD);
 
         return ApiResponse::create()->setData(['Operation successful.']);
     }

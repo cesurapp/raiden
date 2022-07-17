@@ -4,6 +4,7 @@ namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\UserType;
+use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -15,7 +16,10 @@ class RegisterDto extends AbstractApiDto
     #[Assert\Email]
     public ?string $email = null;
 
-    #[Assert\Length(max: 25)]
+    #[Assert\Country]
+    public ?string $phoneCountry = null;
+
+    #[PhoneNumber(regionPath: 'phoneCountry')]
     #[Assert\Type('numeric')]
     public ?int $phone = null;
 
@@ -72,6 +76,7 @@ class RegisterDto extends AbstractApiDto
     {
         return $object
             ->setEmail($this->validated('email'))
+            ->setPhoneCountry($this->validated('phoneCountry'))
             ->setPhone($this->validated('phone'))
             ->setType(UserType::from($this->validated('type')))
             ->setFirstName($this->validated('firstName'))

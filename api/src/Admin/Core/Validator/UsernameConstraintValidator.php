@@ -20,7 +20,7 @@ class UsernameConstraintValidator extends ConstraintValidator
 
         // Check Number
         if (is_numeric($value)) {
-            if (strlen($value) < 9) {
+            if (strlen($value) < 8) {
                 $this->context->addViolation('Please enter a valid phone number.');
             }
 

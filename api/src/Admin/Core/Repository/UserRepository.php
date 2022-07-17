@@ -2,11 +2,11 @@
 
 namespace App\Admin\Core\Repository;
 
+use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Enum\OtpType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -60,48 +60,15 @@ class UserRepository extends BaseRepository implements PasswordUpgraderInterface
     /**
      * Approve User.
      */
-    public function approve(User $user, string $approveKey): bool
+    public function approve(User $user, OtpKey $otpKey): void
     {
-        if ($user->getPhoneApproveKey() && $user->getEmailApproveKey()) {
-            return false;
+        if (OtpType::REGISTER_EMAIL === $otpKey->getType()) {
+            $user->setEmailApproved(true);
         }
 
-        // Email Approve
-        if ($user->getEmailApproveKey() && $user->validApproveKey($user->getEmailApproveKey(), $approveKey)) {
-            $user->setEmailApproved(true)->setEmailApproveKey(null);
-            $this->add($user);
-
-            return true;
+        if (OtpType::REGISTER_PHONE === $otpKey->getType()) {
+            $user->setPhoneApproved(true);
         }
-
-        // Phone Approve
-        if ($user->getPhoneApproveKey() && $user->validApproveKey($user->getPhoneApproveKey(), $approveKey)) {
-            $user->setPhoneApproved(true)->setPhoneApproveKey(null);
-            $this->add($user);
-
-            return true;
-        }
-
-        throw new BadCredentialsException('Expired or wrong approve key');
-    }
-
-    /**
-     * Create Password Reset Token.
-     */
-    public function resetRequest(User $user): void
-    {
-        $user->setResetKey($user->generateApproveKey());
-        $this->add($user);
-    }
-
-    /**
-     * Reset User Password.
-     */
-    public function resetPassword(User $user, string $password, UserPasswordHasherInterface $hasher): void
-    {
-        $user
-            ->setResetKey(null)
-            ->setPassword($password, $hasher);
 
         $this->add($user);
     }

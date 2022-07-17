@@ -2,6 +2,8 @@ parameters:
     level: 6
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
+    doctrine:
+        ormRepositoryClass: App\Admin\Core\Repository\BaseRepository
     paths:
         - src
         - package
@@ -14,3 +16,4 @@ parameters:
 includes:
     - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon
     - bin/tool/vendor/phpstan/phpstan-symfony/rules.neon
+    - bin/tool/vendor/phpstan/phpstan-doctrine/extension.neon

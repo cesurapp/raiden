@@ -93,7 +93,7 @@ class ThorExtractor
                     'controller' => $route['controller'].'::'.$route['method'],
                     'controllerPath' => str_replace($this->bag->get('kernel.project_dir'), '', $refController->getFileName()),
                     'controllerLine' => $refMethod->getStartLine(),
-                    'controllerResponseType' => !$refMethod->getReturnType() ? 'Mixed' : $this->baseClass($refMethod->getReturnType()->getName()), // @phpstan-ignore-line
+                    'controllerResponseType' => $this->getResponseType($refMethod->getReturnType()), // @phpstan-ignore-line
 
                     // DTO
                     'query' => $this->extractQueryParameters($attrThor),
@@ -246,7 +246,7 @@ class ThorExtractor
                 return $result;
             }, []);
 
-            $exceptionCode = $parameters['code']->getDefaultValue();
+            /*$exceptionCode = $parameters['code']->getDefaultValue();
             $message = $parameters['message']->getDefaultValue();
 
             // Create Class
@@ -263,7 +263,7 @@ class ThorExtractor
                     $exceptionCode = $eClass->getCode();
                 }
             } catch (\Exception $exception) {
-            }
+            }*/
 
             $exception = [
                 'type' => $refClass->getShortName(),
@@ -319,13 +319,13 @@ class ThorExtractor
                 $content['message']['error'] = '?array';
             }
             if (str_contains($source, 'MessageType::WARNING')) {
-                $content['message']['error'] = '?array';
+                $content['message']['warning'] = '?array';
             }
             if (str_contains($source, 'MessageType::INFO')) {
-                $content['message']['error'] = '?array';
+                $content['message']['info'] = '?array';
             }
             if (str_contains($source, 'MessageType::SUCCESS') || false !== preg_match('/addMessage[^\:\:]+$/', $source)) {
-                $content['message']['error'] = '?array';
+                $content['message']['success'] = '?array';
             }
 
             $thorAttr['response'][200] = array_merge($thorAttr['response'][200] ?? [], $content);
@@ -451,6 +451,19 @@ class ThorExtractor
         }
 
         return array_unique($types);
+    }
+
+    private function getResponseType(\ReflectionNamedType|ReflectionUnionType|\ReflectionType $type): string
+    {
+        if ($type instanceof ReflectionUnionType) {
+            return implode('|', array_map(fn (\ReflectionNamedType $t) => $this->baseClass($t->getName()), $type->getTypes()));
+        }
+
+        if ($type instanceof \ReflectionNamedType) {
+            return $this->baseClass($type->getName());
+        }
+
+        return 'Mixed';
     }
 
     /**

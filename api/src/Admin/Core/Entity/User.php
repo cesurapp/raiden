@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Entity;
 
+use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Permission\PermissionInterface;
 use App\Admin\Core\Repository\UserRepository;
@@ -27,7 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\Column(type: 'ulid', unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: 'string', length: 180, nullable: true)]
     private ?string $email;
@@ -112,12 +113,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoneCountry(): string
+    public function getPhoneCountry(): ?string
     {
         return $this->phoneCountry;
     }
 
-    public function setPhoneCountry(string $phoneCountry): self
+    public function setPhoneCountry(?string $phoneCountry): self
     {
         $this->phoneCountry = $phoneCountry;
 
@@ -289,16 +290,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
-    #[ORM\PrePersist]
-    public function prePersist(LifecycleEventArgs $event): void
+    #[ORM\PostPersist]
+    public function postPersist(LifecycleEventArgs $event): void
     {
-       /* if (!$this->isEmailApproved() && $this->getEmail()) {
-            $this->setEmailApproveKey($this->generateApproveKey());
+        $otpRepo = $event->getEntityManager()->getRepository(OtpKey::class);
+
+        if (!$this->isEmailApproved() && $this->getEmail()) {
+            $otpRepo->create($this, OtpType::REGISTER_EMAIL);
         }
 
         if (!$this->isPhoneApproved() && $this->getPhone()) {
-            $this->setPhoneApproveKey($this->generateApproveKey());
-        }*/
+            $otpRepo->create($this, OtpType::REGISTER_PHONE);
+        }
     }
 
     #[ORM\PreFlush]

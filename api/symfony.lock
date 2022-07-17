@@ -78,6 +78,18 @@
     "nikic/php-parser": {
         "version": "v4.13.1"
     },
+    "odolbeau/phone-number-bundle": {
+        "version": "3.7",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "4388686329b81291918a948cd42891829fb1de71"
+        },
+        "files": [
+            "config/packages/misd_phone_number.yaml"
+        ]
+    },
     "openswoole/ide-helper": {
         "version": "4.10.1"
     },

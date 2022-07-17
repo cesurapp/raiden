@@ -8,10 +8,7 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\CorePermission;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Enum\UserType;
-use App\Admin\Core\Event\LoginEvent;
-use App\Admin\Core\Event\RegisterEvent;
-use App\Admin\Core\Event\ResetPasswordEvent;
-use App\Admin\Core\Event\ResetRequestEvent;
+use App\Admin\Core\Event\SecurityEvent;
 use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 
 class SecurityTest extends AbstractWebTestCase
@@ -28,7 +25,24 @@ class SecurityTest extends AbstractWebTestCase
         ]);
 
         // Assert
-        $this->assertEventFired(LoginEvent::NAME);
+        $this->assertEventFired(SecurityEvent::LOGIN);
+        $this->isOk();
+        $this->assertJsonStructure(['user', 'token', 'refresh_token']);
+    }
+
+    public function testLoginPhone(): void
+    {
+        static::createClient();
+        $user = $this->createUser();
+
+        // Login Api
+        $this->client()->jsonRequest('POST', '/v1/auth/login', [
+            'username' => (string) $user->getPhone(),
+            'password' => '123123123',
+        ]);
+
+        // Assert
+        $this->assertEventFired(SecurityEvent::LOGIN);
         $this->isOk();
         $this->assertJsonStructure(['user', 'token', 'refresh_token']);
     }
@@ -122,8 +136,8 @@ class SecurityTest extends AbstractWebTestCase
         $user = $this->createUser();
 
         // Generate OTP Key
-        $this->client()->request('POST', '/v1/auth/login-otp-request', [
-            'username' => $user->getEmail(),
+        $this->client()->request('PUT', '/v1/auth/login-otp', [
+            'username' => $user->getPhone(),
         ]);
         $this->isOk();
 
@@ -135,14 +149,14 @@ class SecurityTest extends AbstractWebTestCase
 
         // Login OTP Key
         $this->client()->request('POST', '/v1/auth/login-otp', [
-            'username' => $user->getEmail(),
+            'username' => $user->getPhone(),
             'otp_key' => $key->getOtpKey(),
         ]);
         $this->isOk();
 
         // Retry Failed
         $this->client()->request('POST', '/v1/auth/login-otp', [
-            'username' => $user->getEmail(),
+            'username' => $user->getPhone(),
             'otp_key' => $key->getOtpKey(),
         ]);
         $this->isFail();
@@ -173,64 +187,97 @@ class SecurityTest extends AbstractWebTestCase
             'lastName' => 'APAYDIN',
         ]);
         $this->isOk();
-        $this->assertEventFired(RegisterEvent::NAME);
+        $this->assertEventFired(SecurityEvent::REGISTER);
         $this->assertJsonStructure(['message' => ['success']]);
 
         // Register Phone
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
-            'phone' => '123123123',
+            'phone' => '905414053420',
+            'phoneCountry' => 'TR',
             'password' => '123123123',
             'firstName' => 'Ramazan',
             'lastName' => 'APAYDIN',
         ]);
         $this->isOk();
-        $this->assertEventFired(RegisterEvent::NAME);
+        $this->assertEventFired(SecurityEvent::REGISTER);
         $this->assertJsonStructure(['message' => ['success']]);
     }
 
-    public function testConfirmation(): void
+    public function testConfirmPhone(): void
     {
         static::createClient();
-        $user = $this->createUser()->setApproved(false)->createConfirmationToken();
-        $this->save($user);
-
-        // Failed
-        $this->client()->jsonRequest('GET', '/v1/auth/confirm/AA');
-        $this->isNotFound();
-        $this->assertExactJson([
-            'type' => 'NotFoundHttpException',
-            'code' => 404,
-            'message' => 'Token not found',
-        ]);
-
-        // Success
-        $this->client()->request('GET', '/v1/auth/confirm/'.$user->getConfirmationToken());
-        $this->assertJsonStructure(['message' => ['success']]);
-
-        // Failed
-        $this->client()->request('GET', '/v1/auth/confirm/'.$user->getConfirmationToken());
-        $this->isNotFound();
-    }
-
-    public function testRegisterAndConfirm(): void
-    {
-        static::createClient();
-
-        // Register
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
-            'phone' => '5414053302',
+            'phone' => '905414053421',
+            'phoneCountry' => 'TR',
             'password' => '123123123',
             'firstName' => 'Ramazan',
             'lastName' => 'APAYDIN',
         ]);
-        $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '5414053302']);
-        $this->assertFalse($user->isApproved());
+        $this->isOk();
 
-        // Confirm
-        $this->client()->request('GET', '/v1/auth/confirm/'.$user->getConfirmationToken());
-        $this->assertJsonStructure(['message' => ['success']]);
-        $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '5414053302']);
-        $this->assertTrue($user->isApproved());
+        // OTP Key.
+        $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '905414053421']);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::REGISTER_PHONE);
+
+        // Failed
+        $this->client()->jsonRequest('POST', '/v1/auth/approve', [
+            'username' => '905414053421',
+            'otp_key' => 123123,
+        ]);
+        $this->isForbidden();
+
+        // Success
+        $this->client()->jsonRequest('POST', '/v1/auth/approve', [
+            'username' => '905414053421',
+            'otp_key' => $key->getOtpKey(),
+        ]);
+        $this->isOk();
+
+        // OTP is USED
+        $key = $this->manager()->find(OtpKey::class, $key->getId());
+        $this->assertTrue($key->isUsed());
+
+        // Confirmed User
+        $user = $this->manager()->find(User::class, $user->getId());
+        $this->assertTrue($user->isPhoneApproved());
+    }
+
+    public function testConfirmEmail(): void
+    {
+        static::createClient();
+        $this->client()->jsonRequest('POST', '/v1/auth/register', [
+            'email' => 'test2@test3.com',
+            'password' => '123123123',
+            'firstName' => 'Ramazan',
+            'lastName' => 'APAYDIN',
+        ]);
+        $this->isOk();
+
+        // OTP Key.
+        $user = $this->manager()->getRepository(User::class)->findOneBy(['email' => 'test2@test3.com']);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::REGISTER_EMAIL);
+
+        // Failed
+        $this->client()->jsonRequest('POST', '/v1/auth/approve', [
+            'username' => 'test2@test3.com',
+            'otp_key' => 123123,
+        ]);
+        $this->isForbidden();
+
+        // Success
+        $this->client()->jsonRequest('POST', '/v1/auth/approve', [
+            'username' => 'test2@test3.com',
+            'otp_key' => $key->getOtpKey(),
+        ]);
+        $this->isOk();
+
+        // OTP is USED
+        $key = $this->manager()->find(OtpKey::class, $key->getId());
+        $this->assertTrue($key->isUsed());
+
+        // Confirmed User
+        $user = $this->manager()->find(User::class, $user->getId());
+        $this->assertTrue($user->isEmailApproved());
     }
 
     public function testResetRequest(): void
@@ -240,22 +287,20 @@ class SecurityTest extends AbstractWebTestCase
 
         // Create Failed Reset Request
         $this->client()->jsonRequest('POST', '/v1/auth/reset-request', [
-            'identity' => random_int(100, 10000).'test@test.com',
+            'username' => random_int(100, 10000).'test@test.com',
         ]);
         $this->isNotFound();
 
         // Create Sucess Reset Request
         $this->client()->jsonRequest('POST', '/v1/auth/reset-request', [
-            'identity' => $user->getEmail(),
+            'username' => $user->getEmail(),
         ]);
         $this->isOk();
-        $this->assertEventFired(ResetRequestEvent::NAME);
+        $this->assertEventFired(SecurityEvent::RESET_REQUEST);
 
-        // Retry Request Failed TTL
-        $this->client()->jsonRequest('POST', '/v1/auth/reset-request', [
-            'identity' => $user->getEmail(),
-        ]);
-        $this->isForbidden();
+        // OTP Token
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::RESETTING);
+        $this->assertNotNull($key);
     }
 
     public function testResetPassword(): void
@@ -264,20 +309,25 @@ class SecurityTest extends AbstractWebTestCase
         $user = $this->createUser();
 
         // Create Sucess Reset Request
-        $this->client()->jsonRequest('POST', '/v1/auth/reset-request', ['identity' => $user->getEmail()]);
+        $this->client()->jsonRequest('POST', '/v1/auth/reset-request', ['username' => $user->getEmail()]);
         $this->isOk();
+
+        // User & Otp Key
         $user = $this->manager()->getRepository(User::class)->findOneBy(['id' => $user->getId()]);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::RESETTING);
 
         // Reset Password
-        $this->client()->jsonRequest('POST', '/v1/auth/reset-password/'.$user->getResetToken(), [
+        $this->client()->jsonRequest('POST', '/v1/auth/reset-password/', [
+            'username' => $user->getEmail(),
+            'otp_key' => $key->getOtpKey(),
             'password' => '123123123',
             'password_confirm' => '123123123',
         ]);
-        $this->assertEventFired(ResetPasswordEvent::NAME);
+        $this->assertEventFired(SecurityEvent::RESET_PASSWORD);
         $this->isOk();
 
-        $user = $this->manager()->getRepository(User::class)->findOneBy(['id' => $user->getId()]);
-        $this->assertNull($user->getResetToken());
+        $key = $this->manager()->find(OtpKey::class, $key->getId());
+        $this->assertTrue($key->isUsed());
     }
 
     public function testSwitchUser(): void

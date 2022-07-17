@@ -6,7 +6,7 @@ use App\Admin\Core\Validator\UsernameConstraint;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class LoginOtpDto extends AbstractApiDto
+class UsernameOtpDto extends AbstractApiDto
 {
     #[UsernameConstraint]
     #[Assert\NotNull]
@@ -14,5 +14,5 @@ class LoginOtpDto extends AbstractApiDto
 
     #[Assert\Length(min: 6, max: 6)]
     #[Assert\NotNull]
-    public string $otp_key;
+    public int $otp_key;
 }

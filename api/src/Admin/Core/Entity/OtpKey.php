@@ -5,11 +5,13 @@ namespace App\Admin\Core\Entity;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Repository\OtpKeyRepository;
 use DateTimeImmutable;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: OtpKeyRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class OtpKey
 {
     use OwnerTrait;
@@ -75,7 +77,7 @@ class OtpKey
 
     public function isExpired(): bool
     {
-        return $this->expiredAt->getTimestamp() > time();
+        return $this->expiredAt->getTimestamp() < time();
     }
 
     public function getExpiredAt(): DateTimeImmutable
@@ -88,5 +90,12 @@ class OtpKey
         $this->expiredAt = $expiredAt;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(LifecycleEventArgs $event): void
+    {
+        // Disable Other OTP Code
+        $event->getEntityManager()->getRepository(OtpKey::class)->disableOtherCodes($this);
     }
 }

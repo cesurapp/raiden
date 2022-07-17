@@ -10,7 +10,7 @@ class UserTest extends AbstractWebTestCase
     {
         static::createClient();
 
-        $user = $this->createUser()->setEmailApproved(false);
+        $user = $this->createUser()->setEmailApproved(false)->setPhoneApproved(false);
         $this->save($user);
 
         $this->client()->jsonRequest('POST', '/v1/auth/login', [

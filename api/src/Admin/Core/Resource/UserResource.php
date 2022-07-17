@@ -24,6 +24,7 @@ class UserResource implements ApiResourceInterface
             'email' => $item->getEmail(),
             'email_approved' => $item->isEmailApproved(),
             'phone' => $item->getPhone(),
+            'phone_country' => $item->getPhoneCountry(),
             'phone_approved' => $item->isPhoneApproved(),
             'approved' => $item->isApproved(),
             'roles' => $item->getRoles(),

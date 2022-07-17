@@ -118,6 +118,10 @@
       <path value="$PROJECT_DIR$/api/vendor/bin/.phpunit" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/translation" />
       <path value="$PROJECT_DIR$/api/vendor/adhocore/jwt" />
+      <path value="$PROJECT_DIR$/api/vendor/odolbeau/phone-number-bundle" />
+      <path value="$PROJECT_DIR$/api/vendor/giggsey/libphonenumber-for-php" />
+      <path value="$PROJECT_DIR$/api/vendor/giggsey/locale" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/intl" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

@@ -23,12 +23,12 @@ class OtpKeyRepository extends BaseRepository
     /**
      * Create OTP Key.
      */
-    public function create(User $user, OtpType $type): OtpKey
+    public function create(User $user, OtpType $type, int $expiredMinute = 3): OtpKey
     {
         $otp = (new OtpKey())
             ->setOwner($user)
             ->setType($type)
-            ->setExpiredAt(new \DateTimeImmutable('+3 minute'))
+            ->setExpiredAt(new \DateTimeImmutable("+$expiredMinute minute"))
             ->setOtpKey(random_int(100000, 999999));
 
         $this->add($otp);
@@ -39,24 +39,22 @@ class OtpKeyRepository extends BaseRepository
     /**
      * Check OTP Key is Valid.
      */
-    public function check(User $user, OtpType $type, int $key): bool
+    public function check(User $user, OtpType|array $type, int $key): ?OtpKey
     {
         /** @var OtpKey|null $otp */
         $otp = $this->createQueryBuilder('o')
             ->andWhere('o.otpKey = :key')
             ->andWhere('o.owner = :owner')
-            ->andWhere('o.type = :type')
+            ->andWhere('o.type IN(:type)')
             ->andWhere('o.expiredAt >= :expired')
             ->andWhere('o.used = :used')
             ->setParameters([
                 'key' => $key,
-                'type' => $type->value,
+                'type' => is_array($type) ? $type : [$type],
                 'expired' => new \DateTimeImmutable(),
                 'used' => false,
             ])
             ->setParameter('owner', $user->getId(), 'ulid')
-            ->orderBy('o.id', 'DESC')
-            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
@@ -64,10 +62,24 @@ class OtpKeyRepository extends BaseRepository
             $otp->setUsed(true);
             $this->add($otp);
 
-            return true;
+            return $otp;
         }
 
-        return false;
+        return null;
+    }
+
+    /**
+     * Disable Same Type Codes.
+     */
+    public function disableOtherCodes(OtpKey $otpKey): void
+    {
+        $this->createQueryBuilder('o')
+            ->andWhere('o.owner = :owner')
+            ->andWhere('o.type = :type')
+            ->setParameter('type', $otpKey->getType())
+            ->setParameter('owner', $otpKey->getOwner()->getId(), 'ulid')
+            ->set('o.used', 'true')
+            ->update()->getQuery()->execute();
     }
 
     /**
@@ -79,5 +91,23 @@ class OtpKeyRepository extends BaseRepository
             ->where('o.expiredAt <= :expire')
             ->setParameter('expire', new \DateTimeImmutable('-3 minute'))
             ->delete()->getQuery()->execute();
+    }
+
+    /**
+     * Get Active OTP Key.
+     */
+    public function getActiveKey(User $user, OtpType $type): OtpKey
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.type = :type')
+            ->andWhere('o.used = :used')
+            ->andWhere('o.owner = :owner')
+            ->andWhere('o.expiredAt >= :expired')
+            ->setParameter('type', $type)
+            ->setParameter('used', false)
+            ->setParameter('owner', $user->getId(), 'ulid')
+            ->setParameter('expired', new \DateTimeImmutable())
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

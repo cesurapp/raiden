@@ -5,6 +5,9 @@ namespace App\Admin\Core\Cron;
 use App\Admin\Core\Repository\RefreshTokenRepository;
 use Package\SwooleBundle\Cron\CronInterface;
 
+/**
+ * Clear Expired Refresh Token Cron.
+ */
 class ClearExpiredTokenCron implements CronInterface
 {
     public const TIME = '@daily';

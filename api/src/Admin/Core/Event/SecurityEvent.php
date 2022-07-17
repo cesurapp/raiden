@@ -8,9 +8,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 /**
  * Login Event.
  */
-class LoginEvent extends Event
+class SecurityEvent extends Event
 {
-    public const NAME = 'security.login';
+    public const LOGIN = 'security.login';
+    public const REGISTER = 'security.register';
+    public const RESET_REQUEST = 'security.reset.request';
+    public const RESET_PASSWORD = 'security.reset.password';
 
     public function __construct(private User $user)
     {

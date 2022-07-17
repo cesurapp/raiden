@@ -129,8 +129,11 @@ abstract class AbstractKernelTestCase extends KernelTestCase
             ->setEmailApproved(true)
             ->setFirstName('John')
             ->setLastName('Doe')
-            ->setPhone(random_int(5400000000, 6400000000))
-            ->setEmail(Ulid::generate().'@test.com');
+            ->setPhone(random_int(905400000000, 905499999900))
+            ->setPhoneCountry('TR')
+            ->setPhoneApproved(true)
+            ->setEmail(Ulid::generate().'@test.com')
+            ->setEmailApproved(true);
 
         // Hash Password
         $passwordHasherFactory = new PasswordHasherFactory([
