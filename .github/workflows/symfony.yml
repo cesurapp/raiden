@@ -24,9 +24,9 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-          extensions: imagick, uuid, openswoole-openswoole/swoole-src@v4.11.1, :xdebug
+          extensions: imagick, uuid, swoole, :xdebug
         env:
-          OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
+          SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
 
       - uses: actions/checkout@v3
       - name: Create Test ENV
@@ -48,6 +48,6 @@ jobs:
       - name: Quality Tools - PHPCS Fixer
         run: composer lint
       - name: Execute PHPUnit
-        run: bin/phpunit
+        run: composer test-stop
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
