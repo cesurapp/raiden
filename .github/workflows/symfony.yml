@@ -24,7 +24,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
-          extensions: imagick, uuid, swoole, openswoole/swoole-src@v4.11.1 :xdebug
+          extensions: imagick, uuid, swoole, openswoole-openswoole/swoole-src@v4.11.1 :xdebug
         env:
           OPENSWOOLE_CONFIGURE_OPTS: "--enable-openssl --enable-swoole-curl"
 
@@ -33,10 +33,6 @@ jobs:
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
       - name: Install Quality Tools
         run: composer install-tool
-      - name: Quality Tools - PHPStan
-        run: composer analyse
-      - name: Quality Tools - PHPCS Fixer
-        run: composer lint
       - name: Cache Composer Packages
         id: composer-cache
         uses: actions/cache@v3
@@ -47,6 +43,10 @@ jobs:
             ${{ runner.os }}-php-
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Quality Tools - PHPStan
+        run: composer analyse
+      - name: Quality Tools - PHPCS Fixer
+        run: composer lint
       - name: Execute PHPUnit
         run: composer test
         env:
