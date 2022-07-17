@@ -26,10 +26,9 @@ jobs:
           php-version: '8.1'
           tools: pecl, php-cs-fixer, phpstan
           extensions: imagick, uuid, :xdebug
-      - name: Instal OpenSwoole
-        run: |
-          pecl install openswoole
       - uses: actions/checkout@v3
+      - name: Instal OpenSwoole
+        run: pecl install openswoole --enable-openssl --enable-swoole-curl
       - name: Create Test ENV
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
       #- name: Install Quality Tools
