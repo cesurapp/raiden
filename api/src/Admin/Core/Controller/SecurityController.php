@@ -245,7 +245,7 @@ class SecurityController extends AbstractApiController
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_REQUEST);
 
-        return ApiResponse::create()->setData(['Operation successful.']);
+        return ApiResponse::create()->addMessage('Operation successful.');
     }
 
     #[Thor(group: 'Security', desc: 'Forgot Password - Change Password', requireAuth: false)]
@@ -268,6 +268,6 @@ class SecurityController extends AbstractApiController
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_PASSWORD);
 
-        return ApiResponse::create()->setData(['Operation successful.']);
+        return ApiResponse::create()->addMessage('Operation successful.');
     }
 }

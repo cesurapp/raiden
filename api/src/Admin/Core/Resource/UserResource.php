@@ -13,8 +13,18 @@ class UserResource implements ApiResourceInterface
      */
     #[ThorResource(data: [
         'id' => 'string',
+        'type' => 'string',
+        'email' => 'string',
+        'email_approved' => 'boolean',
+        'phone' => 'int',
+        'phone_country' => 'string',
+        'phone_approved' => 'boolean',
+        'approved' => 'boolean',
+        'roles' => 'array',
+        'language' => 'string',
         'first_name' => 'string',
         'last_name' => 'string',
+        'meta' => 'array',
     ])]
     public function toArray(object $item): array
     {
