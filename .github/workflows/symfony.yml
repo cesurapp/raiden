@@ -24,15 +24,14 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
+          tools: pecl, php-cs-fixer, phpstan
           extensions: imagick, openswoole, uuid, :xdebug
-        #env:
-        #  OPENSWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl
-
+        run: pecl install openswoole --enable-openssl --enable-swoole-curl
       - uses: actions/checkout@v3
       - name: Create Test ENV
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
-      - name: Install Quality Tools
-        run: composer install-tool
+      #- name: Install Quality Tools
+      #  run: composer install-tool
       - name: Cache Composer Packages
         id: composer-cache
         uses: actions/cache@v3
@@ -44,10 +43,10 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Quality Tools - PHPStan
-        run: composer analyse
-      - name: Quality Tools - PHPCs Fixer
-        run: composer lint
+        run: phpstan analyse --no-progress --ansi --memory-limit 512m
+      - name: Quality Tools - PHPCS Fixer
+        run: php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes
       - name: Execute PHPUnit
-        run: composer test
+        run: bin/phpunit
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
