@@ -26,7 +26,7 @@ jobs:
           php-version: '8.1'
           extensions: imagick, uuid, openswoole-openswoole/swoole-src@v4.11.1, :xdebug
         env:
-          OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl --enable-swoole-curl"
+          OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
 
       - uses: actions/checkout@v3
       - name: Create Test ENV
