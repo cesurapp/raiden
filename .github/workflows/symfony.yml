@@ -32,7 +32,7 @@ jobs:
           pear config-set temp_dir ${{ runner.temp }}
           pear update-channels
           pecl update-channels
-          pecl install openswoole --enable-openssl --enable-swoole-curl
+          pecl install swoole --enable-openssl --enable-swoole-curl
       - name: Create Test ENV
         run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
       #- name: Install Quality Tools
