@@ -50,8 +50,7 @@ class SimpleS3Client extends S3Client
      *   ContentLength?: string,
      *   ContentType?: string,
      *   Metadata?: array<string, string>,
-     *   PartSize?: int,
-     * } $options
+     *   PartSize?: int } $options
      */
     public function upload(string $bucket, string $key, mixed $object, array $options = []): PutObjectOutput|CompleteMultipartUploadOutput
     {

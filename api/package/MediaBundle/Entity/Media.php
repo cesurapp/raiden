@@ -146,7 +146,7 @@ class Media
      */
     public function getContent(Storage $storage): string
     {
-        return $storage->device($this->getStorage())->read($this->getPath());
+        return $storage->device($this->getStorage())->download($this->getPath());
     }
 
     public function setContent(Storage $storage, string $data, string $mime): bool

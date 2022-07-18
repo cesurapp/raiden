@@ -224,7 +224,6 @@ class Local implements DriverInterface
         return disk_total_space($this->getRoot());
     }
 
-
     /**
      * Move file from given source to given path, Return true on success and false on failure.
      *

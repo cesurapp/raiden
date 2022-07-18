@@ -6,6 +6,7 @@
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/*/*
+/var/*.*
 !/var/cache/.gitkeep
 !/var/log/.gitkeep
 /vendor/

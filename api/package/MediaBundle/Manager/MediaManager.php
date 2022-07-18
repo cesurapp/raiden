@@ -169,7 +169,7 @@ class MediaManager
         $this->em->persist($media);
 
         // Write Storage
-        $this->storage->write($media->getPath(), $content, $media->getMime());
+        $this->storage->write($content, $media->getPath(), $media->getMime());
 
         return $media;
     }

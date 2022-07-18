@@ -31,7 +31,6 @@ class StorageBundle extends AbstractBundle
                             ->scalarNode('bucket')->defaultValue('')->end()
                             ->scalarNode('region')->defaultValue('')->end()
                             ->scalarNode('endPoint')->defaultValue('')->end()
-                            ->scalarNode('acl')->defaultValue('')->end()
                         ->end()
                     ->end()
                 ->end()
@@ -45,7 +44,7 @@ class StorageBundle extends AbstractBundle
         foreach ($config['devices'] as $device => $value) {
             $class = match ($value['driver']) {
                 'cloudflare' => Cloudflare::class,
-                //'backblaze' => BackBlaze::class,
+                'backblaze' => BackBlaze::class,
                 default => Local::class
             };
 
@@ -53,10 +52,12 @@ class StorageBundle extends AbstractBundle
             $constructors = array_map(static fn (\ReflectionParameter $param) => $param->name, $ref->getConstructor()->getParameters());
 
             // Set Service
-            $deviceDefinitions[$device] = $builder->setDefinition($device, new Definition(
-                $class,
-                array_values(array_intersect_key($value, array_flip($constructors)))
-            ));
+            $definition = new Definition($class);
+            $initData = array_intersect_key($value, array_flip($constructors));
+            foreach ($initData as $key => $val) {
+                $definition->setArgument("$$key", $val);
+            }
+            $deviceDefinitions[$device] = $builder->setDefinition($device, $definition);
         }
 
         // Register Storage
