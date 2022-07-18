@@ -55,6 +55,6 @@ class ImageTest extends WebTestCase
         $geometry = $image->image->getImageGeometry();
         $this->assertEquals(100, $geometry['width']);
         $this->assertEquals(67, $geometry['height']);
-        $this->assertLessThanOrEqual(9910, strlen($image->image->getImageBlob()));
+        $this->assertLessThanOrEqual(9930, strlen($image->image->getImageBlob()));
     }
 }
