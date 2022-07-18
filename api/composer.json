@@ -12,6 +12,7 @@
     "ext-imagick": "*",
     "ext-uuid": "*",
     "adhocore/jwt": "^1.1",
+    "async-aws/s3": "^1.12",
     "doctrine/doctrine-bundle": "^2.5",
     "doctrine/orm": "^2.10",
     "dragonmantank/cron-expression": "^3.3",

@@ -2,9 +2,9 @@
 
 namespace Package\StorageBundle\Driver;
 
-/**
- * @see https://github.com/utopia-php/storage
- */
+use Package\StorageBundle\Client\DriverInterface;
+use Package\StorageBundle\Client\SimpleS3Client;
+
 class Local implements DriverInterface
 {
     public function __construct(private string $root)
@@ -12,161 +12,103 @@ class Local implements DriverInterface
         $this->root = rtrim($root, '\\/');
     }
 
-    public function getName(): string
+    protected function getRoot(): string
     {
-        return 'Local Storage';
+        return rtrim($this->root, '\\/');
     }
 
-    public function getDescription(): string
-    {
-        return 'Adapter for Local storage that is in the physical or virtual machine or mounted to it.';
-    }
-
-    public function getRoot(): string
-    {
-        return $this->root;
-    }
-
-    public function getPath(string $filename): string
+    protected function getPath(string $filename): string
     {
         return $this->getRoot().DIRECTORY_SEPARATOR.ltrim($filename, '\\/');
     }
 
+    public function getClient(): SimpleS3Client|self
+    {
+        return $this;
+    }
+
     /**
      * Upload.
-     *
-     * Upload a file to desired destination in the selected disk.
-     * return number of chunks uploaded or 0 if it fails.
-     *
-     * @throws \RuntimeException
      */
-    public function upload(string $source, string $path, int $chunk = 1, int $chunks = 1, array &$metadata = []): int
+    public function upload(string $sourcePath, string $storagePath, array $metadata = []): bool
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($path, '\\/');
-
-        if (!file_exists(dirname($path)) && !@mkdir(dirname($path), 0755, true)) {
-            throw new \RuntimeException('Can\'t create directory: '.dirname($path));
+        if (!file_exists(dirname($sourcePath)) && !@mkdir(dirname($sourcePath), 0755, true)) {
+            throw new \RuntimeException('Can\'t create directory: '.dirname($sourcePath));
         }
 
-        if (1 === $chunks) {
-            if (!move_uploaded_file($source, $path)) {
-                throw new \RuntimeException('Can\'t upload file '.$path);
-            }
-
-            return $chunks;
-        }
-        $tmp = dirname($path).DIRECTORY_SEPARATOR.'tmp_'.basename($path).DIRECTORY_SEPARATOR.basename($path).'_chunks.log';
-
-        if (!file_exists(\dirname($tmp)) && !@mkdir(dirname($tmp), 0755, true)) {
-            throw new \RuntimeException('Can\'t create directory: '.\dirname($tmp));
-        }
-        if (!file_put_contents($tmp, "$chunk\n", FILE_APPEND)) {
-            throw new \RuntimeException('Can\'t write chunk log '.$tmp);
+        if (!move_uploaded_file($sourcePath, $this->getPath($storagePath))) {
+            throw new \RuntimeException('Can\'t upload file '.$sourcePath);
         }
 
-        $chunkLogs = file($tmp);
-        if (!$chunkLogs) {
-            throw new \RuntimeException('Unable to read chunk log '.$tmp);
-        }
-
-        $chunksReceived = count(file($tmp));
-
-        if (!\rename($source, dirname($tmp).DIRECTORY_SEPARATOR.pathinfo($path, PATHINFO_FILENAME).'.part.'.$chunk)) {
-            throw new \RuntimeException('Failed to write chunk '.$chunk);
-        }
-
-        if ($chunks === $chunksReceived) {
-            for ($i = 1; $i <= $chunks; ++$i) {
-                $part = dirname($tmp).DIRECTORY_SEPARATOR.pathinfo($path, PATHINFO_FILENAME).'.part.'.$i;
-                $data = file_get_contents($part);
-                if (!$data) {
-                    throw new \RuntimeException('Failed to read chunk '.$part);
-                }
-
-                if (!file_put_contents($path, $data, FILE_APPEND)) {
-                    throw new \RuntimeException('Failed to append chunk '.$part);
-                }
-                unlink($part);
-            }
-            unlink($tmp);
-
-            return $chunksReceived;
-        }
-
-        return $chunksReceived;
-    }
-
-    /**
-     * Abort Chunked Upload.
-     */
-    public function abort(string $path, string $extra = ''): bool
-    {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($path, '\\/');
-
-        if (file_exists($path)) {
-            unlink($path);
-        }
-
-        $tmp = dirname($path).DIRECTORY_SEPARATOR.'tmp_'.basename($path).DIRECTORY_SEPARATOR;
-
-        if (!\file_exists(\dirname($tmp))) {
-            throw new \RuntimeException('File doesn\'t exist: '.\dirname($path));
-        }
-        $files = glob($tmp.'*', GLOB_MARK); // GLOB_MARK adds a slash to directories returned
-
-        foreach ($files as $file) {
-            $this->deleteRecursive($file, true);
-        }
-
-        return rmdir($tmp);
-    }
-
-    /**
-     * Read file by given path.
-     */
-    public function read(string $path, int $offset = 0, int $length = null): string
-    {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($path, '\\/');
-
-        if (!file_exists($path)) {
-            throw new \RuntimeException('File Not Found');
-        }
-
-        return file_get_contents($path, use_include_path: false, context: null, offset: $offset, length: $length);
+        return true;
     }
 
     /**
      * Write file by given path.
      */
-    public function write(string $path, string $data, string $contentType = ''): bool
+    public function write(string $content, string $storagePath, string $contentType = 'text/plain', array $metadata = []): bool
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($path, '\\/');
+        $path = $this->getPath($storagePath);
 
         if (!\file_exists(\dirname($path)) && !@\mkdir(\dirname($path), 0755, true)) {
             throw new \RuntimeException('Can\'t create directory '.\dirname($path));
         }
 
-        return (bool) \file_put_contents($path, $data);
+        return (bool) \file_put_contents($path, $content);
     }
 
     /**
-     * Move file from given source to given path, Return true on success and false on failure.
-     *
-     * @see http://php.net/manual/en/function.filesize.php
+     * Check if file exists.
      */
-    public function move(string $source, string $target): bool
+    public function exists(string $storagePath): bool
     {
-        $target = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($target, '\\/');
+        return file_exists($this->getPath($storagePath));
+    }
 
-        if (!file_exists(\dirname($target)) && !@\mkdir(\dirname($target), 0755, true)) {
-            throw new \RuntimeException('Can\'t create directory '.\dirname($target));
+    /**
+     * Read file by given path.
+     */
+    public function download(string $storagePath): string
+    {
+        $path = $this->getPath($storagePath);
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException('File Not Found');
         }
 
-        if (\rename($source, $target)) {
-            return true;
+        return file_get_contents($path);
+    }
+
+    /**
+     * Read file by given path.
+     *
+     * @return resource
+     */
+    public function downloadResource(string $storagePath)
+    {
+        $path = $this->getPath($storagePath);
+
+        if (!file_exists($path)) {
+            throw new \RuntimeException('File Not Found');
         }
 
-        return false;
+        return \fopen($path, 'rb');
+    }
+
+    /**
+     * Empty.
+     */
+    public function downloadChunk(string $storagePath): iterable
+    {
+        return [];
+    }
+
+    /**
+     * Real Path.
+     */
+    public function getUrl(string $storagePath): string
+    {
+        return $this->getPath($storagePath);
     }
 
     /**
@@ -174,11 +116,9 @@ class Local implements DriverInterface
      *
      * @see http://php.net/manual/en/function.filesize.php
      */
-    public function delete(string $path, bool $recursive = false): bool
+    public function delete(string $storagePath): bool
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        return $this->deleteRecursive($path, $recursive);
+        return $this->deleteRecursive($this->getPath($storagePath), true);
     }
 
     private function deleteRecursive(string $path, bool $recursive = false): bool
@@ -199,47 +139,13 @@ class Local implements DriverInterface
     }
 
     /**
-     * Delete files in given path, path must be a directory. Return true on success and false on failure.
-     */
-    public function deletePath(string $path): bool
-    {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        if (is_dir($path)) {
-            $files = \glob($path.'*', GLOB_MARK);
-
-            foreach ($files as $file) {
-                $this->delete($file, true);
-            }
-
-            rmdir($path);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check if file exists.
-     */
-    public function exists(string $path): bool
-    {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        return file_exists($path);
-    }
-
-    /**
      * Returns given file path its size.
      *
      * @see http://php.net/manual/en/function.filesize.php
      */
-    public function getFileSize(string $path): int
+    public function getSize(string $storagePath): int
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        return filesize($path);
+        return filesize($this->getPath($storagePath));
     }
 
     /**
@@ -247,11 +153,9 @@ class Local implements DriverInterface
      *
      * @see http://php.net/manual/en/function.mime-content-type.php
      */
-    public function getFileMimeType(string $path): string
+    public function getMimeType(string $storagePath): string
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        return mime_content_type($path);
+        return mime_content_type($this->getPath($storagePath));
     }
 
     /**
@@ -261,9 +165,7 @@ class Local implements DriverInterface
      */
     public function getFileHash(string $path): string
     {
-        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
-
-        return md5_file($path);
+        return md5_file($this->getPath($path));
     }
 
     /**
@@ -320,5 +222,48 @@ class Local implements DriverInterface
     public function getPartitionTotalSpace(): float
     {
         return disk_total_space($this->getRoot());
+    }
+
+
+    /**
+     * Move file from given source to given path, Return true on success and false on failure.
+     *
+     * @see http://php.net/manual/en/function.filesize.php
+     */
+    public function move(string $source, string $target): bool
+    {
+        $target = $this->getRoot().DIRECTORY_SEPARATOR.ltrim($target, '\\/');
+
+        if (!file_exists(\dirname($target)) && !@\mkdir(\dirname($target), 0755, true)) {
+            throw new \RuntimeException('Can\'t create directory '.\dirname($target));
+        }
+
+        if (\rename($source, $target)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Delete files in given path, path must be a directory. Return true on success and false on failure.
+     */
+    public function deletePath(string $path): bool
+    {
+        $path = $this->getRoot().DIRECTORY_SEPARATOR.$path;
+
+        if (is_dir($path)) {
+            $files = \glob($path.'*', GLOB_MARK);
+
+            foreach ($files as $file) {
+                $this->delete($file);
+            }
+
+            rmdir($path);
+
+            return true;
+        }
+
+        return false;
     }
 }

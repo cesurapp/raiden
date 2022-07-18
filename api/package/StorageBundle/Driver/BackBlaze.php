@@ -2,10 +2,10 @@
 
 namespace Package\StorageBundle\Driver;
 
-/**
- * @see https://github.com/utopia-php/storage
- */
-class BackBlaze extends S3
+use Package\StorageBundle\Client\AbstractDriver;
+use Package\StorageBundle\Client\SimpleS3Client;
+
+class BackBlaze extends AbstractDriver
 {
     /**
      * Regions.
@@ -19,19 +19,20 @@ class BackBlaze extends S3
     public const EU_CENTRAL_003 = 'eu-central-003';
     public const EU_CENTRAL_004 = 'eu-central-004';
 
-    public function __construct(string $root, string $accessKey, string $secretKey, string $bucket, string $region = self::US_WEST_004, string $acl = self::ACL_PRIVATE)
-    {
-        parent::__construct($root, $accessKey, $secretKey, $bucket, $region, $acl);
-        $this->headers['host'] = $bucket.'.'.'s3'.'.'.$region.'.backblazeb2.com';
-    }
-
-    public function getName(): string
-    {
-        return 'BackBlaze B2 Storage';
-    }
-
-    public function getDescription(): string
-    {
-        return 'BackBlaze B2 Storage';
+    public function __construct(
+        protected string $accessKey,
+        protected string $secretKey,
+        protected string $bucket,
+        protected string $root,
+        protected string $endPoint = '',
+        protected string $region = 'auto',
+    ) {
+        $this->client = new SimpleS3Client([
+            'accessKeyId' => $this->accessKey,
+            'accessKeySecret' => $this->secretKey,
+            'region' => $this->region,
+            'endpoint' => "https://s3.$this->region.backblazeb2.com",
+            'pathStyleEndpoint' => true,
+        ]);
     }
 }

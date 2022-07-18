@@ -122,6 +122,10 @@
       <path value="$PROJECT_DIR$/api/vendor/giggsey/libphonenumber-for-php" />
       <path value="$PROJECT_DIR$/api/vendor/giggsey/locale" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/intl" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/http-client" />
+      <path value="$PROJECT_DIR$/api/vendor/symfony/http-client-contracts" />
+      <path value="$PROJECT_DIR$/api/vendor/async-aws/s3" />
+      <path value="$PROJECT_DIR$/api/vendor/async-aws/core" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />

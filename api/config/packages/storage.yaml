@@ -6,10 +6,10 @@ storage:
       root: "%kernel.project_dir%/storage/files/"
 
     main:
-      driver: backblaze
+      driver: cloudflare
       root: /
-      accessKey: "00489aac55fc62a0000000003"
-      secretKey: "K004c+Raz+dT1jImNH38TrmBg1Uwz6M"
-      bucket: "main"
-      region: !php/const Package\StorageBundle\Driver\BackBlaze::US_WEST_004
-      acl: !php/const Package\StorageBundle\Driver\S3::ACL_PRIVATE
+      accessKey: "27bb250534f19f59be7ad468f3a65ac5"
+      secretKey: "1bad239edfab8c98cf5cbed6be77616c5fb19e61523cc26305f392d7d46d9c2d"
+      bucket: "unit-test"
+      region: "auto"
+      endPoint: "https://11d0547262baad2e6bdeb340e88f83be.r2.cloudflarestorage.com"

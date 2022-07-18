@@ -2,23 +2,21 @@
 
 namespace Package\StorageBundle\Storage;
 
-use Package\StorageBundle\Driver\DriverInterface;
+use Package\StorageBundle\Client\DriverInterface;
+use Package\StorageBundle\Client\SimpleS3Client;
 
 /**
- * @method string getName()
- * @method string getDescription()
- * @method string getRoot()
- * @method int    upload(string $source, string $path, int $chunk = 1, int $chunks = 1, array &$metadata = [])
- * @method bool   abort(string $path, string $extra = '')
- * @method string read(string $path, int $offset = 0, int $length = null)
- * @method bool   write(string $path, string $data, string $contentType)
- * @method bool   move(string $source, string $target)
- * @method bool   delete(string $path, bool $recursive = false)
- * @method bool   deletePath(string $path)
- * @method bool   exists(string $path)
- * @method int    getFileSize(string $path)
- * @method string getFileMimeType(string $path)
- * @method string getFileHash(string $path)
+ * @method SimpleS3Client getClient()
+ * @method bool           upload(string $sourcePath, string $storagePath, array $metadata = [])
+ * @method bool           write(string $content, string $storagePath, string $contentType = 'text/plain', array $metadata = [])
+ * @method bool           exists(string $storagePath)
+ * @method string         download(string $storagePath)
+ * @method resource       downloadResource(string $storagePath)
+ * @method iterable       downloadChunk(string $storagePath)
+ * @method string         getUrl(string $storagePath)
+ * @method bool           delete(string $storagePath)
+ * @method int            getSize(string $storagePath)
+ * @method string         getMimeType(string $storagePath)
  */
 class Storage
 {

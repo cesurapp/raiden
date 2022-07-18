@@ -3,11 +3,8 @@
 namespace Package\StorageBundle;
 
 use Package\StorageBundle\Driver\BackBlaze;
-use Package\StorageBundle\Driver\DOSpaces;
-use Package\StorageBundle\Driver\Linode;
+use Package\StorageBundle\Driver\Cloudflare;
 use Package\StorageBundle\Driver\Local;
-use Package\StorageBundle\Driver\S3;
-use Package\StorageBundle\Driver\Wasabi;
 use Package\StorageBundle\Storage\Storage;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,7 +16,7 @@ class StorageBundle extends AbstractBundle
 {
     public function configure(DefinitionConfigurator $definition): void
     {
-        // Thor Configuration
+        // Storage Configuration
         $definition->rootNode() // @phpstan-ignore-line
             ->children()
                 ->scalarNode('default')->isRequired()->end()
@@ -27,12 +24,13 @@ class StorageBundle extends AbstractBundle
                         ->useAttributeAsKey('name')
                         ->arrayPrototype()
                         ->children()
-                            ->enumNode('driver')->isRequired()->values(['local', 's3', 'linode', 'dospaces', 'backblaze', 'wasabi'])->end()
+                            ->enumNode('driver')->isRequired()->values(['local', 'cloudflare'])->end()
                             ->scalarNode('root')->isRequired()->end()
                             ->scalarNode('accessKey')->defaultValue('')->end()
                             ->scalarNode('secretKey')->defaultValue('')->end()
                             ->scalarNode('bucket')->defaultValue('')->end()
                             ->scalarNode('region')->defaultValue('')->end()
+                            ->scalarNode('endPoint')->defaultValue('')->end()
                             ->scalarNode('acl')->defaultValue('')->end()
                         ->end()
                     ->end()
@@ -46,11 +44,8 @@ class StorageBundle extends AbstractBundle
         $deviceDefinitions = [];
         foreach ($config['devices'] as $device => $value) {
             $class = match ($value['driver']) {
-                's3' => S3::class,
-                'linode' => Linode::class,
-                'dospaces' => DOSpaces::class,
-                'backblaze' => BackBlaze::class,
-                'wasabi' => Wasabi::class,
+                'cloudflare' => Cloudflare::class,
+                //'backblaze' => BackBlaze::class,
                 default => Local::class
             };
 
