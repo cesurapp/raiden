@@ -10,14 +10,14 @@ services:
     App\Admin\:
         resource: './'
         exclude:
-            - './DependencyInjection'
-            - './Entity'
-            - './Enum'
-            - './Event'
-            - './Exception'
-            - './Request'
-            - './Test'
-            - './Translations'
+            - './*/DependencyInjection'
+            - './*/Entity'
+            - './*/Enum'
+            - './*/Event'
+            - './*/Exception'
+            - './*/Request'
+            - './*/Test'
+            - './*/Translations'
 
     # JWT Token Manager
     Ahc\Jwt\JWT:

@@ -30,8 +30,6 @@ jobs:
         env:
           SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
       - uses: actions/checkout@v3
-      - name: Create Test ENV
-        run: php -r "file_exists('.env.test') || copy('.env.test', '.env.test.local');"
       - name: Install Quality Tools
         run: composer install-tool
       - name: Cache Composer Packages

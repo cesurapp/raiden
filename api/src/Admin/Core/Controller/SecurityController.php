@@ -44,7 +44,7 @@ class SecurityController extends AbstractApiController
 
     #[Thor(
         group: 'Security',
-        desc: 'Login User',
+        desc: 'Login - User & Password',
         request: [
             'username' => 'string',
             'password' => 'string',
@@ -83,7 +83,7 @@ class SecurityController extends AbstractApiController
 
     #[Thor(
         group: 'Security',
-        desc: 'Generate OTP key for User Login.',
+        desc: 'Login - Generate OTP key',
         requireAuth: false
     )]
     #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp_request', methods: ['PUT'])]
@@ -101,7 +101,7 @@ class SecurityController extends AbstractApiController
 
     #[Thor(
         group: 'Security',
-        desc: 'Login User with OTP Key',
+        desc: 'Login - Using OTP Key',
         response: [
             200 => [
                 'user' => UserResource::class,
@@ -149,7 +149,7 @@ class SecurityController extends AbstractApiController
 
     #[Thor(
         group: 'Security',
-        desc: 'Login with Refresh Token',
+        desc: 'Login - Refresh Token',
         request: [
             'refresh_token' => 'string',
         ],
@@ -187,7 +187,7 @@ class SecurityController extends AbstractApiController
         return ApiResponse::create()->setData(['token' => $jwt->encode(['id' => $token['id']])]);
     }
 
-    #[Thor(group: 'Security', desc: 'Register', dto: RegisterDto::class, requireAuth: false)]
+    #[Thor(group: 'Security', desc: 'Register - New Account', dto: RegisterDto::class, requireAuth: false)]
     #[Route(path: '/v1/auth/register', name: 'api_register', methods: ['POST'])]
     public function register(RegisterDto $register, UserPasswordHasherInterface $hasher): ApiResponse
     {
@@ -206,7 +206,7 @@ class SecurityController extends AbstractApiController
 
     #[Thor(
         group: 'Security',
-        desc: 'Account Phone|Email Approve',
+        desc: 'Register - Phone & Email Approve',
         response: [
             NotFoundHttpException::class,
             BadCredentialsException::class,
