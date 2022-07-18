@@ -130,7 +130,7 @@ abstract class S3Base extends WebTestCase
 
     public function testFileHash(): void
     {
-        $this->assertEquals('7551f343143d2e24ab4aaf4624996b6a', $this->object->getFileHash('testing/kitten-1.jpg'));
+        $this->assertEquals('277be0ebe51e975e8e9cc7492b451911', $this->object->getFileHash('testing/kitten-1.jpg'));
     }
 
     public function testPartUpload(): string
