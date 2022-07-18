@@ -48,6 +48,6 @@ jobs:
       - name: Quality Tools - PHPCS Fixer
         run: composer lint
       - name: Execute PHPUnit
-        run: composer test
+        run: composer test-stop
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
