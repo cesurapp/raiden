@@ -118,8 +118,8 @@ class LocalTest extends WebTestCase
 
     public function testPartUpload(): string
     {
-        $source = __DIR__.'/../resources/disk-a/large_file.mp4';
-        $filename = uniqid('', false).'.mp4';
+        $source = __DIR__.'/../resources/disk-a/large_file.mov';
+        $filename = uniqid('', false).'.mov';
         $totalSize = filesize($source);
         $chunkSize = 2097152;
 

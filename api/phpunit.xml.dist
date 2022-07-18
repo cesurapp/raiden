@@ -4,6 +4,7 @@
          cacheResultFile="var/cache/.phpunit.result.cache"
          colors="true"
          testdox="true"
+         verbose="true"
          bootstrap="config/test-bootstrap.php"
 >
     <php>

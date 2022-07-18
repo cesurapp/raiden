@@ -120,7 +120,7 @@ abstract class S3Base extends WebTestCase
 
     public function testFileSize(): void
     {
-        $this->assertEquals(599639, $this->object->getFileSize('testing/kitten-1.jpg'));
+        $this->assertEquals(77931, $this->object->getFileSize('testing/kitten-1.jpg'));
     }
 
     public function testFileMimeType(): void
@@ -135,8 +135,8 @@ abstract class S3Base extends WebTestCase
 
     public function testPartUpload(): string
     {
-        $source = __DIR__.'/../resources/disk-a/large_file.mp4';
-        $dest = uniqid('', false).'.mp4';
+        $source = __DIR__.'/../resources/disk-a/large_file.mov';
+        $dest = uniqid('', false).'.mov';
         $totalSize = \filesize($source);
         // AWS S3 requires each part to be at least 5MB except for last part
         $chunkSize = 5 * 1024 * 1024;
