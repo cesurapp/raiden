@@ -26,6 +26,7 @@ jobs:
           php-version: '8.1'
           tools: phpunit-bridge
           extensions: imagick, uuid, swoole, :xdebug
+          ini-values: sys_temp_dir=${{ runner.temp }}
         env:
           SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
       - uses: actions/checkout@v3
