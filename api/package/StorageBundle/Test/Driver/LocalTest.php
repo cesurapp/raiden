@@ -90,7 +90,7 @@ class LocalTest extends WebTestCase
 
     public function testFileSize(): void
     {
-        $this->assertEquals(599639, filesize(__DIR__.'/../resources/disk-a/kitten-1.jpg'));
+        $this->assertEquals(77931, filesize(__DIR__.'/../resources/disk-a/kitten-1.jpg'));
         $this->assertEquals(131958, filesize(__DIR__.'/../resources/disk-a/kitten-2.jpg'));
     }
 
