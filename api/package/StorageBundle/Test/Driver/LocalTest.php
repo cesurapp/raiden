@@ -104,7 +104,7 @@ class LocalTest extends WebTestCase
 
     public function testFileHash(): void
     {
-        $this->assertEquals('7551f343143d2e24ab4aaf4624996b6a', md5_file(__DIR__.'/../resources/disk-a/kitten-1.jpg'));
+        $this->assertEquals('277be0ebe51e975e8e9cc7492b451911', md5_file(__DIR__.'/../resources/disk-a/kitten-1.jpg'));
         $this->assertEquals('81702fdeef2e55b1a22617bce4951cb5', md5_file(__DIR__.'/../resources/disk-a/kitten-2.jpg'));
         $this->assertEquals('03010f4f02980521a8fd6213b52ec313', md5_file(__DIR__.'/../resources/disk-b/kitten-1.png'));
         $this->assertEquals('8a9ed992b77e4b62b10e3a5c8ed72062', md5_file(__DIR__.'/../resources/disk-b/kitten-2.png'));
