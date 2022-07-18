@@ -19,7 +19,6 @@ class ThorTest extends WebTestCase
         $client = self::createClient();
         $client->request('GET', 'thor/latest/download');
 
-        dump($client->getResponse());
         $this->assertEquals(true, $client->getResponse()->isOk());
     }
 }

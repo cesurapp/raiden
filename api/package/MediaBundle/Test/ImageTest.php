@@ -29,7 +29,7 @@ class ImageTest extends WebTestCase
         // JPG
         $image = new Image(file_get_contents(__DIR__.'/resources/image.jpg'));
         $image->save(sys_get_temp_dir().'/image.jpg', 'jpg');
-        $this->assertEquals(322695, filesize(sys_get_temp_dir().'/image.jpg'));
+        $this->assertLessThanOrEqual(322695, filesize(sys_get_temp_dir().'/image.jpg'));
         unlink(sys_get_temp_dir().'/image.jpg');
 
         // PNG to JPG
