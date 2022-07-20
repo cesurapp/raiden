@@ -78,7 +78,8 @@ class ThorExtractor
                     'shortName' => lcfirst(str_replace('Controller', '', $refController->getShortName())).ucfirst($refMethod->getShortName()),
 
                     // Options
-                    'group' => $attrThor['group'] ?? '',
+                    'group' => explode('|', $attrThor['group'] ?? '')[0],
+                    'groupOrder' => isset($attrThor['group']) ? (explode('|', $attrThor['group'])[1] ?? null) : null,
                     'desc' => $attrThor['desc'] ?? '',
                     'hidden' => $attrThor['hidden'] ?? false,
                     'paginate' => $attrThor['paginate'] ?? false,
@@ -118,6 +119,23 @@ class ThorExtractor
                 $first = explode('/', $doc['path'])[1];
                 $newDoc[ucfirst($first)][$name] = $doc;
             }
+
+            $findOrder = static function ($data) {
+                foreach ($data as $item) {
+                    if (null !== $item['groupOrder']) {
+                        return (int) $item['groupOrder'];
+                    }
+                }
+
+                return 20000;
+            };
+
+            uasort($newDoc, static function ($a, $b) use ($findOrder) {
+                if (($ao = $findOrder($a)) === ($bo = $findOrder($b))) {
+                    return 0;
+                }
+                return $ao < $bo ? -1 : 1;
+            });
 
             return $newDoc;
         }
@@ -246,7 +264,7 @@ class ThorExtractor
                 return $result;
             }, []);
 
-            /*$exceptionCode = $parameters['code']->getDefaultValue();
+            $exceptionCode = $parameters['code']->getDefaultValue();
             $message = $parameters['message']->getDefaultValue();
 
             // Create Class
@@ -262,13 +280,16 @@ class ThorExtractor
                 if ($eClass->getCode()) {
                     $exceptionCode = $eClass->getCode();
                 }
+                if ($refClass->hasMethod('getStatusCode')) {
+                    $exceptionCode = $eClass->getStatusCode();
+                }
             } catch (\Exception $exception) {
-            }*/
+            }
 
             $exception = [
                 'type' => $refClass->getShortName(),
-                'code' => 'int',
-                'message' => 'string',
+                'code' => $exceptionCode,
+                'message' => $message,
             ];
 
             if (isset($parameters['errors'])) {
@@ -305,11 +326,12 @@ class ThorExtractor
 
                 // Exceptions
                 if ($refClass->implementsInterface(\Throwable::class)) {
-                    $resValue = $renderException($resValue, $resKey);
+                    $exception = $renderException($resValue, $resKey);
+                    $resValue = $exception;
                 }
             }
         });
-
+dump($thorAttr['response']);
         // Append Message Format
         $source = $this->getMethodSource($refMethod);
         if (str_contains($source, '->addMessage(')) {
