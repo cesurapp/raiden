@@ -26,3 +26,8 @@ services:
             $algo: 'HS256'
             $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
         public: true
+
+    # OTP KEY Listener
+    App\Admin\Notification\EventListener\OtpListener:
+        tags:
+            - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Core\Entity\OtpKey', lazy: true }
