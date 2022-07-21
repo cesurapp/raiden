@@ -303,6 +303,24 @@
                                                     </div>
                                                 </div>
                                             <?php } ?>
+
+                                            <!--Exception Response-->
+                                            <?php if (!empty($route['exception'])) { ?>
+                                                <div class="mt-3">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success pointer" data-bs-toggle="collapse" data-bs-target="#panelException<?php echo $groupName.$routeUri; ?>">
+                                                        <i class="fa-solid fa-reply me-2"></i> Response Exception
+                                                        <span class="ms-auto bg-secondary text-white px-1 rounded-1 small"><?php echo 'ApiResponse' === $route['controllerResponseType'] ? 'JSON' : $route['controllerResponseType']; ?></span>
+                                                    </div>
+                                                    <div id="panelException<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                        <?php foreach ($route['exception'] as $code => $response) { ?>
+                                                            <div class="mb-0 d-flex">
+                                                                <span class="d-inline-block" style="min-width: 30%;"><?php echo($statusText[$response['code'] ?? $code] ?? '').' '.($response['code'] ?? $code); ?>:</span>
+                                                                <code><pre class="mb-0"><?php echo json_encode($response, JSON_PRETTY_PRINT); ?></pre></code>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
                                         </div>
                                     </div>
                                 </div>

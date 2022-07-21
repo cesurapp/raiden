@@ -100,7 +100,7 @@ class ThorExtractor
                     'query' => $this->extractQueryParameters($attrThor),
                     'request' => $this->extractRequestParameters($attrThor),
                     'header' => $this->extractHeaderParameters($attrThor),
-                    'response' => $this->extractResponse($attrThor, $refMethod, $route['router']->getMethods() ?: ['GET']),
+                    ...$this->extractResponse($attrThor, $refMethod, $route['router']->getMethods() ?: ['GET']),
                 ];
             }
         }
@@ -134,6 +134,7 @@ class ThorExtractor
                 if (($ao = $findOrder($a)) === ($bo = $findOrder($b))) {
                     return 0;
                 }
+
                 return $ao < $bo ? -1 : 1;
             });
 
@@ -288,7 +289,7 @@ class ThorExtractor
 
             $exception = [
                 'type' => $refClass->getShortName(),
-                'code' => $exceptionCode,
+                'code' => $exceptionCode < 1 ? 400 : $exceptionCode,
                 'message' => $message,
             ];
 
@@ -314,7 +315,9 @@ class ThorExtractor
             return [];
         };
 
-        array_walk_recursive($thorAttr['response'], static function (&$resValue, $resKey) use ($renderResource, $renderException) {
+        $thorAttr['exception'] = [];
+
+        array_walk_recursive($thorAttr['response'], static function (&$resValue, $resKey) use ($renderResource, $renderException, &$thorAttr) {
             // Class
             if (!is_array($resValue) && class_exists($resValue)) {
                 $refClass = new ReflectionClass($resValue);
@@ -327,11 +330,19 @@ class ThorExtractor
                 // Exceptions
                 if ($refClass->implementsInterface(\Throwable::class)) {
                     $exception = $renderException($resValue, $resKey);
-                    $resValue = $exception;
+                    $thorAttr['exception'][$refClass->getShortName()] = $exception;
+                    $resValue = null;
                 }
             }
         });
-dump($thorAttr['response']);
+
+        // Clear Null Response
+        foreach ($thorAttr['response'] as $key => $res) {
+            if (!$res) {
+                unset($thorAttr['response'][$key]);
+            }
+        }
+
         // Append Message Format
         $source = $this->getMethodSource($refMethod);
         if (str_contains($source, '->addMessage(')) {
@@ -356,7 +367,7 @@ dump($thorAttr['response']);
         // Append DTO Exception Response
         if (isset($thorAttr['dto']) && !in_array('GET', $methods, false)) {
             $exception = $renderException(ValidationException::class, 403);
-            $thorAttr['response'][$exception['code']] = $exception;
+            $thorAttr['exception'][$exception['code']] = $exception;
         }
 
         // Append Pagination
@@ -372,7 +383,10 @@ dump($thorAttr['response']);
 
         ksort($thorAttr['response']);
 
-        return $thorAttr['response'];
+        return [
+            'response' => $thorAttr['response'],
+            'exception' => $thorAttr['exception'],
+        ];
     }
 
     /**

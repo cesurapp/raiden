@@ -155,7 +155,9 @@ class SecurityController extends AbstractApiController
         ],
         response: [
             200 => [
+                'user' => UserResource::class,
                 'token' => 'string',
+                'refresh_token' => 'string',
             ],
             RefreshTokenExpiredException::class,
         ],

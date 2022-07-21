@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-useless-constructor */
 
-import type { Axios, AxiosRequestConfig } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, Method } from 'axios';
 import { toQueryString } from './flatten';
 
 <?php foreach ($data as $groupedRoutes) { foreach ($groupedRoutes as $route) { ?>
@@ -19,18 +19,21 @@ import type { <?php echo ucfirst($route['shortName']); ?>Query } from './Query/<
 <?php }} ?>
 
 export default class Api {
-  constructor(private client: Axios) {}
+  constructor(private client: AxiosInstance) {}
 <?php foreach ($data as $groupedRoutes) { foreach ($groupedRoutes as $route) { ?>
 
   async <?php echo $route['shortName']; ?>(<?php echo $attrs = $helper->renderAttributes($route); ?>): Promise<<?php echo ucfirst($route['shortName']); ?>Response> {
-    config.method = '<?php echo $route['routerMethod'][0]; ?>';
-    config.url = <?php echo  $helper->renderEndpointPath($route['routerPath'], $attrs); ?>;
-<?php if (str_contains($attrs, 'request')) { ?>
-    config.data = request;
-<?php } ?>
-
-    const r = await this.client.request(config);
-    return r.data as <?php echo ucfirst($route['shortName']); ?>Response;
+    return this.rq('<?php echo $route['routerMethod'][0]; ?>', <?php echo  $helper->renderEndpointPath($route['routerPath'], $attrs); ?>, config, <?php echo str_contains($attrs, 'request') ? 'request' : 'null' ?>)
   }
 <?php }} ?>
+
+  async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {
+    config.method = method;
+    config.url = url;
+    if (data) {
+      config.data = data;
+    }
+
+    return await this.client.request(config);
+  }
 }
