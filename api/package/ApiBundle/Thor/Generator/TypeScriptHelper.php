@@ -117,6 +117,7 @@ class TypeScriptHelper
         if (class_exists($type)) {
             $type = 'string';
         }
+
         return match ($type) {
             'int' => 'number',
             'bool', 'boolean' => 'boolean',
