@@ -21,7 +21,7 @@ services:
     App\Admin\Pusher\EventListener\OtpKeyListener:
         tags:
             - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Core\Entity\OtpKey', lazy: true }
-    # OTP KEY Listener
+    # Notification Listener
     App\Admin\Pusher\EventListener\NotificationListener:
         tags:
             - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Notification\Entity\Notification', lazy: true }

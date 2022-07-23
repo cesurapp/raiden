@@ -2,17 +2,17 @@
 
 namespace App\Admin\Pusher\EventListener;
 
-use App\Admin\Core\Entity\OtpKey;
+use App\Admin\Notification\Entity\Notification;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
 /**
- * OTP Created Listener.
+ * Notification Created Listener.
  *
- * Send Email | SMS.
+ * Send Notification to Firebase or Pusher Channel
  */
 class NotificationListener
 {
-    public function postPersist(OtpKey $otpKey, LifecycleEventArgs $event): void
+    public function postPersist(Notification $notification, LifecycleEventArgs $event): void
     {
         // dump('OTP Key Created Listener');
     }

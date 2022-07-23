@@ -1,8 +1,4 @@
-* Github CI Test
-* 
 * Core -> User Management
-* 
-* Core -> Notification {SMS, MAIL, SYSTEM }
 * Core -> UI
 * 
 * 
