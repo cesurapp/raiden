@@ -74,15 +74,11 @@ class SecurityTest extends AbstractWebTestCase
         $user = $this->createUser();
 
         // Logout Api
-        $this->client()->loginUser($user)->jsonRequest('POST', '/v1/auth/logout');
+        $this->client($user)->jsonRequest('POST', '/v1/auth/logout');
         $this->isOk();
         $this->assertJsonStructure(['message']);
 
-        // Language Test
-        static::ensureKernelShutdown();
-        static::createClient();
-
-        $this->client()->loginUser($user)->jsonRequest('POST', '/v1/auth/logout', [
+        $this->client($user)->jsonRequest('POST', '/v1/auth/logout', [
             'refresh_token' => 'sdsadasdsasadasdsa',
         ], server: [
             'HTTP_ACCEPT_LANGUAGE' => 'tr-TR',
@@ -341,32 +337,23 @@ class SecurityTest extends AbstractWebTestCase
 
         // Access Denied without CorePermission::SWITCH_USER
         $this
-            ->client()
-            ->loginUser($user2)
+            ->client($user2)
             ->request('GET', '/v1/admin/profile', server: [
                 'HTTP_SWITCH_USER' => $user->getEmail(),
             ]);
         $this->isForbidden();
 
-        static::ensureKernelShutdown();
-        static::createClient();
-
         // Acces
         $this
-            ->client()
-            ->loginUser($user)
+            ->client($user)
             ->request('GET', '/v1/admin/profile', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ]);
         $this->assertEquals($user2->getId()->toBase32(), $this->json()[0]['id']);
 
-        static::ensureKernelShutdown();
-        static::createClient();
-
         // Disable Login Endpoint
         $this
-            ->client()
-            ->loginUser($user)
+            ->client($user)
             ->request('POST', '/v1/auth/login', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ]);

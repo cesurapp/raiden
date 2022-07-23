@@ -114,10 +114,12 @@ class TypeScriptHelper
 
     private function convertTsType(string $type): string
     {
+        if (class_exists($type)) {
+            $type = 'string';
+        }
         return match ($type) {
             'int' => 'number',
-            'bool' => 'boolean',
-            'boolean' => 'boolean',
+            'bool', 'boolean' => 'boolean',
             'string' => 'string',
             'null' => 'null',
             'array' => 'Array<string|number|boolean>',

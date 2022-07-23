@@ -7,9 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Add Owner to Entity.
  */
-trait OwnerTrait
+trait OwnerRemovalTrait
 {
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\JoinColumn(onDelete: 'cascade')]
     private ?User $owner;
 
     public function getOwner(): ?User

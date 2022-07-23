@@ -14,7 +14,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\HasLifecycleCallbacks]
 class OtpKey
 {
-    use OwnerTrait;
+    use OwnerRemovalTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]

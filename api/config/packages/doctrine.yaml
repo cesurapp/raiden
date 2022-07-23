@@ -23,6 +23,12 @@ doctrine:
         prefix: 'App\Admin\Core\Entity'
         alias: Core
 
+      Notification:
+        is_bundle: false
+        type: attribute
+        dir: '%kernel.project_dir%/src/Admin/Notification/Entity'
+        prefix: 'App\Admin\Notification\Entity'
+        alias: Notification
 #PROD
 when@prod:
   framework:

@@ -79,11 +79,13 @@ class ThorExtractor
 
                     // Options
                     'group' => explode('|', $attrThor['group'] ?? '')[0],
+                    'groupDesc' => $attrThor['groupDesc'] ?? '',
                     'groupOrder' => isset($attrThor['group']) ? (explode('|', $attrThor['group'])[1] ?? null) : null,
                     'desc' => $attrThor['desc'] ?? '',
                     'hidden' => $attrThor['hidden'] ?? false,
                     'paginate' => $attrThor['paginate'] ?? false,
                     'requireAuth' => $attrThor['requireAuth'] ?? true,
+                    'order' => $attrThor['order'] ?? 0,
 
                     // Router
                     'routerPath' => $route['router']->getPath(),
@@ -130,6 +132,7 @@ class ThorExtractor
                 return 20000;
             };
 
+            // Sort Group
             uasort($newDoc, static function ($a, $b) use ($findOrder) {
                 if (($ao = $findOrder($a)) === ($bo = $findOrder($b))) {
                     return 0;
@@ -137,6 +140,19 @@ class ThorExtractor
 
                 return $ao < $bo ? -1 : 1;
             });
+
+            // Sort Items
+            foreach ($newDoc as $key => $items) {
+                uasort($items, static function ($a, $b) {
+                    if ($a['order'] === $b['order']) {
+                        return 0;
+                    }
+
+                    return $a['order'] < $b['order'] ? -1 : 1;
+                });
+
+                $newDoc[$key] = $items;
+            }
 
             return $newDoc;
         }
@@ -173,6 +189,11 @@ class ThorExtractor
 
                 if ($p->getType() instanceof ReflectionUnionType) {
                     return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
+                }
+
+                // Disable Attributes
+                if (count($p->getAttributes())) {
+                    return false;
                 }
 
                 return $check($p->getType()->getName()); // @phpstan-ignore-line
@@ -265,7 +286,7 @@ class ThorExtractor
                 return $result;
             }, []);
 
-            $exceptionCode = $parameters['code']->getDefaultValue();
+            $exceptionCode = isset($parameters['code']) ? $parameters['code']->getDefaultValue() : 400;
             $message = $parameters['message']->getDefaultValue();
 
             // Create Class

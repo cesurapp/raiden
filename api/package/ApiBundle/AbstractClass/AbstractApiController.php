@@ -8,11 +8,13 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
@@ -110,5 +112,31 @@ abstract class AbstractApiController implements ServiceSubscriberInterface
     protected function isCsrfTokenValid(string $id, ?string $token): bool
     {
         return $this->container->get('security.csrf.token_manager')->isTokenValid(new CsrfToken($id, $token));
+    }
+
+    /**
+     * Returns a NotFoundHttpException.
+     *
+     * This will result in a 404 response code. Usage example:
+     *
+     *     throw $this->createNotFoundException('Page not found!');
+     */
+    protected function createNotFoundException(string $message = 'Not Found', \Throwable $previous = null): NotFoundHttpException
+    {
+        return new NotFoundHttpException($message, $previous);
+    }
+
+    /**
+     * Returns an AccessDeniedException.
+     *
+     * This will result in a 403 response code. Usage example:
+     *
+     *     throw $this->createAccessDeniedException('Unable to access this page!');
+     *
+     * @throws \LogicException If the Security component is not available
+     */
+    protected function createAccessDeniedException(string $message = 'Access Denied.', \Throwable $previous = null): AccessDeniedException
+    {
+        return new AccessDeniedException($message, $previous);
     }
 }

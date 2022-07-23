@@ -28,7 +28,7 @@ class Organization
     #[ORM\Column(type: 'boolean')]
     private bool $frozen = false;
 
-    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: User::class, cascade: ['persist', 'remove'])]
     private Collection $users;
 
     public function __construct()
@@ -37,7 +37,7 @@ class Organization
         $this->createdAt = new DateTimeImmutable();
     }
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

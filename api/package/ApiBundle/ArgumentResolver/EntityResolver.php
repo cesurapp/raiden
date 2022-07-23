@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 
 /**
@@ -35,7 +36,7 @@ class EntityResolver implements ArgumentValueResolverInterface
         $key = array_key_first($attrs);
 
         // Check ID is Uuid
-        if ('id' === strtolower($key) && !Uuid::isValid($attrs[$key])) {
+        if ('id' === strtolower($key) && !Ulid::isValid($attrs[$key])) {
             throw new UuidNotFoundException();
         }
 

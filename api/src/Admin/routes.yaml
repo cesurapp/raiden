@@ -2,3 +2,8 @@
 app_core:
   resource: "Core/Controller"
   type: annotation
+
+# Notification
+app_notification:
+  resource: "Notification/Controller"
+  type: annotation

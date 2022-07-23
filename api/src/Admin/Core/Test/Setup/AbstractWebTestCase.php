@@ -2,6 +2,8 @@
 
 namespace App\Admin\Core\Test\Setup;
 
+use Ahc\Jwt\JWT;
+use App\Admin\Core\Entity\User;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestAssertionsTrait;
 use Symfony\Component\BrowserKit\AbstractBrowser;
@@ -63,13 +65,16 @@ abstract class AbstractWebTestCase extends AbstractKernelTestCase
     /**
      * Get HTTP Client.
      */
-    public function client(bool $catchExceptions = true): KernelBrowser
+    public function client(?User $user = null): KernelBrowser
     {
         if (!static::$client) {
             static::createClient();
         }
 
-        static::$client->catchExceptions($catchExceptions);
+        if ($user) {
+            $token = static::getContainer()->get(JWT::class)->encode(['id' => $user->getId()->toBase32()]);
+            static::$client->setServerParameter('HTTP_AUTHORIZATION', 'Bearer '.$token);
+        }
 
         return static::$client;
     }

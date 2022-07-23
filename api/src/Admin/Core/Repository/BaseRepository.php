@@ -11,22 +11,31 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 abstract class BaseRepository extends ServiceEntityRepository
 {
-    public function add(object $object, bool $flush = true): void
+    public function add(object $object, bool $flush = true): self
     {
         $this->getEntityManager()->persist($object);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+
+        return $this;
     }
 
-    public function remove(object $object, bool $flush = false): void
+    public function remove(object $object, bool $flush = true): self
     {
         $this->getEntityManager()->remove($object);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+
+        return $this;
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
     }
 
     public function connection(): Connection

@@ -10,6 +10,7 @@ final class Thor
 {
     public function __construct(
         protected string $group = '',
+        protected string $groupDesc = '',
         protected string $desc = '',
         protected array $query = [],
         protected array $request = [],
@@ -18,7 +19,8 @@ final class Thor
         protected string $dto = '',
         protected bool $hidden = false,
         protected bool $paginate = false,
-        protected bool $requireAuth = false
+        protected bool $requireAuth = false,
+        protected int $order = 0,
     ) {
     }
 }

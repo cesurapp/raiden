@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
 class RefreshToken
 {
-    use OwnerTrait;
+    use OwnerRemovalTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]

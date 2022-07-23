@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Notification\EventListener;
+namespace App\Admin\Pusher\EventListener;
 
 use App\Admin\Core\Entity\OtpKey;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -10,10 +10,10 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
  *
  * Send Email | SMS.
  */
-class OtpListener
+class NotificationListener
 {
     public function postPersist(OtpKey $otpKey, LifecycleEventArgs $event): void
     {
-        dump('OTP Key Created Listener');
+        // dump('OTP Key Created Listener');
     }
 }
