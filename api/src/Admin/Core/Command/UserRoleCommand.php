@@ -33,12 +33,11 @@ class UserRoleCommand extends Command
         }
 
         $roles = $this->permissions->getPermissionsFlatten($user->getType());
-        if (!$roles) {
-            throw new \RuntimeException('No permissions were found for this user type.');
-        }
 
-        $selected = $helper->ask($input, $output, (new ChoiceQuestion('Select Role: ', $roles))->setMultiselect(true));
-        $user->setRoles($this->permissions->getPermissionToEnum($selected));
+        if ($roles) {
+            $selected = $helper->ask($input, $output, (new ChoiceQuestion('Select Role: ', $roles))->setMultiselect(true));
+            $user->setRoles($this->permissions->getPermissionToEnum($selected));
+        }
         $this->userRepo->add($user);
 
         (new SymfonyStyle($input, $output))->success('Role Changed!');
