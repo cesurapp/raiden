@@ -5,7 +5,6 @@ namespace App\Admin\Pusher\EventListener;
 use App\Admin\Core\Entity\OtpKey;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 
-
 /**
  * OTP Created Listener.
  *
