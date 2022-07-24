@@ -27,6 +27,7 @@ security:
             }
             json_login:
                 check_path: api_login
+                failure_handler: App\Admin\Core\Security\JsonFailureHandler
 
     access_control:
         # Auth

@@ -20,9 +20,9 @@ class GlobalExceptionHandler implements EventSubscriberInterface
 
     public function onKernelException(ExceptionEvent $event): void
     {
-        if ('dev' === $_ENV['APP_ENV']) {
+        /*if ('dev' === $_ENV['APP_ENV']) {
             return;
-        }
+        }*/
 
         // Create Exception Message
         $exception = $event->getThrowable();
