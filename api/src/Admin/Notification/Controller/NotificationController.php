@@ -9,6 +9,11 @@ use App\Admin\Notification\Resource\NotificationResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
+use Symfony\Component\Notifier\Bridge\Firebase\Notification\AndroidNotification;
+use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -17,6 +22,29 @@ class NotificationController extends AbstractApiController
 {
     public function __construct(private NotificationRepository $repo)
     {
+    }
+
+    #[Route(path: '/v1/sendnotify', methods: ['GET'])]
+    public function testapp(NotifierInterface $notifier, ChatterInterface $chatter): ApiResponse
+    {
+        /* $n = new \Symfony\Component\Notifier\Notification\Notification('Fak nasdsadsa', ['push']);
+         $n->importance(\Symfony\Component\Notifier\Notification\Notification::IMPORTANCE_MEDIUM);
+
+         $notifier->send($n);*/
+
+          /*$options = new AndroidNotification('to', []);
+          $message = (new ChatMessage('Hello world!'))
+              ->options($options)
+              ->transport('firebase');
+          $chatter->send($message);*/
+
+        $message = new ChatMessage(
+            'some notification content',
+            new WebNotification('demo@demo.com', ['title' => 'some notification title'])
+        );
+        $chatter->send($message);
+
+        return ApiResponse::create()->addMessage('asdsadsadasdsa');
     }
 
     #[Thor(
