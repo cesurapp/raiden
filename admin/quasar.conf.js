@@ -33,6 +33,7 @@ module.exports = configure(function (ctx) {
       'axios',
       'auth',
       'api',
+      'firebase',
       'rules',
     ],
 

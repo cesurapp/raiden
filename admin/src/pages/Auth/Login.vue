@@ -27,7 +27,6 @@
       </div>
     </q-form>
 
-    <q-btn label="asdsa" @click="test">asdsad</q-btn>
     <!-- Footer-->
     <div class="auth-footer q-mt-xl">
       <div class="or-hr q-mb-xl"><span>or</span></div>
@@ -44,18 +43,6 @@
 import { defineComponent } from 'vue'
 import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 import {createMetaMixin} from 'quasar';
-import { initializeApp } from "firebase/app";
-import { getMessaging } from "firebase/messaging";
-const firebaseConfig = {
-  apiKey: "AIzaSyC_ZbH7KHkv9s72ZEgjZbwduYBmFR2aN_E",
-  authDomain: "yeyee-app.firebaseapp.com",
-  projectId: "yeyee-app",
-  storageBucket: "yeyee-app.appspot.com",
-  messagingSenderId: "858568967918",
-  appId: "1:858568967918:web:1355ef685eb5b69a4b95ff",
-  measurementId: "G-KW1YHX0979"
-};
-const app = initializeApp(firebaseConfig);
 
 export default defineComponent({
   name: 'AuthLogin',
@@ -77,11 +64,6 @@ export default defineComponent({
     }
   },
   methods: {
-    test() {
-      console.log(
-        getMessaging(app)
-      );
-    },
     onSubmit() {
       console.log(
         this.$api.securityLogin({

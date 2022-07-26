@@ -9,7 +9,6 @@ use App\Admin\Notification\Resource\NotificationResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Component\Notifier\Bridge\Firebase\Notification\AndroidNotification;
 use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
@@ -32,15 +31,18 @@ class NotificationController extends AbstractApiController
 
          $notifier->send($n);*/
 
-          /*$options = new AndroidNotification('to', []);
-          $message = (new ChatMessage('Hello world!'))
-              ->options($options)
-              ->transport('firebase');
-          $chatter->send($message);*/
+        /*$options = new AndroidNotification('to', []);
+        $message = (new ChatMessage('Hello world!'))
+            ->options($options)
+            ->transport('firebase');
+        $chatter->send($message);*/
 
         $message = new ChatMessage(
             'some notification content',
-            new WebNotification('demo@demo.com', ['title' => 'some notification title'])
+            new WebNotification(
+                'crj8S08jxbSkogXwy6-cVq:APA91bGlks1DbLLXFC1ZyY0xNyAw9sRVEoO3UA6EQnQ-WRQ0V60JpcQOl8tMiqkhLQSNJdVSGSRVLHKYWxtdc591nzUTqhw8NYSTF2hphOcA9vacWRYiZjnSNfd7DiFjG7Atv7iAcfMl',
+                ['title' => 'some notification title']
+            )
         );
         $chatter->send($message);
 
