@@ -37,13 +37,17 @@ class NotificationController extends AbstractApiController
             ->transport('firebase');
         $chatter->send($message);*/
 
-        $message = new ChatMessage(
-            'some notification content',
-            new WebNotification(
-                'crj8S08jxbSkogXwy6-cVq:APA91bGlks1DbLLXFC1ZyY0xNyAw9sRVEoO3UA6EQnQ-WRQ0V60JpcQOl8tMiqkhLQSNJdVSGSRVLHKYWxtdc591nzUTqhw8NYSTF2hphOcA9vacWRYiZjnSNfd7DiFjG7Atv7iAcfMl',
-                ['title' => 'some notification title']
-            )
+        $s =   new WebNotification(
+            'fspJbn0kBvaShdwq_KHdgS:APA91bH42y1Dth0x35iZ4grG0bQiIohO99BafCIHlxoHFVbeHRC5txaIWJ55sWXgP-Iw9wHr-QFb0nXbETHHjiBQc__eTAnfOhpXp6KJmsOywsX35QrAlcjeN_DsVwAtJXJdfEbvDoal',
+            ['title' => 'some notification title']
         );
+        $s->body('bodyyyyyyy');
+        $s->title('nalet title');
+        $s->data([
+            'type' => 'danger'
+        ]);
+        $s->clickAction('asdsadassadsadsa');
+        $message = new ChatMessage('Subject', $s);
         $chatter->send($message);
 
         return ApiResponse::create()->addMessage('asdsadsadasdsa');

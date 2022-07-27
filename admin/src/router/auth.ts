@@ -2,6 +2,7 @@ export default [
   {
     path: '/',
     component: () => import('pages/Auth/Layout.vue'),
+    name: 'auth',
     children: [
       {path: '/login', component: () => import('pages/Auth/Login.vue'), name: 'auth.login'},
       {path: '/register', component: () => import('pages/Auth/Register.vue'), name: 'auth.register'},
