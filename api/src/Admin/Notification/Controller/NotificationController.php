@@ -19,33 +19,19 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class NotificationController extends AbstractApiController
 {
-    public function __construct(private NotificationRepository $repo)
+    public function __construct(private readonly NotificationRepository $repo)
     {
     }
 
     #[Route(path: '/v1/sendnotify', methods: ['GET'])]
     public function testapp(NotifierInterface $notifier, ChatterInterface $chatter): ApiResponse
     {
-        /* $n = new \Symfony\Component\Notifier\Notification\Notification('Fak nasdsadsa', ['push']);
-         $n->importance(\Symfony\Component\Notifier\Notification\Notification::IMPORTANCE_MEDIUM);
-
-         $notifier->send($n);*/
-
-        /*$options = new AndroidNotification('to', []);
-        $message = (new ChatMessage('Hello world!'))
-            ->options($options)
-            ->transport('firebase');
-        $chatter->send($message);*/
-
-        $s =   new WebNotification(
-            'fspJbn0kBvaShdwq_KHdgS:APA91bH42y1Dth0x35iZ4grG0bQiIohO99BafCIHlxoHFVbeHRC5txaIWJ55sWXgP-Iw9wHr-QFb0nXbETHHjiBQc__eTAnfOhpXp6KJmsOywsX35QrAlcjeN_DsVwAtJXJdfEbvDoal',
+        $s = new WebNotification(
+            'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB',
             ['title' => 'some notification title']
         );
         $s->body('bodyyyyyyy');
         $s->title('nalet title');
-        $s->data([
-            'type' => 'danger'
-        ]);
         $s->clickAction('asdsadassadsadsa');
         $message = new ChatMessage('Subject', $s);
         $chatter->send($message);

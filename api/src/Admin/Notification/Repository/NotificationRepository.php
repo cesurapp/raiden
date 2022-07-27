@@ -18,7 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class NotificationRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry, private TranslatorInterface $translator)
+    public function __construct(ManagerRegistry $registry, private readonly TranslatorInterface $translator)
     {
         parent::__construct($registry, Notification::class);
     }

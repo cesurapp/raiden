@@ -7,18 +7,6 @@ use App\Admin\Notification\Entity\Notification;
 
 class NotificationTest extends AbstractWebTestCase
 {
-
-    public function testNotify(): void
-    {
-        self::createClient();
-        $user = $this->createUser();
-
-        // List Notification
-        $this->client($user)->request('GET', '/v1/sendnotify');
-        dump($this->json());
-    }
-
-
     public function testList(): void
     {
         self::createClient();
