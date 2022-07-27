@@ -9,10 +9,6 @@ use App\Admin\Notification\Resource\NotificationResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
-use Symfony\Component\Notifier\ChatterInterface;
-use Symfony\Component\Notifier\Message\ChatMessage;
-use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -21,22 +17,6 @@ class NotificationController extends AbstractApiController
 {
     public function __construct(private readonly NotificationRepository $repo)
     {
-    }
-
-    #[Route(path: '/v1/sendnotify', methods: ['GET'])]
-    public function testapp(NotifierInterface $notifier, ChatterInterface $chatter): ApiResponse
-    {
-        $s = new WebNotification(
-            'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB',
-            ['title' => 'some notification title']
-        );
-        $s->body('bodyyyyyyy');
-        $s->title('nalet title');
-        $s->clickAction('asdsadassadsadsa');
-        $message = new ChatMessage('Subject', $s);
-        $chatter->send($message);
-
-        return ApiResponse::create()->addMessage('asdsadsadasdsa');
     }
 
     #[Thor(

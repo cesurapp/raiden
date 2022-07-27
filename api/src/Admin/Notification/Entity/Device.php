@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
-class Device
+class Device implements \JsonSerializable
 {
     use OwnerRemovalTrait;
 
@@ -54,5 +54,14 @@ class Device
         $this->type = $type;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toBase32(),
+            'token' => $this->token,
+            'type' => $this->type->value,
+        ];
     }
 }

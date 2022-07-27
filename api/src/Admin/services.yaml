@@ -6,6 +6,19 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
+    # Services All Modules
+    App\Admin\:
+        resource: './'
+        exclude:
+            - './*/DependencyInjection'
+            - './*/Entity'
+            - './*/Enum'
+            - './*/Event'
+            - './*/Exception'
+            - './*/Request'
+            - './*/Test'
+            - './*/Translations'
+
     # JWT Token Manager
     Ahc\Jwt\JWT:
         arguments:
@@ -22,19 +35,6 @@ services:
         tags:
             - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Core\Entity\OtpKey', lazy: true }
     # Notification Listener
-    App\Admin\Pusher\EventListener\NotificationListener:
+    App\Admin\Notification\EventListener\NotificationListener:
         tags:
             - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Notification\Entity\Notification', lazy: true }
-
-    # Services All Modules
-    App\Admin\:
-        resource: './'
-        exclude:
-            - './*/DependencyInjection'
-            - './*/Entity'
-            - './*/Enum'
-            - './*/Event'
-            - './*/Exception'
-            - './*/Request'
-            - './*/Test'
-            - './*/Translations'

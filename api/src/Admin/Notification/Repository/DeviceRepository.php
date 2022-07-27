@@ -22,6 +22,9 @@ class DeviceRepository extends BaseRepository
         parent::__construct($registry, Device::class);
     }
 
+    /**
+     * Register FCM Device.
+     */
     public function register(FcmRegisterDto $dto, User $user): void
     {
         $device = (new Device())
@@ -30,5 +33,29 @@ class DeviceRepository extends BaseRepository
             ->setOwner($user);
 
         $this->add($device);
+    }
+
+    /**
+     * Get Devices.
+     *
+     * @return Device[]|null
+     */
+    public function getDevices(User $user): ?array
+    {
+        return $this->createQueryBuilder('d')
+            ->where('IDENTITY(d.owner) = :owner')
+            ->setParameter('owner', $user->getId(), 'ulid')
+            ->getQuery()->getResult();
+    }
+
+    /**
+     * Remove Device DQL.
+     */
+    public function removeDevice(string $deviceId): void
+    {
+        $this->createQueryBuilder('d')
+            ->where('d.id = :id')
+            ->setParameter('id', $deviceId)
+            ->delete()->getQuery()->execute();
     }
 }

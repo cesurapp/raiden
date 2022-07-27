@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
-class Notification
+class Notification implements \JsonSerializable
 {
     use OwnerRemovalTrait;
 
@@ -84,5 +84,16 @@ class Notification
         $this->read = $read;
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toBase32(),
+            'type' => $this->type->value,
+            'title' => $this->title,
+            'message' => $this->message,
+            'read' => $this->read,
+        ];
     }
 }
