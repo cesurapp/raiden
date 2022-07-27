@@ -13,16 +13,17 @@ class DeviceTest extends AbstractWebTestCase
         $user = $this->createUser();
 
         // Register Token
+        $token = 'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
         $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-           'token' => 'asdjsadkjasdhasjdhaski',
+           'token' => $token,
            'device' => 'web',
         ]);
         $this->isOk();
 
         // Check
-        $token = $this->manager()->getRepository(Device::class)->findOneBy([
-            'token' => 'asdjsadkjasdhasjdhaski',
+        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy([
+            'token' => $token,
         ]);
-        $this->assertNotNull($token);
+        $this->assertNotNull($deviceToken);
     }
 }
