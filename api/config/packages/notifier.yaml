@@ -4,3 +4,5 @@ framework:
             firebase: '%env(FIREBASE_DSN)%'
             # firebase: 'null://null'
         texter_transports:
+            main: 'null://null'
+            tr: 'null://null'

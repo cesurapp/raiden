@@ -16,7 +16,7 @@ class OtpTest extends AbstractKernelTestCase
         // Create LOGIN OTP Key
         $key1 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::LOGIN)
+            ->setType(OtpType::LOGIN_EMAIL)
             ->setOtpKey(133449)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());
@@ -25,7 +25,7 @@ class OtpTest extends AbstractKernelTestCase
         // Create New LOGIN OTP Key
         $key2 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::LOGIN)
+            ->setType(OtpType::LOGIN_EMAIL)
             ->setOtpKey(143449)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());

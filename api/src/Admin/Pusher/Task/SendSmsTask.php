@@ -17,7 +17,10 @@ class SendSmsTask implements TaskInterface
 
     public function __invoke(array $data = []): bool
     {
-        $sms = new SmsMessage('+1411111111', 'A new login was detected!');
+        $sms = new SmsMessage($data['phone'], $data['message']);
+        if ($data['transport']) {
+            $sms->transport($data['transport']);
+        }
 
         $this->texter->send($sms);
 
