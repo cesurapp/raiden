@@ -25,10 +25,6 @@
         <server name="CLOUDFLARE_R2_SECRET" value="1bad239edfab8c98cf5cbed6be77616c5fb19e61523cc26305f392d7d46d9c2d"/>
         <server name="CLOUDFLARE_R2_ENDPOINT" value="https://11d0547262baad2e6bdeb340e88f83be.r2.cloudflarestorage.com"/>
         <!--App Storage Test Environment-->
-
-        <!-- ###+ symfony/firebase-notifier ### -->
-        <!-- FIREBASE_DSN=firebase://TOKEN@default -->
-        <!-- ###- symfony/firebase-notifier ### -->
     </php>
 
     <testsuites>
