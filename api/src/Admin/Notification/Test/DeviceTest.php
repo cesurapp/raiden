@@ -4,7 +4,7 @@ namespace App\Admin\Notification\Test;
 
 use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Device;
-use App\Admin\Notification\Entity\Notification;
+use App\Admin\Notification\Service\NotificationPusher;
 
 class DeviceTest extends AbstractWebTestCase
 {
@@ -46,7 +46,9 @@ class DeviceTest extends AbstractWebTestCase
         $this->assertNotNull($deviceToken);
 
         // Create Notification
-        $this->manager()->getRepository(Notification::class)->create($user, 'asdas', 'asdad');
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
+        $pusher->send($pusher->create('sadada', 'asdsadas', user: $user));
 
         // Check Device
         $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);

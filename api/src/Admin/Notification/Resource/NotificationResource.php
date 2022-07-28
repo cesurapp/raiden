@@ -26,7 +26,7 @@ class NotificationResource implements ApiResourceInterface
             'type' => $item->getType()->value,
             'title' => $item->getTitle(),
             'message' => $item->getMessage(),
-            'read' => $item->isRead(),
+            'read' => $item->isReaded(),
             'createdAt' => $item->getId()->getDateTime(),
         ];
     }

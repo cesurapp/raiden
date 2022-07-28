@@ -5,8 +5,6 @@
 * UI -> Exception
 * UI -> Permission
 * UI -> Store
-* SMS
-* EMAİL
 * 
 * * DataTable
 * -- Filters

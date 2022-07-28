@@ -7,12 +7,19 @@ use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Package\SwooleBundle\Task\TaskHandler;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
 /**
  * Notification Created Listener.
  *
  * Send Notification to Firebase Channel
  */
+#[Autoconfigure(tags: [[
+    'name' => 'doctrine.orm.entity_listener',
+    'event' => 'postPersist',
+    'entity' => Notification::class,
+    'lazy' => true,
+]])]
 class NotificationListener
 {
     public function __construct(

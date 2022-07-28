@@ -8,10 +8,16 @@ use Symfony\Component\Mime\Email;
 
 /**
  * Send Mail to Task.
+ *
+ * @param array{
+ *  phone: number,
+ *  country: string,
+ *  message: string,
+ * } $data
  */
 class SendMailTask implements TaskInterface
 {
-    public function __construct(private MailerInterface $mailer)
+    public function __construct(private readonly MailerInterface $mailer)
     {
     }
 

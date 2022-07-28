@@ -4,6 +4,7 @@ namespace App\Admin\Notification\Test;
 
 use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Notification;
+use App\Admin\Notification\Service\NotificationPusher;
 
 class NotificationTest extends AbstractWebTestCase
 {
@@ -12,20 +13,21 @@ class NotificationTest extends AbstractWebTestCase
         self::createClient();
 
         $user = $this->createUser();
-        $repo = $this->manager()->getRepository(Notification::class);
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $repo->add($repo->create($user, 'Test', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 2', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 3', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 4', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 5', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 6', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 7', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 8', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 9', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 10', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 11', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 12', 'Test Message'));
+        $pusher->send($pusher->create('Test', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 2', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 3', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 4', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 5', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 6', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 7', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 8', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 9', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 10', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 11', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 12', 'Test Message', user: $user));
 
         // List Notification
         $this->client($user)->request('GET', '/v1/main/notification');
@@ -41,16 +43,17 @@ class NotificationTest extends AbstractWebTestCase
         self::createClient();
 
         $user = $this->createUser();
-        $repo = $this->manager()->getRepository(Notification::class);
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $notification = $repo->create($user, 'Test', 'Test Message');
-        $repo->add($notification);
-        $this->assertFalse($notification->isRead());
+        $notification = $pusher->create('Test', 'Test Message', user: $user);
+        $pusher->send($notification);
+        $this->assertFalse($notification->isReaded());
 
         // List Notification
         $this->client($user)->request('PUT', '/v1/main/notification/'.$notification->getId()->toBase32());
         $this->isOk();
-        $this->assertTrue($notification->isRead());
+        $this->assertTrue($notification->isReaded());
     }
 
     public function testDelete(): void
@@ -58,11 +61,12 @@ class NotificationTest extends AbstractWebTestCase
         self::createClient();
 
         $user = $this->createUser();
-        $repo = $this->manager()->getRepository(Notification::class);
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $notification = $repo->create($user, 'Test', 'Test Message');
-        $repo->add($notification);
-        $this->assertFalse($notification->isRead());
+        $notification = $pusher->create('Test', 'Test Message', user: $user);
+        $pusher->send($notification);
+        $this->assertFalse($notification->isReaded());
 
         // List Notification
         $this->client($user)->request('DELETE', '/v1/main/notification/'.$notification->getId()->toBase32());
@@ -75,11 +79,12 @@ class NotificationTest extends AbstractWebTestCase
         self::createClient();
 
         $user = $this->createUser();
-        $repo = $this->manager()->getRepository(Notification::class);
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $repo->add($repo->create($user, 'Test 6', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 7', 'Test Message'), false);
-        $repo->add($repo->create($user, 'Test 8', 'Test Message'), false);
+        $pusher->send($pusher->create('Test 6', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 7', 'Test Message', user: $user));
+        $pusher->send($pusher->create('Test 8', 'Test Message', user: $user));
 
         // List Notification
         $this->client($user)->request('POST', '/v1/main/notification/read-all');
@@ -87,7 +92,7 @@ class NotificationTest extends AbstractWebTestCase
 
         // Empty
         $this->assertEmpty($this->manager()->getRepository(Notification::class)->findBy([
-            'read' => false,
+            'readed' => false,
             'owner' => $user,
         ]));
     }

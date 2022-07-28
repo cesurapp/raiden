@@ -26,15 +26,3 @@ services:
             $algo: 'HS256'
             $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
         public: true
-
-    ##
-    # Pusher Channel Services
-    ##
-    # OTP KEY Listener
-    App\Admin\Pusher\EventListener\OtpKeyListener:
-        tags:
-            - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Core\Entity\OtpKey', lazy: true }
-    # Notification Listener
-    App\Admin\Notification\EventListener\NotificationListener:
-        tags:
-            - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Notification\Entity\Notification', lazy: true }

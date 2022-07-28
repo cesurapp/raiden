@@ -31,7 +31,7 @@ class Notification implements \JsonSerializable
     private ?string $message = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $read = false;
+    private ?bool $readed = false;
 
     #[ORM\Column(type: Types::JSON)]
     private array $data = [];
@@ -77,14 +77,14 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
-    public function isRead(): ?bool
+    public function isReaded(): ?bool
     {
-        return $this->read;
+        return $this->readed;
     }
 
-    public function setRead(bool $read): self
+    public function setReaded(bool $readed): self
     {
-        $this->read = $read;
+        $this->readed = $readed;
 
         return $this;
     }
@@ -124,7 +124,7 @@ class Notification implements \JsonSerializable
             'type' => $this->type->value,
             'title' => $this->title,
             'message' => $this->message,
-            'read' => $this->read,
+            'readed' => $this->readed,
             'data' => $this->data,
         ];
     }

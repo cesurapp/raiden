@@ -12,3 +12,4 @@ framework:
         fallbacks: ['en']
         paths:
             - '%kernel.project_dir%/src/Admin/Core/Translation'
+            - '%kernel.project_dir%/src/Admin/Pusher/Translation'

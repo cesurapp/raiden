@@ -5,10 +5,8 @@ namespace App\Admin\Notification\Repository;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Repository\BaseRepository;
 use App\Admin\Notification\Entity\Notification;
-use App\Admin\Notification\Enum\NotificationType;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @method Notification|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,19 +16,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class NotificationRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry, private readonly TranslatorInterface $translator)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Notification::class);
-    }
-
-    public function create(User $user, string $title, string $message): Notification
-    {
-        return (new Notification())
-            ->setOwner($user)
-            ->setRead(false)
-            ->setType(NotificationType::INFO)
-            ->setTitle($this->translator->trans($title))
-            ->setMessage($this->translator->trans($message));
     }
 
     /**
@@ -49,7 +37,7 @@ class NotificationRepository extends BaseRepository
      */
     public function read(Notification $notification, bool $read = true): void
     {
-        $notification->setRead($read);
+        $notification->setReaded($read);
         $this->add($notification);
     }
 
@@ -62,7 +50,7 @@ class NotificationRepository extends BaseRepository
             ->andWhere('IDENTITY(n.owner) = :owner')
             ->setParameter('owner', $user->getId(), 'ulid')
             ->update()
-            ->set('n.read', 'true')
+            ->set('n.readed', 'true')
             ->getQuery()->execute();
     }
 
