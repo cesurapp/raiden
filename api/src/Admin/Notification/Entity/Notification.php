@@ -33,6 +33,9 @@ class Notification implements \JsonSerializable
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $read = false;
 
+    #[ORM\Column(type: Types::JSON)]
+    private array $data = [];
+
     public function getId(): ?Ulid
     {
         return $this->id;
@@ -86,6 +89,34 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function addData(string $key, string|int|bool $value): self
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
+    public function removeData(string $key): self
+    {
+        if (array_key_exists($key, $this->data)) {
+            unset($this->data[$key]);
+        }
+
+        return $this;
+    }
+
+    public function setData(array $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         return [
@@ -94,6 +125,7 @@ class Notification implements \JsonSerializable
             'title' => $this->title,
             'message' => $this->message,
             'read' => $this->read,
+            'data' => $this->data
         ];
     }
 }

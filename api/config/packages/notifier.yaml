@@ -1,13 +1,6 @@
 framework:
     notifier:
         chatter_transports:
-            firebase: 'firebase://AAAAx-ayxu4:APA91bE-VLrdSBsQBBpSae_v6W4SalSDfDVg2-V9fPT9X8m7ehzl-tj18ZH9etCGw6uiA5sXsfLy-u33FfzCY5c9W24fgc-WnL51v4omaqEk_Rg44hcRCS9QQ_fIOu5EOryyRoQiIFiU@default'
-            #firebase: '%env(FIREBASE_DSN)%'
-        #    slack: '%env(SLACK_DSN)%'
-        #    telegram: '%env(TELEGRAM_DSN)%'
+            firebase: '%env(FIREBASE_DSN)%'
+            # firebase: 'null://null'
         texter_transports:
-            #firebase: 'firebase://USER:PASS@default'
-            #firebase: 'null://null'
-        #    nexmo: '%env(NEXMO_DSN)%'
-        #admin_recipients:
-            #- { email: admin@example.com }

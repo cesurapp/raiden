@@ -4,6 +4,7 @@ namespace App\Admin\Notification\Test;
 
 use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Device;
+use App\Admin\Notification\Entity\Notification;
 
 class DeviceTest extends AbstractWebTestCase
 {
@@ -45,7 +46,7 @@ class DeviceTest extends AbstractWebTestCase
         $this->assertNotNull($deviceToken);
 
         // Create Notification
-        $this->client($user)->jsonRequest('GET', '/v1/main/sendnotify');
+        $this->manager()->getRepository(Notification::class)->create($user, 'asdas', 'asdad');
 
         // Check Device
         $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);

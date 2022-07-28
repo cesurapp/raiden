@@ -1,6 +1,12 @@
 * Core -> User Management
 * Core -> UI
-* 
+* UI -> AUTH Boot
+* UI -> Notification
+* UI -> Exception
+* UI -> Permission
+* UI -> Store
+* SMS
+* EMAİL
 * 
 * * DataTable
 * -- Filters
