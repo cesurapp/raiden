@@ -125,7 +125,7 @@ class Notification implements \JsonSerializable
             'title' => $this->title,
             'message' => $this->message,
             'read' => $this->read,
-            'data' => $this->data
+            'data' => $this->data,
         ];
     }
 }
