@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Pusher\Task;
+namespace App\Admin\Core\Task;
 
 use Package\SwooleBundle\Task\TaskInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;

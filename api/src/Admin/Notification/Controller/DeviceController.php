@@ -11,6 +11,9 @@ use Package\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
+/**
+ * Firebase Cloud Messaging Device Controller.
+ */
 class DeviceController extends AbstractApiController
 {
     #[Thor(

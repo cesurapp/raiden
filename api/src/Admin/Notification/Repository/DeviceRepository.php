@@ -53,9 +53,6 @@ class DeviceRepository extends BaseRepository
      */
     public function removeDevice(string $deviceId): void
     {
-        $this->createQueryBuilder('d')
-            ->where('d.id = :id')
-            ->setParameter('id', $deviceId)
-            ->delete()->getQuery()->execute();
+        $this->remove($this->em()->getReference(Device::class, $deviceId));
     }
 }

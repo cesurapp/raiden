@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Admin\Pusher\EventListener;
+namespace App\Admin\Core\EventListener;
 
 use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Enum\OtpType;
-use App\Admin\Pusher\Task\SendMailTask;
-use App\Admin\Pusher\Task\SendSmsTask;
+use App\Admin\Core\Task\SendMailTask;
+use App\Admin\Core\Task\SendSmsTask;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;

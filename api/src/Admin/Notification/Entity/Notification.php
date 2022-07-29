@@ -117,6 +117,13 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
+    public function addClickAction(string $link): self
+    {
+        $this->data['click_action'] = $link;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         return [

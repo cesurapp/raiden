@@ -11,6 +11,7 @@ use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Exception\TransportException;
 use Symfony\Component\Notifier\Message\ChatMessage;
+use Symfony\Component\Notifier\Message\SentMessage;
 
 /**
  * Send Notification to FCM Device Task.
@@ -23,7 +24,7 @@ class NotificationTask implements TaskInterface
     ) {
     }
 
-    public function __invoke(array $data = []): bool
+    public function __invoke(array $data = []): bool|SentMessage
     {
         // Create Message
         $message = match ($data['device']['type']) {
@@ -39,12 +40,10 @@ class NotificationTask implements TaskInterface
 
         // Send Message
         try {
-            $this->chatter->send($message);
-
-            return true;
+            return $this->chatter->send($message);
         } catch (TransportException $exception) {
-            // Remove Device
             if (str_contains($exception->getMessage(), 'InvalidRegistration')) {
+                // Remove Device
                 $this->deviceRepo->removeDevice($data['device']['id']);
             }
         }
@@ -58,10 +57,10 @@ class NotificationTask implements TaskInterface
             $data['notification']['title'],
             new WebNotification(
                 $data['device']['token'],
-                [
+                array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ]
+                ], $data['notification']['data'])
             )
         );
     }
@@ -72,10 +71,10 @@ class NotificationTask implements TaskInterface
             $data['notification']['title'],
             new AndroidNotification(
                 $data['device']['token'],
-                [
+                array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ]
+                ], $data['notification']['data'])
             )
         );
     }
@@ -86,10 +85,10 @@ class NotificationTask implements TaskInterface
             $data['notification']['title'],
             new IOSNotification(
                 $data['device']['token'],
-                [
+                array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ]
+                ], $data['notification']['data'])
             )
         );
     }
