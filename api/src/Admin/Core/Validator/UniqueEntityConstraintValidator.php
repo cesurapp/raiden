@@ -22,6 +22,10 @@ class UniqueEntityConstraintValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueEntityConstraint::class);
         }
 
+        if (!$value) {
+            return;
+        }
+
         $fields = !is_array($constraint->fields) ? [$constraint->fields] : $constraint->fields;
         $criteria = [];
         foreach ($fields as $columnName => $field) {

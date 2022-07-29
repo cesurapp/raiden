@@ -218,6 +218,15 @@ class SecurityTest extends AbstractWebTestCase
         $this->assertEventFired(SecurityEvent::REGISTER);
         $this->assertJsonStructure(['message' => ['success']]);
 
+        // Register Email Duplicate
+        $this->client()->jsonRequest('POST', '/v1/auth/register', [
+            'email' => 'test@test.com',
+            'password' => '123123123',
+            'firstName' => 'Ramazan',
+            'lastName' => 'APAYDIN',
+        ]);
+        $this->isFail();
+
         // Register Phone
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'phone' => '905414053420',
@@ -229,6 +238,16 @@ class SecurityTest extends AbstractWebTestCase
         $this->isOk();
         $this->assertEventFired(SecurityEvent::REGISTER);
         $this->assertJsonStructure(['message' => ['success']]);
+
+        // Register Phone Duplicate
+        $this->client()->jsonRequest('POST', '/v1/auth/register', [
+            'phone' => '905414053420',
+            'phoneCountry' => 'TR',
+            'password' => '123123123',
+            'firstName' => 'Ramazan',
+            'lastName' => 'APAYDIN',
+        ]);
+        $this->isFail();
     }
 
     public function testConfirmPhone(): void

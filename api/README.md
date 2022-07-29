@@ -9,7 +9,7 @@
 * Thor Permission
 * Thor ShortName
 * 
-* * DataTable
+* DataTable
 * -- Filters
 * -- Excel Export
 * -- Excel Import
