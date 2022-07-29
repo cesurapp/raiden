@@ -14,7 +14,7 @@ use Symfony\Component\Notifier\Transport\Transports;
  * @param array{
  *  phone: number,
  *  country: string,
- *  message: string,
+ *  subject: string,
  * } $data
  */
 class SendSmsTask implements TaskInterface
@@ -30,7 +30,7 @@ class SendSmsTask implements TaskInterface
 
     public function __invoke(array $data = []): bool
     {
-        $sms = new SmsMessage($data['phone'], $data['message']);
+        $sms = new SmsMessage($data['phone'], $data['subject']);
         $sms->transport($this->getTransport($data['country']));
 
         // Send
