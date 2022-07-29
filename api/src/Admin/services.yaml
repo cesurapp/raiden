@@ -17,7 +17,7 @@ services:
             - './*/Exception'
             - './*/Request'
             - './*/Test'
-            - './*/Translations'
+            - './*/Translation'
 
     # JWT Token Manager
     Ahc\Jwt\JWT:
