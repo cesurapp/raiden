@@ -86,6 +86,7 @@ class ThorExtractor
                     'paginate' => $attrThor['paginate'] ?? false,
                     'requireAuth' => $attrThor['requireAuth'] ?? true,
                     'order' => $attrThor['order'] ?? 0,
+                    'roles' => $attrThor['roles'] ?? [],
 
                     // Router
                     'routerPath' => $route['router']->getPath(),

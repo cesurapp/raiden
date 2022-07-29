@@ -28,8 +28,9 @@ class NotificationController extends AbstractApiController
                 'data' => NotificationResource::class,
             ],
         ],
+        roles: ['ROLE_USER', 'ROLE_ADMIN'],
         paginate: true,
-        order: 0,
+        order: 0
     )]
     #[Route(path: '/v1/main/notification', methods: ['GET'])]
     public function list(#[CurrentUser] User $user): ApiResponse
@@ -43,7 +44,8 @@ class NotificationController extends AbstractApiController
     #[Thor(
         group: 'Notification',
         desc: 'Read Notification',
-        order: 1
+        roles: ['ROLE_USER', 'ROLE_ADMIN'],
+        order: 1,
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['PUT'])]
     public function read(#[CurrentUser] User $user, Notification $notification): ApiResponse
@@ -60,6 +62,7 @@ class NotificationController extends AbstractApiController
     #[Thor(
         group: 'Notification',
         desc: 'Delete Notification',
+        roles: ['ROLE_USER', 'ROLE_ADMIN'],
         order: 2
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]
@@ -77,6 +80,7 @@ class NotificationController extends AbstractApiController
     #[Thor(
         group: 'Notification',
         desc: 'Read All Notification',
+        roles: ['ROLE_USER', 'ROLE_ADMIN'],
         order: 3
     )]
     #[Route(path: '/v1/main/notification/read-all', methods: ['POST'])]

@@ -189,6 +189,7 @@ class SecurityController extends AbstractApiController
         request: [
             'refresh_token' => '?string',
         ],
+        roles: ['IS_AUTHENTICATED_FULLY'],
         requireAuth: true,
         order: 4
     )]

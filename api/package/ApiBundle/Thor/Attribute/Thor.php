@@ -17,6 +17,7 @@ final class Thor
         protected array $header = [],
         protected array $response = [],
         protected string $dto = '',
+        protected array $roles = [],
         protected bool $hidden = false,
         protected bool $paginate = false,
         protected bool $requireAuth = false,

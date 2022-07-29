@@ -1,13 +1,8 @@
-* Core -> User Management
-* 
 * UI -> AUTH Boot
 * UI -> Notification
 * UI -> Exception
 * UI -> Permission
 * UI -> Store
-* 
-* Thor Permission
-* Thor ShortName
 * 
 * DataTable
 * -- Filters
