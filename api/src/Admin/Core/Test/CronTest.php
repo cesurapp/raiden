@@ -42,7 +42,7 @@ class CronTest extends AbstractKernelTestCase
         // Create OTP Key
         $rf = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::LOGIN_EMAIL)
+            ->setType(OtpType::EMAIL)
             ->setOtpKey(123445)
             ->setExpiredAt(new \DateTimeImmutable('-20 minute'));
         $this->save($rf);

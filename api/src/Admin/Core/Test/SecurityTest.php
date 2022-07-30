@@ -139,7 +139,7 @@ class SecurityTest extends AbstractWebTestCase
 
         /** @var OtpKey $key */
         $key = $this->manager()->getRepository(OtpKey::class)->findOneBy([
-            'type' => OtpType::LOGIN_PHONE,
+            'type' => OtpType::PHONE,
             'owner' => $user,
         ], ['id' => 'DESC']);
 
@@ -171,7 +171,7 @@ class SecurityTest extends AbstractWebTestCase
 
         /** @var OtpKey $key */
         $key = $this->manager()->getRepository(OtpKey::class)->findOneBy([
-            'type' => OtpType::LOGIN_EMAIL,
+            'type' => OtpType::EMAIL,
             'owner' => $user,
         ], ['id' => 'DESC']);
 
@@ -264,7 +264,7 @@ class SecurityTest extends AbstractWebTestCase
 
         // OTP Key.
         $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '905414053421']);
-        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::REGISTER_PHONE);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
 
         // Failed
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
@@ -302,7 +302,7 @@ class SecurityTest extends AbstractWebTestCase
 
         // OTP Key.
         $user = $this->manager()->getRepository(User::class)->findOneBy(['email' => 'test2@test3.com']);
-        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::REGISTER_EMAIL);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
 
         // Failed
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
@@ -346,7 +346,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->assertEventFired(SecurityEvent::RESET_REQUEST);
 
         // OTP Token
-        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::RESET_PHONE);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
         $this->assertNotNull($key);
     }
 
@@ -369,7 +369,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->assertEventFired(SecurityEvent::RESET_REQUEST);
 
         // OTP Token
-        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::RESET_EMAIL);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
         $this->assertNotNull($key);
     }
 
@@ -384,7 +384,7 @@ class SecurityTest extends AbstractWebTestCase
 
         // User & Otp Key
         $user = $this->manager()->getRepository(User::class)->findOneBy(['id' => $user->getId()]);
-        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::RESET_EMAIL);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
 
         // Reset Password
         $this->client()->jsonRequest('POST', '/v1/auth/reset-password/', [

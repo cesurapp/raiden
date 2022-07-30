@@ -6,10 +6,9 @@ use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Service\MailPusher;
 use App\Admin\Core\Service\SmsPusher;
-use App\Admin\Core\Task\SendMailTask;
-use App\Admin\Core\Task\SendSmsTask;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -17,12 +16,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Send Email | SMS.
  */
-#[Autoconfigure(tags: [[
-    'name' => 'doctrine.orm.entity_listener',
-    'event' => 'postPersist',
-    'entity' => OtpKey::class,
-    'lazy' => true,
-]])]
+#[Autoconfigure(tags: [
+    [
+        'name' => 'doctrine.orm.entity_listener',
+        'event' => 'postPersist',
+        'entity' => OtpKey::class,
+        'lazy' => true,
+    ],
+])]
 class OtpKeyListener
 {
     public function __construct(
@@ -34,31 +35,28 @@ class OtpKeyListener
 
     public function postPersist(OtpKey $otpKey, LifecycleEventArgs $event): void
     {
-        match ($otpKey->getType()) {
-            OtpType::LOGIN_EMAIL => $this->sendMail($otpKey, 'ff'),
-            OtpType::REGISTER_EMAIL => $this->sendMail($otpKey, ''),
-            OtpType::RESET_EMAIL => $this->sendMail($otpKey, 'aaa'),
-            OtpType::LOGIN_PHONE => $this->sendPhone($otpKey, 'a'),
-            OtpType::REGISTER_PHONE => $this->sendPhone($otpKey, 'c'),
-            OtpType::RESET_PHONE => $this->sendPhone($otpKey, 'f'),
+        match ($otpKey->getType()->value) {
+            OtpType::EMAIL->value => $this->sendMail($otpKey),
+            OtpType::PHONE->value => $this->sendPhone($otpKey),
         };
     }
 
-    private function sendMail(OtpKey $otpKey, string $message): void
+    private function sendMail(OtpKey $otpKey): void
     {
-        $this->taskHandler->dispatch(SendMailTask::class, [
-            'subject' => 'Verification Code',
-            'message' => $this->translator->trans($message, ['%code%' => $otpKey->getOtpKey()]),
-        ]);
+        $this->mailPusher->send(
+            (new Email())
+                ->to('asdsa@asdas.com')
+                ->subject('Verification Code')
+                ->text($this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]))
+        );
     }
 
-    private function sendPhone(OtpKey $otpKey, string $message): void
+    private function sendPhone(OtpKey $otpKey): void
     {
-        $this->taskHandler->dispatch(SendSmsTask::class, [
-            'phone' => $otpKey->getOwner()->getPhone(),
-            'country' => $otpKey->getOwner()->getPhoneCountry(),
-            'title' => $this->translator->trans('Verification Code'),
-            'message' => $this->translator->trans($message, ['%code%' => $otpKey->getOtpKey()]),
-        ]);
+        $this->smsPusher
+            ->setPhone($otpKey->getOwner()->getPhone())
+            ->setCountryCode($otpKey->getOwner()->getPhoneCountry())
+            ->setSubject($this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]))
+            ->send();
     }
 }
