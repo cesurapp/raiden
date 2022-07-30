@@ -7,12 +7,10 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
 /**
- * Send Mail to Task.
+ * Send Mail Task.
  *
  * @param array{
- *  phone: number,
- *  country: string,
- *  message: string,
+ *  email: string,
  * } $data
  */
 class SendMailTask implements TaskInterface
@@ -23,13 +21,8 @@ class SendMailTask implements TaskInterface
 
     public function __invoke(array $data = []): bool
     {
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('you@example.com')
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
-
+        /** @var Email $email */
+        $email = unserialize($data['email']);
         $this->mailer->send($email);
 
         return true;
