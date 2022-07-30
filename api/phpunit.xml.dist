@@ -18,6 +18,7 @@
         <server name="APP_JWT_SECRET" value="JH12G3JH21312J3G1H2312J3G" force="true"/>
         <server name="APP_JWT_TOKEN_EXP" value="3600" force="true"/>
         <server name="APP_JWT_REFRESH_TOKEN_EXP" value="30" force="true"/>
+        <server name="MAILER_DSN" value="null://null" force="true"/>
         <!--App Environment-->
 
         <!--App Storage Test Environment-->

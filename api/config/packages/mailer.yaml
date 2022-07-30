@@ -5,4 +5,4 @@ framework:
 
         # Global FROM
         headers:
-            From: '%env(MAILER_FROM))%'
+            From: '%env(MAILER_FROM)%'

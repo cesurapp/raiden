@@ -13,7 +13,7 @@ class ClearExpiredOtpKeyCron implements CronInterface
     public const TIME = '@EveryMinute15';
     public const ENABLE = true;
 
-    public function __construct(private OtpKeyRepository $repo)
+    public function __construct(private readonly OtpKeyRepository $repo)
     {
     }
 

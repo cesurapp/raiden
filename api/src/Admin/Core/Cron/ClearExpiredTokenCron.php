@@ -13,7 +13,7 @@ class ClearExpiredTokenCron implements CronInterface
     public const TIME = '@daily';
     public const ENABLE = true;
 
-    public function __construct(private RefreshTokenRepository $repo)
+    public function __construct(private readonly RefreshTokenRepository $repo)
     {
     }
 

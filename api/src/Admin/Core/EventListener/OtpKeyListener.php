@@ -4,10 +4,11 @@ namespace App\Admin\Core\EventListener;
 
 use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Enum\OtpType;
+use App\Admin\Core\Service\MailPusher;
+use App\Admin\Core\Service\SmsPusher;
 use App\Admin\Core\Task\SendMailTask;
 use App\Admin\Core\Task\SendSmsTask;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -25,7 +26,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class OtpKeyListener
 {
     public function __construct(
-        private readonly TaskHandler $taskHandler,
+        private readonly SmsPusher $smsPusher,
+        private readonly MailPusher $mailPusher,
         private readonly TranslatorInterface $translator
     ) {
     }
