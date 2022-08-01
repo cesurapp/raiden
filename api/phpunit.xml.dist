@@ -19,6 +19,7 @@
         <server name="APP_JWT_TOKEN_EXP" value="3600" force="true"/>
         <server name="APP_JWT_REFRESH_TOKEN_EXP" value="30" force="true"/>
         <server name="MAILER_DSN" value="null://null" force="true"/>
+        <server name="FIREBASE_DSN" value="firebase://AAAAx-ayxu4:APA91bE-VLrdSBsQBBpSae_v6W4SalSDfDVg2-V9fPT9X8m7ehzl-tj18ZH9etCGw6uiA5sXsfLy-u33FfzCY5c9W24fgc-WnL51v4omaqEk_Rg44hcRCS9QQ_fIOu5EOryyRoQiIFiU@default" force="true"/>
         <!--App Environment-->
 
         <!--App Storage Test Environment-->

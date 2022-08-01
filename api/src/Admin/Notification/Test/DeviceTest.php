@@ -78,7 +78,6 @@ class DeviceTest extends AbstractWebTestCase
         $pusher->send($pusher->create('Title', 'Message', user: $user));
 
         // Check Device
-        $this->manager()->clear();
         $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
         $this->assertNull($deviceToken);
     }
