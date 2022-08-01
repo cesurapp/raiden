@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
-class Notification
+class Notification implements \JsonSerializable
 {
     use OwnerRemovalTrait;
 
@@ -31,7 +31,10 @@ class Notification
     private ?string $message = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $read = false;
+    private ?bool $readed = false;
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $data = [];
 
     public function getId(): ?Ulid
     {
@@ -74,15 +77,62 @@ class Notification
         return $this;
     }
 
-    public function isRead(): ?bool
+    public function isReaded(): ?bool
     {
-        return $this->read;
+        return $this->readed;
     }
 
-    public function setRead(bool $read): self
+    public function setReaded(bool $readed): self
     {
-        $this->read = $read;
+        $this->readed = $readed;
 
         return $this;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    public function addData(string $key, string|int|bool $value): self
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
+    public function removeData(string $key): self
+    {
+        if (array_key_exists($key, $this->data)) {
+            unset($this->data[$key]);
+        }
+
+        return $this;
+    }
+
+    public function setData(array $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function addClickAction(string $link): self
+    {
+        $this->data['click_action'] = $link;
+
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->id->toBase32(),
+            'type' => $this->type->value,
+            'title' => $this->title,
+            'message' => $this->message,
+            'readed' => $this->readed,
+            'data' => $this->data,
+        ];
     }
 }

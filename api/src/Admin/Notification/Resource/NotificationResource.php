@@ -16,7 +16,8 @@ class NotificationResource implements ApiResourceInterface
         'type' => 'string',
         'title' => 'string',
         'message' => 'string',
-        'read' => 'boolean',
+        'readed' => 'boolean',
+        'data' => 'array',
         'createdAt' => 'datetime',
     ])]
     public function toArray(object $item): array
@@ -26,7 +27,8 @@ class NotificationResource implements ApiResourceInterface
             'type' => $item->getType()->value,
             'title' => $item->getTitle(),
             'message' => $item->getMessage(),
-            'read' => $item->isRead(),
+            'readed' => $item->isReaded(),
+            'data' => $item->getData(),
             'createdAt' => $item->getId()->getDateTime(),
         ];
     }

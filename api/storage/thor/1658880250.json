@@ -1,0 +1,760 @@
+{
+    "Security": {
+        "2": {
+            "path": "\/v1\/auth\/login",
+            "shortController": "Security",
+            "shortName": "securityLogin",
+            "group": "Security",
+            "groupDesc": "Global",
+            "groupOrder": "1",
+            "desc": "Login - User & Password",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 0,
+            "routerPath": "\/v1\/auth\/login",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::login",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 67,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string",
+                "password": "string"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "user": {
+                        "id": "string",
+                        "type": "string",
+                        "email": "string",
+                        "email_approved": "boolean",
+                        "phone": "int",
+                        "phone_country": "string",
+                        "phone_approved": "boolean",
+                        "approved": "boolean",
+                        "roles": "array",
+                        "language": "string",
+                        "first_name": "string",
+                        "last_name": "string",
+                        "meta": "array"
+                    },
+                    "token": "string",
+                    "refresh_token": "string"
+                }
+            },
+            "exception": {
+                "BadCredentialsException": {
+                    "type": "BadCredentialsException",
+                    "code": 400,
+                    "message": "Invalid credentials."
+                },
+                "TokenExpiredException": {
+                    "type": "TokenExpiredException",
+                    "code": 403,
+                    "message": "Token expired!"
+                },
+                "AccessDeniedException": {
+                    "type": "AccessDeniedException",
+                    "code": 403,
+                    "message": "Access Denied."
+                }
+            }
+        },
+        "6": {
+            "path": "\/v1\/auth\/refresh-token",
+            "shortController": "Security",
+            "shortName": "securityRefreshToken",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Login - Refresh Token",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 1,
+            "routerPath": "\/v1\/auth\/refresh-token",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::refreshToken",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 102,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "refresh_token": "string"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "token": "string"
+                }
+            },
+            "exception": {
+                "RefreshTokenExpiredException": {
+                    "type": "RefreshTokenExpiredException",
+                    "code": 403,
+                    "message": "Refresh token expired!"
+                }
+            }
+        },
+        "4": {
+            "path": "\/v1\/auth\/login-otp",
+            "shortController": "Security",
+            "shortName": "securityLoginOtpRequest",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Login - Generate OTP key",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 2,
+            "routerPath": "\/v1\/auth\/login-otp",
+            "routerMethod": [
+                "PUT"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::loginOtpRequest",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 135,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string|int;UsernameConstraint|NotNull",
+                "otp_key": "int;Length(min=6, max=6)|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": {
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        },
+        "3": {
+            "path": "\/v1\/auth\/login-otp",
+            "shortController": "Security",
+            "shortName": "securityLoginOtp",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Login - Using OTP Key",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 3,
+            "routerPath": "\/v1\/auth\/login-otp",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::loginOtp",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 167,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string|int;UsernameConstraint|NotNull",
+                "otp_key": "int;Length(min=6, max=6)|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "user": {
+                        "id": "string",
+                        "type": "string",
+                        "email": "string",
+                        "email_approved": "boolean",
+                        "phone": "int",
+                        "phone_country": "string",
+                        "phone_approved": "boolean",
+                        "approved": "boolean",
+                        "roles": "array",
+                        "language": "string",
+                        "first_name": "string",
+                        "last_name": "string",
+                        "meta": "array"
+                    },
+                    "token": "string",
+                    "refresh_token": "string"
+                }
+            },
+            "exception": {
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        },
+        "5": {
+            "path": "\/v1\/auth\/logout",
+            "shortController": "Security",
+            "shortName": "securityLogout",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Logout",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 4,
+            "routerPath": "\/v1\/auth\/logout",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::logout",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 195,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "refresh_token": "?string"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        },
+        "7": {
+            "path": "\/v1\/auth\/register",
+            "shortController": "Security",
+            "shortName": "securityRegister",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Register - New Account",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 5,
+            "routerPath": "\/v1\/auth\/register",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::register",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 219,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "email": "?string;Length(max=180)|Email",
+                "phoneCountry": "?string;Country",
+                "phone": "?int;PhoneNumber(regionPath=phoneCountry)|Type(0=numeric)",
+                "type": "?string;NotNull|Choice(callback=getTypes)",
+                "password": "string;Length(min=8)|NotNull",
+                "firstName": "string;Length(min=2, max=50)|NotNull",
+                "lastName": "string;Length(min=2, max=50)|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "data": {
+                        "id": "string",
+                        "type": "string",
+                        "email": "string",
+                        "email_approved": "boolean",
+                        "phone": "int",
+                        "phone_country": "string",
+                        "phone_approved": "boolean",
+                        "approved": "boolean",
+                        "roles": "array",
+                        "language": "string",
+                        "first_name": "string",
+                        "last_name": "string",
+                        "meta": "array"
+                    },
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": {
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        },
+        "1": {
+            "path": "\/v1\/auth\/approve",
+            "shortController": "Security",
+            "shortName": "securityApprove",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Register - Phone & Email Approve",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 6,
+            "routerPath": "\/v1\/auth\/approve",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::approve",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 246,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string|int;UsernameConstraint|NotNull",
+                "otp_key": "int;Length(min=6, max=6)|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": {
+                "NotFoundHttpException": {
+                    "type": "NotFoundHttpException",
+                    "code": 404,
+                    "message": ""
+                },
+                "BadCredentialsException": {
+                    "type": "BadCredentialsException",
+                    "code": 400,
+                    "message": "Invalid credentials."
+                },
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        },
+        "9": {
+            "path": "\/v1\/auth\/reset-request",
+            "shortController": "Security",
+            "shortName": "securityResetRequest",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Forgot Password - Reset Request",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 7,
+            "routerPath": "\/v1\/auth\/reset-request",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::resetRequest",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 271,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string|int;UsernameConstraint|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": {
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        },
+        "8": {
+            "path": "\/v1\/auth\/reset-password\/",
+            "shortController": "Security",
+            "shortName": "securityResetPassword",
+            "group": "Security",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Forgot Password - Change Password",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": false,
+            "order": 8,
+            "routerPath": "\/v1\/auth\/reset-password\/",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\SecurityController::resetPassword",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/SecurityController.php",
+            "controllerLine": 294,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": {
+                "username": "string|int;UsernameConstraint|NotNull",
+                "otp_key": "int;Length(min=6, max=6)|NotNull",
+                "password": "string;Length(min=8, max=50)|NotNull",
+                "password_confirm": "string;Length(min=8, max=50)|EqualTo(propertyPath=password)|NotNull"
+            },
+            "header": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": {
+                "403": {
+                    "type": "ValidationException",
+                    "code": 403,
+                    "message": "Validation failed",
+                    "errors": []
+                }
+            }
+        }
+    },
+    "Notification": {
+        "10": {
+            "path": "\/v1\/main\/notification",
+            "shortController": "Notification",
+            "shortName": "notificationList",
+            "group": "Notification",
+            "groupDesc": "Global Notification",
+            "groupOrder": "2",
+            "desc": "List Notification",
+            "hidden": false,
+            "paginate": true,
+            "requireAuth": true,
+            "order": 0,
+            "routerPath": "\/v1\/main\/notification",
+            "routerMethod": [
+                "GET"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Notification\\Controller\\NotificationController::list",
+            "controllerPath": "\/src\/Admin\/Notification\/Controller\/NotificationController.php",
+            "controllerLine": 65,
+            "controllerResponseType": "ApiResponse",
+            "query": {
+                "page": "int"
+            },
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "data": [
+                        {
+                            "id": "string",
+                            "type": "string",
+                            "title": "string",
+                            "message": "string",
+                            "read": "boolean",
+                            "createdAt": "datetime"
+                        }
+                    ],
+                    "pager": {
+                        "max": "int",
+                        "current": "int",
+                        "prev": "?int",
+                        "next": "?int",
+                        "total": "?int"
+                    }
+                }
+            },
+            "exception": []
+        },
+        "13": {
+            "path": "\/v1\/main\/notification\/{id}",
+            "shortController": "Notification",
+            "shortName": "notificationRead",
+            "group": "Notification",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Read Notification",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 1,
+            "routerPath": "\/v1\/main\/notification\/{id}",
+            "routerMethod": [
+                "PUT"
+            ],
+            "routerAttr": {
+                "id": "?Symfony\\Component\\Uid\\Ulid"
+            },
+            "controller": "App\\Admin\\Notification\\Controller\\NotificationController::read",
+            "controllerPath": "\/src\/Admin\/Notification\/Controller\/NotificationController.php",
+            "controllerLine": 79,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        },
+        "12": {
+            "path": "\/v1\/main\/notification\/{id}",
+            "shortController": "Notification",
+            "shortName": "notificationDelete",
+            "group": "Notification",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Delete Notification",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 2,
+            "routerPath": "\/v1\/main\/notification\/{id}",
+            "routerMethod": [
+                "DELETE"
+            ],
+            "routerAttr": {
+                "id": "?Symfony\\Component\\Uid\\Ulid"
+            },
+            "controller": "App\\Admin\\Notification\\Controller\\NotificationController::delete",
+            "controllerPath": "\/src\/Admin\/Notification\/Controller\/NotificationController.php",
+            "controllerLine": 96,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        },
+        "11": {
+            "path": "\/v1\/main\/notification\/read-all",
+            "shortController": "Notification",
+            "shortName": "notificationReadAll",
+            "group": "Notification",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Read All Notification",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 3,
+            "routerPath": "\/v1\/main\/notification\/read-all",
+            "routerMethod": [
+                "POST"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Notification\\Controller\\NotificationController::readAll",
+            "controllerPath": "\/src\/Admin\/Notification\/Controller\/NotificationController.php",
+            "controllerLine": 113,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        }
+    },
+    "Profile": {
+        "0": {
+            "path": "\/v1\/admin\/profile",
+            "shortController": "Account",
+            "shortName": "accountMe",
+            "group": "Profile",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Admin Profile Details",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 0,
+            "routerPath": "\/v1\/admin\/profile",
+            "routerMethod": [
+                "GET"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\AccountController::me",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/AccountController.php",
+            "controllerLine": 24,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        },
+        "14": {
+            "path": "\/v1\/profile",
+            "shortController": "Account",
+            "shortName": "accountGetProfile",
+            "group": "Profile",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "Profile Details",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 0,
+            "routerPath": "\/v1\/profile",
+            "routerMethod": [
+                "GET"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Core\\Controller\\AccountController::getProfile",
+            "controllerPath": "\/src\/Admin\/Core\/Controller\/AccountController.php",
+            "controllerLine": 17,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        }
+    },
+    "V1": {
+        "15": {
+            "path": "\/v1\/sendnotify",
+            "shortController": "Notification",
+            "shortName": "notificationTestapp",
+            "group": "",
+            "groupDesc": "",
+            "groupOrder": null,
+            "desc": "",
+            "hidden": false,
+            "paginate": false,
+            "requireAuth": true,
+            "order": 0,
+            "routerPath": "\/v1\/sendnotify",
+            "routerMethod": [
+                "GET"
+            ],
+            "routerAttr": [],
+            "controller": "App\\Admin\\Notification\\Controller\\NotificationController::testapp",
+            "controllerPath": "\/src\/Admin\/Notification\/Controller\/NotificationController.php",
+            "controllerLine": 27,
+            "controllerResponseType": "ApiResponse",
+            "query": [],
+            "request": [],
+            "header": {
+                "Content-Type": "application\/json",
+                "Authorization": "Bearer %Token%",
+                "Accept": "application\/json"
+            },
+            "response": {
+                "200": {
+                    "message": {
+                        "success": "?array"
+                    }
+                }
+            },
+            "exception": []
+        }
+    }
+}

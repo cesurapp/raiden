@@ -5,6 +5,8 @@ namespace Package\SwooleBundle\DependencyInjection;
 use Package\SwooleBundle\Adapter\SwooleCacheAdapter;
 use Package\SwooleBundle\Adapter\SwooleCacheFactory;
 use Package\SwooleBundle\Log\Logger;
+use Package\SwooleBundle\Task\TaskHandler;
+use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -39,4 +41,12 @@ return static function (ContainerConfigurator $container) {
             '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
             '$stdin' => '%env(APP_LOG_STDIN)%',
         ]);
+
+    // Task Handler
+    $taskHandler = $services->set(TaskHandler::class, TaskHandler::class);
+    if ('test' === $container->env()) {
+        $taskHandler->args([
+            '$worker' => $services->get(TaskWorker::class),
+        ]);
+    }
 };

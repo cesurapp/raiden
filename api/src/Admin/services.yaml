@@ -6,26 +6,6 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-    # JWT Token Manager
-    Ahc\Jwt\JWT:
-        arguments:
-            $key: "%env(APP_JWT_SECRET)%"
-            $algo: 'HS256'
-            $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
-        public: true
-
-    ##
-    # Pusher Channel Services
-    ##
-    # OTP KEY Listener
-    App\Admin\Pusher\EventListener\OtpKeyListener:
-        tags:
-            - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Core\Entity\OtpKey', lazy: true }
-    # Notification Listener
-    App\Admin\Pusher\EventListener\NotificationListener:
-        tags:
-            - { name: doctrine.orm.entity_listener, event: 'postPersist', entity: 'App\Admin\Notification\Entity\Notification', lazy: true }
-
     # Services All Modules
     App\Admin\:
         resource: './'
@@ -37,4 +17,12 @@ services:
             - './*/Exception'
             - './*/Request'
             - './*/Test'
-            - './*/Translations'
+            - './*/Translation'
+
+    # JWT Token Manager
+    Ahc\Jwt\JWT:
+        arguments:
+            $key: "%env(APP_JWT_SECRET)%"
+            $algo: 'HS256'
+            $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
+        public: true

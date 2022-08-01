@@ -62,11 +62,11 @@ class UserRepository extends BaseRepository implements PasswordUpgraderInterface
      */
     public function approve(User $user, OtpKey $otpKey): void
     {
-        if (OtpType::REGISTER_EMAIL === $otpKey->getType()) {
+        if (OtpType::EMAIL === $otpKey->getType()) {
             $user->setEmailApproved(true);
         }
 
-        if (OtpType::REGISTER_PHONE === $otpKey->getType()) {
+        if (OtpType::PHONE === $otpKey->getType()) {
             $user->setPhoneApproved(true);
         }
 

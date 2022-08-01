@@ -23,7 +23,9 @@ class TaskListCommand extends Command
 
         if (iterator_count($this->taskWorker->getAll())) {
             $tasks = array_map(static fn ($cron) => get_class($cron), [...$this->taskWorker->getAll()]);
-            $output->table(['Task Service'], [[...$tasks]]);
+            $output->table(['Task Service'], [
+                ...array_map(static fn ($t) => [$t], $tasks),
+            ]);
         } else {
             $output->warning('Task not found!');
         }

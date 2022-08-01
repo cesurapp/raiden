@@ -4,9 +4,18 @@ namespace Package\SwooleBundle\Task;
 
 class TaskHandler
 {
-    public static function dispatch(TaskInterface|string $task, mixed $payload = null): void
+    public function __construct(private readonly ?TaskWorker $worker = null)
+    {
+    }
+
+    public function dispatch(TaskInterface|string $task, mixed $payload = null): void
     {
         if ('test' === $_SERVER['APP_ENV']) {
+            $this->worker->handle([
+                'class' => is_string($task) ? $task : get_class($task),
+                'payload' => $payload,
+            ]);
+
             return;
         }
 

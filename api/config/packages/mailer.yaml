@@ -1,0 +1,8 @@
+framework:
+    mailer:
+        # DSN
+        dsn: '%env(MAILER_DSN)%'
+
+        # Global FROM
+        headers:
+            From: '%env(MAILER_FROM)%'

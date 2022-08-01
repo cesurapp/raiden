@@ -196,6 +196,14 @@
                                                 <a class="auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
                                             </div>
                                         <?php } ?>
+                                        <?php if ($route['roles']) { ?>
+                                            <div class="method clear">
+                                                <a class="auth bg-info" data-bs-toggle="tooltip" title="Access Roles <?php echo implode(',', $route['roles']) ?>"><i class="fa-solid fa-shield"></i></a>
+                                            </div>
+                                        <?php } ?>
+                                        <div class="method clear">
+                                            <a class="auth bg-secondary" data-bs-toggle="tooltip" title="Api Client Method <?php echo $route['shortName'] ?>()"><i class="fa-solid fa-code"></i></a>
+                                        </div>
                                         <span><?php echo $route['controllerResponseType']; ?></span>
                                     </button>
                                 </h3>
@@ -278,7 +286,7 @@
                                                                 <?php if (is_array($type)) { ?>
                                                                     <code><pre class="mb-0"><?php echo json_encode($type, JSON_PRETTY_PRINT); ?></pre></code>
                                                                 <?php } else { ?>
-                                                                    <code><?php echo $type; ?></code>
+                                                                    <code><?php echo urldecode($type); ?></code>
                                                                 <?php } ?>
                                                             </div>
                                                         <?php } ?>

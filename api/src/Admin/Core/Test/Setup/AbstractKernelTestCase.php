@@ -5,6 +5,8 @@ namespace App\Admin\Core\Test\Setup;
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Package\SwooleBundle\Task\TaskWorker;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -57,7 +59,11 @@ abstract class AbstractKernelTestCase extends KernelTestCase
             $content = $this->json();
         }
 
-        $this->assertCount($count, $key ? $content[$key] : $content, "Failed to assert that the response count matched the expected {$count}");
+        $this->assertCount(
+            $count,
+            $key ? $content[$key] : $content,
+            "Failed to assert that the response count matched the expected {$count}"
+        );
 
         return $this;
     }
@@ -168,5 +174,19 @@ abstract class AbstractKernelTestCase extends KernelTestCase
         $this->manager()->flush();
 
         return $object;
+    }
+
+    public function mockTaskWorker(callable $returnCallback): TaskWorker|MockObject
+    {
+        $worker = $this->getMockBuilder(TaskWorker::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $worker->method('handle')
+            ->willReturnCallback($returnCallback);
+
+        self::getContainer()->set(TaskWorker::class, $worker);
+
+        return $worker;
     }
 }

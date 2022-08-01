@@ -72,7 +72,7 @@ export default defineComponent({
         })
       )
 
-      this.$refs.form.validate().then(success => {
+      this.$refs.form.validate().then((success: any) => {
         if (success) {
         }
       })

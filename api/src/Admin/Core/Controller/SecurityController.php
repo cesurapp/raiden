@@ -144,7 +144,7 @@ class SecurityController extends AbstractApiController
         }
 
         // Create OTP Key
-        $otpKeyRepo->create($user, OtpType::LOGIN);
+        $otpKeyRepo->create($user, is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL);
 
         return ApiResponse::create()->addMessage('Operation successful.');
     }
@@ -175,7 +175,8 @@ class SecurityController extends AbstractApiController
             throw $this->createNotFoundException('User not found!');
         }
 
-        if (!$otpRepo->check($user, OtpType::LOGIN, $otpDto->validated('otp_key'))) {
+        $type = is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
+        if (!$otpRepo->check($user, $type, $otpDto->validated('otp_key'))) {
             throw new BadCredentialsException('Wrong OTP key!', 403);
         }
 
@@ -188,6 +189,7 @@ class SecurityController extends AbstractApiController
         request: [
             'refresh_token' => '?string',
         ],
+        roles: ['IS_AUTHENTICATED_FULLY'],
         requireAuth: true,
         order: 4
     )]
@@ -250,7 +252,7 @@ class SecurityController extends AbstractApiController
         }
 
         // Check
-        if (!$otp = $otpRepo->check($user, [OtpType::REGISTER_PHONE, OtpType::REGISTER_EMAIL], $dto->validated('otp_key'))) {
+        if (!$otp = $otpRepo->check($user, [OtpType::PHONE, OtpType::EMAIL], $dto->validated('otp_key'))) {
             throw $this->createAccessDeniedException('Wrong OTP key!');
         }
 
@@ -275,7 +277,8 @@ class SecurityController extends AbstractApiController
         }
 
         // Create OTP Key
-        $otpRepo->create($user, OtpType::RESETTING, 60);
+        $type = is_numeric($usernameDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
+        $otpRepo->create($user, $type, 60);
 
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_REQUEST);
@@ -298,7 +301,8 @@ class SecurityController extends AbstractApiController
         }
 
         // Check
-        if (!$otpRepo->check($user, OtpType::RESETTING, $dto->validated('otp_key'))) {
+        $type = is_numeric($dto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
+        if (!$otpRepo->check($user, $type, $dto->validated('otp_key'))) {
             throw $this->createAccessDeniedException('Wrong OTP key!');
         }
 

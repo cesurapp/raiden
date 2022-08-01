@@ -296,11 +296,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $otpRepo = $event->getEntityManager()->getRepository(OtpKey::class);
 
         if (!$this->isEmailApproved() && $this->getEmail()) {
-            $otpRepo->create($this, OtpType::REGISTER_EMAIL);
+            $otpRepo->create($this, OtpType::EMAIL);
         }
 
         if (!$this->isPhoneApproved() && $this->getPhone()) {
-            $otpRepo->create($this, OtpType::REGISTER_PHONE);
+            $otpRepo->create($this, OtpType::PHONE);
         }
     }
 
