@@ -1,7 +1,7 @@
 import {boot} from 'quasar/wrappers'
 import {initializeApp} from 'firebase/app';
 import {getMessaging, onMessage, getToken} from 'firebase/messaging';
-import {Notify} from 'quasar'
+import {notifyShow} from '../helper/NotifyHelper';
 
 /**
  * Save FCM Token to Server
@@ -24,45 +24,28 @@ function registerFirebaseApp() {
     measurementId: "G-KW1YHX0979"
   });
   const fbMessaging = getMessaging(fbApp);
-  const convertMessageType = function (type) {
-    switch (type) {
-      case 'danger':
-        return 'negative';
-      case 'error':
-        return 'negative';
-      case 'success':
-        return 'positive';
-    }
 
-    return type || 'positive';
-  }
 
   // Receive Message Create Notify
   onMessage(fbMessaging, (payload) => {
-    const opts: object = {
-      type: convertMessageType(payload.data?.type),
-      caption: payload.notification?.title,
-      message: payload.notification?.body,
-      timeout: 3000,
-      position: 'top',
-      progress: true,
-    };
+    const options: object = {};
 
-    // Append Link
     if (payload.fcmOptions?.link) {
-      opts['actions'] = [
-        {
-          label: 'Open',
-          color: 'white',
-          handler: () => {
-            console.log('asd');
-          }
+      options['actions'] = [{
+        label: 'Open',
+        color: 'white',
+        handler: () => {
+          console.log('asd');
         }
-      ]
+      }]
     }
 
-    // Notify
-    Notify.create(opts);
+    notifyShow(
+      payload.notification?.body,
+      payload.notification?.title,
+      payload.data?.type,
+      options
+    );
   });
 
   // Get Token

@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 import {createMetaMixin} from 'quasar';
 
