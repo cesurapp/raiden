@@ -29,9 +29,10 @@ import type { NotificationListQuery } from './Query/NotificationListQuery';
 import type { NotificationReadResponse } from './Response/NotificationReadResponse';
 import type { NotificationDeleteResponse } from './Response/NotificationDeleteResponse';
 import type { NotificationReadAllResponse } from './Response/NotificationReadAllResponse';
+import type { DeviceRegisterResponse } from './Response/DeviceRegisterResponse';
+import type { DeviceRegisterRequest } from './Request/DeviceRegisterRequest';
 import type { AccountMeResponse } from './Response/AccountMeResponse';
 import type { AccountGetProfileResponse } from './Response/AccountGetProfileResponse';
-import type { NotificationTestappResponse } from './Response/NotificationTestappResponse';
 
 export default class Api {
   constructor(private client: AxiosInstance) {}
@@ -88,16 +89,16 @@ export default class Api {
     return this.rq('POST', '/v1/main/notification/read-all', config, null)
   }
 
+  async deviceRegister(request?: DeviceRegisterRequest, config: AxiosRequestConfig = {}): Promise<DeviceRegisterResponse> {
+    return this.rq('POST', '/v1/main/notification/fcm-register', config, request)
+  }
+
   async accountMe(config: AxiosRequestConfig = {}): Promise<AccountMeResponse> {
     return this.rq('GET', '/v1/admin/profile', config, null)
   }
 
   async accountGetProfile(config: AxiosRequestConfig = {}): Promise<AccountGetProfileResponse> {
     return this.rq('GET', '/v1/profile', config, null)
-  }
-
-  async notificationTestapp(config: AxiosRequestConfig = {}): Promise<NotificationTestappResponse> {
-    return this.rq('GET', '/v1/sendnotify', config, null)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

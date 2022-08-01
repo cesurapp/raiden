@@ -3,9 +3,9 @@
 
 import type { AxiosResponse } from 'axios';
 
-interface NotificationTestappResponse200 {
+interface DeviceRegisterResponse200 {
   message?: {
     success?: Array<string|number|boolean>
   }
 }
-export type NotificationTestappResponse = AxiosResponse<NotificationTestappResponse200>;
+export type DeviceRegisterResponse = AxiosResponse<DeviceRegisterResponse200>;

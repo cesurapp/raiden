@@ -10,7 +10,8 @@ interface NotificationListResponse200 {
       type: string,
       title: string,
       message: string,
-      read: boolean,
+      readed: boolean,
+      data: Array<string|number|boolean>,
       createdAt: string
     }
   ],
