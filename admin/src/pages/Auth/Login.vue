@@ -43,6 +43,7 @@
 import {defineComponent} from 'vue'
 import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 import {createMetaMixin} from 'quasar';
+import {useAuthStore} from "stores/AuthStore";
 
 export default defineComponent({
   name: 'AuthLogin',
@@ -65,15 +66,9 @@ export default defineComponent({
   },
   methods: {
     onSubmit() {
-      console.log(
-        this.$api.securityLogin({
-          username: this.username,
-          password: this.password
-        })
-      )
-
       this.$refs.form.validate().then((success: any) => {
         if (success) {
+          useAuthStore().loginUsername(this.username, this.password);
         }
       })
     }
