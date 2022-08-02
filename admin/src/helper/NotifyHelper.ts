@@ -13,10 +13,10 @@ const convertMessageType = function (type) {
   return type || 'positive';
 }
 
-function notifyShow(message?: string, title?: string, type?: string, options: object = {}) {
+function notifyShow(message?: string, caption?: string, type?: string, options: object = {}) {
   const opts: object = {
     type: convertMessageType(type),
-    caption: title,
+    caption: caption,
     message: message,
     timeout: 3500,
     position: 'top',
@@ -29,20 +29,20 @@ function notifyShow(message?: string, title?: string, type?: string, options: ob
   });
 }
 
-function notifyWarning(message?: string, title?: string, options: object = {}) {
-  notifyShow(message, title, 'warning', options);
+function notifyWarning(message?: string, caption?: string, options: object = {}) {
+  notifyShow(message, caption, 'warning', options);
 }
 
-function notifyInfo(message?: string, title?: string, options: object = {}) {
-  notifyShow(message, title, 'info', options);
+function notifyInfo(message?: string, caption?: string, options: object = {}) {
+  notifyShow(message, caption, 'info', options);
 }
 
-function notifyDanger(message?: string, title?: string, options: object = {}) {
-  notifyShow(message, title, 'danger', options);
+function notifyDanger(message?: string, caption?: string, options: object = {}) {
+  notifyShow(message, caption, 'danger', options);
 }
 
-function notifySuccess(message?: string, title?: string, options: object = {}) {
-  notifyShow(message, title, 'success', options);
+function notifySuccess(message?: string, caption?: string, options: object = {}) {
+  notifyShow(message, caption, 'success', options);
 }
 
 export {

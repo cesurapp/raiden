@@ -18,6 +18,8 @@ export const useAuthStore = defineStore('auth', {
         LocalStorage.set('app-user', r.data.user);
         LocalStorage.set('app-token', r.data.token);
         SessionStorage.set('app-refresh-token', r.data.refresh_token);
+
+        this.router.push({path: '/'});
       })
     },
     async loginRefreshToken() {
@@ -35,6 +37,8 @@ export const useAuthStore = defineStore('auth', {
       LocalStorage.remove('app-user');
       LocalStorage.remove('app-token');
       SessionStorage.remove('app-refresh-token');
+
+      this.router.push({name: 'auth.login'});
     },
     isLoggedIn(): boolean {
       return this.token && this.user;
@@ -43,8 +47,15 @@ export const useAuthStore = defineStore('auth', {
       this.user = user;
       LocalStorage.set('app-user', user);
     },
-    hasGranted(role: string): boolean {
+    hasGranted(role: string|Array<any>): boolean {
+      if (Array.isArray(role)) {
+        return role.every(r => this.user.roles.indexOf(r) !== -1)
+      }
+
       return this.user.roles.includes(role);
+    },
+    hasType(type: Array<any>): boolean {
+      return type.includes(this.user.type);
     },
   },
 });

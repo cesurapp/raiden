@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'user:role', description: 'Change User Role')]
 class UserRoleCommand extends Command
 {
-    public function __construct(private UserRepository $userRepo, private PermissionManager $permissions)
+    public function __construct(private readonly UserRepository $userRepo, private readonly PermissionManager $permissions)
     {
         parent::__construct();
     }
