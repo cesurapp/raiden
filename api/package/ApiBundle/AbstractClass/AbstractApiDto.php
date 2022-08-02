@@ -17,13 +17,19 @@ abstract class AbstractApiDto
 
     protected array $validated = [];
 
+    protected array $requested = [];
+
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
         // Set Parameters
         $fields = [...$this->request->query->all(), ...$this->request->request->all(), ...$this->request->files->all()];
         foreach ($fields as $field => $value) {
             if (property_exists($this, (string) $field)) {
-                $this->$field = $value;
+                if (null !== $value) {
+                    $this->$field = is_numeric($value) ? (int) $value : $value;
+                } else {
+                    $this->$field = '';
+                }
             }
         }
 

@@ -21,7 +21,7 @@
         </template>
       </q-input>
       <!--FirstName-->
-      <q-input outlined v-model="phone" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="firstName" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
       <!--LastName-->
@@ -62,7 +62,16 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success) => {
         if (success) {
-
+          this.$api.securityRegister({
+            password: this.password,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            phone: this.phone,
+            phoneCountry: 'TR',
+          }).then((r) => {
+            console.log(r.data)
+          })
         }
       })
     }

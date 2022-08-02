@@ -3,19 +3,19 @@
     <!--Header-->
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" @click="leftDrawerOpen = !leftDrawerOpen"/>
+        <q-btn flat dense round icon="menu" size="md" @click="leftDrawerOpen = !leftDrawerOpen"/>
         <q-toolbar-title>Quasar App</q-toolbar-title>
 
         <!--Right-->
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
           <!-- Notification Menu-->
-          <q-btn dense flat round icon="notifications">
+          <q-btn dense flat round icon="notifications" size="md">
             <q-tooltip>Notifications</q-tooltip>
             <q-badge color="red" text-color="white" floating>2</q-badge>
           </q-btn>
 
           <!-- Profile Menu-->
-          <q-btn dense flat round icon="account_circle">
+          <q-btn dense flat round icon="account_circle" size="md">
             <q-tooltip>Account</q-tooltip>
             <q-menu fit anchor="bottom end" self="top end">
               <q-list>
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
 import {useAuthStore} from "stores/AuthStore";
 
 export default defineComponent({

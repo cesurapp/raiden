@@ -55,8 +55,8 @@ export default defineComponent({
   data() {
     return {
       isPwd: true,
-      username: 'demo@demo.com',
-      password: '123123123',
+      username: null,
+      password: null,
     }
   },
   computed: {
