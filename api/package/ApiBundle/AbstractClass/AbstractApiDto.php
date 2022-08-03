@@ -32,11 +32,6 @@ abstract class AbstractApiDto
         $fields = [...$this->request->query->all(), ...$this->request->request->all(), ...$this->request->files->all()];
         foreach ($fields as $field => $value) {
             if (property_exists($this, $field)) {
-                /*if (null === $value) {
-                    $this->$field = '';
-                    continue;
-                }*/
-
                 try {
                     $this->$field = is_numeric($value) ? (int) $value : $value;
                 } catch (\TypeError $exception) {
