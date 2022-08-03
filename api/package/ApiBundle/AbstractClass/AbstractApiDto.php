@@ -4,6 +4,9 @@ namespace Package\ApiBundle\AbstractClass;
 
 use Package\ApiBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -17,18 +20,34 @@ abstract class AbstractApiDto
 
     protected array $validated = [];
 
-    protected array $requested = [];
+    protected ConstraintViolationListInterface $constraints;
+
+    protected array $exclude = ['request', 'validator', 'auto', 'validationGroup', 'validated', 'exclude', 'constraints'];
 
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
+        $this->constraints = new ConstraintViolationList();
+
         // Set Parameters
         $fields = [...$this->request->query->all(), ...$this->request->request->all(), ...$this->request->files->all()];
         foreach ($fields as $field => $value) {
-            if (property_exists($this, (string) $field)) {
-                if (null !== $value) {
-                    $this->$field = is_numeric($value) ? (int) $value : $value;
-                } else {
+            if (property_exists($this, $field)) {
+                /*if (null === $value) {
                     $this->$field = '';
+                    continue;
+                }*/
+
+                try {
+                    $this->$field = is_numeric($value) ? (int) $value : $value;
+                } catch (\TypeError $exception) {
+                    $this->constraints->add(new ConstraintViolation(
+                        'The type of this value is incorrect.',
+                        'The type of this value is incorrect.',
+                        [],
+                        $this,
+                        $field,
+                        $value,
+                    ));
                 }
             }
         }
@@ -51,6 +70,7 @@ abstract class AbstractApiDto
 
         // Validate
         $constraints = $this->validator->validate($this, groups: $this->validationGroup);
+        $constraints->addAll($this->constraints);
         if ($constraints->count()) {
             if (!$throw) {
                 return false;
@@ -71,9 +91,7 @@ abstract class AbstractApiDto
     final public function validated(?string $key = null): null|int|string|bool|array
     {
         if (!$this->validated) {
-            $this->validated = array_filter(get_object_vars($this), static function ($value, $key) {
-                return !in_array($key, ['request', 'validator', 'auto', 'validationGroup', 'validated']);
-            }, ARRAY_FILTER_USE_BOTH);
+            $this->validated = array_diff_key(get_object_vars($this), array_flip($this->exclude));
         }
 
         return $key ? ($this->validated[$key] ?? null) : $this->validated;
