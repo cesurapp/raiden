@@ -8,13 +8,17 @@
 
     <q-form class="q-gutter-xs" ref="form">
       <!--Email-->
-      <q-input outlined v-model="email" :label="$t('Email')" lazy-rules debounce="250" :rules="[$rules.required(),$rules.serverSide('email'),$rules.email()]">
+      <q-input outlined v-model="email" :label="$t('Email')"
+               lazy-rules debounce="250"
+               :error="$rules.ssrValid('email')" :error-message="$rules.ssrException('email')"
+               :rules="[$rules.required(), $rules.email()]"
+      >
         <template v-slot:prepend><q-icon name="email"/></template>
       </q-input>
       <!--Phone-->
       <PhoneInput v-model="phone" :label="$t('Phone')"></PhoneInput>
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required,$rules.minLength(8)]">
         <template v-slot:prepend><q-icon name="key"/></template>
         <template v-slot:append>
           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
@@ -25,7 +29,7 @@
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
       <!--LastName-->
-      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules key="222" :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
 
@@ -60,7 +64,7 @@ export default defineComponent({
   }),
   methods: {
     onSubmit() {
-      this.$rules.clearServerSide();
+      this.$rules.clearSSRException();
       this.$refs.form.validate().then((success) => {
         if (success) {
           this.$api.securityRegister({
@@ -72,11 +76,7 @@ export default defineComponent({
             phoneCountry: 'TR',
           }).then((r) => {
             console.log(r.data)
-          }).catch(() => {
-            this.$refs.form.validate()
           })
-        } else {
-          console.log('as');
         }
       })
     }

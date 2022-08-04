@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {api} from 'boot/api';
-import {SessionStorage, LocalStorage} from "quasar";
+import {SessionStorage, LocalStorage} from 'quasar';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({

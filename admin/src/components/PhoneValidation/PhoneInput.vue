@@ -1,7 +1,12 @@
 <template>
   <div class="phone-input">
     <!--Phone-->
-    <q-input outlined type="tel" v-model="proxyPhone" :mask="masks[country].mask" fill-mask unmasked-value :label="label" lazy-rules :rules="[$rules.required(), $rules.isPhone(country)]">
+    <q-input outlined type="tel" v-model="proxyPhone"
+             :mask="masks[country].mask" fill-mask unmasked-value
+             :label="label" lazy-rules
+             :error="$rules.ssrValid(serverSideInput)"
+             :error-message="$rules.ssrException(serverSideInput)"
+             :rules="[$rules.required, $rules.isPhone(country)]">
       <template v-slot:prepend>
         <!--Select Country-->
         <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="country" :options="getCountryCodes" emit-value map-options>
@@ -32,6 +37,10 @@ export default defineComponent({
   props: {
     modelValue: [String, Number],
     label: [String],
+    serverSideInput: {
+      type: String,
+      default: 'phone',
+    }
   },
   data: () => ({
     country: '90',

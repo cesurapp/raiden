@@ -1,5 +1,5 @@
-import {notifyShow} from "./NotifyHelper";
-import {AxiosResponse} from "axios";
+import {notifyShow} from './NotifyHelper';
+import {AxiosResponse} from 'axios';
 
 function showMessage(response: AxiosResponse) {
   if (response.data.message) {

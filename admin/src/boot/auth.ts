@@ -1,6 +1,6 @@
 import {boot} from 'quasar/wrappers'
-import {useAuthStore} from "stores/AuthStore";
-import {notifyDanger} from "../helper/NotifyHelper";
+import {useAuthStore} from 'stores/AuthStore';
+import {notifyDanger} from '../helper/NotifyHelper';
 
 export default boot(({router}) => {
   const authStore = useAuthStore();

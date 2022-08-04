@@ -26,5 +26,8 @@ export default {
   'Change Password': 'Şifrenizi Değiştirin.',
   'Reset your password.': 'Şifrenizi sıfırlayın.',
   'Password Confirm': 'Şifre Onay',
-  'Change': 'Değiştir'
+  'Change': 'Değiştir',
+
+  // Validations
+  'Value is required': 'Değer gerekli'
 };

@@ -47,12 +47,22 @@ export default defineComponent( {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .auth-main {
   max-width: 1200px;
   width: 100%;
   .wrapper {
     min-height: 610px;
+  }
+
+  .q-field__bottom--animated{
+    position: relative;
+    transform: translateY(60%);
+  }
+
+  .q-field__bottom{
+    padding: 0 12px;
+    min-height: auto;
   }
 }
 </style>
