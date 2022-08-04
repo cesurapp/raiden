@@ -1,5 +1,10 @@
 import * as methods from '@vuelidate/validators'
 import {isValidPhone} from 'components/PhoneValidation/PhoneCodeList';
+import {ref} from 'vue';
+
+const errors = {};
+
+export {errors};
 
 export default ({app}) => {
   app.config.globalProperties.$rules = {
@@ -96,6 +101,14 @@ export default ({app}) => {
     },
     isPhone(countryCode, message = false) {
       return (val) => isValidPhone(val.replace('/\s/g', ''), countryCode) || message;
+    },
+    serverSide(id) {
+      return (val) => !errors.hasOwnProperty(id) || errors[id].join('\r\n');
+    },
+    clearServerSide() {
+      Object.keys(errors).forEach((id) => {
+        delete errors[id];
+      })
     }
   }
 }

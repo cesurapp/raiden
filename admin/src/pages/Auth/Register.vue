@@ -6,9 +6,9 @@
       <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Create a new account.') }}</h6>
     </div>
 
-    <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
+    <q-form class="q-gutter-xs" ref="form">
       <!--Email-->
-      <q-input outlined v-model="email" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+      <q-input outlined v-model="email" :label="$t('Email')" lazy-rules debounce="250" :rules="[$rules.required(),$rules.serverSide('email'),$rules.email()]">
         <template v-slot:prepend><q-icon name="email"/></template>
       </q-input>
       <!--Phone-->
@@ -30,7 +30,7 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Register')" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Register')" @click="onSubmit" padding="sm md" color="primary" icon="how_to_reg"/>
         <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
@@ -60,6 +60,7 @@ export default defineComponent({
   }),
   methods: {
     onSubmit() {
+      this.$rules.clearServerSide();
       this.$refs.form.validate().then((success) => {
         if (success) {
           this.$api.securityRegister({
@@ -71,7 +72,11 @@ export default defineComponent({
             phoneCountry: 'TR',
           }).then((r) => {
             console.log(r.data)
+          }).catch(() => {
+            this.$refs.form.validate()
           })
+        } else {
+          console.log('as');
         }
       })
     }
