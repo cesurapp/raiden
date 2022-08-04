@@ -1,6 +1,7 @@
 import {boot} from 'quasar/wrappers';
 import axios, {AxiosError, AxiosInstance} from 'axios';
 import {ref} from 'vue';
+import {i18n} from 'boot/i18n';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -34,8 +35,8 @@ import {barStart, barSuccess, barDanger} from '../helper/LoadingBarHelper';
 import {processException} from '../helper/AxiosExceptionRender';
 import {processResponse} from '../helper/AxiosResponseRender';
 
-
 client.interceptors.request.use((config) => {
+    config.headers.common['Accept-Language'] = i18n.global.locale["value"];
     barStart();
 
     isBusy.value = true;
