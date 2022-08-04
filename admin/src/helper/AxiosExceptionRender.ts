@@ -11,6 +11,7 @@ function RefreshTokenExpiredException(response: AxiosResponse) {
 }
 
 function ValidationException(response: AxiosResponse) {
+  // Add Validation Exceptions to Validation Rules
   if (Object.keys(response.data.errors).length > 0) {
     addValidationException(response.data.errors);
   }
@@ -26,13 +27,9 @@ export const processException = (response?: AxiosResponse) => {
   }
 
   switch (response.data.type) {
-    case 'TokenExpiredException':
-      return TokenExpiredException(response)
-    case 'RefreshTokenExpiredException':
-      return RefreshTokenExpiredException(response)
-    case 'ValidationException':
-      return ValidationException(response)
-    default:
-      return renderException(response)
+    case 'TokenExpiredException': return TokenExpiredException(response)
+    case 'RefreshTokenExpiredException': return RefreshTokenExpiredException(response)
+    case 'ValidationException': return ValidationException(response)
+    default: return renderException(response)
   }
 }

@@ -7,11 +7,30 @@
     </div>
 
     <!-- Login Form-->
-    <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
+    <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
+      <q-btn-toggle
+        v-model="type"
+        no-caps
+        unelevated
+        outline
+        flat
+        toggle-color="primary"
+        color="white"
+        text-color="primary"
+        :options="[
+          {label: 'E-posta', value: 'email'},
+          {label: 'Telefon', value: 'phone'},
+        ]"
+        class="q-mb-md"
+      />
+
       <!--Username-->
-      <q-input outlined v-model="username" :label="$t('Email / Phone')" lazy-rules :rules="[$rules.required(),$rules.isIdentity()]">
-        <template v-slot:prepend><q-icon :name="!getCountry ? 'mail' : `img:/images/flags/${getCountry}.svg`"/></template>
+      <q-input v-if="type === 'email'" outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+        <template v-slot:prepend><q-icon name="mail"/></template>
       </q-input>
+
+      <!--Phone-->
+      <PhoneInput v-else v-model="username" :label="$t('Phone')"></PhoneInput>
 
       <!--Password-->
       <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
@@ -22,8 +41,8 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Login')" :loading="$isBusy.value" type="submit" color="primary" padding="sm md" icon="login"/>
-        <q-btn :label="$t('Forgot Password')" color="primary" flat padding="sm md" :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
+        <q-btn no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary" padding="sm md" icon="login"/>
+        <q-btn no-caps :label="$t('Forgot Password')" color="primary" flat padding="sm md" :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
       </div>
     </q-form>
 
@@ -44,9 +63,11 @@ import {defineComponent} from 'vue'
 import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 import {createMetaMixin} from 'quasar';
 import {useAuthStore} from "stores/AuthStore";
+import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
 
 export default defineComponent({
   name: 'AuthLogin',
+  components: {PhoneInput},
   mixins: [
     createMetaMixin({
       title: 'Login'
@@ -54,6 +75,7 @@ export default defineComponent({
   ],
   data() {
     return {
+      type: 'email',
       isPwd: true,
       username: null,
       password: null,

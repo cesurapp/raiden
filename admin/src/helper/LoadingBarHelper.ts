@@ -2,7 +2,7 @@ import {LoadingBar} from 'quasar';
 
 LoadingBar.setDefaults({
   color: 'info',
-  size: '4px',
+  size: '3px',
   position: 'top'
 });
 

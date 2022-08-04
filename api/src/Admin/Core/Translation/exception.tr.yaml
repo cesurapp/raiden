@@ -1,3 +1,5 @@
 Validation failed: Doğrulama başarısız
 User not found!: Kullanıcı bulunamadı!
 Wrong OTP key!: Yanlış OTP anahtarı!
+Invalid credentials.: Geçersiz kimlik bilgileri.
+The key "username" must be provided.: "'username' alanı gereklidir."

@@ -70,31 +70,31 @@ export default ({app}) => {
     minLength(length, message = false) {
       return (val) => {
         const r = methods.minLength(length);
-        return r.$validator(val) || message || r.$message({$params: {min: length}})
+        return r.$validator(val) || message || t(r.$message({$params: {min: 0}})).replace('0', length)
       }
     },
     maxLength(length, message = false) {
       return (val) => {
         const r = methods.maxLength(length);
-        return r.$validator(val) || message || r.$message({$params: {max: length}})
+        return r.$validator(val) || message || t(r.$message({$params: {max: 0}})).replace('0', length)
       }
     },
     minValue(value, message = false) {
       return (val) => {
         const r = methods.minValue(value);
-        return r.$validator(val) || message || r.$message({$params: {min: length}})
+        return r.$validator(val) || message || t(r.$message({$params: {min: 0}})).replace('0', value)
       }
     },
     maxValue(value, message = false) {
       return (val) => {
         const r = methods.maxValue(value);
-        return r.$validator(val) || message || r.$message({$params: {max: length}})
+        return r.$validator(val) || message || t(r.$message({$params: {max: 0}})).replace('0', value)
       }
     },
     between(min, max, message = false) {
       return (val) => {
         const r = methods.between(min, max);
-        return r.$validator(val) || message || r.$message({$params: {min: min, max: max}})
+        return r.$validator(val) || message || t(r.$message({$params: {min: 0, max: 1}})).replace('0', min).replace('1', max)
       }
     },
     alpha(message = false) {
