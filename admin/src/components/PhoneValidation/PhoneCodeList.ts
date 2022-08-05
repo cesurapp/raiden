@@ -1,7 +1,7 @@
 const phoneCodes: any = {
-  90: {label: 'Türkiye', mask: '+90 (###) ### ## ##', length: [10, 10], code: '90', country: 'tr'},
-  49: {label: 'Germany', mask: '+49 (###) #### ###', length: [6, 13], code: '49', country: 'de'},
-  1: {label: 'United States', mask: '+1 (###) ### ## ##', length: [10, 10], code: '1', country: 'us'},
+  90: {label: 'Türkiye', mask: '+90 (###) ### ## ##', length: [10, 10], code: '90', country: 'TR'},
+  49: {label: 'Germany', mask: '+49 (###) #### ###', length: [6, 13], code: '49', country: 'DE'},
+  1: {label: 'United States', mask: '+1 (###) ### ## ##', length: [10, 10], code: '1', country: 'US'},
 }
 
 const extractPhone = (phoneNumber: string) => {

@@ -8,24 +8,13 @@
 
     <!-- Login Form-->
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-btn-toggle
-        v-model="type"
-        no-caps
-        unelevated
-        outline
-        flat
-        toggle-color="primary"
-        color="white"
-        text-color="primary"
-        :options="[
-          {label: 'E-posta', value: 'email'},
-          {label: 'Telefon', value: 'phone'},
-        ]"
-        class="q-mb-md"
-      />
+      <q-tabs v-model="type" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
+        <q-tab name="email" icon="mail" :label="$t('Email')" />
+        <q-tab name="phone" icon="phone" :label="$t('Phone')" />
+      </q-tabs>
 
       <!--Username-->
-      <q-input v-if="type === 'email'" outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+      <q-input v-if="type === 'email'" bottom-slots outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
         <template v-slot:prepend><q-icon name="mail"/></template>
       </q-input>
 
@@ -52,7 +41,7 @@
 
       <!-- Register Link-->
       <div class="register-actions">
-        <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary"  outline icon="email" padding="sm" class="full-width"/>
+        <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary" icon="email" padding="sm" class="full-width"/>
       </div>
     </div>
   </div>
@@ -60,7 +49,6 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {extractPhone} from 'components/PhoneValidation/PhoneCodeList';
 import {createMetaMixin} from 'quasar';
 import {useAuthStore} from "stores/AuthStore";
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
@@ -79,11 +67,6 @@ export default defineComponent({
       isPwd: true,
       username: null,
       password: null,
-    }
-  },
-  computed: {
-    getCountry() {
-      return !isNaN(this.username) ? extractPhone(this.username)?.country : null
     }
   },
   methods: {

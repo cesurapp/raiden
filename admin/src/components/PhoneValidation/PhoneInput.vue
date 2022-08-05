@@ -2,20 +2,18 @@
   <div class="phone-input">
     <!--Phone-->
     <q-input outlined type="tel" v-model="proxyPhone"
-             :mask="masks[country].mask" fill-mask unmasked-value
+             :mask="masks[code].mask" fill-mask unmasked-value
              :label="label" lazy-rules
              :error="$rules.ssrValid(serverSideInput)"
              :error-message="$rules.ssrException(serverSideInput)"
-             :rules="[$rules.required, $rules.isPhone(country)]">
+             :rules="[$rules.required(), $rules.isPhone(code)]">
       <template v-slot:prepend>
         <!--Select Country-->
-        <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="country" :options="getCountryCodes" emit-value map-options>
-          <template v-slot:prepend><q-icon :name="'img:/images/flags/'+ masks[country].country +'.svg'"/></template>
+        <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="code" :options="getCountryCodes" emit-value map-options>
+          <template v-slot:prepend><q-icon :name="'img:/images/flags/'+ masks[code].country +'.svg'"/></template>
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
-              <q-item-section avatar>
-                <q-icon :name="scope.opt.icon" />
-              </q-item-section>
+              <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
               <q-item-section>
                 <q-item-label>{{ scope.opt.label }}</q-item-label>
                 <q-item-label>{{ scope.opt.description }}</q-item-label>
@@ -43,7 +41,8 @@ export default defineComponent({
     }
   },
   data: () => ({
-    country: '90',
+    country: 'TR',
+    code: '90',
     phone: '',
     masks: phoneCodes,
   }),
@@ -54,7 +53,7 @@ export default defineComponent({
       },
       set(val: string) {
         this.phone = val;
-        this.$emit('update:modelValue', String(this.masks[this.country].code) + String(val));
+        this.$emit('update:modelValue', String(this.masks[this.code].code) + String(val));
       }
     },
     getCountryCodes() {
@@ -72,7 +71,8 @@ export default defineComponent({
       const phone = extractPhone(String(this.modelValue));
       if (phone) {
         this.phone = phone.phone;
-        this.country = phone.code;
+        this.code = phone.code;
+        this.country = phone.country;
       }
     }
   }

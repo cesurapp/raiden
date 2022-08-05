@@ -3,6 +3,12 @@
 * UI -> Exception
 * UI -> Permission
 * UI -> Store
+*  
+* Api Translate
+* Session Test
+* Refresh Token Init
+* Deploy Actions
+* 
 * 
 * DataTable
 * -- Filters

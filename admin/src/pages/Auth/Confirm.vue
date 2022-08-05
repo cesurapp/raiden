@@ -2,50 +2,55 @@
   <div>
     <!--Header-->
     <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Change Password') }}</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Reset your password.') }}</h6>
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Approve Account') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Enter the code sent to your phone or e-mail address.') }}</h6>
     </div>
 
-    <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
+    <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+      <q-input outlined lazy-rules v-model="otp_key"
+               mask="# # # # # #" fill-mask unmasked-value
+               :error="$rules.ssrValid('otp_key')"
+               :error-message="$rules.ssrException('otp_key')"
+               :label="$t('Code')" :rules="[$rules.required(),$rules.minLength(6),$rules.maxLength(6)]">
         <template v-slot:prepend><q-icon name="key"/></template>
-        <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
-        </template>
-      </q-input>
-      <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password_confirm" :label="$t('Password Confirm')" lazy-rules :rules="[$rules.required(),$rules.minLength(8),$rules.sameAs(this.password)]">
-        <template v-slot:prepend><q-icon name="key"/></template>
-        <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
-        </template>
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
-        <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Approve')" @click="onSubmit" no-caps padding="sm md" color="primary" icon="task_alt"/>
+        <q-btn :label="$t('Login')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import {defineComponent} from 'vue'
+import {notifyDanger} from 'src/helper/NotifyHelper';
+
 export default defineComponent({
   name: 'AuthConfirm',
   data() {
     return {
-      isPwd: true,
-      password: null,
-      password_confirm: null,
+      otp_key: null,
     }
   },
   methods: {
     onSubmit() {
+      this.$rules.clearSSRException();
       this.$refs.form.validate().then(success => {
         if (success) {
-
+          this.$api.securityApprove({otp_key: this.otp_key, id: this.$route.params.id})
+            .then((r) => {
+              // Redirect Login
+              this.$router.push({name: 'auth.login'});
+            })
+            .catch(() => {
+              const errors = this.$rules.ssrException('id', false);
+              if (errors) {
+                errors.forEach((error) => notifyDanger(error))
+              }
+            })
         }
       })
     }

@@ -194,8 +194,8 @@ export default ({app}) => {
     /**
      * Only Q-Input ":error-message" directive
      */
-    ssrException(id) {
-      return getValidationException(id).join('\r\n');
+    ssrException(id, merge = true) {
+      return merge ? getValidationException(id).join('\r\n') : getValidationException(id);
     },
     /**
      * Only Call

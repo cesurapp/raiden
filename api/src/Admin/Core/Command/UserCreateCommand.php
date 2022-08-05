@@ -32,7 +32,7 @@ class UserCreateCommand extends Command
             'email' => $helper->ask($input, $output, new Question('Email: ', 'demo@demo.com')),
             'firstName' => $helper->ask($input, $output, new Question('First Name: ', 'Demo')),
             'lastName' => $helper->ask($input, $output, new Question('Last Name: ', 'LastName')),
-            'password' => $helper->ask($input, $output, new Question('Password: ', '123123')),
+            'password' => $helper->ask($input, $output, new Question('Password: ', '123123123')),
             'type' => $helper->ask(
                 $input,
                 $output,
