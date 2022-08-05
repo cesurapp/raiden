@@ -65,13 +65,6 @@ class RegisterDto extends AbstractApiDto
         }
     }
 
-    protected function beforeValidated(): void
-    {
-        if ($this->type) {
-            $this->type = 'ROLE_'.strtoupper($this->type);
-        }
-    }
-
     /**
      * @param User $object
      */

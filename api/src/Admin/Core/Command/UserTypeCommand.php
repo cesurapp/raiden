@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'user:type', description: 'Change User Type')]
 class UserTypeCommand extends Command
 {
-    public function __construct(private UserRepository $userRepo)
+    public function __construct(private readonly UserRepository $userRepo)
     {
         parent::__construct();
     }
