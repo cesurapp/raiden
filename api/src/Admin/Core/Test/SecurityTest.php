@@ -268,14 +268,14 @@ class SecurityTest extends AbstractWebTestCase
 
         // Failed
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'id' => $user->getId()->toBase32(),
+            'username' => '905414053421',
             'otp_key' => 123123,
         ]);
         $this->isForbidden();
 
         // Success
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'id' => $user->getId()->toBase32(),
+            'username' => '905414053421',
             'otp_key' => $key->getOtpKey(),
         ]);
         $this->isOk();
@@ -306,14 +306,14 @@ class SecurityTest extends AbstractWebTestCase
 
         // Failed
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'id' => $user->getId()->toBase32(),
+            'username' => 'test2@test3.com',
             'otp_key' => 123123,
         ]);
         $this->isForbidden();
 
         // Success
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'id' => $user->getId()->toBase32(),
+            'username' => 'test2@test3.com',
             'otp_key' => $key->getOtpKey(),
         ]);
         $this->isOk();

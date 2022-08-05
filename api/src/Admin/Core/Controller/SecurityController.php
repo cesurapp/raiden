@@ -4,7 +4,6 @@ namespace App\Admin\Core\Controller;
 
 use Ahc\Jwt\JWT;
 use Ahc\Jwt\JWTException;
-use App\Admin\Core\Dto\UserIdOtpDto;
 use App\Admin\Core\Dto\UsernameOtpDto;
 use App\Admin\Core\Dto\RegisterDto;
 use App\Admin\Core\Dto\ResetPasswordDto;
@@ -241,14 +240,14 @@ class SecurityController extends AbstractApiController
             NotFoundHttpException::class,
             BadCredentialsException::class,
         ],
-        dto: UserIdOtpDto::class,
+        dto: UsernameOtpDto::class,
         requireAuth: false,
         order: 6
     )]
     #[Route(path: '/v1/auth/approve', name: 'api_approve_account', methods: ['POST'])]
-    public function approve(UserIdOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
+    public function approve(UsernameOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        if (!$user = $this->userRepo->find($dto->validated('id'))) {
+        if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
             throw $this->createNotFoundException('User not found!');
         }
 

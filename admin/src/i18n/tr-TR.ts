@@ -54,4 +54,10 @@ export default {
   'Reset your password.': 'Şifrenizi sıfırlayın.',
   'Password Confirm': 'Şifre Onay',
   'Change': 'Değiştir',
+  'Approve Account': 'Hesabınızı Doğrulayın',
+  'Enter the code sent to your phone or e-mail address.': 'Telefonunuza veya e-posta adresinize gönderilen kodu girin.',
+  'Code': 'Kod',
+  'Approve': 'Onayla',
+  'Reset': 'Sıfırla',
+  'Passwords do not match.': 'Şifreler eşleşmiyor.'
 };

@@ -7,6 +7,15 @@
     </div>
 
     <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
+      <!--OTP Key-->
+      <q-input outlined lazy-rules v-model="otp_key"
+               mask="# # # # # #" fill-mask unmasked-value
+               :error="$rules.ssrValid('otp_key')"
+               :error-message="$rules.ssrException('otp_key')"
+               :label="$t('Code')" :rules="[$rules.required(),$rules.minLength(6),$rules.maxLength(6)]">
+        <template v-slot:prepend><q-icon name="key"/></template>
+      </q-input>
+
       <!--Password-->
       <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
         <template v-slot:prepend><q-icon name="key"/></template>
@@ -14,6 +23,7 @@
           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
         </template>
       </q-input>
+
       <!--Password-->
       <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password_confirm" :label="$t('Password Confirm')" lazy-rules :rules="[$rules.required(),$rules.minLength(8),$rules.sameAs(this.password)]">
         <template v-slot:prepend><q-icon name="key"/></template>
@@ -23,8 +33,8 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
-        <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Change')" no-caps type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Login')" no-caps padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
@@ -32,11 +42,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 export default defineComponent({
   name: 'ResetPassword',
   data() {
     return {
       isPwd: true,
+      id: null,
+      otp_key: null,
       password: null,
       password_confirm: null,
     }
@@ -45,7 +58,14 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then(success => {
         if (success) {
-
+          this.$api.securityResetPassword({
+            username: atob(this.$route.params.id),
+            otp_key: this.otp_key,
+            password: this.password,
+            password_confirm: this.password_confirm
+          }).then(() => {
+            this.$router.push({name: 'auth.login'});
+          })
         }
       })
     }

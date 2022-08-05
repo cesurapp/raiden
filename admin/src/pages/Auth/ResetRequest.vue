@@ -7,9 +7,9 @@
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-tabs v-model="type" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
-        <q-tab name="email" icon="mail" :label="$t('Email')" />
-        <q-tab name="phone" icon="phone" :label="$t('Phone')" />
+      <q-tabs v-model="type" align="left" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
+        <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
+        <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
       </q-tabs>
 
       <!--Username-->
@@ -21,8 +21,8 @@
       <PhoneInput v-else v-model="username" :label="$t('Phone')"></PhoneInput>
 
       <div>
-        <q-btn :label="$t('Send')" @click="onSubmit" padding="sm md" type="button" color="primary" icon="login"/>
-        <q-btn :label="$t('Login')" padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Reset')" no-caps @click="onSubmit" padding="sm md" type="button" color="primary" icon="login"/>
+        <q-btn :label="$t('Login')" no-caps padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
@@ -46,7 +46,7 @@ export default defineComponent({
       this.$refs.form.validate().then((success: boolean) => {
         if (success) {
           this.$api.securityResetRequest({username: this.username}).then((r) => {
-            this.$router.push({name: 'auth.reset.password', params:{id: r.data}})
+            this.$router.push({name: 'auth.reset.password', params:{id: btoa(this.username)}})
           })
         }
       })

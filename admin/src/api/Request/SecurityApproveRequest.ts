@@ -2,6 +2,6 @@
 /* eslint-disable max-len */
 
 export type SecurityApproveRequest = {
-  id: string|number,
+  username: string|number,
   otp_key: number
 }

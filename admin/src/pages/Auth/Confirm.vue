@@ -7,7 +7,7 @@
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <!--Password-->
+      <!--OTP Key-->
       <q-input outlined lazy-rules v-model="otp_key"
                mask="# # # # # #" fill-mask unmasked-value
                :error="$rules.ssrValid('otp_key')"
@@ -27,9 +27,17 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {notifyDanger} from 'src/helper/NotifyHelper';
+import {createMetaMixin} from "quasar";
 
 export default defineComponent({
   name: 'AuthConfirm',
+  mixins: [
+    createMetaMixin( function() {
+      return {
+        title: this.$t('Approve Account')
+      }
+    })
+  ],
   data() {
     return {
       otp_key: null,
@@ -40,8 +48,8 @@ export default defineComponent({
       this.$rules.clearSSRException();
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$api.securityApprove({otp_key: this.otp_key, id: this.$route.params.id})
-            .then((r) => {
+          this.$api.securityApprove({otp_key: this.otp_key, username: atob(this.$route.params.id)})
+            .then(() => {
               // Redirect Login
               this.$router.push({name: 'auth.login'});
             })

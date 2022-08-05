@@ -171,7 +171,7 @@ export default ({app}) => {
     },
     sameAs(locator, message = false) {
       return (val) => {
-        return val === locator || t(message);
+        return val === locator || message || t('Passwords do not match.');
       }
     },
     isIdentity(message = false) {

@@ -8,9 +8,9 @@
 
     <!-- Login Form-->
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-tabs v-model="type" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
-        <q-tab name="email" icon="mail" :label="$t('Email')" />
-        <q-tab name="phone" icon="phone" :label="$t('Phone')" />
+      <q-tabs v-model="type" align="left" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
+        <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
+        <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
       </q-tabs>
 
       <!--Username-->
