@@ -2,14 +2,22 @@ import {defineStore} from 'pinia';
 import {SessionStorage, LocalStorage} from 'quasar';
 import {api} from "boot/app";
 
+const key = {
+  'user': 'app-user',
+  'token': 'app-token',
+  'refreshToken': 'app-refresh-token',
+};
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: LocalStorage.getItem('app-user'),
-    token: LocalStorage.getItem('app-token')
+    user: LocalStorage.getItem(key['user']),
+    token: LocalStorage.getItem(key['token'])
   }),
+
   getters: {
     roles: (state) => state.user.roles,
   },
+
   actions: {
     async loginUsername(username, password) {
       await api.securityLogin({username: username, password: password}).then((r) => {
@@ -17,9 +25,9 @@ export const useAuthStore = defineStore('auth', {
         this.token = r.data.token;
 
         // Save Token
-        LocalStorage.set('app-user', r.data.user);
-        LocalStorage.set('app-token', r.data.token);
-        SessionStorage.set('app-refresh-token', r.data.refresh_token);
+        LocalStorage.set(key['user'], r.data.user);
+        LocalStorage.set(key['token'], r.data.token);
+        SessionStorage.set(key['refreshToken'], r.data.refresh_token);
 
         // Redirect
         this.router.push({path: '/'});
@@ -28,11 +36,11 @@ export const useAuthStore = defineStore('auth', {
     async reloadTokenWithRefreshToken(config) {
       this.clearToken();
 
-      const token = SessionStorage.getItem('app-refresh-token')?.toString();
+      const token = SessionStorage.getItem(key['refreshToken'])?.toString();
       if (token) {
         return await api.securityRefreshToken({refresh_token: token}).then((r) => {
           this.token = r.data.token;
-          LocalStorage.set('app-token', r.data.token);
+          LocalStorage.set(key['token'], r.data.token);
           config.headers['Authorization'] = `Bearer ${this.token}`;
         })
       }
@@ -47,11 +55,11 @@ export const useAuthStore = defineStore('auth', {
       this.router.push({name: 'auth.login'});
     },
     clearToken() {
-      LocalStorage.remove('app-token');
+      LocalStorage.remove(key['token']);
       this.token = null;
     },
     clearRefreshToken() {
-      SessionStorage.remove('app-refresh-token');
+      SessionStorage.remove(key['refreshToken']);
     },
     isLoggedIn(): boolean {
       return this.token && this.user;

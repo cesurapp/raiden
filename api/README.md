@@ -1,13 +1,6 @@
-* UI -> AUTH Boot
-* UI -> Notification
-* UI -> Exception
-* UI -> Permission
-* UI -> Store
-* ui -> admin - login transition
-* auth ui -> responsive
-* Api Translate
 * Deploy Actions
-* 
+* user me
+* user reload
 * 
 * DataTable
 * -- Filters
