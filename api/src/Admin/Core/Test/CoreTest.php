@@ -15,7 +15,7 @@ class CoreTest extends AbstractWebTestCase
         $this->client()->request('GET', '/');
         $this->assertEquals('*', $this->client()->getResponse()->headers->get('access-control-allow-origin'));
         $this->assertEquals('GET,POST,PUT,PATCH,DELETE', $this->client()->getResponse()->headers->get('access-control-allow-methods'));
-        $this->assertEquals('content-type', $this->client()->getResponse()->headers->get('access-control-allow-headers'));
+        $this->assertEquals('*', $this->client()->getResponse()->headers->get('access-control-allow-headers'));
     }
 
     public function testStickyLocale(): void
