@@ -1,0 +1,74 @@
+import {boot} from 'quasar/wrappers';
+
+/**
+ * Create i18n
+ */
+import messages from 'src/i18n';
+import {createI18n} from 'vue-i18n';
+
+const i18n = createI18n({
+  locale: localStorage.getItem('locale') ?? 'en-US',
+  fallbackLocale: 'en-US',
+  messages,
+});
+export {i18n};
+
+
+/**
+ * Create Axios
+ */
+import axios, {AxiosInstance} from 'axios';
+import {ref} from 'vue';
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $client: AxiosInstance;
+    $isBusy: boolean
+  }
+}
+
+const client = axios.create({baseURL: process.env.API});
+const isBusy = ref(false);
+export {client, isBusy};
+
+
+/**
+ * Create API Client
+ */
+import Api from 'src/api';
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $api: Api;
+  }
+}
+
+const api = new Api(client);
+export {api}
+
+
+/**
+ * Init Vue Global Properties
+ */
+import routeGuard from "boot/helper/route-guard";
+import axiosInterceptors from "boot/helper/axios-interceptor";
+import validationRules from "boot/rules";
+
+export default boot(({app, router, store}) => {
+  const exceptions = ref({});
+
+  app.use(i18n);
+
+  app.config.globalProperties.$api = api;
+  app.config.globalProperties.$client = client;
+  app.config.globalProperties.$isBusy = isBusy;
+
+  // Route Guard
+  routeGuard(router, store, i18n.global.t)
+
+  // Axios Interceptors
+  axiosInterceptors(client, store, i18n, isBusy, exceptions)
+
+  // Validation Rules
+  validationRules(app, i18n.global.t, exceptions)
+});

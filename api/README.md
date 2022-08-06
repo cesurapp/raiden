@@ -3,10 +3,9 @@
 * UI -> Exception
 * UI -> Permission
 * UI -> Store
-*  
+* ui -> admin - login transition
+* auth ui -> responsive
 * Api Translate
-* Session Test
-* Refresh Token Init
 * Deploy Actions
 * 
 * 

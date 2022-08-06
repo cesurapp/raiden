@@ -1,15 +1,10 @@
-import {boot} from 'quasar/wrappers'
-import {useAuthStore} from 'stores/AuthStore';
-import {notifyDanger} from '../helper/NotifyHelper';
-import {i18n} from 'boot/i18n';
+// Router Guard
+import {notifyDanger} from "src/helper/NotifyHelper";
+import {useAuthStore} from "stores/AuthStore";
 
-const t = i18n.global.t;
+export default (router, store, t) => {
+  const authStore = useAuthStore(store)
 
-
-export default boot(({router}) => {
-  const authStore = useAuthStore();
-
-  // Router Guard
   router.beforeEach((to, from, next) => {
     // Auhenticated Access
     if (to.matched.some(record => record.meta.requireAuth)) {
@@ -36,4 +31,4 @@ export default boot(({router}) => {
 
     next();
   })
-})
+};

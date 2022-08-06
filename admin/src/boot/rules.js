@@ -1,37 +1,10 @@
 import * as methods from '@vuelidate/validators'
 import {isValidPhone} from 'components/PhoneValidation/PhoneCodeList';
-import {ref} from 'vue';
-import {i18n} from 'boot/i18n';
-
-const t = i18n.global.t;
-
-/**
- * Server Side Exception Handling
- */
-const exceptions = ref({});
-
-function addValidationException(e) {
-  exceptions.value = e;
-}
-
-function checkValidationException(id) {
-  return exceptions.value.hasOwnProperty(id);
-}
-
-function clearValidationException() {
-  exceptions.value = {};
-}
-
-function getValidationException(id) {
-  return exceptions.value[id] ?? [];
-}
-
-export {addValidationException, checkValidationException, clearValidationException, getValidationException};
 
 /**
  * Global Form Validation Rules
  */
-export default ({app}) => {
+export default (app, t, globalExceptions) => {
   app.config.globalProperties.$rules = {
     is(value, message) {
       message = message !== undefined ? message : false
@@ -94,7 +67,12 @@ export default ({app}) => {
     between(min, max, message = false) {
       return (val) => {
         const r = methods.between(min, max);
-        return r.$validator(val) || message || t(r.$message({$params: {min: 0, max: 1}})).replace('0', min).replace('1', max)
+        return r.$validator(val) || message || t(r.$message({
+          $params: {
+            min: 0,
+            max: 1
+          }
+        })).replace('0', min).replace('1', max)
       }
     },
     alpha(message = false) {
@@ -185,23 +163,25 @@ export default ({app}) => {
       }
     },
 
+
     /**
      * Only Q-Input ":error" directive
      */
     ssrValid(id) {
-      return checkValidationException(id);
+      return globalExceptions.value.hasOwnProperty(id);
     },
     /**
      * Only Q-Input ":error-message" directive
      */
     ssrException(id, merge = true) {
-      return merge ? getValidationException(id).join('\r\n') : getValidationException(id);
+      const e = globalExceptions.value[id] ?? [];
+      return merge ? e.join('\r\n') : e;
     },
     /**
      * Only Call
      */
     clearSSRException() {
-      clearValidationException();
+    globalExceptions.value = {};
     }
   }
 }

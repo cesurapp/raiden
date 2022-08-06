@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
-import {api} from 'boot/api';
 import {SessionStorage, LocalStorage} from 'quasar';
+import {api} from "boot/app";
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -12,33 +12,46 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async loginUsername(username, password) {
-      api.securityLogin({username: username, password: password}).then((r) => {
+      await api.securityLogin({username: username, password: password}).then((r) => {
         this.user = r.data.user;
         this.token = r.data.token;
+
+        // Save Token
         LocalStorage.set('app-user', r.data.user);
         LocalStorage.set('app-token', r.data.token);
         SessionStorage.set('app-refresh-token', r.data.refresh_token);
 
+        // Redirect
         this.router.push({path: '/'});
       })
     },
-    async loginRefreshToken() {
+    async reloadTokenWithRefreshToken(config) {
+      this.clearToken();
+
       const token = SessionStorage.getItem('app-refresh-token')?.toString();
       if (token) {
-        api.securityRefreshToken({refresh_token: token}).then((r) => {
+        return await api.securityRefreshToken({refresh_token: token}).then((r) => {
           this.token = r.data.token;
           LocalStorage.set('app-token', r.data.token);
+          config.headers['Authorization'] = `Bearer ${this.token}`;
         })
       }
+
+      return null;
     },
     logout() {
-      this.user = null;
-      this.token = null;
-      LocalStorage.remove('app-user');
-      LocalStorage.remove('app-token');
-      SessionStorage.remove('app-refresh-token');
+      this.clearToken();
+      this.clearRefreshToken();
 
+      // Redirect
       this.router.push({name: 'auth.login'});
+    },
+    clearToken() {
+      LocalStorage.remove('app-token');
+      this.token = null;
+    },
+    clearRefreshToken() {
+      SessionStorage.remove('app-refresh-token');
     },
     isLoggedIn(): boolean {
       return this.token && this.user;
@@ -55,7 +68,7 @@ export const useAuthStore = defineStore('auth', {
       return this.user.roles.includes(role);
     },
     hasType(type: Array<any>): boolean {
-      return type.includes(this.user.type);
+      return this.user ? type.includes(this.user.type) : false;
     },
   },
 });

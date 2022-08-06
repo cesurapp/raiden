@@ -8,7 +8,7 @@
         <div class="col-12 col-md-5 justify-center items-center flex">
           <div class="q-pa-xs-lg q-pa-sm-xl full-width">
             <router-view v-slot="{ Component }">
-              <transition appear leave-active-class="animated fadeOut" mode="out-in" enter-active-class="animated fadeIn">
+              <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                 <component :is="Component"></component>
               </transition>
             </router-view>

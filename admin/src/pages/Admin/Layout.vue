@@ -37,7 +37,13 @@
     </q-drawer>
 
     <!--Container-->
-    <q-page-container><router-view /></q-page-container>
+    <q-page-container>
+      <router-view v-slot="{ Component }">
+        <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+          <component :is="Component"></component>
+        </transition>
+      </router-view>
+    </q-page-container>
   </q-layout>
 </template>
 

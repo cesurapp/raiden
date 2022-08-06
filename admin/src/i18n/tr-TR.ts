@@ -59,5 +59,6 @@ export default {
   'Code': 'Kod',
   'Approve': 'Onayla',
   'Reset': 'Sıfırla',
-  'Passwords do not match.': 'Şifreler eşleşmiyor.'
+  'Passwords do not match.': 'Şifreler eşleşmiyor.',
+  'Session expired, please login again.': 'Oturum süresi doldu, yeniden giriş yapın.'
 };
