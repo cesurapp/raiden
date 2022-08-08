@@ -3,3 +3,11 @@ User not found!: Kullanıcı bulunamadı!
 Wrong OTP key!: Yanlış OTP anahtarı!
 Invalid credentials.: Geçersiz kimlik bilgileri.
 The key "username" must be provided.: "'username' alanı gereklidir."
+Refresh token expired!: Your session has expired, log in again
+Token expired!: The session has expired
+No API token provided: API jetonu gereklidir
+Authorization token format incorrect: Yetkilendirme belirteci biçimi yanlış
+Account has not been activated: Hesap aktive edilmedi
+The account has been suspended: Hesap askıya alındı
+The organization has been suspended: Organizasyon askıya alındı
+Invalid credentials: Geçersiz kimlik bilgileri

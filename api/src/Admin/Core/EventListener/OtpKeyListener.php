@@ -45,7 +45,7 @@ class OtpKeyListener
     {
         $this->mailPusher->send(
             (new Email())
-                ->to('asdsa@asdas.com')
+                ->to($otpKey->getOwner()->getEmail())
                 ->subject('Verification Code')
                 ->text($this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]))
         );

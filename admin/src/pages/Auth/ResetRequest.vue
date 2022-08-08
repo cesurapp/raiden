@@ -31,10 +31,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
+import {createMetaMixin} from "quasar";
 
 export default defineComponent({
   name: 'ResetRequest',
   components: {PhoneInput},
+  mixins: [
+    createMetaMixin( function() {
+      return {
+        title: this.$t('Forgot Password')
+      }
+    })
+  ],
   data() {
     return {
       type: 'email',

@@ -56,7 +56,7 @@ class NotificationController extends AbstractApiController
 
         $this->repo->read($notification);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('Operation successful');
     }
 
     #[Thor(
@@ -74,7 +74,7 @@ class NotificationController extends AbstractApiController
 
         $this->repo->delete($notification);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('The notification has been deleted');
     }
 
     #[Thor(
@@ -88,6 +88,6 @@ class NotificationController extends AbstractApiController
     {
         $this->repo->readAll($user);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('All notifications marked as read');
     }
 }

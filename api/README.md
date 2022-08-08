@@ -3,16 +3,15 @@
 * user me
 * user reload
 * firebase
+* firebase config
 * deploy
-* header -> title
-* api -> change message
 * admin -> notication ui
 * admin -> profile edit
 * admin -> firebase ui
 * admin -> menü
 * admin -> security panel
 * admin -> dashboard
-* firebase config
+
 * 
 * 
 * DataTable

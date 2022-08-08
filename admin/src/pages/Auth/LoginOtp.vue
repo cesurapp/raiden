@@ -26,7 +26,6 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {notifyDanger} from 'src/helper/NotifyHelper';
 import {createMetaMixin} from "quasar";
 import {useAuthStore} from "stores/AuthStore";
 
@@ -35,7 +34,7 @@ export default defineComponent({
   mixins: [
     createMetaMixin( function() {
       return {
-        title: this.$t('Approve Account')
+        title: this.$t('Security Code')
       }
     })
   ],

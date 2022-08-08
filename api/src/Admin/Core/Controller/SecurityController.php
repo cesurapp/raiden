@@ -146,7 +146,7 @@ class SecurityController extends AbstractApiController
         // Create OTP Key
         $otpKeyRepo->create($user, is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('One-time login code has been sent');
     }
 
     #[Thor(
@@ -204,7 +204,7 @@ class SecurityController extends AbstractApiController
             $refreshTokenRepo->removeToken($token);
         }
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('You are logged out');
     }
 
     #[Thor(
@@ -230,7 +230,7 @@ class SecurityController extends AbstractApiController
         return ApiResponse::create()
             ->setData($user)
             ->setResource(UserResource::class)
-            ->addMessage('Operation successful.');
+            ->addMessage('Your account is created');
     }
 
     #[Thor(
@@ -259,7 +259,7 @@ class SecurityController extends AbstractApiController
         // Approve
         $this->userRepo->approve($user, $otp);
 
-        return ApiResponse::create()->addMessage('Your account has been approved.');
+        return ApiResponse::create()->addMessage('Your account has been approved');
     }
 
     #[Thor(
@@ -283,7 +283,7 @@ class SecurityController extends AbstractApiController
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_REQUEST);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('Your password reset code has been sent');
     }
 
     #[Thor(
@@ -313,6 +313,6 @@ class SecurityController extends AbstractApiController
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_PASSWORD);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('Your password was changed, you can login');
     }
 }

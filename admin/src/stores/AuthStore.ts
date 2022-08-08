@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', {
       })
     },
     async loginOtpRequest(username) {
-        await api.securityLoginOtpRequest({username: username}).then((r) => {
+        await api.securityLoginOtpRequest({username: username}).then(() => {
           // Redirect
           this.router.push({name: 'auth.login.otp', params: {'id': btoa(username)}});
         })

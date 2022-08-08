@@ -15,7 +15,7 @@ class SecurityEvent extends Event
     public const RESET_REQUEST = 'security.reset.request';
     public const RESET_PASSWORD = 'security.reset.password';
 
-    public function __construct(private User $user)
+    public function __construct(private readonly User $user)
     {
     }
 

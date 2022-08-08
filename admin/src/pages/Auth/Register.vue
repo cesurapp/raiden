@@ -52,8 +52,10 @@ export default defineComponent({
   name: 'AuthRegister',
   components: {PhoneInput},
   mixins: [
-    createMetaMixin({
-      title: 'Register'
+    createMetaMixin(function() {
+      return {
+        title: this.$t('Register')
+      }
     })
   ],
   data: () => ({

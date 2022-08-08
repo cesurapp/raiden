@@ -13,7 +13,7 @@ class PermissionManager
 {
     private array $permissions = [];
 
-    public function __construct(private ParameterBagInterface $parameterBag)
+    public function __construct(private readonly ParameterBagInterface $parameterBag)
     {
     }
 

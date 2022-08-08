@@ -10,8 +10,17 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {createMetaMixin} from "quasar";
 export default defineComponent({
   name: 'ErrorPage404',
+  mixins: [
+    createMetaMixin(function() {
+      return {
+        title: this.$t('404 Not Found'),
+        titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
+      }
+    })
+  ]
 })
 </script>
 

@@ -34,7 +34,6 @@ class Organization
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?Ulid

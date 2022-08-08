@@ -54,15 +54,17 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {createMetaMixin} from 'quasar';
-import {useAuthStore} from "stores/AuthStore";
+import {useAuthStore} from 'stores/AuthStore';
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
 
 export default defineComponent({
   name: 'AuthLogin',
   components: {PhoneInput},
   mixins: [
-    createMetaMixin({
-      title: 'Login'
+    createMetaMixin(function() {
+      return {
+        title: this.$t('Login')
+      }
     })
   ],
   data() {

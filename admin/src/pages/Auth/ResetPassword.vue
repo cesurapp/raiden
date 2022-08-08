@@ -42,9 +42,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import {createMetaMixin} from "quasar";
 
 export default defineComponent({
   name: 'ResetPassword',
+  mixins: [
+    createMetaMixin( function() {
+      return {
+        title: this.$t('Change Password')
+      }
+    })
+  ],
   data() {
     return {
       isPwd: true,

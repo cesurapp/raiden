@@ -33,6 +33,7 @@ export default {
   // 404 Page
   'Oops. Nothing here...': 'Hata. Hiçbir şey bulamadık...',
   'Go Home': 'Anasayfa\'ya Dön',
+  '404 Not Found': 'Aradığınız Sayfa Bulunamadı',
 
   // Auth
   'Welcome': 'Merhaba',

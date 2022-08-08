@@ -14,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class GlobalExceptionHandler implements EventSubscriberInterface
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 

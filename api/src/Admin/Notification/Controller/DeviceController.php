@@ -28,6 +28,6 @@ class DeviceController extends AbstractApiController
     {
         $repo->register($dto, $user);
 
-        return ApiResponse::create()->addMessage('Operation successful.');
+        return ApiResponse::create()->addMessage('Operation successful');
     }
 }

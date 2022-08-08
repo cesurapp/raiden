@@ -12,6 +12,6 @@ class JsonFailureHandler implements AuthenticationFailureHandlerInterface
 {
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
     {
-        throw new BadCredentialsException('Invalid credentials.', code: 401);
+        throw new BadCredentialsException('Invalid credentials', code: 401);
     }
 }
