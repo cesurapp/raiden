@@ -1,7 +1,7 @@
-import {boot} from 'quasar/wrappers'
 import {initializeApp} from 'firebase/app';
 import {getMessaging, onMessage, getToken} from 'firebase/messaging';
-import {notifyShow} from '../helper/NotifyHelper';
+import {notifyShow} from 'src/helper/NotifyHelper';
+import {Dialog, LocalStorage} from 'quasar'
 
 /**
  * Save FCM Token to Server
@@ -61,13 +61,26 @@ function registerFirebaseApp() {
 /**
  * Register Only "RequireAuth" Routes
  */
-export default boot(({router}) => {
-  let appInit = false;
+export default (router) => {
+  let fbInited = LocalStorage.getItem('firebase-prompt');
 
   router.afterEach((to) => {
-    if (!appInit && to.matched.some(record => record.meta.requireAuth)) {
-      appInit = true;
-      registerFirebaseApp();
+    if (!fbInited && to.matched.some(record => record.meta.requireAuth)) {
+      fbInited = true;
+
+      // Prompt User
+      Dialog.create({
+        title: 'System Notifications',
+        message: 'Allow push notifications for system events, file downloads and more.',
+        persistent: true,
+        ok: {label: 'Allow', flat: true, icon: 'done', color: 'green', size: 'md'},
+        cancel: {flat: true, color: 'red', size: 'md'},
+      }).onOk(() => {
+        registerFirebaseApp();
+        LocalStorage.set('firebase-prompt', true);
+      }).onCancel(() => {
+        LocalStorage.set('firebase-prompt', true);
+      })
     }
   })
-})
+}

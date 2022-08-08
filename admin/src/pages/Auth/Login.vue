@@ -14,25 +14,29 @@
       </q-tabs>
 
       <!--Username-->
-      <q-input v-if="type === 'email'" bottom-slots outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
+      <q-input v-if="type === 'email'" :class="{'q-pb-xs': isOtp}" bottom-slots outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
         <template v-slot:prepend><q-icon name="mail"/></template>
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else v-model="username" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput v-else v-model="username" :class="{'q-pb-xs': isOtp}" :label="$t('Phone')"></PhoneInput>
 
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+      <q-input :disable="isOtp" v-show="!isOtp" class="q-pb-xs" outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
         <template v-slot:prepend><q-icon name="key"/></template>
         <template v-slot:append>
           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
         </template>
       </q-input>
 
-      <div>
-        <q-btn no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary" padding="sm md" icon="login"/>
-        <q-btn no-caps :label="$t('Forgot Password')" color="primary" flat padding="sm md" :to="{ name: 'auth.reset.request' }" class="q-ml-sm"/>
+      <!--PasswordLess Login-->
+      <div class="flex justify-between items-center">
+        <q-checkbox v-model="isOtp" :label="$t('Passwordless Login')" />
+        <q-btn :disable="isOtp" color="grey-7" v-show="!isOtp" flat dense no-caps size="md" class="q-px-sm" :to="{ name: 'auth.reset.request' }" :label="$t('Forgot Password')"></q-btn>
       </div>
+
+      <!--Submit-->
+      <q-btn class="q-mt-lg" no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary" padding="sm md" icon="login"/>
     </q-form>
 
     <!-- Footer-->
@@ -65,6 +69,7 @@ export default defineComponent({
     return {
       type: 'email',
       isPwd: true,
+      isOtp: false,
       username: null,
       password: null,
     }
@@ -73,7 +78,11 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success: any) => {
         if (success) {
-          useAuthStore().loginUsername(this.username, this.password);
+          if (this.isOtp) {
+            useAuthStore().loginOtpRequest(this.username);
+          } else {
+            useAuthStore().loginUsername(this.username, this.password);
+          }
         }
       })
     }

@@ -127,7 +127,7 @@ class SecurityController extends AbstractApiController
     #[Thor(
         group: 'Security',
         desc: 'Login - Generate OTP key',
-        dto: UsernameOtpDto::class,
+        dto: UsernameDto::class,
         requireAuth: false,
         order: 2
     )]

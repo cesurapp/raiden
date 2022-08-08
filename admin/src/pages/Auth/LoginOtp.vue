@@ -2,8 +2,8 @@
   <div>
     <!--Header-->
     <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Approve Account') }}</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Enter the code sent to your phone or e-mail address.') }}</h6>
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Security Code') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Enter the 6-digit code sent to your account (mail/phone) to login.') }}</h6>
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
@@ -17,8 +17,8 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Approve')" @click="onSubmit" :loading="$isBusy.value" no-caps padding="sm md" color="primary" icon="task_alt"/>
-        <q-btn :label="$t('Login')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Login')" @click="onSubmit" :loading="$isBusy.value" no-caps padding="sm md" color="primary" icon="task_alt"/>
+        <q-btn :label="$t('Back')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
@@ -28,6 +28,7 @@
 import {defineComponent} from 'vue'
 import {notifyDanger} from 'src/helper/NotifyHelper';
 import {createMetaMixin} from "quasar";
+import {useAuthStore} from "stores/AuthStore";
 
 export default defineComponent({
   name: 'AuthConfirm',
@@ -48,17 +49,7 @@ export default defineComponent({
       this.$rules.clearSSRException();
       this.$refs.form.validate().then(success => {
         if (success) {
-          this.$api.securityApprove({otp_key: this.otp_key, username: atob(this.$route.params.id)})
-            .then(() => {
-              // Redirect Login
-              this.$router.push({name: 'auth.login'});
-            })
-            .catch(() => {
-              const errors = this.$rules.ssrException('id', false);
-              if (errors) {
-                errors.forEach((error) => notifyDanger(error))
-              }
-            })
+          useAuthStore().loginOtp(atob(this.$route.params.id), this.otp_key)
         }
       })
     }

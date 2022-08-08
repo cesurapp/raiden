@@ -1,6 +1,6 @@
 import {barStart, barSuccess, barDanger} from 'src/helper/LoadingBarHelper';
-import {useAuthStore} from "stores/AuthStore";
-import {notifyShow, notifyDanger} from "src/helper/NotifyHelper";
+import {useAuthStore} from 'stores/AuthStore';
+import {notifyShow, notifyDanger} from 'src/helper/NotifyHelper';
 
 function requestConfig(config, i18n, isBusy, authStore) {
   // Add Language

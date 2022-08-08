@@ -36,7 +36,7 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Register')" @click="onSubmit" no-caps padding="sm md" color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Register')" @click="onSubmit" :loading="$isBusy.value" no-caps padding="sm md" color="primary" icon="how_to_reg"/>
         <q-btn :label="$t('Login')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>

@@ -21,7 +21,7 @@
       <PhoneInput v-else v-model="username" :label="$t('Phone')"></PhoneInput>
 
       <div>
-        <q-btn :label="$t('Reset')" no-caps @click="onSubmit" padding="sm md" type="button" color="primary" icon="login"/>
+        <q-btn :label="$t('Reset')" no-caps :loading="$isBusy.value" @click="onSubmit" padding="sm md" type="button" color="primary" icon="login"/>
         <q-btn :label="$t('Login')" no-caps padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>

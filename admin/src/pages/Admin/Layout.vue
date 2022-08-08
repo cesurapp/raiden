@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {useAuthStore} from "stores/AuthStore";
+import {useAuthStore} from 'stores/AuthStore';
 
 export default defineComponent({
   name: 'AdminLayout',

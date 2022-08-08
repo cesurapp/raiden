@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {SessionStorage, LocalStorage} from 'quasar';
-import {api} from "boot/app";
+import {api} from 'boot/app';
 
 const key = {
   'user': 'app-user',
@@ -21,6 +21,26 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async loginUsername(username, password) {
       await api.securityLogin({username: username, password: password}).then((r) => {
+        this.user = r.data.user;
+        this.token = r.data.token;
+
+        // Save Token
+        LocalStorage.set(key['user'], r.data.user);
+        LocalStorage.set(key['token'], r.data.token);
+        SessionStorage.set(key['refreshToken'], r.data.refresh_token);
+
+        // Redirect
+        this.router.push({path: '/'});
+      })
+    },
+    async loginOtpRequest(username) {
+        await api.securityLoginOtpRequest({username: username}).then((r) => {
+          // Redirect
+          this.router.push({name: 'auth.login.otp', params: {'id': btoa(username)}});
+        })
+    },
+    async loginOtp(username, otpKey) {
+      await api.securityLoginOtp({username: username, otp_key: otpKey}).then((r) => {
         this.user = r.data.user;
         this.token = r.data.token;
 

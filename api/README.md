@@ -1,6 +1,19 @@
 * Deploy Actions
+* 
 * user me
 * user reload
+* firebase
+* deploy
+* header -> title
+* api -> change message
+* admin -> notication ui
+* admin -> profile edit
+* admin -> firebase ui
+* admin -> menü
+* admin -> security panel
+* admin -> dashboard
+* firebase config
+* 
 * 
 * DataTable
 * -- Filters

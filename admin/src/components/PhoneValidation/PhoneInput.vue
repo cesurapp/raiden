@@ -1,7 +1,7 @@
 <template>
   <div class="phone-input">
     <!--Phone-->
-    <q-input outlined type="tel" v-model="proxyPhone"
+    <q-input outlined type="tel" v-model="proxyPhone" v-bind="$attrs"
              :mask="masks[code].mask" fill-mask unmasked-value
              :label="label" lazy-rules
              :error="$rules.ssrValid(serverSideInput)"
@@ -32,6 +32,7 @@ import {phoneCodes, extractPhone} from './PhoneCodeList';
 
 export default defineComponent({
   name: 'PhoneInput',
+  inheritAttrs: false,
   props: {
     modelValue: [String, Number],
     label: [String],
