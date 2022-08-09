@@ -8,13 +8,13 @@
   <Teleport to="#layout" v-if="this.isMounted">
     <q-drawer v-model="open" side="right" overlay elevated>
       <!--Tabs-->
-      <q-tabs dense no-caps inline-label v-model="tab" class="bg-grey-3" align="justify">
+      <q-tabs no-caps inline-label v-model="tab" class="bg-grey-3" align="justify">
         <q-tab class="text-orange" name="unread" icon="sms_failed" label="Unread"/>
         <q-tab class="text-cyan" name="all" icon="done_all" label="All"/>
       </q-tabs>
 
       <!--Items-->
-      <q-list bordered padding class="rounded-borders" style="max-width: 350px">
+      <q-list padding class="rounded-borders">
         <q-item clickable v-ripple v-for="item in resp.data" :key="item.id">
           <q-item-section>
             <q-item-label lines="1">{{ item.title }}</q-item-label>
@@ -63,6 +63,18 @@ export default defineComponent({
       this.$api.notificationList({page: this.resp.pager?.current || 1}).then((r) => {
         this.resp = r.data;
       })
+    },
+    read(item) {
+      this.$api.notificationRead(item.id).then(() => {
+        item.readed = true;
+      })
+    },
+    readAll() {
+      this.$api.notificationReadAll().then(() => {
+        this.resp.data.forEach((i) => {
+          i.readed = true;
+        })
+      });
     }
   }
 });
