@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {SessionStorage, LocalStorage} from 'quasar';
 import {api} from 'boot/app';
+import {SecurityLoginResponse} from "src/api/Response/SecurityLoginResponse";
 
 const key = {
   'user': 'app-user',
@@ -9,13 +10,15 @@ const key = {
 };
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: LocalStorage.getItem(key['user']),
-    token: LocalStorage.getItem(key['token'])
-  }),
+  state: () => {
+    return {
+      user: LocalStorage.getItem(key['user']),
+      token: LocalStorage.getItem(key['token']),
+    } as SecurityLoginResponse
+  },
 
   getters: {
-    roles: (state) => state.user.roles,
+    roles: (state) => state.user,
   },
 
   actions: {

@@ -1,9 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface SecurityLoginOtpResponse200 {
+export interface SecurityLoginOtpResponse {
   user: {
     id: string,
     type: string,
@@ -22,4 +20,3 @@ interface SecurityLoginOtpResponse200 {
   token: string,
   refresh_token: string
 }
-export type SecurityLoginOtpResponse = AxiosResponse<SecurityLoginOtpResponse200>;

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-useless-constructor */
 
-import type { AxiosInstance, AxiosRequestConfig, Method } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, Method, AxiosResponse } from 'axios';
 import { toQueryString } from './flatten';
 
 <?php foreach ($data as $groupedRoutes) { foreach ($groupedRoutes as $route) { ?>
@@ -22,7 +22,7 @@ export default class Api {
   constructor(private client: AxiosInstance) {}
 <?php foreach ($data as $groupedRoutes) { foreach ($groupedRoutes as $route) { ?>
 
-  async <?php echo $route['shortName']; ?>(<?php echo $attrs = $helper->renderAttributes($route); ?>): Promise<<?php echo ucfirst($route['shortName']); ?>Response> {
+  async <?php echo $route['shortName']; ?>(<?php echo $attrs = $helper->renderAttributes($route); ?>): Promise<AxiosResponse<<?php echo ucfirst($route['shortName']); ?>Response>> {
     return this.rq('<?php echo $route['routerMethod'][0]; ?>', <?php echo  $helper->renderEndpointPath($route['routerPath'], $attrs); ?>, config, <?php echo str_contains($attrs, 'request') ? 'request' : 'null' ?>)
   }
 <?php }} ?>

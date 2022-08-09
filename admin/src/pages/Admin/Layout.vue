@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout id="layout" view="lHh Lpr lFf">
     <!--Header-->
     <q-header elevated>
       <q-toolbar>
@@ -8,18 +8,15 @@
 
         <!--Right-->
         <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
-          <!-- Notification Menu-->
-          <q-btn dense flat round icon="notifications" size="md">
-            <q-tooltip>Notifications</q-tooltip>
-            <q-badge color="red" text-color="white" floating>2</q-badge>
-          </q-btn>
+          <!-- Notifications-->
+          <Notifications ref="notifications"></Notifications>
 
           <!-- Profile Menu-->
           <q-btn dense flat round icon="account_circle" size="md">
             <q-tooltip>Account</q-tooltip>
             <q-menu fit anchor="bottom end" self="top end">
               <q-list>
-                <q-item><q-item-section><div>Hi, <strong>Ramazaas dsad asdasn</strong></div></q-item-section></q-item>
+                <q-item><q-item-section><div>Hi, <strong>{{ authStore.user.first_name }} {{ authStore.user.last_name }}</strong></div></q-item-section></q-item>
                 <q-separator />
                 <q-item clickable @click="authStore.logout()"><q-item-section>Sign out</q-item-section></q-item>
               </q-list>
@@ -50,9 +47,11 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useAuthStore} from 'stores/AuthStore';
+import Notifications from "components/Notifications.vue";
 
 export default defineComponent({
   name: 'AdminLayout',
+  components: {Notifications},
   setup() {
     const authStore = useAuthStore();
     return {

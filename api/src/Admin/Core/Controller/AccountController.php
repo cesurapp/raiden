@@ -4,6 +4,8 @@ namespace App\Admin\Core\Controller;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Resource\UserResource;
+use App\Admin\Notification\Enum\NotificationType;
+use App\Admin\Notification\Service\NotificationPusher;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
@@ -21,8 +23,12 @@ class AccountController extends AbstractApiController
 
     #[Thor(group: 'Profile', desc: 'Admin Profile Details')]
     #[Route(path: '/v1/admin/profile')]
-    public function me(#[CurrentUser] ?User $user): ApiResponse
+    public function me(#[CurrentUser] ?User $user, NotificationPusher $pusher): ApiResponse
     {
+        $pusher->send(
+            $pusher->create('Dowas asdasds asd assada', 'asdsad asd asdas ashd askd haskd', NotificationType::WARNING)
+        );
+
         return ApiResponse::create()
             ->setData([$user])
             ->setResource(UserResource::class)

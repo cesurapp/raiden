@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface AccountMeResponse200 {
+export interface AccountMeResponse {
   message?: {
     success?: Array<string|number|boolean>
   }
 }
-export type AccountMeResponse = AxiosResponse<AccountMeResponse200>;

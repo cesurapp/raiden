@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface SecurityResetRequestResponse200 {
+export interface SecurityResetRequestResponse {
   message?: {
     success?: Array<string|number|boolean>
   }
 }
-export type SecurityResetRequestResponse = AxiosResponse<SecurityResetRequestResponse200>;

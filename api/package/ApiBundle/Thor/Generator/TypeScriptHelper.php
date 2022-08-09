@@ -46,7 +46,7 @@ class TypeScriptHelper
 
         if (($qs = str_contains($attributes, 'query')) || str_contains($path, '{')) {
             $path = str_replace('{', '${', $path);
-            $qs = $qs ? '?${toQueryString(query)}' : '';
+            $qs = $qs ? '${toQueryString(query)}' : '';
 
             $newPath = "`{$path}{$qs}`";
         } else {

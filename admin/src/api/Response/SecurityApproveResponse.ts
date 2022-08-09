@@ -1,11 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface SecurityApproveResponse200 {
+export interface SecurityApproveResponse {
   message?: {
     success?: Array<string|number|boolean>
   }
 }
-export type SecurityApproveResponse = AxiosResponse<SecurityApproveResponse200>;

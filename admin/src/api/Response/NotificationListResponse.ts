@@ -1,9 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface NotificationListResponse200 {
+export interface NotificationListResponse {
   data?: [
     {
       id: string,
@@ -23,4 +21,3 @@ interface NotificationListResponse200 {
     total?: number
   }
 }
-export type NotificationListResponse = AxiosResponse<NotificationListResponse200>;

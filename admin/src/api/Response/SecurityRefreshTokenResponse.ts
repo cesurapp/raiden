@@ -1,9 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface SecurityRefreshTokenResponse200 {
+export interface SecurityRefreshTokenResponse {
   token: string
 }
-export type SecurityRefreshTokenResponse = AxiosResponse<SecurityRefreshTokenResponse200>;

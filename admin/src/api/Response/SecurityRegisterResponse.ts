@@ -1,9 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-import type { AxiosResponse } from 'axios';
-
-interface SecurityRegisterResponse200 {
+export interface SecurityRegisterResponse {
   data: {
     id: string,
     type: string,
@@ -23,4 +21,3 @@ interface SecurityRegisterResponse200 {
     success?: Array<string|number|boolean>
   }
 }
-export type SecurityRegisterResponse = AxiosResponse<SecurityRegisterResponse200>;
