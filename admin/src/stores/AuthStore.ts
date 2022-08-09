@@ -71,8 +71,10 @@ export const useAuthStore = defineStore('auth', {
       return null;
     },
     logout() {
-      this.clearToken();
-      this.clearRefreshToken();
+      api.securityLogout({refresh_token: SessionStorage.getItem(key["refreshToken"])?.toString()}).finally(() => {
+        this.clearToken();
+        this.clearRefreshToken();
+      });
 
       // Redirect
       this.router.push({name: 'auth.login'});

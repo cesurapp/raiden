@@ -66,4 +66,11 @@ export default {
   'Security Code': 'Güvenlik Kodu',
   'Enter the 6-digit code sent to your account (mail/phone) to login.': 'Hesabınıza giriş için gönderilen (mail/phone) 6 haneli kodu girin.',
   'Back': 'Geri',
+  'Dark Mode': 'Koyu Tema',
+
+  // Notification Component
+  'Notifications': 'Bildirimler',
+  'Mark all as read': 'Tümünü okundu olarak işaretle',
+  'Remove': 'Sil',
+  'Load More': 'Daha Fazla'
 };

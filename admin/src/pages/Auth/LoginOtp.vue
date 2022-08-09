@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {createMetaMixin} from "quasar";
-import {useAuthStore} from "stores/AuthStore";
+import {createMetaMixin} from 'quasar';
+import {useAuthStore} from 'stores/AuthStore';
 
 export default defineComponent({
   name: 'AuthConfirm',

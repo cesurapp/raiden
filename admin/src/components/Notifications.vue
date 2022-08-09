@@ -1,32 +1,39 @@
 <template>
-  <!--Toggle Button-->
-  <q-btn dense flat round @click="this.open = !this.open" icon="notifications" size="md">
-    <q-tooltip>Notifications</q-tooltip>
+  <q-btn dense flat round icon="notifications" size="md">
+    <q-tooltip>{{ $t('Notifications') }}</q-tooltip>
     <q-badge v-if="isUnreaded" color="red" rounded floating></q-badge>
-  </q-btn>
 
-  <Teleport to="#layout" v-if="this.isMounted">
-    <q-drawer v-model="open" side="right" overlay elevated>
-      <!--Tabs-->
-      <q-tabs no-caps inline-label v-model="tab" class="bg-grey-3" align="justify">
-        <q-tab class="text-orange" name="unread" icon="sms_failed" label="Unread"/>
-        <q-tab class="text-cyan" name="all" icon="done_all" label="All"/>
-      </q-tabs>
+    <!--Notifications-->
+    <q-menu anchor="bottom end" self="top end" style="min-width: 275px">
+      <q-list>
+        <!--Header-->
+        <q-item-label header class="flex items-center justify-between">
+          <span class="header">{{ $t('Notifications') }}</span>
+          <q-btn color="primary" size="sm" flat dense round icon="done_all" @click="readAll" v-close-popup>
+            <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
+          </q-btn>
+        </q-item-label>
 
-      <!--Items-->
-      <q-list padding class="rounded-borders">
-        <q-item clickable v-ripple v-for="item in resp.data" :key="item.id">
-          <q-item-section>
+        <!--Items-->
+        <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed" active-class="text-blue">
+          <q-item-section @click="read(item); open(item)">
             <q-item-label lines="1">{{ item.title }}</q-item-label>
             <q-item-label caption>{{ item.createdAt.date }}</q-item-label>
           </q-item-section>
-          <q-item-section side>
-            <q-icon name="info" color="green"/>
+          <q-item-section side class="q-pl-none">
+            <q-btn @click="remove(item)" size="sm" flat dense round color="red" icon="delete">
+              <q-tooltip>{{ $t('Remove') }}</q-tooltip>
+            </q-btn>
           </q-item-section>
         </q-item>
+
+        <!--Items-->
+        <q-item v-if="resp.pager?.next">
+          <q-btn @click="next()" class="full-width" :label="$t('Load More')" size="md" flat></q-btn>
+        </q-item>
       </q-list>
-    </q-drawer>
-  </Teleport>
+    </q-menu>
+  </q-btn>
 </template>
 
 <script lang="ts">
@@ -36,13 +43,9 @@ import {NotificationListResponse} from "src/api/Response/NotificationListRespons
 export default defineComponent({
   name: 'NotificationComponent',
   data: () => ({
-    open: false,
-    isMounted: false,
-    tab: 'unread',
     resp: {} as NotificationListResponse
   }),
   mounted() {
-    this.isMounted = true;
     this.load();
   },
   computed: {
@@ -61,10 +64,19 @@ export default defineComponent({
     },
     load() {
       this.$api.notificationList({page: this.resp.pager?.current || 1}).then((r) => {
-        this.resp = r.data;
+        if (!Object.keys(this.resp).length) {
+          return this.resp = r.data;
+        }
+
+        this.resp.data?.push(...r.data.data);
+        this.resp.pager = r.data.pager;
       })
     },
     read(item) {
+      if (item.readed) {
+        return;
+      }
+
       this.$api.notificationRead(item.id).then(() => {
         item.readed = true;
       })
@@ -75,7 +87,35 @@ export default defineComponent({
           i.readed = true;
         })
       });
+    },
+    remove(item) {
+      this.$api.notificationDelete(item.id).then(() => {
+        this.resp.data?.splice(this.resp.data.indexOf(item), 1);
+      })
+    },
+    add(item) {
+      this.resp.data?.push(item);
+    },
+    open(item) {
+      this.$q.dialog({
+        title: item.title,
+        message: item.message,
+      })
     }
   }
 });
 </script>
+
+<style lang="scss" scoped>
+.header{
+  font-size: 16px;
+}
+.item {
+  &:hover{
+    background: rgba(0,0,0,.1);
+  }
+}
+.q-pl-none{
+  padding-left: 0 !important;
+}
+</style>

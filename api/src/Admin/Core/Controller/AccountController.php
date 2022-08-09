@@ -26,7 +26,7 @@ class AccountController extends AbstractApiController
     public function me(#[CurrentUser] ?User $user, NotificationPusher $pusher): ApiResponse
     {
         $pusher->send(
-            $pusher->create('Dowas asdasds asd assada', 'asdsad asd asdas ashd askd haskd', NotificationType::WARNING)
+            $pusher->create('Dowas asdasds asd assada', 'asdsad asd asdas ashd askd haskd', NotificationType::DANGER)
         );
 
         return ApiResponse::create()

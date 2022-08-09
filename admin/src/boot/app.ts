@@ -54,15 +54,12 @@ import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import firebase from 'boot/helper/firebase';
+import {useAuthStore} from "stores/AuthStore";
 
 export default boot(({app, router, store}) => {
   const exceptions = ref({});
 
   app.use(i18n);
-
-  app.config.globalProperties.$api = api;
-  app.config.globalProperties.$client = client;
-  app.config.globalProperties.$isBusy = isBusy;
 
   // Route Guard
   routeGuard(router, store, i18n.global.t)
@@ -75,4 +72,10 @@ export default boot(({app, router, store}) => {
 
   // Init Firebase
   firebase(router)
+
+  // Init Global Properties
+  app.config.globalProperties.$api = api;
+  app.config.globalProperties.$client = client;
+  app.config.globalProperties.$isBusy = isBusy;
+  app.config.globalProperties.$auth = useAuthStore(store);
 });

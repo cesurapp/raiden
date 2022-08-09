@@ -2,9 +2,9 @@
 * 
 * user me
 * user reload
-* firebase
-* firebase config
+* 
 * deploy
+* 
 * admin -> notication ui
 * admin -> profile edit
 * admin -> firebase ui
