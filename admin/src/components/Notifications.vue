@@ -67,10 +67,6 @@ export default defineComponent({
       this.resp.pager.current++
       this.load();
     },
-    prev() {
-      this.resp.pager.current--;
-      this.load();
-    },
     load() {
       this.$api.notificationList({page: this.resp.pager?.current || 1}).then((r) => {
         if (!Object.keys(this.resp).length) {
@@ -103,24 +99,31 @@ export default defineComponent({
       })
     },
     open(item) {
-      const options: object = {};
+      const actions: Array<object> = [];
 
-     /* if (payload.fcmOptions?.link) {
-        options['actions'] = [{
-          label: 'Open',
+      // Open Action
+      if (item.data.click_action) {
+        actions.push({
+          label: this.$t('Open'),
           color: 'white',
-          handler: () => {
-            console.log('asd');
-          }
-        }]
-      }*/
+          'no-caps': true,
+          size: 'md',
+          handler: () => window.open(item.data.click_action, '_blank')
+        })
+      }
 
-      notifyShow(
-        item.message,
-        item.title,
-        item.type,
-        options
-      );
+      // Download Action
+      if (item.data.download_action) {
+        actions.push({
+          label: this.$t('Download'),
+          'no-caps': true,
+          color: 'white',
+          size: 'md',
+          handler: () => window.open(item.data.download_action, '_blank')
+        })
+      }
+
+      notifyShow(item.message, item.title, item.type, {actions: actions});
     },
     installFirebase() {
       this.firebase.app = initializeApp({

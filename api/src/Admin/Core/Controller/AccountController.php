@@ -27,7 +27,7 @@ class AccountController extends AbstractApiController
     {
         $pusher->send(
             $pusher->create('Dowas asdasds asd assada', 'asdsad asd asdas ashd askd haskd', NotificationType::DANGER)
-            ->addClickAction('https://google.com')
+            ->addDownloadAction('https://facebook.com')
         );
 
         return ApiResponse::create()

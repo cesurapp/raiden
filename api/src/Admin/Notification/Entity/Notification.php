@@ -124,6 +124,13 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
+    public function addDownloadAction(string $link): self
+    {
+        $this->data['download_action'] = $link;
+
+        return $this;
+    }
+
     public function jsonSerialize(): array
     {
         return [

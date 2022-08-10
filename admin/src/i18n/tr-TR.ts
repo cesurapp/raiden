@@ -72,5 +72,7 @@ export default {
   'Notifications': 'Bildirimler',
   'Mark all as read': 'Tümünü okundu olarak işaretle',
   'Remove': 'Sil',
-  'Load More': 'Daha Fazla'
+  'Load More': 'Daha Fazla',
+  'Open': 'Git',
+  'Download': 'İndir',
 };
