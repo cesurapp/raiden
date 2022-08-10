@@ -8,6 +8,7 @@ use App\Admin\Notification\Dto\FcmRegisterDto;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Enum\DeviceType;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @method Device|null find($id, $lockMode = null, $lockVersion = null)
@@ -53,6 +54,6 @@ class DeviceRepository extends BaseRepository
      */
     public function removeDevice(string $deviceId): void
     {
-        $this->remove($this->em()->getReference(Device::class, $deviceId));
+        $this->remove($this->em()->getReference(Device::class, Ulid::fromString($deviceId)));
     }
 }

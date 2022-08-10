@@ -9,7 +9,6 @@ use Symfony\Component\Notifier\Bridge\Firebase\Notification\AndroidNotification;
 use Symfony\Component\Notifier\Bridge\Firebase\Notification\IOSNotification;
 use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
 use Symfony\Component\Notifier\ChatterInterface;
-use Symfony\Component\Notifier\Exception\TransportException;
 use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Notifier\Message\SentMessage;
 
@@ -41,9 +40,11 @@ class NotificationTask implements TaskInterface
         // Send Message
         try {
             return $this->chatter->send($message);
-        } catch (TransportException $exception) {
-            if (str_contains($exception->getMessage(), 'InvalidRegistration')) {
-                // Remove Device
+        } catch (\Exception $exception) {
+            if (
+                str_contains($exception->getMessage(), 'InvalidRegistration') ||
+                str_contains($exception->getMessage(), 'NotRegistered')
+            ) {
                 $this->deviceRepo->removeDevice($data['device']['id']);
             }
         }
