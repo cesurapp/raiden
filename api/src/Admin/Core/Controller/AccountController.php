@@ -32,7 +32,6 @@ class AccountController extends AbstractApiController
 
         return ApiResponse::create()
             ->setData([$user])
-            ->setResource(UserResource::class)
-            ->addMessage('asdas');
+            ->setResource(UserResource::class);
     }
 }

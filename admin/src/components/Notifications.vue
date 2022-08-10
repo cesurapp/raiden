@@ -86,7 +86,7 @@ export default defineComponent({
         return;
       }
 
-      this.$api.notificationRead(item.id).then(() => {
+      this.$api.notificationRead(item.id, {message: false}).then(() => {
         item.readed = true;
       })
     },
@@ -102,14 +102,25 @@ export default defineComponent({
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       })
     },
-    add(item) {
-      this.resp.data?.push(item);
-    },
     open(item) {
-      this.$q.dialog({
-        title: item.title,
-        message: item.message,
-      })
+      const options: object = {};
+
+     /* if (payload.fcmOptions?.link) {
+        options['actions'] = [{
+          label: 'Open',
+          color: 'white',
+          handler: () => {
+            console.log('asd');
+          }
+        }]
+      }*/
+
+      notifyShow(
+        item.message,
+        item.title,
+        item.type,
+        options
+      );
     },
     installFirebase() {
       this.firebase.app = initializeApp({
@@ -124,24 +135,12 @@ export default defineComponent({
       this.firebase.messaging = getMessaging(this.firebase.app);
 
       // Get & Save Token
-      getToken(this.firebase.messaging).then((token) => this.$api.deviceRegister({token: token, device: 'web'}))
+      getToken(this.firebase.messaging).then((token) => this.$api.deviceRegister({token: token, device: 'web'}, {message: false}))
 
       // Message Event
       onMessage(this.firebase.messaging, this.onFirebaseMessage);
     },
     onFirebaseMessage(payload) {
-      const options: object = {};
-
-      if (payload.fcmOptions?.link) {
-        options['actions'] = [{
-          label: 'Open',
-          color: 'white',
-          handler: () => {
-            console.log('asd');
-          }
-        }]
-      }
-
       // Parse & Append Data
       let n = payload.data;
       n.data = JSON.parse(n.data);
@@ -149,12 +148,7 @@ export default defineComponent({
       n.createdAt = JSON.parse(n.createdAt);
       this.resp.data.unshift(n);
 
-      notifyShow(
-        payload.notification?.body,
-        payload.notification?.title,
-        payload.data?.type,
-        options
-      );
+      this.open(n);
     }
   }
 });

@@ -25,7 +25,7 @@ function requestError(error, isBusy) {
 
 function responseSuccess(response, isBusy) {
   // Process Response Message
-  if (response.data.hasOwnProperty('message')) {
+  if (response.data.hasOwnProperty('message') && (response.config.message ?? true)) {
     Object.keys(response.data.message).forEach((type) => {
       Object.values(response.data.message[type]).forEach((message: any) => {
         notifyShow(message, undefined, type)
