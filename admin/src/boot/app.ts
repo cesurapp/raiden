@@ -53,7 +53,6 @@ export {api}
 import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
-import firebase from 'boot/helper/firebase';
 import {useAuthStore} from "stores/AuthStore";
 
 export default boot(({app, router, store}) => {
@@ -69,9 +68,6 @@ export default boot(({app, router, store}) => {
 
   // Validation Rules
   validationRules(app, i18n.global.t, exceptions)
-
-  // Init Firebase
-  firebase(router)
 
   // Init Global Properties
   app.config.globalProperties.$api = api;

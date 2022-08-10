@@ -15,7 +15,8 @@
         </q-item-label>
 
         <!--Items-->
-        <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed" active-class="text-blue">
+        <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed"
+                active-class="text-blue">
           <q-item-section @click="read(item); open(item)">
             <q-item-label lines="1">{{ item.title }}</q-item-label>
             <q-item-label caption>{{ item.createdAt.date }}</q-item-label>
@@ -39,14 +40,22 @@
 <script lang="ts">
 import {defineComponent} from 'vue';
 import {NotificationListResponse} from "src/api/Response/NotificationListResponse";
+import {initializeApp} from 'firebase/app';
+import {getMessaging, onMessage, getToken} from 'firebase/messaging';
+import {notifyShow} from 'src/helper/NotifyHelper';
 
 export default defineComponent({
   name: 'NotificationComponent',
   data: () => ({
-    resp: {} as NotificationListResponse
+    resp: {} as NotificationListResponse,
+    firebase: {
+      app: null,
+      messaging: null
+    }
   }),
   mounted() {
     this.load();
+    this.installFirebase();
   },
   computed: {
     isUnreaded() {
@@ -101,21 +110,61 @@ export default defineComponent({
         title: item.title,
         message: item.message,
       })
+    },
+    installFirebase() {
+      this.firebase.app = initializeApp({
+        apiKey: 'AIzaSyC_ZbH7KHkv9s72ZEgjZbwduYBmFR2aN_E',
+        authDomain: 'yeyee-app.firebaseapp.com',
+        projectId: 'yeyee-app',
+        storageBucket: 'yeyee-app.appspot.com',
+        messagingSenderId: '858568967918',
+        appId: '1:858568967918:web:1355ef685eb5b69a4b95ff',
+        measurementId: 'G-KW1YHX0979'
+      });
+      this.firebase.messaging = getMessaging(this.firebase.app);
+
+      // Get & Save Token
+      getToken(this.firebase.messaging).then((token) => this.$api.deviceRegister({token: token, device: 'web'}))
+
+      // Message Event
+      onMessage(this.firebase.messaging, this.onFirebaseMessage);
+    },
+    onFirebaseMessage(payload) {
+      const options: object = {};
+
+      if (payload.fcmOptions?.link) {
+        options['actions'] = [{
+          label: 'Open',
+          color: 'white',
+          handler: () => {
+            console.log('asd');
+          }
+        }]
+      }
+
+      notifyShow(
+        payload.notification?.body,
+        payload.notification?.title,
+        payload.data?.type,
+        options
+      );
     }
   }
 });
 </script>
 
 <style lang="scss" scoped>
-.header{
+.header {
   font-size: 16px;
 }
+
 .item {
-  &:hover{
-    background: rgba(0,0,0,.1);
+  &:hover {
+    background: rgba(0, 0, 0, .1);
   }
 }
-.q-pl-none{
+
+.q-pl-none {
   padding-left: 0 !important;
 }
 </style>

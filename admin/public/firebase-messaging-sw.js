@@ -10,11 +10,13 @@ firebase.initializeApp({
   appId: "1:858568967918:web:1355ef685eb5b69a4b95ff",
   measurementId: "G-KW1YHX0979"
 });
-const messaging = firebase.messaging();
 
-/*self.addEventListener('notificationclick', function (event) {
-  let {notification} = event;
-  // this event will not be occoured by notication of FCM 'notification' key
-  console.log('[firebase-messaging-sw.js] Notification clicked: ', event);
-  notification.close()
-});*/
+firebase.messaging().onBackgroundMessage((payload) => {
+  // Customize notification here for 'data' key
+  let {data} = payload
+  if (data && data.title && data.body) {
+    self.registration.showNotification(data.title || 'Raiden App', {
+      body: data.body || '',
+    });
+  }
+});
