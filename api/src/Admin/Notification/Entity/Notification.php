@@ -133,6 +133,7 @@ class Notification implements \JsonSerializable
             'message' => $this->message,
             'readed' => $this->readed,
             'data' => $this->data,
+            'createdAt' => $this->getId()->getDateTime(),
         ];
     }
 }

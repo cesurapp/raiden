@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import {NotificationListResponse} from "src/api/Response/NotificationListResponse";
+import {NotificationListResponse} from 'src/api/Response/NotificationListResponse';
 import {initializeApp} from 'firebase/app';
 import {getMessaging, onMessage, getToken} from 'firebase/messaging';
 import {notifyShow} from 'src/helper/NotifyHelper';
@@ -141,6 +141,13 @@ export default defineComponent({
           }
         }]
       }
+
+      // Parse & Append Data
+      let n = payload.data;
+      n.data = JSON.parse(n.data);
+      n.readed = JSON.parse(n.readed);
+      n.createdAt = JSON.parse(n.createdAt);
+      this.resp.data.unshift(n);
 
       notifyShow(
         payload.notification?.body,

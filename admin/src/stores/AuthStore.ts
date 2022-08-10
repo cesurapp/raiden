@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import {SessionStorage, LocalStorage} from 'quasar';
 import {api} from 'boot/app';
-import {SecurityLoginResponse} from "src/api/Response/SecurityLoginResponse";
+import {SecurityLoginResponse} from 'src/api/Response/SecurityLoginResponse';
 
 const key = {
   'user': 'app-user',
@@ -71,7 +71,7 @@ export const useAuthStore = defineStore('auth', {
       return null;
     },
     logout() {
-      api.securityLogout({refresh_token: SessionStorage.getItem(key["refreshToken"])?.toString()}).finally(() => {
+      api.securityLogout({refresh_token: SessionStorage.getItem(key['refreshToken'])?.toString()}).finally(() => {
         this.clearToken();
         this.clearRefreshToken();
       });

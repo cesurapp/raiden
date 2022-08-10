@@ -1,13 +1,10 @@
 * Deploy Actions
+* deploy
 * 
 * user me
 * user reload
-* 
-* deploy
-* 
-* admin -> notication ui
+*
 * admin -> profile edit
-* admin -> firebase ui
 * admin -> menü
 * admin -> security panel
 * admin -> dashboard

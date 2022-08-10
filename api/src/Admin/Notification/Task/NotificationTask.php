@@ -61,7 +61,8 @@ class NotificationTask implements TaskInterface
                 array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ], $data['notification']['data'])
+                ], $data['notification']['data']),
+                $data['notification']
             )
         );
     }
@@ -75,7 +76,8 @@ class NotificationTask implements TaskInterface
                 array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ], $data['notification']['data'])
+                ], $data['notification']['data']),
+                $data['notification']
             )
         );
     }
@@ -89,7 +91,8 @@ class NotificationTask implements TaskInterface
                 array_merge([
                     'title' => $data['notification']['title'],
                     'body' => $data['notification']['message'],
-                ], $data['notification']['data'])
+                ], $data['notification']['data']),
+                $data['notification']
             )
         );
     }

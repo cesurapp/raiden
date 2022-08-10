@@ -41,18 +41,18 @@ class DeviceTest extends AbstractWebTestCase
         ]);
         $this->isOk();
 
-        // Fail Duplicate
+        // Duplicate
         $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
             'token' => $token,
             'device' => 'web',
         ]);
-        $this->isFail();
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy([
+        $deviceToken = $this->manager()->getRepository(Device::class)->findBy([
             'token' => $token,
         ]);
         $this->assertNotNull($deviceToken);
+        $this->assertCount(1, $deviceToken);
     }
 
     public function testNotificationTask(): void

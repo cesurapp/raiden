@@ -53,7 +53,7 @@ export {api}
 import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
-import {useAuthStore} from "stores/AuthStore";
+import {useAuthStore} from 'stores/AuthStore';
 
 export default boot(({app, router, store}) => {
   const exceptions = ref({});

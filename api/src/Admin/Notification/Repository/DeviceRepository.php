@@ -56,4 +56,12 @@ class DeviceRepository extends BaseRepository
     {
         $this->remove($this->em()->getReference(Device::class, Ulid::fromString($deviceId)));
     }
+
+    public function check(string $token, string $device): bool
+    {
+        return (bool) $this->count([
+            'token' => $token,
+            'type' => $device,
+        ]);
+    }
 }

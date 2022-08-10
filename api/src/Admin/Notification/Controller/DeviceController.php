@@ -26,8 +26,11 @@ class DeviceController extends AbstractApiController
     #[Route(path: '/v1/main/notification/fcm-register', methods: ['POST'])]
     public function register(#[CurrentUser] User $user, FcmRegisterDto $dto, DeviceRepository $repo): ApiResponse
     {
-        $repo->register($dto, $user);
+        // Check
+        if (!$repo->check($dto->validated('token'), $dto->validated('device'))) {
+            $repo->register($dto, $user);
+        }
 
-        return ApiResponse::create()->addMessage('Operation successful');
+        return ApiResponse::create()->setData('OK');
     }
 }
