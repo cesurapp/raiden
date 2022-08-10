@@ -75,4 +75,8 @@ export default {
   'Load More': 'Daha Fazla',
   'Open': 'Git',
   'Download': 'İndir',
+  'Activate': 'Etkinleştir',
+  'System Notification': 'Sistem Bildirimleri',
+  'Enable browser notifications for instant system alerts and file downloads.': 'Anlık sistem uyarıları ve dosya indirmeleri için tarayıcı bildirimlerini etkinleştirin.',
+  'Push notifications are turned off, reset browser permissions to enable it.': 'Anlık bildirimler kapalı, etkinleştirmek için tarayıcı izinlerini sıfırlayın.'
 };

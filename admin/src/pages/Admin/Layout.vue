@@ -49,7 +49,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {useAuthStore} from 'stores/AuthStore';
-import Notifications from 'components/Notifications.vue';
+import Notifications from 'components/Notification/Notification.vue';
 import LanguageChanger from 'components/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
 import {createMetaMixin} from 'quasar';

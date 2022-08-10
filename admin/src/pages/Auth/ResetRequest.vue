@@ -31,7 +31,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
-import {createMetaMixin} from "quasar";
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
   name: 'ResetRequest',
@@ -53,7 +53,7 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success: boolean) => {
         if (success) {
-          this.$api.securityResetRequest({username: this.username}).then((r) => {
+          this.$api.securityResetRequest({username: this.username}).then(() => {
             this.$router.push({name: 'auth.reset.password', params:{id: btoa(this.username)}})
           })
         }

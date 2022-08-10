@@ -27,7 +27,7 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
 import {notifyDanger} from 'src/helper/NotifyHelper';
-import {createMetaMixin} from "quasar";
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
   name: 'AuthConfirm',

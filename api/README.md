@@ -2,13 +2,11 @@
 * 
 * user me
 * user reload
-* notifiction -> link -> global open -> download file
 * 
 * admin -> profile edit
 * admin -> menü
 * admin -> security panel
 * admin -> dashboard
-
 * 
 * 
 * DataTable

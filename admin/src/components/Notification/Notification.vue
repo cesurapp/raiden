@@ -5,6 +5,18 @@
 
     <!--Notifications-->
     <q-menu anchor="bottom end" self="top end" style="min-width: 275px">
+      <q-card class="warning text-white" v-if="access.permission !== true">
+        <q-card-section class="flex items-center q-py-sm q-px-md">
+          <div class="q-mr-md">
+            <div class="text-subtitle1">{{ $t('System Notification') }}</div>
+            <div class="text-body2">{{ $t('Enable browser notifications for instant system alerts and file downloads.') }}</div>
+          </div>
+          <q-btn flat color="green" size="md" icon="done" rounded dense @click="accessNotification(true)">
+            <q-tooltip>{{ $t('Activate') }}</q-tooltip>
+          </q-btn>
+        </q-card-section>
+      </q-card>
+
       <q-list>
         <!--Header-->
         <q-item-label header class="flex items-center justify-between">
@@ -15,8 +27,7 @@
         </q-item-label>
 
         <!--Items-->
-        <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed"
-                active-class="text-blue">
+        <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed" active-class="text-blue">
           <q-item-section @click="read(item); open(item)">
             <q-item-label lines="1">{{ item.title }}</q-item-label>
             <q-item-label caption>{{ item.createdAt.date }}</q-item-label>
@@ -35,6 +46,23 @@
       </q-list>
     </q-menu>
   </q-btn>
+
+  <!--Firebase Request Access-->
+  <q-dialog v-model="access.modal" seamless position="top">
+    <q-card style="width: 350px">
+      <q-card-section class="row items-center no-wrap">
+        <div>
+          <div class="text-h6 text-weight-regular q-mb-xs">System Notification</div>
+          <div class="text-grey">Enable browser notifications for instant system alerts and file downloads.</div>
+        </div>
+        <q-space />
+        <q-btn flat round icon="close" v-close-popup color="red" @click="accessNotification(false)"/>
+        <q-btn flat round icon="done" v-close-popup color="green" @click="accessNotification(true)">
+          <q-tooltip>Activate</q-tooltip>
+        </q-btn>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -43,6 +71,7 @@ import {NotificationListResponse} from 'src/api/Response/NotificationListRespons
 import {initializeApp} from 'firebase/app';
 import {getMessaging, onMessage, getToken} from 'firebase/messaging';
 import {notifyShow} from 'src/helper/NotifyHelper';
+import {LocalStorage} from 'quasar';
 
 export default defineComponent({
   name: 'NotificationComponent',
@@ -50,12 +79,21 @@ export default defineComponent({
     resp: {} as NotificationListResponse,
     firebase: {
       app: null,
-      messaging: null
+      messaging: null,
+    },
+    access: {
+      modal: false,
+      permission: LocalStorage.getItem('fbPermission')
     }
   }),
   mounted() {
     this.load();
-    this.installFirebase();
+    this.initNotification();
+  },
+  watch: {
+    'access.permission'(val) {
+      LocalStorage.set('fbPermission', val)
+    }
   },
   computed: {
     isUnreaded() {
@@ -125,23 +163,63 @@ export default defineComponent({
 
       notifyShow(item.message, item.title, item.type, {actions: actions});
     },
-    installFirebase() {
-      this.firebase.app = initializeApp({
-        apiKey: 'AIzaSyC_ZbH7KHkv9s72ZEgjZbwduYBmFR2aN_E',
-        authDomain: 'yeyee-app.firebaseapp.com',
-        projectId: 'yeyee-app',
-        storageBucket: 'yeyee-app.appspot.com',
-        messagingSenderId: '858568967918',
-        appId: '1:858568967918:web:1355ef685eb5b69a4b95ff',
-        measurementId: 'G-KW1YHX0979'
+    initNotification() {
+      if (!Notification) {
+        return;
+      }
+
+      if (this.access.permission === null) {
+        this.access.modal = true;
+      }
+
+      if (this.access.permission === true) {
+        this.accessNotification(true);
+      }
+    },
+    accessNotification(status) {
+      if (!status) {
+        return this.access.permission = false;
+      }
+
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          this.access.permission = true;
+          this.installFirebase()
+        } else {
+          this.access.permission = false;
+          this.$q.dialog({
+            title: this.$t('System Notification'),
+            message: this.$t('Push notifications are turned off, reset browser permissions to enable it.')
+          })
+        }
       });
+    },
+    installFirebase() {
+      const config = {
+        apiKey: process.env.FIREBASE_APIKEY,
+        authDomain: process.env.FIREBASE_DOMAIN,
+        projectId: process.env.FIREBASE_PROJECTID,
+        storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+        messagingSenderId: process.env.FIREBASE_SENDERID,
+        appId: process.env.FIREBASE_APPID,
+        measurementId: process.env.FIREBASE_MEASUREMENTID
+      };
+      localStorage.setItem('fbConfig', btoa(JSON.stringify(config)));
+      this.firebase.app = initializeApp(config);
       this.firebase.messaging = getMessaging(this.firebase.app);
 
       // Get & Save Token
-      getToken(this.firebase.messaging).then((token) => this.$api.deviceRegister({token: token, device: 'web'}, {message: false}))
+      getToken(this.firebase.messaging).then((token) => {
+        if (token) {
+          this.saveFirebaseToken(token);
+        }
+      })
 
       // Message Event
       onMessage(this.firebase.messaging, this.onFirebaseMessage);
+    },
+    saveFirebaseToken(token: string) {
+      this.$api.deviceRegister({token: token, device: 'web'}, {message: false})
     },
     onFirebaseMessage(payload) {
       // Parse & Append Data
@@ -170,5 +248,9 @@ export default defineComponent({
 
 .q-pl-none {
   padding-left: 0 !important;
+}
+
+.warning{
+  background: transparentize($negative, .5);
 }
 </style>

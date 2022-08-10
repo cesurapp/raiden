@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {createMetaMixin} from "quasar";
+import {createMetaMixin} from 'quasar';
 export default defineComponent({
   name: 'ErrorPage404',
   mixins: [

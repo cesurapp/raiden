@@ -8,7 +8,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
 
-const { configure } = require('quasar/wrappers');
+const {configure} = require('quasar/wrappers');
 const path = require('path');
 
 module.exports = configure(function (ctx) {
@@ -41,20 +41,20 @@ module.exports = configure(function (ctx) {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v5',
-      'fontawesome-v6',
+      //'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
-      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       //'roboto-font', // optional, you are not bound to it
+      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
       'material-icons', // optional, you are not bound to it
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       target: {
-        browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
+        browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16'
       },
 
@@ -84,6 +84,22 @@ module.exports = configure(function (ctx) {
 
           // you need to set i18n resource including paths !
           include: path.resolve(__dirname, './src/i18n/**')
+        }],
+        ['rollup-plugin-copy', {
+          targets: [
+            { // Copying firebase-messaging-sw.js to SPA/PWA/SSR dest build folder
+              src: 'src/components/Notification/firebase-messaging-sw.js',
+              dest: ['dist/spa', 'public'],    // example when building SPA
+              transform: (contents) => contents.toString()
+                .replace('<FIREBASE_APIKEY>', process.env.FIREBASE_APIKEY)
+                .replace('<FIREBASE_DOMAIN>', process.env.FIREBASE_DOMAIN)
+                .replace('<FIREBASE_PROJECTID>', process.env.FIREBASE_PROJECTID)
+                .replace('<FIREBASE_STORAGEBUCKET>', process.env.FIREBASE_STORAGEBUCKET)
+                .replace('<FIREBASE_SENDERID>', process.env.FIREBASE_SENDERID)
+                .replace('<FIREBASE_APPID>', process.env.FIREBASE_APPID)
+                .replace('<FIREBASE_MEASUREMENTID>', process.env.FIREBASE_MEASUREMENTID)
+            }
+          ]
         }]
       ],
     },
@@ -97,7 +113,7 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       config: {
-        notify: { /* look at QuasarConfOptions from the API card */ }
+        notify: { /* look at QuasarConfOptions from the API card */}
       },
       cssAddon: true,
       // iconSet: 'material-icons', // Quasar icon set
