@@ -40,6 +40,7 @@ import Api from 'src/api';
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $api: Api;
+    $auth: typeof useAuthStore;
   }
 }
 

@@ -3,7 +3,6 @@
     <!--Header-->
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" size="md" @click="leftDrawerOpen = !leftDrawerOpen"/>
         <q-toolbar-title>Dashboard</q-toolbar-title>
 
         <!--Right-->
@@ -16,23 +15,26 @@
           <q-tooltip>Account</q-tooltip>
           <q-menu fit anchor="bottom end" self="top end">
             <q-list>
-              <q-item><q-item-section><div>Hi, <strong>{{ authStore.user.first_name }} {{ authStore.user.last_name }}</strong></div></q-item-section></q-item>
+              <q-item><q-item-section><div>Hi, <strong>{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong></div></q-item-section></q-item>
               <q-separator />
               <q-item clickable><q-item-section>Change Password</q-item-section></q-item>
               <q-item clickable><q-item-section>Edit Profile</q-item-section></q-item>
               <q-separator />
-              <q-item clickable @click="authStore.logout()"><q-item-section>Sign out</q-item-section></q-item>
+              <q-item clickable @click="$auth.logout()"><q-item-section>Sign out</q-item-section></q-item>
             </q-list>
           </q-menu>
         </q-btn>
       </q-toolbar>
     </q-header>
 
-    <!--Drawer-->
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header>Essential Links</q-item-label>
-      </q-list>
+    <!--Left Menu-->
+    <q-drawer show-if-above bordered :mini="menu" mini-to-overlay class="bg-grey-3">
+      <q-toolbar>
+        <q-btn flat dense round icon="menu" size="md" @click="menu = !menu"/>
+        <q-toolbar-title>Raiden Admin</q-toolbar-title>
+      </q-toolbar>
+
+      <Navigation></Navigation>
     </q-drawer>
 
     <!--Container-->
@@ -48,31 +50,23 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import {useAuthStore} from 'stores/AuthStore';
+import {createMetaMixin} from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import LanguageChanger from 'components/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
-import {createMetaMixin} from 'quasar';
+import Navigation from './Components/Navigation.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
-  components: {LanguageChanger, DarkModeChanger, Notifications},
+  components: {LanguageChanger, DarkModeChanger, Notifications, Navigation},
   mixins: [
     createMetaMixin({
       title: 'Raiden Admin',
       titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
     })
   ],
-  setup() {
-    const authStore = useAuthStore();
-    return {
-      authStore
-    }
-  },
-  data() {
-    return {
-      leftDrawerOpen: false
-    }
-  }
+  data: () => ({
+    menu: false
+  })
 })
 </script>

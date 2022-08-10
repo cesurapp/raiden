@@ -34,4 +34,24 @@ class AccountController extends AbstractApiController
             ->setData([$user])
             ->setResource(UserResource::class);
     }
+
+    public function showProfile()
+    {
+    }
+
+    public function updateProfile()
+    {
+    }
+
+    public function showOrganization()
+    {
+    }
+
+    public function updateOrganization()
+    {
+    }
+
+    public function updatePassword()
+    {
+    }
 }
