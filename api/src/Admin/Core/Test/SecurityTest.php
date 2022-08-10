@@ -85,7 +85,7 @@ class SecurityTest extends AbstractWebTestCase
         ]);
         $this->isOk();
         $this->assertEquals('tr_TR', $this->client()->getRequest()->getLanguages()[0]);
-        $this->assertEquals('İşlem tamamlandı.', $this->json(key: 'message')['success'][0]);
+        $this->assertEquals('Oturumunuz kapatıldı', $this->json(key: 'message')['success'][0]);
         $this->assertJsonStructure(['message']);
     }
 
