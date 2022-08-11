@@ -1,13 +1,16 @@
-* Deploy Actions
-* 
-* user me
-* user reload
-* 
-* admin -> profile edit
-* admin -> menü
-* admin -> security panel
-* admin -> dashboard
-* 
+* Admin -> Menu
+* Admin -> UI
+* Admin -> Responsive
+* Admin -> Dashboard
+* Admin -> Edit Profile
+* Admin -> Change Password
+* UI -> Reload User
+* Admin -> Account Manager
+* Admin -> Create Account
+* Admin -> Delete Account
+* Admin -> Switch User
+* Admin -> Permission Edit
+* UI -> Axios Unlimited Loop Fix
 * 
 * DataTable
 * -- Filters
