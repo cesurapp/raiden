@@ -6,6 +6,7 @@ export default [
     name: 'admin',
     children: [
       {path: '/', component: () => import('pages/Admin/Dashboard/Index.vue'), meta: {roles: ['ROLE_ADMIN']}},
+      {path: '/accounts', component: () => import('pages/Admin/Account/Accounts.vue'), meta: {roles: ['ROLE_ADMIN']}},
     ],
   }
 ]

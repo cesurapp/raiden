@@ -1,13 +1,12 @@
 <template>
-  <q-layout id="layout" view="lHr lpR fFf">
+  <q-layout view="lHr lpR fFf">
     <!--Header-->
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title>Dashboard</q-toolbar-title>
+        <q-btn flat dense round icon="menu" size="md" @click="$refs.nav.toggle()"/>
+        <q-toolbar-title></q-toolbar-title>
 
         <!--Right-->
-        <DarkModeChanger dense></DarkModeChanger>
-        <q-separator class="q-mx-sm" dark vertical inset/>
         <Notifications></Notifications>
 
         <!-- Profile Menu-->
@@ -28,14 +27,7 @@
     </q-header>
 
     <!--Left Menu-->
-    <q-drawer show-if-above bordered :mini="menu" mini-to-overlay class="bg-grey-3">
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" size="md" @click="menu = !menu"/>
-        <q-toolbar-title>Raiden Admin</q-toolbar-title>
-      </q-toolbar>
-
-      <Navigation></Navigation>
-    </q-drawer>
+    <Navigation ref="nav"></Navigation>
 
     <!--Container-->
     <q-page-container>
@@ -52,21 +44,16 @@
 import {defineComponent} from 'vue'
 import {createMetaMixin} from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
-import LanguageChanger from 'components/LanguageChanger.vue';
-import DarkModeChanger from 'components/DarkModeChanger.vue';
 import Navigation from './Components/Navigation.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
-  components: {LanguageChanger, DarkModeChanger, Notifications, Navigation},
+  components: {Notifications, Navigation},
   mixins: [
     createMetaMixin({
       title: 'Raiden Admin',
       titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
     })
-  ],
-  data: () => ({
-    menu: false
-  })
+  ]
 })
 </script>

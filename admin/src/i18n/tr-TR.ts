@@ -78,5 +78,11 @@ export default {
   'Activate': 'Etkinleştir',
   'System Notification': 'Sistem Bildirimleri',
   'Enable browser notifications for instant system alerts and file downloads.': 'Anlık sistem uyarıları ve dosya indirmeleri için tarayıcı bildirimlerini etkinleştirin.',
-  'Push notifications are turned off, reset browser permissions to enable it.': 'Anlık bildirimler kapalı, etkinleştirmek için tarayıcı izinlerini sıfırlayın.'
+  'Push notifications are turned off, reset browser permissions to enable it.': 'Anlık bildirimler kapalı, etkinleştirmek için tarayıcı izinlerini sıfırlayın.',
+
+  // Admin
+  'Dashboard': 'Anasayfa',
+  'Account Management': 'Hesap Yönetimi',
+  'Accounts': 'Hesaplar',
+  'Organization': 'Organizasyion'
 };

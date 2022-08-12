@@ -1,0 +1,56 @@
+name: Deploy App
+
+on:
+  push:
+    branches: [production]
+
+jobs:
+  phpunit-test:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./api
+
+    # Services -> Postgres
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+    # Steps
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: phpunit-bridge
+          extensions: imagick, uuid, swoole, :xdebug
+          ini-values: sys_temp_dir=${{ runner.temp }}
+        env:
+          SWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
+      - uses: actions/checkout@v3
+      - name: Install Quality Tools
+        run: composer install-tool
+      - name: Cache Composer Packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Quality Tools - PHPStan
+        run: composer phpstan
+      - name: Quality Tools - PHPCS Fixer
+        run: composer lint
+      - name: Execute PHPUnit
+        run: composer test-stop
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14

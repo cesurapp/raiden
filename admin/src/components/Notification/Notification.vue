@@ -4,7 +4,7 @@
     <q-badge v-if="isUnreaded" color="red" rounded floating></q-badge>
 
     <!--Notifications-->
-    <q-menu anchor="bottom end" self="top end" style="min-width: 275px">
+    <q-menu anchor="bottom end" self="top end" style="min-width: 290px">
       <q-card class="warning text-white" v-if="access.permission !== true">
         <q-card-section class="flex items-center q-py-sm q-px-md">
           <div class="q-mr-md">
@@ -219,7 +219,12 @@ export default defineComponent({
       onMessage(this.firebase.messaging, this.onFirebaseMessage);
     },
     saveFirebaseToken(token: string) {
-      this.$api.deviceRegister({token: token, device: 'web'}, {message: false})
+      const fbToken = LocalStorage.getItem('fbToken');
+      if (fbToken !== token) {
+        this.$api.deviceRegister({token: token, device: 'web'}, {message: false}).then(() => {
+          LocalStorage.set('fbToken', token);
+        })
+      }
     },
     onFirebaseMessage(payload) {
       // Parse & Append Data
