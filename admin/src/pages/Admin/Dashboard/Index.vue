@@ -5,19 +5,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
 import {createMetaMixin} from "quasar";
 
 export default defineComponent({
   name: 'AdminDashboard',
   mixins: [
-    createMetaMixin(function() {
+    createMetaMixin(function () {
       return {
         title: this.$t('Dashboard')
       }
     })
   ],
-  methods:{
+  methods: {
     test() {
       this.$api.accountMe()
     }

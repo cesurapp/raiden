@@ -9,14 +9,12 @@
     <q-list class="menus">
       <div class="item" v-for="(nav, index) in getNavs" :key="index">
         <!--Header-->
-        <q-item-label v-if="nav.header" header>{{ nav.header }}</q-item-label>
+        <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
 
         <!--Single-->
         <q-item v-if="!nav.child" :to="nav.to" clickable v-ripple dense class="menu-link">
-          <q-item-section avatar>
-            <q-icon :name="nav.icon"/>
-          </q-item-section>
-          <q-item-section>{{ nav.text }}</q-item-section>
+          <q-item-section avatar><q-icon :name="nav.icon"/></q-item-section>
+          <q-item-section>{{ $t(nav.text) }}</q-item-section>
         </q-item>
 
         <!--Multiple-->
@@ -24,7 +22,7 @@
           <q-list>
             <q-item v-for="(childNav, childIndex) in nav.child" :key="childIndex" :to="childNav.to" clickable v-ripple dense class="menu-link">
               <q-item-section avatar><q-icon :name="childNav.icon"/></q-item-section>
-              <q-item-section>{{ childNav.text }}</q-item-section>
+              <q-item-section>{{ $t(childNav.text) }}</q-item-section>
             </q-item>
           </q-list>
         </q-expansion-item>
@@ -33,9 +31,11 @@
 
     <!--Footer-->
     <div class="footer flex items-center justify-evenly">
+      <LanguageChanger :only-white="true"></LanguageChanger>
+      <q-separator class="q-mx-sm" dark vertical inset/>
       <DarkModeChanger dense :only-white="true"></DarkModeChanger>
       <q-separator class="q-mx-sm" dark vertical inset/>
-      <LanguageChanger :only-white="true"></LanguageChanger>
+      <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="toggle"/>
     </div>
   </q-drawer>
 </template>
@@ -49,7 +49,7 @@ export default defineComponent({
   name: 'AdminNavigation',
   components: {LanguageChanger, DarkModeChanger},
   data: () => ({
-    menu: true,
+    menu: false,
     navs: [
       {icon: 'dashboard', text: 'Dashboard', to: '/'},
       {icon: 'group', text: 'Accounts', to: '/accounts', header: 'Account Management'},
@@ -73,18 +73,6 @@ export default defineComponent({
           }
 
           return true;
-        })
-        .map((nav) => {
-          nav.text = this.$t(nav.text);
-
-          if (nav.hasOwnProperty('child')) {
-            nav.child.map((cNav) => cNav.text = this.$t(cNav.text))
-          }
-          if (nav.hasOwnProperty('header')) {
-            nav.header = this.$t(nav.header);
-          }
-
-          return nav;
         });
     }
   },

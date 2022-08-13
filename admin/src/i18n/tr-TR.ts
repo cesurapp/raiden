@@ -84,5 +84,5 @@ export default {
   'Dashboard': 'Anasayfa',
   'Account Management': 'Hesap Yönetimi',
   'Accounts': 'Hesaplar',
-  'Organization': 'Organizasyion'
+  'Organization': 'Organizasyon'
 };

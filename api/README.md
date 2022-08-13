@@ -1,16 +1,12 @@
-* Admin -> Menu
-* Admin -> UI
-* Admin -> Responsive
-* Admin -> Dashboard
+* UI -> Reload User
+* UI -> Axios Unlimited Loop Fix
 * Admin -> Edit Profile
 * Admin -> Change Password
-* UI -> Reload User
 * Admin -> Account Manager
 * Admin -> Create Account
 * Admin -> Delete Account
 * Admin -> Switch User
 * Admin -> Permission Edit
-* UI -> Axios Unlimited Loop Fix
 * 
 * DataTable
 * -- Filters

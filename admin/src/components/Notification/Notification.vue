@@ -4,14 +4,14 @@
     <q-badge v-if="isUnreaded" color="red" rounded floating></q-badge>
 
     <!--Notifications-->
-    <q-menu anchor="bottom end" self="top end" style="min-width: 290px">
-      <q-card class="warning text-white" v-if="access.permission !== true">
+    <q-menu anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0,12]">
+      <q-card class="bg-info q-my-md q-mx-md" v-if="access.permission !== true">
         <q-card-section class="flex items-center q-py-sm q-px-md">
           <div class="q-mr-md">
             <div class="text-subtitle1">{{ $t('System Notification') }}</div>
             <div class="text-body2">{{ $t('Enable browser notifications for instant system alerts and file downloads.') }}</div>
           </div>
-          <q-btn flat color="green" size="md" icon="done" rounded dense @click="accessNotification(true)">
+          <q-btn outline color="primary" size="md" icon="done" rounded dense @click="accessNotification(true)">
             <q-tooltip>{{ $t('Activate') }}</q-tooltip>
           </q-btn>
         </q-card-section>
@@ -40,9 +40,7 @@
         </q-item>
 
         <!--Items-->
-        <q-item v-if="resp.pager?.next">
-          <q-btn @click="next()" class="full-width" :label="$t('Load More')" size="md" flat></q-btn>
-        </q-item>
+        <q-btn v-if="resp.pager?.next" @click="next()" class="full-width" :label="$t('Load More')" size="md" flat></q-btn>
       </q-list>
     </q-menu>
   </q-btn>
@@ -253,9 +251,5 @@ export default defineComponent({
 
 .q-pl-none {
   padding-left: 0 !important;
-}
-
-.warning{
-  background: transparentize($negative, .5);
 }
 </style>

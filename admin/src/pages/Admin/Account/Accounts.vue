@@ -5,15 +5,15 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
-import {createMetaMixin} from "quasar";
+import {defineComponent} from 'vue';
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
   name: 'AccountListing',
   mixins: [
     createMetaMixin(function () {
       return {
-        title: this.$t('Dashboard')
+        title: this.$t(String(this.$route.meta.breadcrumb))
       }
     })
   ],

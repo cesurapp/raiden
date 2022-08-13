@@ -2,9 +2,16 @@
   <q-layout view="lHr lpR fFf">
     <!--Header-->
     <q-header elevated>
-      <q-toolbar>
-        <q-btn flat dense round icon="menu" size="md" @click="$refs.nav.toggle()"/>
-        <q-toolbar-title></q-toolbar-title>
+      <q-toolbar class="q-px-md">
+        <q-btn flat dense round icon="menu" size="md" class="mobile-only q-mr-sm" @click="$refs.nav.toggle()"/>
+        <q-toolbar-title class="q-pl-none">
+          <q-breadcrumbs class="breadcrumbs">
+            <q-breadcrumbs-el v-for="(route, index) in getBreadcrumbs" :key="index"
+                              :label="$t(route.meta.breadcrumb)"
+                              :to="route.path"
+                              class="text-white"/>
+          </q-breadcrumbs>
+        </q-toolbar-title>
 
         <!--Right-->
         <Notifications></Notifications>
@@ -12,7 +19,7 @@
         <!-- Profile Menu-->
         <q-btn class="q-ml-sm" dense flat round icon="account_circle" size="md">
           <q-tooltip>Account</q-tooltip>
-          <q-menu fit anchor="bottom end" self="top end">
+          <q-menu fit anchor="bottom end" self="top end" :offset="[0,12]">
             <q-list>
               <q-item><q-item-section><div>Hi, <strong>{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong></div></q-item-section></q-item>
               <q-separator />
@@ -50,10 +57,26 @@ export default defineComponent({
   name: 'AdminLayout',
   components: {Notifications, Navigation},
   mixins: [
-    createMetaMixin({
-      title: 'Raiden Admin',
-      titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
+    createMetaMixin(function () {
+      return {
+        title: 'Raiden Admin',
+        titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
+      }
     })
-  ]
+  ],
+  computed: {
+    getBreadcrumbs() {
+      return this.$route.matched.filter((route) => {
+        return route.meta?.breadcrumb;
+      })
+    }
+  }
 })
 </script>
+
+<style lang="scss">
+.breadcrumbs {
+  font-size: 16px;
+  font-weight: 500;
+}
+</style>

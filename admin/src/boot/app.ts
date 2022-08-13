@@ -40,7 +40,6 @@ import Api from 'src/api';
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $api: Api;
-    $auth: typeof useAuthStore;
   }
 }
 
@@ -55,6 +54,12 @@ import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import {useAuthStore} from 'stores/AuthStore';
+
+declare module '@vue/runtime-core' {
+  interface ComponentCustomProperties {
+    $auth: typeof useAuthStore
+  }
+}
 
 export default boot(({app, router, store}) => {
   const exceptions = ref({});
