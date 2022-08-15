@@ -1,5 +1,4 @@
 * UI -> Reload User
-* UI -> Axios Unlimited Loop Fix
 * Admin -> Edit Profile
 * Admin -> Change Password
 * Admin -> Account Manager

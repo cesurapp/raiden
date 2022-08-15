@@ -47,8 +47,9 @@ async function responseError(error, client, authStore, isBusy, globalExceptions)
 
   const type = error.response.data?.type;
 
-  if (['TokenExpiredException'].includes(type)) {
+  if (['TokenExpiredException'].includes(type) && !error.config._retry) {
     const config = error.config;
+    config._retry = true;
     await authStore.reloadTokenWithRefreshToken(config);
     return client(config);
   }

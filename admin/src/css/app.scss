@@ -97,3 +97,19 @@ body.body--dark {
   min-height: 40px;
   padding: 8px 16px;
 }
+
+/**
+ * Notify Close Btn
+ */
+.notify-close-btn{
+  position: absolute;
+  left: calc(100% - 1px);
+  bottom: calc(100% - 8px);
+  transform: scale(0.95);
+}
+.q-notifications__list--top{
+  top: 10px;
+}
+.q-notification{
+  margin: 14px 10px 0;
+}

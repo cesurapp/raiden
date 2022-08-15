@@ -21,7 +21,19 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
     timeout: 3500,
     position: 'top',
     progress: true,
+    actions: [{
+      icon: 'close',
+      dense: true,
+      color: 'red',
+      flat: false,
+      class: 'notify-close-btn',
+      size: 'sm',
+    }]
   };
+
+  if (options['actions']) {
+    options['actions'] = [...opts['actions'], ...options['actions']]
+  }
 
   Notify.create({
     ...opts,

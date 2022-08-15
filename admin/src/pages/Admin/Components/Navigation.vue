@@ -12,17 +12,17 @@
         <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
 
         <!--Single-->
-        <q-item v-if="!nav.child" :to="nav.to" clickable v-ripple dense class="menu-link">
+        <q-item exact v-if="!nav.child" :to="nav.to" clickable v-ripple dense class="menu-link" active-class="active-link">
           <q-item-section avatar><q-icon :name="nav.icon"/></q-item-section>
-          <q-item-section>{{ $t(nav.text) }}</q-item-section>
+          <q-item-section class="text-weight-medium">{{ $t(nav.text) }}</q-item-section>
         </q-item>
 
         <!--Multiple-->
-        <q-expansion-item :icon="nav.icon" :label="nav.text" v-else group="navigation" dense active-class="active-item-grup">
+        <q-expansion-item :icon="nav.icon" :label="nav.text" v-model="nav.active" v-else group="navigation" dense active-class="active-item-grup">
           <q-list>
-            <q-item v-for="(childNav, childIndex) in nav.child" :key="childIndex" :to="childNav.to" clickable v-ripple dense class="menu-link">
+            <q-item exact v-for="(childNav, childIndex) in nav.child" :key="childIndex" :to="childNav.to" clickable v-ripple dense active-class="active-link" class="menu-link">
               <q-item-section avatar><q-icon :name="childNav.icon"/></q-item-section>
-              <q-item-section>{{ $t(childNav.text) }}</q-item-section>
+              <q-item-section class="text-weight-medium">{{ $t(childNav.text) }}</q-item-section>
             </q-item>
           </q-list>
         </q-expansion-item>
@@ -37,6 +37,10 @@
       <q-separator class="q-mx-sm" dark vertical inset/>
       <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="toggle"/>
     </div>
+
+    <teleport to="#head-toolbar" v-if="!menu && mounted">
+      <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="toggle"/>
+    </teleport>
   </q-drawer>
 </template>
 
@@ -49,6 +53,7 @@ export default defineComponent({
   name: 'AdminNavigation',
   components: {LanguageChanger, DarkModeChanger},
   data: () => ({
+    mounted: false,
     menu: false,
     navs: [
       {icon: 'dashboard', text: 'Dashboard', to: '/'},
@@ -73,8 +78,22 @@ export default defineComponent({
           }
 
           return true;
+        })
+        .map((nav) => {
+          if (nav.hasOwnProperty('child')) {
+            if (nav.child.some((child) => {
+              return typeof child.to === 'string' ? (child.to === this.$route.path) : (child.to.path === this.$route.path);
+            })) {
+              nav.active = true;
+            }
+          }
+
+          return nav;
         });
     }
+  },
+  mounted() {
+    this.mounted = true;
   },
   methods: {
     toggle() {
@@ -127,6 +146,11 @@ export default defineComponent({
 
   .q-item__section--side > .q-icon{
     font-size: 22px;
+  }
+
+  .active-link{
+    color: white;
+    background: $primary
   }
 
   .footer{

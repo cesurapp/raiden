@@ -1,15 +1,14 @@
 <template>
-  <q-layout view="lHr lpR fFf">
+  <q-layout class="admin" view="lHr lpR fFf">
     <!--Header-->
     <q-header elevated>
-      <q-toolbar class="q-px-md">
-        <q-btn flat dense round icon="menu" size="md" class="mobile-only q-mr-sm" @click="$refs.nav.toggle()"/>
+      <q-toolbar class="q-pl-md-md q-pr-md-sm">
+        <div id="head-toolbar"></div>
+
+        <!--BreadCrumbs & Title-->
         <q-toolbar-title class="q-pl-none">
           <q-breadcrumbs class="breadcrumbs">
-            <q-breadcrumbs-el v-for="(route, index) in getBreadcrumbs" :key="index"
-                              :label="$t(route.meta.breadcrumb)"
-                              :to="route.path"
-                              class="text-white"/>
+            <q-breadcrumbs-el v-for="(route, index) in getBreadcrumbs" :key="index" :label="$t(route.meta.breadcrumb)" :to="route.path"/>
           </q-breadcrumbs>
         </q-toolbar-title>
 
@@ -17,23 +16,11 @@
         <Notifications></Notifications>
 
         <!-- Profile Menu-->
-        <q-btn class="q-ml-sm" dense flat round icon="account_circle" size="md">
-          <q-tooltip>Account</q-tooltip>
-          <q-menu fit anchor="bottom end" self="top end" :offset="[0,12]">
-            <q-list>
-              <q-item><q-item-section><div>Hi, <strong>{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong></div></q-item-section></q-item>
-              <q-separator />
-              <q-item clickable><q-item-section>Change Password</q-item-section></q-item>
-              <q-item clickable><q-item-section>Edit Profile</q-item-section></q-item>
-              <q-separator />
-              <q-item clickable @click="$auth.logout()"><q-item-section>Sign out</q-item-section></q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+        <Profile></Profile>
       </q-toolbar>
     </q-header>
 
-    <!--Left Menu-->
+    <!--Left Navigation-->
     <Navigation ref="nav"></Navigation>
 
     <!--Container-->
@@ -52,10 +39,11 @@ import {defineComponent} from 'vue'
 import {createMetaMixin} from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import Navigation from './Components/Navigation.vue';
+import Profile from './Components/Profile.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
-  components: {Notifications, Navigation},
+  components: {Notifications, Navigation, Profile},
   mixins: [
     createMetaMixin(function () {
       return {
@@ -78,5 +66,29 @@ export default defineComponent({
 .breadcrumbs {
   font-size: 16px;
   font-weight: 500;
+  color: rgba(255, 255, 255, .8);
+
+  a {
+    color: rgba(255, 255, 255, .8);
+    transition: .2s all;
+
+    &:hover {
+      color: #FFF;
+    }
+  }
+
+  .q-breadcrumbs--last a {
+    color: #FFF;
+  }
+
+  @media (max-width: $breakpoint-xs-max) {
+    & > div > div:not(.q-breadcrumbs--last) {
+      display: none;
+    }
+  }
+}
+
+body{
+  background: #f6f7f9;
 }
 </style>
