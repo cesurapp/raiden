@@ -89,7 +89,7 @@ class OtpKeyRepository extends BaseRepository
     {
         $this->createQueryBuilder('o')
             ->where('o.expiredAt <= :expire')
-            ->setParameter('expire', new \DateTimeImmutable('-3 minute'))
+            ->setParameter('expire', new \DateTimeImmutable('-120 minute'))
             ->delete()->getQuery()->execute();
     }
 
