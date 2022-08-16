@@ -44,7 +44,7 @@ class CronTest extends AbstractKernelTestCase
             ->setOwner($user)
             ->setType(OtpType::EMAIL)
             ->setOtpKey(123445)
-            ->setExpiredAt(new \DateTimeImmutable('-20 minute'));
+            ->setExpiredAt(new \DateTimeImmutable('-122 minute'));
         $this->save($rf);
 
         /** @var CronWorker $worker */
