@@ -1,17 +1,21 @@
-* UI -> Reload User
-* Admin -> Edit Profile
-* Admin -> Change Password
-* Admin -> Account Manager
-* Admin -> Create Account
-* Admin -> Delete Account
-* Admin -> Switch User
-* Admin -> Permission Edit
+* UI -> Reload User -> ROLE_ADMIN
+* UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
+* 
+* Admin -> Edit Profile -> ROLE_ADMIN
+* Admin -> Change Password -> ROLE_ADMIN
+*
+* Admin -> Show Account ROLE_ACCOUNT_SHOW
+* Admin -> Listing Account ROLE_ACCOUNT_LISTING
+* Admin -> Create Account ROLE_ACCOUNT_CREATE
+* Admin -> Delete Account ROLE_ACCOUNT_DELETE
+* Admin -> Permission Edit ROLE_ACCOUNT_PERMISSION
 * 
 * DataTable
 * -- Filters
 * -- Excel Export
 * -- Excel Import
-* 
+*
+* Cron Multiple Server Init
 * Readme
 
 ## Requirement

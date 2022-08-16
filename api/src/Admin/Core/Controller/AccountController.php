@@ -4,54 +4,87 @@ namespace App\Admin\Core\Controller;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Resource\UserResource;
-use App\Admin\Notification\Enum\NotificationType;
-use App\Admin\Notification\Service\NotificationPusher;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
+use Package\ApiBundle\Attribute\IsGranted;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AccountController extends AbstractApiController
 {
-    #[Thor(group: 'Profile', desc: 'Profile Details')]
-    #[Route(path: '/v1/profile')]
-    public function getProfile(#[CurrentUser] ?User $user): ApiResponse
+    #[Thor(group: 'Account Management|10', desc: 'View Profile', order: 1)]
+    #[Route(path: '/v1/admin/account/profile', methods: ['GET'])]
+    public function showProfile(#[CurrentUser] User $user): ApiResponse
     {
-        return ApiResponse::create()->addMessage('asdasd');
+        return ApiResponse::create()->setData($user)->setResource(UserResource::class);
     }
 
-    #[Thor(group: 'Profile', desc: 'Admin Profile Details')]
-    #[Route(path: '/v1/admin/profile')]
-    public function me(#[CurrentUser] ?User $user, NotificationPusher $pusher): ApiResponse
+    #[Thor(group: 'Account Management', desc: 'Edit Profile', order: 2)]
+    #[Route(path: '/v1/admin/account/profile', methods: ['POST'])]
+    public function editProfile(#[CurrentUser] User $user): ApiResponse
     {
-        $pusher->send(
-            $pusher->create('Dowas asdasds asd assada', 'asdsad asd asdas ashd askd haskd', NotificationType::DANGER)
-            ->addDownloadAction('https://facebook.com')
-        );
-
-        return ApiResponse::create()
-            ->setData([$user])
-            ->setResource(UserResource::class);
+        return ApiResponse::create()->setData([])->setResource(UserResource::class);
     }
 
-    public function showProfile()
+    #[Thor(group: 'Account Management', desc: 'Change Password', order: 3)]
+    #[Route(path: '/v1/admin/account/password', methods: ['POST'])]
+    public function editPassword(#[CurrentUser] User $user): ApiResponse
     {
     }
 
-    public function updateProfile()
+
+
+
+
+
+
+
+
+    #[Thor(group: 'Account Management', desc: 'List Accounts', order: 4)]
+    #[Route(path: '/v1/admin/account/list', methods: ['GET'])]
+    #[IsGranted(['ROLE_ADMIN'])]
+    public function listAccount(Request $request): ApiResponse
+    {
+        return ApiResponse::create()->setData([]);
+    }
+
+    #[Thor(group: 'Account Management', desc: 'Create Account', order: 5)]
+    #[Route(path: '/v1/admin/account/create', methods: ['GET'])]
+    #[IsGranted(['ROLE_TEST'])]
+    public function createAccount(): ApiResponse
+    {
+        return ApiResponse::create()->setData([]);
+    }
+
+    #[Thor(group: 'Account Management', desc: 'Show Account', order: 6)]
+    #[Route(path: '/v1/admin/account/show/{id}', methods: ['GET'])]
+    public function showAccount(User $user): ApiResponse
     {
     }
 
-    public function showOrganization()
+    #[Thor(group: 'Account Management', desc: 'Change Password', order: 7)]
+    #[Route(path: '/v1/admin/account/edit/{id}', methods: ['POST'])]
+    public function editAccount(User $user): ApiResponse
     {
     }
 
-    public function updateOrganization()
+    #[Thor(group: 'Account Management', desc: 'Delete Account', order: 8)]
+    #[Route(path: '/v1/admin/account/delete/{id}', methods: ['delete'])]
+    public function deleteAccount(User $user): ApiResponse
     {
     }
 
-    public function updatePassword()
+    #[Thor(group: 'Account Management', desc: 'View Permission', order: 9)]
+    #[Route(path: '/v1/admin/account/permission/{id}', methods: ['GET'])]
+    public function showPermission(User $user): ApiResponse
+    {
+    }
+
+    #[Thor(group: 'Account Management', desc: 'Edit Permission', order: 10)]
+    #[Route(path: '/v1/admin/account/permission/{id}', methods: ['POST'])]
+    public function editPermission(): ApiResponse
     {
     }
 }
