@@ -16,6 +16,11 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AccountController extends AbstractApiController
 {
+
+    public function __construct(private readonly UserPasswordHasherInterface $hasher, private readonly UserRepository $userRepo)
+    {
+    }
+
     #[Thor(
         group: 'Account Management|10',
         desc: 'View Profile',
@@ -32,9 +37,9 @@ class AccountController extends AbstractApiController
 
     #[Thor(group: 'Account Management', desc: 'Edit Profile', order: 2)]
     #[Route(path: '/v1/admin/account/profile', methods: ['POST'])]
-    public function editProfile(#[CurrentUser] User $user): ApiResponse
+    public function editProfile(#[CurrentUser] User $user, UserDto $dto): ApiResponse
     {
-        return $this->editAccount($user);
+        return $this->editAccount($user, $dto);
     }
 
     #[Thor(group: 'Account Management', desc: 'Change Password', order: 3)]
@@ -90,7 +95,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/create', methods: ['POST'])]
     #[IsGranted(['ROLE_ACCOUNT_CREATE'])]
-    public function createAccount(UserDto $dto, UserPasswordHasherInterface $hasher, UserRepository $userRepo): ApiResponse
+    public function createAccount(UserDto $dto): ApiResponse
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -98,8 +103,8 @@ class AccountController extends AbstractApiController
         // Init & Save
         $user = $dto->initObject(new User())
             ->setOrganization($currentUser->getOrganization())
-            ->setPassword($dto->validated('password'), $hasher);
-        $userRepo->add($user);
+            ->setPassword($dto->validated('password'), $this->hasher);
+        $this->userRepo->add($user);
 
         return ApiResponse::create()
             ->setData($user)
@@ -117,7 +122,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/edit/{id}', methods: ['POST'])]
     #[IsGranted(['ROLE_ACCOUNT_EDIT'])]
-    public function editAccount(User $user, UserDto $dto, UserPasswordHasherInterface $hasher, UserRepository $userRepo): ApiResponse
+    public function editAccount(User $user, UserDto $dto): ApiResponse
     {
         return ApiResponse::create()
             ->setData($user)
