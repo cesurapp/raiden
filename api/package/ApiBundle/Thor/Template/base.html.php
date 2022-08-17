@@ -184,7 +184,7 @@
                         <?php foreach ($routes as $routeUri => $route) { ?>
                             <div class="accordion-item">
                                 <h3 class="accordion-header small">
-                                    <button class="accordion-button route collapsed" data-bs-toggle="collapse" data-bs-target="#panel<?php echo $groupName.$routeUri; ?>">
+                                    <button class="accordion-button route collapsed" data-bs-toggle="collapse" data-bs-target="#panel<?php echo md5($groupName.$routeUri); ?>">
                                         <?php foreach ($route['routerMethod'] as $method) { ?>
                                             <div class="method <?php echo strtolower($method); ?>"><span><?php echo $method; ?></span></div>
                                         <?php } ?>
@@ -208,7 +208,7 @@
                                     </button>
                                 </h3>
 
-                                <div id="panel<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                <div id="panel<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                     <div class="accordion-body">
                                         <div class="accordion">
                                             <!--Controller-->
@@ -218,11 +218,11 @@
                                             <!--Attributes-->
                                             <?php if (!empty($route['routerAttr'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelAttr<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelAttr<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-code me-2"></i>
                                                         Route Attributes
                                                     </div>
-                                                    <div id="panelAttr<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelAttr<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['routerAttr'] as $name => $type) { ?>
                                                             <p class="mb-0"><span class="d-inline-block" style="min-width: 30%;"><?php echo $name; ?>:</span><code><?php echo $type; ?></code></p>
                                                         <?php } ?>
@@ -233,11 +233,11 @@
                                             <!--Header-->
                                             <?php if (!empty($route['header'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelHeader<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelHeader<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-shield me-2"></i> Header Parameters
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">HEADER</span>
                                                     </div>
-                                                    <div id="panelHeader<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelHeader<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['header'] as $name => $type) { ?>
                                                             <p class="mb-0">
                                                                 <span class="d-inline-block" style="min-width: 30%;"><?php echo $name; ?>:</span>
@@ -251,11 +251,11 @@
                                             <!--Query-->
                                             <?php if (!empty($route['query'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelQuery<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelQuery<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-filter me-2"></i> Query Parameters
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small">GET</span>
                                                     </div>
-                                                    <div id="panelQuery<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelQuery<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['query'] as $name => $type) { ?>
                                                             <div class="mb-1 d-flex">
                                                                 <span style="min-width: 20%;"><?php echo $name; ?>:</span>
@@ -275,11 +275,11 @@
                                             <!--Body-->
                                             <?php if (!empty($route['request'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelBody<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-info pointer" data-bs-toggle="collapse" data-bs-target="#panelBody<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-database me-2"></i> Body Parameters
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small"><?php echo implode('|', array_diff($route['routerMethod'], ['GET'])); ?></span>
                                                     </div>
-                                                    <div id="panelBody<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelBody<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['request'] as $name => $type) { ?>
                                                             <div class="mb-0 d-flex">
                                                                 <span class="d-inline-block" style="min-width: 30%;"><?php echo $name; ?>:</span>
@@ -297,11 +297,11 @@
                                             <!--Response-->
                                             <?php if (!empty($route['response'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success pointer" data-bs-toggle="collapse" data-bs-target="#panelResponse<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success pointer" data-bs-toggle="collapse" data-bs-target="#panelResponse<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-reply me-2"></i> Response
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small"><?php echo 'ApiResponse' === $route['controllerResponseType'] ? 'JSON' : $route['controllerResponseType']; ?></span>
                                                     </div>
-                                                    <div id="panelResponse<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelResponse<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['response'] as $code => $response) { ?>
                                                             <div class="mb-0 d-flex">
                                                                 <span class="d-inline-block" style="min-width: 30%;"><?php echo($statusText[$response['code'] ?? $code] ?? '').' '.($response['code'] ?? $code); ?>:</span>
@@ -315,11 +315,11 @@
                                             <!--Exception Response-->
                                             <?php if (!empty($route['exception'])) { ?>
                                                 <div class="mt-3">
-                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success pointer" data-bs-toggle="collapse" data-bs-target="#panelException<?php echo $groupName.$routeUri; ?>">
+                                                    <div class="d-flex align-items-center fw-bold mb-2 pb-2 border-bottom border-success pointer" data-bs-toggle="collapse" data-bs-target="#panelException<?php echo md5($groupName.$routeUri); ?>">
                                                         <i class="fa-solid fa-reply me-2"></i> Response Exception
                                                         <span class="ms-auto bg-secondary text-white px-1 rounded-1 small"><?php echo 'ApiResponse' === $route['controllerResponseType'] ? 'JSON' : $route['controllerResponseType']; ?></span>
                                                     </div>
-                                                    <div id="panelException<?php echo $groupName.$routeUri; ?>" class="accordion-collapse collapse">
+                                                    <div id="panelException<?php echo md5($groupName.$routeUri); ?>" class="accordion-collapse collapse">
                                                         <?php foreach ($route['exception'] as $code => $response) { ?>
                                                             <div class="mb-0 d-flex">
                                                                 <span class="d-inline-block" style="min-width: 30%;"><?php echo($statusText[$response['code'] ?? $code] ?? '').' '.($response['code'] ?? $code); ?>:</span>

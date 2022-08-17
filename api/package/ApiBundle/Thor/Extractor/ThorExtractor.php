@@ -3,6 +3,7 @@
 namespace Package\ApiBundle\Thor\Extractor;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
+use Package\ApiBundle\Attribute\IsGranted;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Thor\Attribute\Thor;
@@ -86,7 +87,7 @@ class ThorExtractor
                     'paginate' => $attrThor['paginate'] ?? false,
                     'requireAuth' => $attrThor['requireAuth'] ?? true,
                     'order' => $attrThor['order'] ?? 0,
-                    'roles' => $attrThor['roles'] ?? [],
+                    'roles' => $this->extractRoles($refMethod, $attrThor),
 
                     // Router
                     'routerPath' => $route['router']->getPath(),
@@ -159,6 +160,17 @@ class ThorExtractor
         }
 
         return $data;
+    }
+
+    private function extractRoles(ReflectionMethod $method, array $attrThor): array
+    {
+        $permissions = $method->getAttributes(IsGranted::class);
+        if ($permissions) {
+            $permissions = $permissions[0]->getArguments();
+            $permissions = $permissions[0] ?? $permissions['roles'];
+        }
+
+        return array_merge($permissions, ($attrThor['roles'] ?? []));
     }
 
     /**

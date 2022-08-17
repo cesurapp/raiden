@@ -50,7 +50,8 @@ class SecurityTest extends AbstractWebTestCase
     public function testLoginToken(): void
     {
         static::createClient();
-        $user = $this->createUser();
+        $user = $this->createUser()->setType(UserType::ADMIN);
+        $this->save($user);
 
         // Login Api
         $this->client()->jsonRequest('POST', '/v1/auth/login', [
@@ -62,7 +63,7 @@ class SecurityTest extends AbstractWebTestCase
 
         // Login with Token
         $token = $this->json(key: 'token');
-        $this->client()->jsonRequest('GET', '/v1/profile', server: [
+        $this->client()->jsonRequest('GET', '/v1/admin/account/profile', server: [
             'HTTP_AUTHORIZATION' => 'Bearer '.$token,
         ]);
         $this->isOk();
@@ -92,7 +93,8 @@ class SecurityTest extends AbstractWebTestCase
     public function testRefreshToken(): void
     {
         static::createClient();
-        $user = $this->createUser();
+        $user = $this->createUser()->setType(UserType::ADMIN);
+        $this->save($user);
         $jwt = self::getContainer()->get(JWT::class);
 
         // Login Api
@@ -120,7 +122,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->assertNotSame($token, $newToken);
 
         // Login with New Token
-        $this->client()->jsonRequest('GET', '/v1/profile', server: [
+        $this->client()->jsonRequest('GET', '/v1/admin/account/profile', server: [
             'HTTP_AUTHORIZATION' => 'Bearer '.$newToken,
         ]);
         $this->isOk();
@@ -412,7 +414,7 @@ class SecurityTest extends AbstractWebTestCase
         // Access Denied without CorePermission::SWITCH_USER
         $this
             ->client($user2)
-            ->request('GET', '/v1/admin/profile', server: [
+            ->request('GET', '/v1/admin/account/profile', server: [
                 'HTTP_SWITCH_USER' => $user->getEmail(),
             ]);
         $this->isForbidden();
@@ -420,10 +422,10 @@ class SecurityTest extends AbstractWebTestCase
         // Acces
         $this
             ->client($user)
-            ->request('GET', '/v1/admin/profile', server: [
+            ->request('GET', '/v1/admin/account/profile', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ]);
-        $this->assertEquals($user2->getId()->toBase32(), $this->json()[0]['id']);
+        $this->assertEquals($user2->getId()->toBase32(), $this->json(null, 'data')['id']);
 
         // Disable Login Endpoint
         $this
