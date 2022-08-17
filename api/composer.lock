@@ -517,16 +517,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.4.0",
+            "version": "3.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "118a360e9437e88d49024f36283c8bcbd76105f5"
+                "reference": "94e016428884227245fb1219e0de7d8b86ca16d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/118a360e9437e88d49024f36283c8bcbd76105f5",
-                "reference": "118a360e9437e88d49024f36283c8bcbd76105f5",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/94e016428884227245fb1219e0de7d8b86ca16d7",
+                "reference": "94e016428884227245fb1219e0de7d8b86ca16d7",
                 "shasum": ""
             },
             "require": {
@@ -608,7 +608,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.4.0"
+                "source": "https://github.com/doctrine/dbal/tree/3.4.1"
             },
             "funding": [
                 {
@@ -624,7 +624,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-08-06T20:35:57+00:00"
+            "time": "2022-08-16T18:37:46+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -8506,16 +8506,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.4.1",
+            "version": "v3.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342"
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e939eae92386b69b49cfa4599dd9bead6bf4a342",
-                "reference": "e939eae92386b69b49cfa4599dd9bead6bf4a342",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
+                "reference": "e07cdd3d430cd7e453c31b36eb5ad6c0c5e43077",
                 "shasum": ""
             },
             "require": {
@@ -8566,7 +8566,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.4.1"
+                "source": "https://github.com/twigphp/Twig/tree/v3.4.2"
             },
             "funding": [
                 {
@@ -8578,7 +8578,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-17T05:48:52+00:00"
+            "time": "2022-08-12T06:47:24+00:00"
         }
     ],
     "aliases": [],

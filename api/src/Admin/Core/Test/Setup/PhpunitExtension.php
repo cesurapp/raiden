@@ -39,20 +39,17 @@ class PhpunitExtension extends KernelTestCase implements AfterLastTestHook, Befo
         // Create DB
         unset($config['dbname'], $config['url']);
         $tmpCon = DriverManager::getConnection($config);
-        if (!in_array($dbName, $tmpCon->createSchemaManager()->listDatabases(), true)) {
-            $tmpCon->createSchemaManager()->createDatabase($dbName);
-        }
 
         // Update Schema
         $metaData = $manager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($manager);
         if ($drop) {
             $schemaTool->dropDatabase();
-
             return;
         }
 
-        $schemaTool->dropSchema($metaData);
+        $tmpCon->createSchemaManager()->dropDatabase($dbName);
+        $tmpCon->createSchemaManager()->createDatabase($dbName);
         $schemaTool->updateSchema($metaData);
 
         static::ensureKernelShutdown();
