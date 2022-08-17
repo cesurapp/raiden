@@ -16,7 +16,6 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AccountController extends AbstractApiController
 {
-
     public function __construct(private readonly UserPasswordHasherInterface $hasher, private readonly UserRepository $userRepo)
     {
     }
@@ -154,7 +153,6 @@ class AccountController extends AbstractApiController
     public function showPermission(User $user): ApiResponse
     {
         return ApiResponse::create()->addMessage('User deleted');
-
     }
 
     #[Thor(
@@ -167,6 +165,5 @@ class AccountController extends AbstractApiController
     public function editPermission(): ApiResponse
     {
         return ApiResponse::create()->addMessage('User deleted');
-
     }
 }
