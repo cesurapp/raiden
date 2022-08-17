@@ -45,6 +45,7 @@ class PhpunitExtension extends KernelTestCase implements AfterLastTestHook, Befo
         $schemaTool = new SchemaTool($manager);
         if ($drop) {
             $schemaTool->dropDatabase();
+
             return;
         }
 
