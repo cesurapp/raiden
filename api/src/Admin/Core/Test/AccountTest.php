@@ -14,6 +14,6 @@ class AccountTest extends AbstractWebTestCase
         $this->save($user);
 
         $this->client($user)->jsonRequest('GET', '/v1/admin/account/list');
-        $this->isOk();
+        $this->isFail();
     }
 }
