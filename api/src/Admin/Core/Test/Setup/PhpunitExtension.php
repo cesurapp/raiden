@@ -4,26 +4,15 @@ namespace App\Admin\Core\Test\Setup;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use PHPUnit\Runner\AfterLastTestHook;
 use PHPUnit\Runner\BeforeFirstTestHook;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class PhpunitExtension extends KernelTestCase implements AfterLastTestHook, BeforeFirstTestHook
+class PhpunitExtension extends KernelTestCase implements BeforeFirstTestHook
 {
-    public function executeBeforeFirstTest(): void
-    {
-        $this->initDB();
-    }
-
-    public function executeAfterLastTest(): void
-    {
-        $this->initDB(true);
-    }
-
     /**
      * Initialize DB.
      */
-    public function initDB(bool $drop = false): void
+    public function executeBeforeFirstTest(): void
     {
         static::bootKernel();
 
@@ -43,13 +32,9 @@ class PhpunitExtension extends KernelTestCase implements AfterLastTestHook, Befo
         // Update Schema
         $metaData = $manager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($manager);
-        if ($drop) {
-            $schemaTool->dropDatabase();
-
-            return;
+        if (in_array($dbName, $tmpCon->createSchemaManager()->listDatabases(), true)) {
+            $tmpCon->createSchemaManager()->dropDatabase($dbName);
         }
-
-        $tmpCon->createSchemaManager()->dropDatabase($dbName);
         $tmpCon->createSchemaManager()->createDatabase($dbName);
         $schemaTool->updateSchema($metaData);
 
