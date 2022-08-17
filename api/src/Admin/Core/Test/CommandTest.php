@@ -13,6 +13,8 @@ class CommandTest extends AbstractKernelTestCase
 {
     public function testCreateUser(): void
     {
+        static::bootKernel();
+
         $tester = $this->cmdTester('user:create');
         $this->assertStringContainsString('User Created!', $tester->getDisplay());
     }
