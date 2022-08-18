@@ -170,6 +170,8 @@ class ThorExtractor
             $permissions = $permissions[0] ?? $permissions['roles'];
         }
 
+        $permissions = array_map(static fn ($p) => $p instanceof \BackedEnum ? $p->value : $p, $permissions);
+
         return array_merge($permissions, ($attrThor['roles'] ?? []));
     }
 

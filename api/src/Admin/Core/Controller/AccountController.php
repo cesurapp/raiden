@@ -4,6 +4,7 @@ namespace App\Admin\Core\Controller;
 
 use App\Admin\Core\Dto\UserDto;
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Enum\AccountPermission;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
@@ -16,16 +17,16 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 class AccountController extends AbstractApiController
 {
-    public function __construct(private readonly UserPasswordHasherInterface $hasher, private readonly UserRepository $userRepo)
-    {
+    public function __construct(
+        private readonly UserPasswordHasherInterface $hasher,
+        private readonly UserRepository $userRepo
+    ) {
     }
 
     #[Thor(
         group: 'Account Management|10',
         desc: 'View Profile',
-        response: [
-            200 => UserResource::class,
-        ],
+        response: [200 => ['data' => UserResource::class]],
         order: 1,
     )]
     #[Route(path: '/v1/admin/account/profile', methods: ['GET'])]
@@ -51,18 +52,19 @@ class AccountController extends AbstractApiController
     #[Thor(
         group: 'Account Management',
         desc: 'List Accounts',
-        response: [
-            200 => [UserResource::class],
-        ],
+        response: [200 => [UserResource::class]],
         paginate: true,
         order: 4
     )]
     #[Route(path: '/v1/admin/account/list', methods: ['GET'])]
-    #[IsGranted(roles: ['ROLE_ACCOUNT_LIST'])]
+    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
     public function listAccount(UserRepository $userRepo): ApiResponse
     {
+        $query = $userRepo->createQueryBuilder('u');
+
         return ApiResponse::create()
-            ->setData([])
+            ->setQuery($query)
+            ->setPaginate()
             ->setResource(UserResource::class);
     }
 
@@ -70,27 +72,25 @@ class AccountController extends AbstractApiController
         group: 'Account Management',
         desc: 'Show Account',
         response: [
-            200 => UserResource::class,
+            200 => ['data' => UserResource::class],
         ],
-        order: 6,
+        order: 5,
     )]
     #[Route(path: '/v1/admin/account/show/{id}', methods: ['GET'])]
-    #[IsGranted(['ROLE_ACCOUNT_LIST'])]
+    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
     public function showAccount(User $user): ApiResponse
     {
-        return ApiResponse::create()
-            ->setData($user)
-            ->setResource(UserResource::class);
+        return ApiResponse::create()->setData($user)->setResource(UserResource::class);
     }
 
     #[Thor(
         group: 'Account Management',
         desc: 'Create Account',
         response: [
-            200 => UserResource::class,
+            200 => ['data' => UserResource::class],
         ],
         dto: UserDto::class,
-        order: 5
+        order: 6
     )]
     #[Route(path: '/v1/admin/account/create', methods: ['POST'])]
     #[IsGranted(['ROLE_ACCOUNT_CREATE'])]

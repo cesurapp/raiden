@@ -31,7 +31,7 @@ class SecurityIsGranted implements EventSubscriberInterface
         $permissions = $permissions[0]->getArguments();
         $permissions = $permissions[0] ?? $permissions['roles'];
         foreach ($permissions as $permission) {
-            if (!$this->checker->isGranted($permission)) {
+            if (!$this->checker->isGranted($permission->value)) {
                 throw new AccessDeniedException();
             }
         }
