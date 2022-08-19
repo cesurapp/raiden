@@ -29,25 +29,24 @@ class AccountController extends AbstractApiController
         response: [200 => ['data' => UserResource::class]],
         order: 1,
     )]
-    #[Route(path: '/v1/admin/account/profile', methods: ['GET'])]
+    #[Route(path: '/v1/admin/account-profile', methods: ['GET'])]
     public function showProfile(#[CurrentUser] User $user): ApiResponse
     {
         return $this->showAccount($user);
     }
 
     #[Thor(group: 'Account Management', desc: 'Edit Profile', order: 2)]
-    #[Route(path: '/v1/admin/account/profile', methods: ['POST'])]
+    #[Route(path: '/v1/admin/account-profile', methods: ['POST'])]
     public function editProfile(#[CurrentUser] User $user, UserDto $dto): ApiResponse
     {
         return $this->editAccount($user, $dto);
     }
 
-    #[Thor(group: 'Account Management', desc: 'Change Password', order: 3)]
-    #[Route(path: '/v1/admin/account/password', methods: ['POST'])]
-    public function editPassword(#[CurrentUser] User $user): ApiResponse
-    {
-        return ApiResponse::create()->setData([]);
-    }
+
+
+
+
+
 
     #[Thor(
         group: 'Account Management',
@@ -56,7 +55,7 @@ class AccountController extends AbstractApiController
         paginate: true,
         order: 4
     )]
-    #[Route(path: '/v1/admin/account/list', methods: ['GET'])]
+    #[Route(path: '/v1/admin/account', methods: ['GET'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
     public function listAccount(UserRepository $userRepo): ApiResponse
     {
@@ -70,21 +69,6 @@ class AccountController extends AbstractApiController
 
     #[Thor(
         group: 'Account Management',
-        desc: 'Show Account',
-        response: [
-            200 => ['data' => UserResource::class],
-        ],
-        order: 5,
-    )]
-    #[Route(path: '/v1/admin/account/show/{id}', methods: ['GET'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
-    public function showAccount(User $user): ApiResponse
-    {
-        return ApiResponse::create()->setData($user)->setResource(UserResource::class);
-    }
-
-    #[Thor(
-        group: 'Account Management',
         desc: 'Create Account',
         response: [
             200 => ['data' => UserResource::class],
@@ -92,7 +76,7 @@ class AccountController extends AbstractApiController
         dto: UserDto::class,
         order: 6
     )]
-    #[Route(path: '/v1/admin/account/create', methods: ['POST'])]
+    #[Route(path: '/v1/admin/account', methods: ['POST'])]
     #[IsGranted(['ROLE_ACCOUNT_CREATE'])]
     public function createAccount(UserDto $dto): ApiResponse
     {
@@ -112,6 +96,19 @@ class AccountController extends AbstractApiController
 
     #[Thor(
         group: 'Account Management',
+        desc: 'Show Account',
+        response: [200 => ['data' => UserResource::class]],
+        order: 5,
+    )]
+    #[Route(path: '/v1/admin/account/{id}', methods: ['GET'])]
+    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
+    public function showAccount(User $user): ApiResponse
+    {
+        return ApiResponse::create()->setData($user)->setResource(UserResource::class);
+    }
+
+    #[Thor(
+        group: 'Account Management',
         desc: 'Change Password',
         response: [
             200 => UserResource::class,
@@ -119,7 +116,7 @@ class AccountController extends AbstractApiController
         dto: UserDto::class,
         order: 7
     )]
-    #[Route(path: '/v1/admin/account/edit/{id}', methods: ['POST'])]
+    #[Route(path: '/v1/admin/account/{id}', methods: ['POST'])]
     #[IsGranted(['ROLE_ACCOUNT_EDIT'])]
     public function editAccount(User $user, UserDto $dto): ApiResponse
     {
@@ -133,7 +130,7 @@ class AccountController extends AbstractApiController
         desc: 'Delete Account',
         order: 8
     )]
-    #[Route(path: '/v1/admin/account/delete/{id}', methods: ['delete'])]
+    #[Route(path: '/v1/admin/account/{id}', methods: ['DELETE'])]
     #[IsGranted(['ROLE_ACCOUNT_DELETE'])]
     public function deleteAccount(User $user, UserRepository $userRepo): ApiResponse
     {
@@ -142,6 +139,9 @@ class AccountController extends AbstractApiController
 
         return ApiResponse::create()->addMessage('User deleted');
     }
+
+
+
 
     #[Thor(
         group: 'Account Management',

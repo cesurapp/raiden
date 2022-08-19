@@ -23,9 +23,6 @@ class AccountTest extends AbstractWebTestCase
     {
     }
 
-    public function testChangePasswordProfile(): void
-    {
-    }
 
     public function testAccountListing(): void
     {
@@ -35,9 +32,22 @@ class AccountTest extends AbstractWebTestCase
             ->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
         $this->save($user);
 
-        $this->client($user)->jsonRequest('GET', '/v1/admin/account/list');
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account');
         $this->isOk();
         $this->assertJsonStructure(['data' => [['id']]]);
+    }
+
+    public function testAccountCreate(): void
+    {
+        static::createClient();
+        $user = $this->createUser(true)
+            ->setType(UserType::ADMIN)
+            ->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
+        $this->save($user);
+
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/'.$user->getId()->toBase32());
+        $this->isOk();
+        $this->assertJsonStructure(['data' => ['id']]);
     }
 
     public function testAccountShow(): void
@@ -48,7 +58,33 @@ class AccountTest extends AbstractWebTestCase
             ->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
         $this->save($user);
 
-        $this->client($user)->jsonRequest('GET', '/v1/admin/account/show/'.$user->getId()->toBase32());
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/'.$user->getId()->toBase32());
+        $this->isOk();
+        $this->assertJsonStructure(['data' => ['id']]);
+    }
+
+    public function testAccountEdit(): void
+    {
+        static::createClient();
+        $user = $this->createUser(true)
+            ->setType(UserType::ADMIN)
+            ->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
+        $this->save($user);
+
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/'.$user->getId()->toBase32());
+        $this->isOk();
+        $this->assertJsonStructure(['data' => ['id']]);
+    }
+
+    public function testAccountDelete(): void
+    {
+        static::createClient();
+        $user = $this->createUser(true)
+            ->setType(UserType::ADMIN)
+            ->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
+        $this->save($user);
+
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/'.$user->getId()->toBase32());
         $this->isOk();
         $this->assertJsonStructure(['data' => ['id']]);
     }
