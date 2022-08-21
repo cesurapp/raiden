@@ -10,7 +10,6 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Ulid;
-use Symfony\Component\Uid\Uuid;
 
 /**
  * Controller Resolve Entity Object.
@@ -23,11 +22,7 @@ class EntityResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument): bool
     {
-        if ($argument->getAttributes(CurrentUser::class) || !strpos($argument->getType(), 'Entity\\')) {
-            return false;
-        }
-
-        return true;
+        return !($argument->getAttributes(CurrentUser::class) || !strpos($argument->getType(), 'Entity\\'));
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument): \Generator

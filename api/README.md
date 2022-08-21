@@ -1,14 +1,11 @@
 * UI -> Reload User -> ROLE_ADMIN
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
-* 
-* Admin -> Edit Profile -> ROLE_ADMIN
-* Admin -> Change Password -> ROLE_ADMIN
 *
-* Admin -> Show Account ROLE_ACCOUNT_SHOW
-* Admin -> Listing Account ROLE_ACCOUNT_LISTING
-* Admin -> Create Account ROLE_ACCOUNT_CREATE
-* Admin -> Delete Account ROLE_ACCOUNT_DELETE
-* Admin -> Permission Edit ROLE_ACCOUNT_PERMISSION
+* Disable SuperAdmin Remove to Admin Type
+* Disable SuperAdmin Edit to Admin Type
+* Disable SuperAdmin Create to Admin Type
+* Disable SuperAdmin Permission Edit
+* 
 * 
 * DataTable
 * -- Filters

@@ -14,6 +14,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 abstract class AbstractApiDto
 {
+    public ?string $id = null;
+
     protected bool $auto = true;
 
     protected array $validationGroup = ['Default'];
@@ -22,7 +24,7 @@ abstract class AbstractApiDto
 
     protected ConstraintViolationListInterface $constraints;
 
-    protected array $exclude = ['request', 'validator', 'auto', 'validationGroup', 'validated', 'exclude', 'constraints'];
+    protected array $exclude = ['request', 'validator', 'auto', 'validationGroup', 'validated', 'exclude', 'constraints', 'id'];
 
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
@@ -97,6 +99,9 @@ abstract class AbstractApiDto
      */
     protected function beforeValidated(): void
     {
+        if ($this->request->isMethod('PUT')) {
+            $this->id = $this->request->attributes->get('id', $this->request->attributes->get('uid'));
+        }
     }
 
     /**

@@ -18,21 +18,34 @@ class UserDto extends AbstractApiDto
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['email', 'type'])]
     public ?string $email = null;
 
-    #[Assert\Country]
-    public ?string $phoneCountry = null;
+    #[Assert\Type(type: 'boolean')]
+    public bool $emailApproved = false;
 
     #[PhoneNumber(regionPath: 'phoneCountry')]
     #[Assert\Type('numeric')]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone', 'type'])]
     public ?int $phone = null;
 
+    #[Assert\Country]
+    public ?string $phoneCountry = null;
+
+    #[Assert\Type(type: 'bool')]
+    public bool $phoneApproved = false;
+
     #[Assert\NotNull]
-    #[Assert\Choice(callback: 'getTypes')]
+    #[Assert\Choice(callback: [UserType::class, 'values'])]
     public ?string $type = 'user';
 
     #[Assert\Length(min: 8)]
     #[Assert\NotNull]
     public string $password;
+
+    #[Assert\Type(type: 'bool')]
+    #[Assert\NotNull]
+    public bool $frozen;
+
+    #[Assert\Language]
+    public ?string $language;
 
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
@@ -41,11 +54,6 @@ class UserDto extends AbstractApiDto
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
     public string $lastName;
-
-    public static function getTypes(): array
-    {
-        return [UserType::USER->value];
-    }
 
     #[Assert\Callback]
     public function callbackValidator(ExecutionContextInterface $context): void
@@ -72,9 +80,12 @@ class UserDto extends AbstractApiDto
     {
         return $object
             ->setEmail($this->validated('email'))
-            ->setPhoneCountry($this->validated('phoneCountry'))
+            ->setEmailApproved($this->validated('emailApproved'))
             ->setPhone($this->validated('phone'))
+            ->setPhoneCountry($this->validated('phoneCountry'))
+            ->setPhoneApproved($this->validated('phoneApproved'))
             ->setType(UserType::from($this->validated('type')))
+            ->setFrozen($this->validated('frozen'))
             ->setFirstName($this->validated('firstName'))
             ->setLastName($this->validated('lastName'));
     }

@@ -3,6 +3,7 @@
 namespace App\Admin\Core\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -46,5 +47,10 @@ abstract class BaseRepository extends ServiceEntityRepository
     public function em(): EntityManagerInterface
     {
         return $this->_em;
+    }
+
+    public function countBy(Criteria $criteria): int
+    {
+        return $this->_em->getUnitOfWork()->getEntityPersister($this->_entityName)->count($criteria);
     }
 }

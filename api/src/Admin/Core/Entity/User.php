@@ -293,7 +293,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PostPersist]
     public function postPersist(LifecycleEventArgs $event): void
     {
-        $otpRepo = $event->getEntityManager()->getRepository(OtpKey::class);
+        $otpRepo = $event->getObjectManager()->getRepository(OtpKey::class);
 
         if (!$this->isEmailApproved() && $this->getEmail()) {
             $otpRepo->create($this, OtpType::EMAIL);
