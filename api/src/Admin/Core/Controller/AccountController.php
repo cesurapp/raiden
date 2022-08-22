@@ -5,6 +5,7 @@ namespace App\Admin\Core\Controller;
 use App\Admin\Core\Dto\UserDto;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\AccountPermission;
+use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Permission\PermissionManager;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
@@ -80,6 +81,10 @@ class AccountController extends AbstractApiController
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_CREATE])]
     public function createAccount(UserDto $dto): ApiResponse
     {
+        if ($dto->validated('type') === UserType::SUPERADMIN->value) {
+            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+        }
+
         // Init & Save
         $user = $dto->initObject(new User())->setPassword($dto->validated('password'), $this->hasher);
         $this->userRepo->add($user);
@@ -100,7 +105,14 @@ class AccountController extends AbstractApiController
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_EDIT])]
     public function editAccount(User $user, UserDto $dto): ApiResponse
     {
+        if ($user->hasRoles(UserType::SUPERADMIN)) {
+            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+        }
+
         $user = $dto->initObject($user);
+        if ($dto->validated('password')) {
+            $user->setPassword($dto->validated('password'), $this->hasher);
+        }
         $this->userRepo->add($user);
 
         return ApiResponse::create()
@@ -132,6 +144,10 @@ class AccountController extends AbstractApiController
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_DELETE])]
     public function deleteAccount(User $user, UserRepository $userRepo): ApiResponse
     {
+        if ($user->hasRoles(UserType::SUPERADMIN)) {
+            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+        }
+
         // Remove
         $userRepo->remove($user);
 

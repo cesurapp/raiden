@@ -1,11 +1,5 @@
 * UI -> Reload User -> ROLE_ADMIN
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
-*
-* Disable SuperAdmin Remove to Admin Type
-* Disable SuperAdmin Edit to Admin Type
-* Disable SuperAdmin Create to Admin Type
-* Disable SuperAdmin Permission Edit
-* 
 * 
 * DataTable
 * -- Filters
@@ -13,6 +7,7 @@
 * -- Excel Import
 *
 * Cron Multiple Server Init
+* Github Docker CI
 * Readme
 
 ## Requirement

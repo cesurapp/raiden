@@ -122,6 +122,21 @@ class AccountTest extends AbstractWebTestCase
         ]);
         $this->isFail();
         $this->assertEquals('This value is already used.', $this->json(null, 'errors')['email'][0]);
+
+        // Fail Super Admin
+        $this->client($user)->jsonRequest('POST', '/v1/admin/account/manager', [
+            'email' => mt_rand().'@test.app',
+            'emailApproved' => true,
+            'phone' => 541 .random_int(1000000, 4999999),
+            'phoneCountry' => 'TR',
+            'phoneApproved' => true,
+            'type' => 'super_admin',
+            'password' => '123123123',
+            'frozen' => true,
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+        ]);
+        $this->isFail();
     }
 
     public function testAccountEdit(): void
@@ -134,10 +149,9 @@ class AccountTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32());
         $this->isFail();
 
+        // Fail Validation Exception
         $user->addRoles(AccountPermission::ROLE_ACCOUNT_EDIT);
         $this->save($user);
-
-        // Fail Validation Exception
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32());
         $this->isFail();
         $this->assertJsonStructure(['type', 'errors']);
@@ -181,6 +195,23 @@ class AccountTest extends AbstractWebTestCase
         ]);
         $this->isFail();
         $this->assertEquals('This value is already used.', $this->json(null, 'errors')['email'][0]);
+
+        // Fail Edit Super Admin
+        $superUser = $this->createUser()->setType(UserType::SUPERADMIN);
+        $this->save($superUser);
+        $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$superUser->getId()->toBase32(), [
+            'email' => $user2->getEmail(),
+            'emailApproved' => true,
+            'phone' => $user2->getPhone(),
+            'phoneCountry' => 'TR',
+            'phoneApproved' => true,
+            'type' => 'admin',
+            'password' => '123123123',
+            'frozen' => false,
+            'firstName' => 'John',
+            'lastName' => 'Doe',
+        ]);
+        $this->isFail();
     }
 
     public function testAccountShow(): void
@@ -221,6 +252,12 @@ class AccountTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('DELETE', '/v1/admin/account/manager/'.$userRemove->getId()->toBase32());
         $this->isOk();
         $this->assertJsonStructure(['message' => ['success']]);
+
+        // Fail Delete Super Admin
+        $superUser = $this->createUser()->setType(UserType::SUPERADMIN);
+        $this->save($superUser);
+        $this->client($user)->jsonRequest('DELETE', '/v1/admin/account/manager/'.$superUser->getId()->toBase32());
+        $this->isFail();
     }
 
     public function testAccountShowPermission(): void

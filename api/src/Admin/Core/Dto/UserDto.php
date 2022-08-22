@@ -37,8 +37,7 @@ class UserDto extends AbstractApiDto
     public ?string $type = 'user';
 
     #[Assert\Length(min: 8)]
-    #[Assert\NotNull]
-    public string $password;
+    public ?string $password = null;
 
     #[Assert\Type(type: 'bool')]
     #[Assert\NotNull]
@@ -69,6 +68,13 @@ class UserDto extends AbstractApiDto
             $err = $context->getValidator()->validate($this->email, new NotNull());
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('email')->addViolation();
+            }
+        }
+
+        if ($this->id) {
+            $err = $context->getValidator()->validate($this->password, new NotNull());
+            if ($err->count() > 0) {
+                $context->buildViolation($err->get(0)->getMessage())->atPath('password')->addViolation();
             }
         }
     }
