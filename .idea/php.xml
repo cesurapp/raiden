@@ -71,7 +71,6 @@
       <path value="$PROJECT_DIR$/api/vendor/doctrine/doctrine-bundle" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-intl-normalizer" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/mime" />
-      <path value="$PROJECT_DIR$/api/vendor/phpspec/prophecy" />
       <path value="$PROJECT_DIR$/api/vendor/phar-io/version" />
       <path value="$PROJECT_DIR$/api/vendor/phar-io/manifest" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/stopwatch" />
@@ -110,9 +109,6 @@
       <path value="$PROJECT_DIR$/api/vendor/sebastian/global-state" />
       <path value="$PROJECT_DIR$/api/vendor/sebastian/object-enumerator" />
       <path value="$PROJECT_DIR$/api/vendor/sebastian/comparator" />
-      <path value="$PROJECT_DIR$/api/vendor/phpdocumentor/type-resolver" />
-      <path value="$PROJECT_DIR$/api/vendor/phpdocumentor/reflection-docblock" />
-      <path value="$PROJECT_DIR$/api/vendor/phpdocumentor/reflection-common" />
       <path value="$PROJECT_DIR$/api/vendor/twig/twig" />
       <path value="$PROJECT_DIR$/api/vendor/masterminds/html5" />
       <path value="$PROJECT_DIR$/api/vendor/bin/.phpunit" />
