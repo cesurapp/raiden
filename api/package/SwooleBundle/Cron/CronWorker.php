@@ -5,13 +5,17 @@ namespace Package\SwooleBundle\Cron;
 use Cron\CronExpression;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ServiceLocator;
+use Symfony\Component\Lock\LockFactory;
 
 class CronWorker
 {
     private CronExpression $expression;
 
-    public function __construct(private readonly ServiceLocator $locator, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly ServiceLocator $locator,
+        private readonly LoggerInterface $logger,
+        private readonly LockFactory $lockFactory
+    ) {
         // Predefined Constants
         $aliases = [
             '@EveryMinute' => '* * * * *',
@@ -33,17 +37,27 @@ class CronWorker
     public function run(): void
     {
         foreach ($this->getAll() as $cron) {
-            go(function () use ($cron) {
+            if (!$cron || !$cron::ENABLE || !$cron->isDue) {
+                continue;
+            }
+
+            // Lock
+            $lock = $this->lockFactory->createLock(get_class($cron), 600, false);
+            if (!$lock->acquire()) {
+                continue;
+            }
+
+            go(function () use ($cron, $lock) {
                 try {
-                    if ($cron::ENABLE && $cron->isDue) {
-                        $this->logger->info('Cron Job Process: '.get_class($cron ?? ''));
-                        $cron();
-                        $this->logger->info('Cron Job Finish: '.get_class($cron ?? ''));
-                    }
+                    $this->logger->info('Cron Job Process: '.get_class($cron));
+                    $cron();
+                    $this->logger->info('Cron Job Finish: '.get_class($cron));
                 } catch (\Exception $exception) {
                     $this->logger->error(
-                        sprintf('CRON Job Failed: %s, exception: %s', get_class($cron ?? ''), $exception->getMessage())
+                        sprintf('CRON Job Failed: %s, exception: %s', get_class($cron), $exception->getMessage())
                     );
+                } finally {
+                    $lock->release();
                 }
             });
         }

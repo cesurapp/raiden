@@ -16,7 +16,7 @@ class CronServer
             $worker = $kernel->getContainer()->get(CronWorker::class); // @phpstan-ignore-line
 
             // Work
-            $server->on('managerstart', function () use ($options, $worker) {
+            $server->on('start', function () use ($options, $worker) {
                 Timer::tick(
                     $options['cron']['interval'],
                     static fn () => $worker->run()

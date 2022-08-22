@@ -6,7 +6,6 @@
 * -- Excel Export
 * -- Excel Import
 *
-* Cron Multiple Server Init
 * Github Docker CI
 * Readme
 

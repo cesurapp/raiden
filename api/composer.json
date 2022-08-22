@@ -22,6 +22,7 @@
     "symfony/firebase-notifier": "6.1.*",
     "symfony/flex": "^2",
     "symfony/framework-bundle": "6.1.*",
+    "symfony/lock": "6.1.*",
     "symfony/mailer": "6.1.*",
     "symfony/mime": "6.1.*",
     "symfony/notifier": "6.1.*",

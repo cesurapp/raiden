@@ -31,7 +31,7 @@ class SwooleRunner implements RunnerInterface
         ],
     ];
 
-    public function __construct(private HttpKernelInterface $application, private array $options)
+    public function __construct(private readonly HttpKernelInterface $application, private array $options)
     {
         // Load Configuration
         $config = $this->options['project_dir'].'/.server.local.php';
@@ -57,8 +57,8 @@ class SwooleRunner implements RunnerInterface
         $this->taskServer = new TaskServer($this->application, $this->httpServer, $this->options);
         $this->cronServer = new CronServer($this->application, $this->httpServer, $this->options);
 
-        // Start Event
-        $this->httpServer->on('start', [$this, 'onStart']);
+        // Manager Start Event
+        $this->httpServer->on('managerstart', [$this, 'onStart']);
 
         return (int) $this->httpServer->start();
     }
