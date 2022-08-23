@@ -36,7 +36,7 @@ return static function () {
             'interval' => 1000 * 60,
         ],
         'app' => [
-            'cron' => 0,
+            'cron' => 1,
             'task' => 1,
             'tcp' => 1,
         ],

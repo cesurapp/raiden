@@ -31,9 +31,4 @@ class SuperAdminVoter extends Voter
     {
         return ($token->getUser() instanceof User) && UserType::SUPERADMIN === $token->getUser()->getType();
     }
-
-    public function supportsType(string $subjectType): bool
-    {
-        return is_a($subjectType, User::class, true);
-    }
 }

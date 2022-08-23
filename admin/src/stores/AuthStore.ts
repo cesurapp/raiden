@@ -94,6 +94,11 @@ export const useAuthStore = defineStore('auth', {
       LocalStorage.set('app-user', user);
     },
     hasGranted(role: string|Array<any>): boolean {
+      // Super Admin
+      if (this.user.type === 'super_admin') {
+        return true;
+      }
+
       if (Array.isArray(role)) {
         return role.every(r => this.user.roles.indexOf(r) !== -1)
       }

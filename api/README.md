@@ -1,5 +1,7 @@
 * UI -> Reload User -> ROLE_ADMIN
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
+* UI -> Permission Check 
+* Notification Non Readed Count
 * 
 * DataTable
 * -- Filters
