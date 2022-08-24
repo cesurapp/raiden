@@ -18,8 +18,6 @@ use Symfony\Component\Uid\Ulid;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
 #[ORM\HasLifecycleCallbacks]
-#[ORM\UniqueConstraint(fields: ['email', 'type'])]
-#[ORM\UniqueConstraint(fields: ['phone', 'type'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimeStampTrait;
@@ -30,13 +28,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id = null;
 
-    #[ORM\Column(type: 'string', length: 180, nullable: true)]
+    #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
     private ?string $email;
 
     #[ORM\Column(type: 'boolean')]
     private bool $emailApproved = false;
 
-    #[ORM\Column(type: 'bigint', length: 20, nullable: true)]
+    #[ORM\Column(type: 'bigint', length: 20, unique: true, nullable: true)]
     private ?int $phone = null;
 
     #[ORM\Column(type: 'string', length: 2, nullable: true)]
