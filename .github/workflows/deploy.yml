@@ -1,12 +1,19 @@
-name: Deploy App
+name: Deploy
 
 on:
   push:
     branches: [production]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   phpunit-test:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
     defaults:
       run:
         working-directory: ./api
