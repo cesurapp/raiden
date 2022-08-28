@@ -51,7 +51,7 @@ class NotificationController extends AbstractApiController
         order: 1,
     )]
     #[Route(path: '/v1/main/notification/unread-count', methods: ['GET'])]
-    public function viewUnreadCount(#[CurrentUser] User $user): ApiResponse
+    public function unreadCount(#[CurrentUser] User $user): ApiResponse
     {
         return ApiResponse::create()
             ->setData($this->repo->getUnreadCount($user));
