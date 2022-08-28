@@ -38,6 +38,24 @@ class NotificationTest extends AbstractWebTestCase
         $this->assertJsonCount(2, 'data');
     }
 
+    public function testUnreadCount(): void
+    {
+        self::createClient();
+
+        $user = $this->createUser();
+        /** @var NotificationPusher $pusher */
+        $pusher = self::getContainer()->get(NotificationPusher::class);
+
+        $notification = $pusher->create('Test', 'Test Message', user: $user);
+        $pusher->send($notification);
+        $this->assertFalse($notification->isReaded());
+
+        // List Notification
+        $this->client($user)->request('GET', '/v1/main/notification/unread-count');
+        $this->isOk();
+        $this->assertEquals(1, $this->json(null, 'data'));
+    }
+
     public function testRead(): void
     {
         self::createClient();

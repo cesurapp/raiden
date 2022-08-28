@@ -28,7 +28,6 @@ class NotificationController extends AbstractApiController
                 'data' => NotificationResource::class,
             ],
         ],
-        roles: ['ROLE_USER', 'ROLE_ADMIN'],
         paginate: true,
         order: 0
     )]
@@ -43,9 +42,38 @@ class NotificationController extends AbstractApiController
 
     #[Thor(
         group: 'Notification',
-        desc: 'Read Notification',
-        roles: ['ROLE_USER', 'ROLE_ADMIN'],
+        desc: 'Get Unread Notification Count',
+        response: [
+            200 => [
+                'data' => 'int',
+            ],
+        ],
         order: 1,
+    )]
+    #[Route(path: '/v1/main/notification/unread-count', methods: ['GET'])]
+    public function viewUnreadCount(#[CurrentUser] User $user): ApiResponse
+    {
+        return ApiResponse::create()
+            ->setData($this->repo->getUnreadCount($user));
+    }
+
+    #[Thor(
+        group: 'Notification',
+        desc: 'Read All Notification',
+        order: 2
+    )]
+    #[Route(path: '/v1/main/notification/read-all', methods: ['POST'])]
+    public function readAll(#[CurrentUser] User $user): ApiResponse
+    {
+        $this->repo->readAll($user);
+
+        return ApiResponse::create()->addMessage('All notifications marked as read');
+    }
+
+    #[Thor(
+        group: 'Notification',
+        desc: 'Read Notification',
+        order: 3,
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['PUT'])]
     public function read(#[CurrentUser] User $user, Notification $notification): ApiResponse
@@ -62,8 +90,7 @@ class NotificationController extends AbstractApiController
     #[Thor(
         group: 'Notification',
         desc: 'Delete Notification',
-        roles: ['ROLE_USER', 'ROLE_ADMIN'],
-        order: 2
+        order: 4
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]
     public function delete(#[CurrentUser] User $user, Notification $notification): ApiResponse
@@ -75,19 +102,5 @@ class NotificationController extends AbstractApiController
         $this->repo->delete($notification);
 
         return ApiResponse::create()->addMessage('The notification has been deleted');
-    }
-
-    #[Thor(
-        group: 'Notification',
-        desc: 'Read All Notification',
-        roles: ['ROLE_USER', 'ROLE_ADMIN'],
-        order: 3
-    )]
-    #[Route(path: '/v1/main/notification/read-all', methods: ['POST'])]
-    public function readAll(#[CurrentUser] User $user): ApiResponse
-    {
-        $this->repo->readAll($user);
-
-        return ApiResponse::create()->addMessage('All notifications marked as read');
     }
 }

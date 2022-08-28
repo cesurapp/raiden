@@ -20,7 +20,6 @@ class DeviceController extends AbstractApiController
         group: 'Notification',
         desc: 'Register Device to Firebase Cloud Messaging',
         dto: FcmRegisterDto::class,
-        roles: ['ROLE_USER', 'ROLE_ADMIN'],
         order: 10
     )]
     #[Route(path: '/v1/main/notification/fcm-register', methods: ['POST'])]

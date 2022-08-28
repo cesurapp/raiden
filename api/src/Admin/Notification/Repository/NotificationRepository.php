@@ -33,6 +33,17 @@ class NotificationRepository extends BaseRepository
     }
 
     /**
+     * Get Unreaded Count.
+     */
+    public function getUnreadCount(User $user): int
+    {
+        return $this->count([
+           'owner' => $user,
+           'readed' => false,
+        ]);
+    }
+
+    /**
      * Read Single Notification.
      */
     public function read(Notification $notification, bool $read = true): void
