@@ -3,5 +3,6 @@
 
 export type DeviceRegisterRequest = {
   token: string,
-  device?: string
+  device?: string,
+  id?: string
 }

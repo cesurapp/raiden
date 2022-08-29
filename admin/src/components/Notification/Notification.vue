@@ -4,7 +4,7 @@
     <q-badge v-if="isUnreaded" color="red" rounded floating></q-badge>
 
     <!--Notifications-->
-    <q-menu anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0,12]">
+    <q-menu @before-show="onShowPanel" anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0,12]">
       <q-card class="bg-info q-my-md q-mx-md" v-if="access.permission !== true">
         <q-card-section class="flex items-center q-py-sm q-px-md">
           <div class="q-mr-md">
@@ -75,6 +75,7 @@ export default defineComponent({
   name: 'NotificationComponent',
   data: () => ({
     resp: {} as NotificationListResponse,
+    unreadCount: 0,
     firebase: {
       app: null,
       messaging: null,
@@ -85,7 +86,7 @@ export default defineComponent({
     }
   }),
   mounted() {
-    this.load();
+    this.loadUnreadCount();
     this.initNotification();
   },
   watch: {
@@ -99,9 +100,17 @@ export default defineComponent({
     }
   },
   methods: {
+    onShowPanel() {
+      this.load();
+    },
     next() {
       this.resp.pager.current++
       this.load();
+    },
+    loadUnreadCount() {
+      this.$api.notificationUnreadCount().then((r) => {
+        this.unreadCount = r.data.data;
+      });
     },
     load() {
       this.$api.notificationList({page: this.resp.pager?.current || 1}).then((r) => {
@@ -118,6 +127,9 @@ export default defineComponent({
         return;
       }
 
+      // Descrease Unread Count
+      this.unreadCount--;
+
       this.$api.notificationRead(item.id, {message: false}).then(() => {
         item.readed = true;
       })
@@ -128,6 +140,9 @@ export default defineComponent({
           i.readed = true;
         })
       });
+
+      // Clear Unread Count
+      this.unreadCount = 0;
     },
     remove(item) {
       this.$api.notificationDelete(item.id).then(() => {

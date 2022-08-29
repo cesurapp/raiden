@@ -1,13 +1,17 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-export type SecurityRegisterRequest = {
-  password: string,
+export type AccountEditRequest = {
+  emailApproved: boolean,
+  phoneApproved: boolean,
+  frozen: boolean,
   firstName: string,
   lastName: string,
   email?: string,
-  phoneCountry?: string,
   phone?: number,
+  phoneCountry?: string,
   type?: string,
+  password?: string,
+  language?: string,
   id?: string
 }

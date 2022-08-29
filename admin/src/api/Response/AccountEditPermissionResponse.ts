@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
-export interface AccountMeResponse {
+export interface AccountEditPermissionResponse {
   message?: {
     success?: Array<string|number|boolean>
   }

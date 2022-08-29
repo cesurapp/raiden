@@ -26,13 +26,26 @@ import type { SecurityResetPasswordResponse } from './Response/SecurityResetPass
 import type { SecurityResetPasswordRequest } from './Request/SecurityResetPasswordRequest';
 import type { NotificationListResponse } from './Response/NotificationListResponse';
 import type { NotificationListQuery } from './Query/NotificationListQuery';
+import type { NotificationUnreadCountResponse } from './Response/NotificationUnreadCountResponse';
+import type { NotificationReadAllResponse } from './Response/NotificationReadAllResponse';
 import type { NotificationReadResponse } from './Response/NotificationReadResponse';
 import type { NotificationDeleteResponse } from './Response/NotificationDeleteResponse';
-import type { NotificationReadAllResponse } from './Response/NotificationReadAllResponse';
 import type { DeviceRegisterResponse } from './Response/DeviceRegisterResponse';
 import type { DeviceRegisterRequest } from './Request/DeviceRegisterRequest';
-import type { AccountMeResponse } from './Response/AccountMeResponse';
-import type { AccountGetProfileResponse } from './Response/AccountGetProfileResponse';
+import type { AccountShowProfileResponse } from './Response/AccountShowProfileResponse';
+import type { AccountEditProfileResponse } from './Response/AccountEditProfileResponse';
+import type { AccountEditProfileRequest } from './Request/AccountEditProfileRequest';
+import type { AccountListResponse } from './Response/AccountListResponse';
+import type { AccountListQuery } from './Query/AccountListQuery';
+import type { AccountCreateResponse } from './Response/AccountCreateResponse';
+import type { AccountCreateRequest } from './Request/AccountCreateRequest';
+import type { AccountEditResponse } from './Response/AccountEditResponse';
+import type { AccountEditRequest } from './Request/AccountEditRequest';
+import type { AccountShowResponse } from './Response/AccountShowResponse';
+import type { AccountDeleteResponse } from './Response/AccountDeleteResponse';
+import type { AccountShowPermissionResponse } from './Response/AccountShowPermissionResponse';
+import type { AccountEditPermissionResponse } from './Response/AccountEditPermissionResponse';
+import type { AccountEditPermissionRequest } from './Request/AccountEditPermissionRequest';
 
 export default class Api {
   constructor(private client: AxiosInstance) {}
@@ -77,6 +90,14 @@ export default class Api {
     return this.rq('GET', `/v1/main/notification${toQueryString(query)}`, config, null)
   }
 
+  async notificationUnreadCount(config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationUnreadCountResponse>> {
+    return this.rq('GET', '/v1/main/notification/unread-count', config, null)
+  }
+
+  async notificationReadAll(config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationReadAllResponse>> {
+    return this.rq('POST', '/v1/main/notification/read-all', config, null)
+  }
+
   async notificationRead(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationReadResponse>> {
     return this.rq('PUT', `/v1/main/notification/${id}`, config, null)
   }
@@ -85,20 +106,44 @@ export default class Api {
     return this.rq('DELETE', `/v1/main/notification/${id}`, config, null)
   }
 
-  async notificationReadAll(config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationReadAllResponse>> {
-    return this.rq('POST', '/v1/main/notification/read-all', config, null)
-  }
-
   async deviceRegister(request?: DeviceRegisterRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceRegisterResponse>> {
     return this.rq('POST', '/v1/main/notification/fcm-register', config, request)
   }
 
-  async accountMe(config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountMeResponse>> {
-    return this.rq('GET', '/v1/admin/profile', config, null)
+  async accountShowProfile(config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountShowProfileResponse>> {
+    return this.rq('GET', '/v1/admin/account/profile', config, null)
   }
 
-  async accountGetProfile(config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountGetProfileResponse>> {
-    return this.rq('GET', '/v1/profile', config, null)
+  async accountEditProfile(request?: AccountEditProfileRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountEditProfileResponse>> {
+    return this.rq('PUT', '/v1/admin/account/profile', config, request)
+  }
+
+  async accountList(query?: AccountListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountListResponse>> {
+    return this.rq('GET', `/v1/admin/account/manager${toQueryString(query)}`, config, null)
+  }
+
+  async accountCreate(request?: AccountCreateRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountCreateResponse>> {
+    return this.rq('POST', '/v1/admin/account/manager', config, request)
+  }
+
+  async accountEdit(id?: string, request?: AccountEditRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountEditResponse>> {
+    return this.rq('PUT', `/v1/admin/account/manager/${id}`, config, request)
+  }
+
+  async accountShow(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountShowResponse>> {
+    return this.rq('GET', `/v1/admin/account/manager/${id}`, config, null)
+  }
+
+  async accountDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountDeleteResponse>> {
+    return this.rq('DELETE', `/v1/admin/account/manager/${id}`, config, null)
+  }
+
+  async accountShowPermission(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountShowPermissionResponse>> {
+    return this.rq('GET', `/v1/admin/account/permission/${id}`, config, null)
+  }
+
+  async accountEditPermission(id?: string, request?: AccountEditPermissionRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountEditPermissionResponse>> {
+    return this.rq('PUT', `/v1/admin/account/permission/${id}`, config, request)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

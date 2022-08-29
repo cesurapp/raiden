@@ -5,5 +5,6 @@ export type SecurityResetPasswordRequest = {
   username: string|number,
   otp_key: number,
   password: string,
-  password_confirm: string
+  password_confirm: string,
+  id?: string
 }

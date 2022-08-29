@@ -3,5 +3,6 @@
 
 export type SecurityLoginOtpRequest = {
   username: string|number,
-  otp_key: number
+  otp_key: number,
+  id?: string
 }

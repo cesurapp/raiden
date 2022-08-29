@@ -35,7 +35,7 @@ class AccountController extends AbstractApiController
     #[Route(path: '/v1/admin/account/profile', methods: ['GET'])]
     public function showProfile(#[CurrentUser] User $user): ApiResponse
     {
-        return $this->showAccount($user);
+        return $this->show($user);
     }
 
     #[Thor(
@@ -48,7 +48,7 @@ class AccountController extends AbstractApiController
     #[Route(path: '/v1/admin/account/profile', methods: ['PUT'])]
     public function editProfile(#[CurrentUser] User $user, UserDto $dto): ApiResponse
     {
-        return $this->editAccount($user, $dto);
+        return $this->edit($user, $dto);
     }
 
     #[Thor(
@@ -60,7 +60,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/manager', methods: ['GET'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
-    public function listAccount(UserRepository $userRepo): ApiResponse
+    public function list(UserRepository $userRepo): ApiResponse
     {
         $query = $userRepo->createQueryBuilder('u');
 
@@ -79,7 +79,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/manager', methods: ['POST'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_CREATE])]
-    public function createAccount(UserDto $dto): ApiResponse
+    public function create(UserDto $dto): ApiResponse
     {
         if ($dto->validated('type') === UserType::SUPERADMIN->value) {
             $this->isGrantedDeny(UserType::SUPERADMIN->role());
@@ -103,7 +103,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['PUT'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_EDIT])]
-    public function editAccount(User $user, UserDto $dto): ApiResponse
+    public function edit(User $user, UserDto $dto): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
             $this->isGrantedDeny(UserType::SUPERADMIN->role());
@@ -128,7 +128,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['GET'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
-    public function showAccount(User $user): ApiResponse
+    public function show(User $user): ApiResponse
     {
         return ApiResponse::create()
             ->setData($user)
@@ -142,7 +142,7 @@ class AccountController extends AbstractApiController
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['DELETE'])]
     #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_DELETE])]
-    public function deleteAccount(User $user, UserRepository $userRepo): ApiResponse
+    public function delete(User $user, UserRepository $userRepo): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
             $this->isGrantedDeny(UserType::SUPERADMIN->role());
