@@ -70,8 +70,9 @@ export const useAuthStore = defineStore('auth', {
 
       return null;
     },
-    logout() {
-      api.securityLogout({refresh_token: SessionStorage.getItem(key['refreshToken'])?.toString()}).finally(() => {
+    logout(showMessage = true) {
+      // @ts-ignore
+      api.securityLogout({refresh_token: SessionStorage.getItem(key['refreshToken'])?.toString()}, {message: showMessage}).finally(() => {
         this.clearToken();
         this.clearRefreshToken();
       });

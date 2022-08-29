@@ -54,9 +54,13 @@ async function responseError(error, client, authStore, isBusy, globalExceptions)
     return client(config);
   }
 
-  if (['JWTException', 'RefreshTokenExpiredException'].includes(type)) {
-    notifyDanger('Session expired, please login again.');
-    return authStore.logout();
+  if (['RefreshTokenExpiredException'].includes(type)) {
+    notifyDanger(error.response.data.message);
+    return authStore.logout(false);
+  }
+
+  if (['JWTException'].includes(type)) {
+    return authStore.logout(true);
   }
 
   if (['ValidationException'].includes(type)) {

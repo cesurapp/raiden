@@ -189,16 +189,12 @@ class SecurityController extends AbstractApiController
         request: [
             'refresh_token' => '?string',
         ],
-        requireAuth: true,
+        requireAuth: false,
         order: 4
     )]
     #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
     public function logout(Request $request, RefreshTokenRepository $refreshTokenRepo): ApiResponse
     {
-        if (!$this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
         if ($token = $request->get('refresh_token')) {
             $refreshTokenRepo->removeToken($token);
         }
