@@ -37,7 +37,6 @@ class NotificationTask implements TaskInterface
             return false;
         }
 
-
         // Send Message
         try {
             return $this->chatter->send($message);

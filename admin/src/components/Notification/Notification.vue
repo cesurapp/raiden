@@ -21,7 +21,7 @@
         <!--Header-->
         <q-item-label header class="flex items-center justify-between">
           <span class="header">{{ $t('Notifications') }}</span>
-          <q-btn color="primary" size="sm" flat dense round icon="done_all" @click="readAll" v-close-popup>
+          <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
             <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
           </q-btn>
         </q-item-label>
@@ -29,11 +29,11 @@
         <!--Items-->
         <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed" active-class="text-blue">
           <q-item-section @click="read(item); open(item)">
-            <q-item-label lines="1">{{ item.title }}</q-item-label>
+            <q-item-label lines="1">{{ item.title || item.message }}</q-item-label>
             <q-item-label caption>{{ item.createdAt.date }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
-            <q-btn @click="remove(item)" size="sm" flat dense round color="red" icon="delete">
+            <q-btn @click="remove(item)" size="sm" flat round color="red" icon="delete">
               <q-tooltip>{{ $t('Remove') }}</q-tooltip>
             </q-btn>
           </q-item-section>
@@ -96,7 +96,9 @@ export default defineComponent({
   },
   methods: {
     onShowPanel() {
-      this.load();
+      if (! this.resp.pager) {
+        this.load();
+      }
     },
     next() {
       this.resp.pager.current++
@@ -113,7 +115,13 @@ export default defineComponent({
           return this.resp = r.data;
         }
 
-        this.resp.data?.push(...r.data.data);
+        r.data.data.map((n) => {
+          if (! this.resp.data.some(d => d.id === n.id)) {
+            this.resp.data?.push(n);
+          }
+        });
+
+        //this.resp.data?.push(...r.data.data);
         this.resp.pager = r.data.pager;
       })
     },
