@@ -7,8 +7,9 @@
         <q-route-tab to="/accounts" name="mails" label="Şifremi Değiştir" no-caps/>
       </template>
       <template #actions>
-        <q-btn rounded no-caps size="md" color="primary" icon="add" />
-        <q-btn rounded no-caps size="md" color="primary" icon="add" />
+        <q-btn rounded no-caps size="md" color="primary" icon="add" v-if="$auth.hasGranted('ROLE_ACCOUNT_CREATE')">
+          <q-tooltip>{{ $t('Create') }}</q-tooltip>
+        </q-btn>
       </template>
     </PageHeader>
 

@@ -70,6 +70,13 @@ export const useAuthStore = defineStore('auth', {
 
       return null;
     },
+    async reloadUser() {
+      if (this.isLoggedIn()) {
+        await api.accountShowProfile().then((r) => {
+          this.updateUser(r.data.data)
+        })
+      }
+    },
     logout(showMessage = true) {
       // @ts-ignore
       api.securityLogout({refresh_token: LocalStorage.getItem(key['refreshToken'])?.toString()}, {message: showMessage}).finally(() => {

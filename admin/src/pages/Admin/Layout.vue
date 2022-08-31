@@ -58,6 +58,9 @@ export default defineComponent({
         return route.meta?.breadcrumb;
       })
     }
+  },
+  async created() {
+    await this.$auth.reloadUser();
   }
 })
 </script>

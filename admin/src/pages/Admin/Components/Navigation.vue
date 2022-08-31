@@ -57,7 +57,9 @@ export default defineComponent({
     menu: false,
     navs: [
       {icon: 'dashboard', text: 'Dashboard', to: '/'},
-      {icon: 'group', text: 'Accounts', to: '/accounts', header: 'Account Management'},
+
+      // Account Management
+      {icon: 'group', text: 'Accounts', to: '/accounts', header: 'Account Management', roles: ['ROLE_ACCOUNT_LIST']},
       {icon: 'workspaces', text: 'Organization', to: '/organization', roles: []},
 
       /*{icon: 'logout', text: 'Logout', header:'Header Text', to: {name: 'auth.logout'}, roles: ['ROLE_USER'], child: []},*/
