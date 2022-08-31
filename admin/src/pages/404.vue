@@ -1,9 +1,9 @@
 <template>
-  <div class="fullscreen text-white text-center q-pa-md flex flex-center" :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-blue']">
+  <div class="fullscreen overflow-auto text-white text-center q-pa-md flex flex-center" :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-blue']">
     <div>
-      <div class="h1">404</div>
-      <div class="h2 text-h2">{{ $t('Oops. Nothing here...') }}</div>
-      <q-btn class="q-mt-xl" color="white" text-color="blue" unelevated to="/" :label="$t('Go Home')" no-caps/>
+      <div class="h1 text-weight-light">404</div>
+      <div class="h2 text-h4 text-weight-light">{{ $t('Oops. Nothing here...') }}</div>
+      <q-btn class="q-mt-xl q-mb-xl" color="white" text-color="blue" unelevated to="/" :label="$t('Go Home')" no-caps/>
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .h1 {
-  font-size: 20rem;
+  font-size: 10rem;
 }
 
 .h2 {
