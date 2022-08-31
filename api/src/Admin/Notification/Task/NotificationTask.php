@@ -37,6 +37,7 @@ class NotificationTask implements TaskInterface
             return false;
         }
 
+
         // Send Message
         try {
             return $this->chatter->send($message);
@@ -55,7 +56,7 @@ class NotificationTask implements TaskInterface
     private function sendWeb(array $data = []): ChatMessage
     {
         return new ChatMessage(
-            $data['notification']['title'],
+            $data['notification']['title'] ?? '',
             new WebNotification(
                 $data['device']['token'],
                 array_merge([
@@ -70,7 +71,7 @@ class NotificationTask implements TaskInterface
     private function sendAndroid(array $data = []): ChatMessage
     {
         return new ChatMessage(
-            $data['notification']['title'],
+            $data['notification']['title'] ?? '',
             new AndroidNotification(
                 $data['device']['token'],
                 array_merge([
@@ -85,7 +86,7 @@ class NotificationTask implements TaskInterface
     private function sendIos(array $data = []): ChatMessage
     {
         return new ChatMessage(
-            $data['notification']['title'],
+            $data['notification']['title'] ?? '',
             new IOSNotification(
                 $data['device']['token'],
                 array_merge([

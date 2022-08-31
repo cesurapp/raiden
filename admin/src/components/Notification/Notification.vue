@@ -1,7 +1,7 @@
 <template>
   <q-btn dense flat round icon="notifications" size="md">
     <q-tooltip>{{ $t('Notifications') }}</q-tooltip>
-    <q-badge v-if="isUnreaded" color="red" rounded floating></q-badge>
+    <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
 
     <!--Notifications-->
     <q-menu @before-show="onShowPanel" anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0,12]">
@@ -92,11 +92,6 @@ export default defineComponent({
   watch: {
     'access.permission'(val) {
       LocalStorage.set('fbPermission', val)
-    }
-  },
-  computed: {
-    isUnreaded() {
-      return this.resp.data?.some((i) => !i.readed);
     }
   },
   methods: {
@@ -245,7 +240,13 @@ export default defineComponent({
       n.data = JSON.parse(n.data);
       n.readed = JSON.parse(n.readed);
       n.createdAt = JSON.parse(n.createdAt);
+      if (!this.resp.hasOwnProperty('data')) {
+        this.resp.data = [];
+      }
       this.resp.data.unshift(n);
+
+      // Increase Count
+      this.unreadCount++;
 
       this.open(n);
     }

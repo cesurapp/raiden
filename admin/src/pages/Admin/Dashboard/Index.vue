@@ -19,7 +19,7 @@ export default defineComponent({
   ],
   methods: {
     test() {
-      this.$api.accountMe()
+      this.$api.accountShowProfile();
     }
   }
 });

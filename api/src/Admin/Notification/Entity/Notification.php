@@ -24,7 +24,7 @@ class Notification implements \JsonSerializable
     #[ORM\Column(type: Types::STRING, enumType: NotificationType::class)]
     private NotificationType $type = NotificationType::INFO;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -58,7 +58,7 @@ class Notification implements \JsonSerializable
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 

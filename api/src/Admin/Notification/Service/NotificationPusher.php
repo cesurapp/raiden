@@ -27,15 +27,15 @@ class NotificationPusher
      * Create Notification.
      */
     public function create(
-        string $title,
         string $message,
-        NotificationType $type = NotificationType::INFO,
+        ?string $title = null,
+        NotificationType $type = NotificationType::SUCCESS,
         User $user = null
     ): Notification {
         return (new Notification())
             ->setOwner($user ?? $this->currentUser->get())
             ->setType($type)
-            ->setTitle($this->translator->trans($title))
+            ->setTitle($title ? $this->translator->trans($title) : null)
             ->setMessage($this->translator->trans($message));
     }
 
