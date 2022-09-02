@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!--Page Header-->
-    <PageHeader liquid></PageHeader>
+    <PageHeader borderless ></PageHeader>
 
     <!--Page Content-->
     <PageContent>

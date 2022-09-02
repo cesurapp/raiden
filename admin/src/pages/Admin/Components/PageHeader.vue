@@ -1,11 +1,10 @@
 <template>
   <div class="page-header" :class="{
-    'borderless': !borderless
+    'q-header--bordered': !borderless,
+    'bg-dark': $q.dark.isActive && !borderless,
+    'bg-white': !$q.dark.isActive && !borderless,
   }">
     <div :class="{
-      //'bg-dark': $q.dark.isActive && !borderless,
-      //'bg-white': !$q.dark.isActive && !borderless,
-      //'rounded-borders shadow-1 q-pa-md': !borderless,
       'content-fixed q-mx-md': !liquid,
       'content-liquid ': liquid,
     }">
@@ -29,7 +28,7 @@
       </div>
 
       <!--Tabs-->
-      <q-tabs v-if="$slots.tabs" v-model="tabs" dense align="left" :breakpoint="200" :narrow-indicator="liquid" class="bg-transparent text-primary page-tabs q-mt-sm">
+      <q-tabs v-if="$slots.tabs" v-model="tabs" dense align="left" :breakpoint="200" :narrow-indicator="liquid" class="bg-transparent text-primary page-tabs q-mt-sm" :class="{'borderless': borderless}">
         <slot name="tabs"></slot>
       </q-tabs>
     </div>
@@ -59,7 +58,7 @@ export default defineComponent({
 
 <style lang="scss">
 .page-tabs {
-  &::before {
+  &.borderless::before {
     border-bottom: 1px solid #c3cfdd;
     content: " ";
     position: absolute;
@@ -89,21 +88,6 @@ export default defineComponent({
 .page-header {
   display: flex;
   justify-content: center;
-
-  &.borderless {
-    background: #FFF;
-    position: relative;
-
-    &:after {
-      border-bottom: 1px solid #c3cfdd;
-      content: " ";
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 0;
-    }
-  }
 
   .title {
     font-size: 2rem;
