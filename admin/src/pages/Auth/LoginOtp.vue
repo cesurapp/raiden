@@ -17,8 +17,8 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Login')" @click="onSubmit" :loading="$isBusy.value" no-caps padding="sm md" color="primary" icon="task_alt"/>
-        <q-btn :label="$t('Back')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Login')" @click="onSubmit" :loading="$isBusy.value" no-caps color="primary" icon="task_alt"/>
+        <q-btn :label="$t('Back')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>

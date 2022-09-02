@@ -54,15 +54,5 @@ export default defineComponent( {
   .wrapper {
     min-height: 610px;
   }
-
-  .q-field__bottom--animated{
-    position: relative;
-    transform: translateY(60%);
-  }
-
-  .q-field__bottom{
-    padding: 0 12px;
-    min-height: auto;
-  }
 }
 </style>

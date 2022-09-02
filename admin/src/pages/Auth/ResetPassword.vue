@@ -33,8 +33,8 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" no-caps :loading="$isBusy.value" type="submit" padding="sm md" color="primary" icon="how_to_reg"/>
-        <q-btn :label="$t('Login')" no-caps padding="sm md" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Change')" no-caps :loading="$isBusy.value" type="submit" color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>

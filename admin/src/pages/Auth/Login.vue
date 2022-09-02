@@ -36,7 +36,7 @@
       </div>
 
       <!--Submit-->
-      <q-btn class="q-mt-lg" no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary" padding="sm md" icon="login"/>
+      <q-btn class="q-mt-lg" no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary"  icon="login"/>
     </q-form>
 
     <!-- Footer-->
@@ -45,7 +45,7 @@
 
       <!-- Register Link-->
       <div class="register-actions">
-        <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary" icon="email" padding="sm" class="full-width"/>
+        <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary" icon="email" class="full-width"/>
       </div>
     </div>
   </div>

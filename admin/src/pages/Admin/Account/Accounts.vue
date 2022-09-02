@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!--Page Header-->
-    <PageHeader>
+    <PageHeader liquid>
       <template #tabs>
         <q-route-tab to="/" name="mailss" label="Home" no-caps/>
         <q-route-tab to="/accounts" name="mails" label="Şifremi Değiştir" no-caps/>
@@ -19,7 +19,7 @@
     </PageContent>
 
     <!--Page Footer-->
-    <PageFooter borderless liquid>
+    <PageFooter borderless>
       Footer
     </PageFooter>
   </q-page>

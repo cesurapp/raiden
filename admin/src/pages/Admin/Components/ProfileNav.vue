@@ -8,8 +8,7 @@
         </q-item-section></q-item>
         <q-separator />
 
-        <q-item clickable><q-item-section>{{ $t('Change Password') }}</q-item-section></q-item>
-        <q-item clickable><q-item-section>{{ $t('Edit Profile') }}</q-item-section></q-item>
+        <q-item clickable to="/account/profile"><q-item-section>{{ $t('Edit Profile') }}</q-item-section></q-item>
         <q-separator />
         <q-item clickable @click="$auth.logout()"><q-item-section>{{ $t('Sign out') }}</q-item-section></q-item>
       </q-list>

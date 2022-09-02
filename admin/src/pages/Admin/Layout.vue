@@ -39,7 +39,7 @@ import {defineComponent} from 'vue'
 import {createMetaMixin} from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import Navigation from './Components/Navigation.vue';
-import Profile from './Components/Profile.vue';
+import Profile from './Components/ProfileNav.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
@@ -66,6 +66,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+body{
+  background: #f6f7f9;
+}
+
 .breadcrumbs {
   font-size: 16px;
   font-weight: 500;
@@ -89,9 +93,5 @@ export default defineComponent({
       display: none;
     }
   }
-}
-
-body{
-  background: #f6f7f9;
 }
 </style>

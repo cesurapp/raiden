@@ -31,13 +31,13 @@
       </q-input>
 
       <!--LastName-->
-      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules key="222" :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
 
       <div>
-        <q-btn :label="$t('Register')" @click="onSubmit" :loading="$isBusy.value" no-caps padding="sm md" color="primary" icon="how_to_reg"/>
-        <q-btn :label="$t('Login')" padding="sm md" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn :label="$t('Register')" @click="onSubmit" :loading="$isBusy.value" no-caps color="primary" icon="how_to_reg"/>
+        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
       </div>
     </q-form>
   </div>
