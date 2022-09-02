@@ -40,12 +40,12 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent} from 'vue';
 import PageHeader from '../Components/PageHeader.vue';
 import PageContent from '../Components/PageContent.vue';
 import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
 
-import {createMetaMixin} from "quasar";
+import {createMetaMixin} from 'quasar';
 
 export default defineComponent({
   name: 'EditProfile',
