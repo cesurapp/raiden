@@ -41,13 +41,10 @@ class AccountTest extends AbstractWebTestCase
         // Success
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/profile', [
             'email' => $user->getEmail(),
-            'emailApproved' => true,
             'phone' => $user->getPhone(),
             'phoneCountry' => 'TR',
-            'phoneApproved' => true,
-            'type' => 'admin',
+            'currentPassword' => '123123123',
             'password' => '123123123',
-            'frozen' => false,
             'firstName' => 'John',
             'lastName' => 'Doe',
         ]);

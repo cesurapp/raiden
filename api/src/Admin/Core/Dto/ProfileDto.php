@@ -3,23 +3,20 @@
 namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Validator\UniqueEntityConstraint;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class UserDto extends AbstractApiDto
+class ProfileDto extends AbstractApiDto
 {
     #[Assert\Length(max: 180)]
     #[Assert\Email]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['email'])]
     public ?string $email = null;
-
-    #[Assert\Type(type: 'boolean')]
-    public bool $emailApproved = false;
 
     #[PhoneNumber(regionPath: 'phoneCountry')]
     #[Assert\Type('numeric')]
@@ -29,19 +26,11 @@ class UserDto extends AbstractApiDto
     #[Assert\Country]
     public ?string $phoneCountry = null;
 
-    #[Assert\Type(type: 'bool')]
-    public bool $phoneApproved = false;
-
-    #[Assert\NotNull]
-    #[Assert\Choice(callback: [UserType::class, 'values'])]
-    public ?string $type = 'user';
-
     #[Assert\Length(min: 8)]
     public ?string $password = null;
 
-    #[Assert\Type(type: 'bool')]
-    #[Assert\NotNull]
-    public bool $frozen;
+    #[SecurityAssert\UserPassword]
+    public ?string $currentPassword = null;
 
     #[Assert\Language]
     public ?string $language;
@@ -86,13 +75,9 @@ class UserDto extends AbstractApiDto
     {
         return $object
             ->setEmail($this->validated('email'))
-            ->setEmailApproved($this->validated('emailApproved'))
             ->setPhone($this->validated('phone'))
             ->setPhoneCountry($this->validated('phoneCountry'))
-            ->setPhoneApproved($this->validated('phoneApproved'))
             ->setLanguage($this->validated('language'))
-            ->setType(UserType::from($this->validated('type')))
-            ->setFrozen($this->validated('frozen'))
             ->setFirstName($this->validated('firstName'))
             ->setLastName($this->validated('lastName'));
     }

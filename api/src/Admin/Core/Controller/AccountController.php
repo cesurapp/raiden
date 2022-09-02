@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Controller;
 
+use App\Admin\Core\Dto\ProfileDto;
 use App\Admin\Core\Dto\UserDto;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\AccountPermission;
@@ -42,13 +43,21 @@ class AccountController extends AbstractApiController
         group: 'Account Management',
         desc: 'Edit Profile',
         response: [200 => ['data' => UserResource::class]],
-        dto: UserDto::class,
+        dto: ProfileDto::class,
         order: 2
     )]
     #[Route(path: '/v1/admin/account/profile', methods: ['PUT'])]
-    public function editProfile(#[CurrentUser] User $user, UserDto $dto): ApiResponse
+    public function editProfile(#[CurrentUser] User $user, ProfileDto $dto): ApiResponse
     {
-        return $this->edit($user, $dto);
+        $user = $dto->initObject($user);
+        if ($dto->validated('password')) {
+            $user->setPassword($dto->validated('password'), $this->hasher);
+        }
+        $this->userRepo->add($user);
+
+        return ApiResponse::create()
+            ->setData($user)
+            ->setResource(UserResource::class);
     }
 
     #[Thor(
