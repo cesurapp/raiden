@@ -18,7 +18,7 @@
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else v-model="username" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput v-else v-model:phone-number="username" :label="$t('Phone')"></PhoneInput>
 
       <div>
         <q-btn :label="$t('Reset')" no-caps :loading="$isBusy.value" @click="onSubmit" type="button" color="primary" icon="login"/>

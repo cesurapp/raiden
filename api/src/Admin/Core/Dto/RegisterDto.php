@@ -19,12 +19,11 @@ class RegisterDto extends AbstractApiDto
     public ?string $email = null;
 
     #[Assert\Country]
-    public ?string $phoneCountry = null;
+    public ?string $phone_country = null;
 
-    #[PhoneNumber(regionPath: 'phoneCountry')]
-    #[Assert\Type('numeric')]
+    #[PhoneNumber(regionPath: 'phone_country')]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
-    public ?int $phone = null;
+    public null|int|string $phone = null;
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: 'getTypes')]
@@ -36,11 +35,11 @@ class RegisterDto extends AbstractApiDto
 
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
-    public string $firstName;
+    public string $first_name;
 
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
-    public string $lastName;
+    public string $last_name;
 
     public static function getTypes(): array
     {
@@ -51,14 +50,12 @@ class RegisterDto extends AbstractApiDto
     public function callbackValidator(ExecutionContextInterface $context): void
     {
         if (!$this->email) {
-            $err = $context->getValidator()->validate($this->phone, new NotNull());
+            $err = $context->getValidator()->validate($this->phone, [new NotNull(), new Assert\NotBlank()]);
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('phone')->addViolation();
             }
-        }
-
-        if (!$this->phone) {
-            $err = $context->getValidator()->validate($this->email, new NotNull());
+        } elseif (!$this->phone) {
+            $err = $context->getValidator()->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('email')->addViolation();
             }
@@ -72,10 +69,11 @@ class RegisterDto extends AbstractApiDto
     {
         return $object
             ->setEmail($this->validated('email'))
-            ->setPhoneCountry($this->validated('phoneCountry'))
+            ->setPhoneCountry($this->validated('phone_country'))
             ->setPhone($this->validated('phone'))
             ->setType(UserType::from($this->validated('type')))
-            ->setFirstName($this->validated('firstName'))
-            ->setLastName($this->validated('lastName'));
+            ->setFirstName($this->validated('first_name'))
+            ->setLastName($this->validated('last_name'))
+            ->setLanguage($this->getRequest()->getLocale());
     }
 }

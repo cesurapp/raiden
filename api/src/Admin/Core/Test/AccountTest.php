@@ -42,11 +42,11 @@ class AccountTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/profile', [
             'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
-            'phoneCountry' => 'TR',
-            'currentPassword' => '123123123',
+            'phone_country' => 'TR',
+            'current_password' => '123123123',
             'password' => '123123123',
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isOk();
     }
@@ -92,30 +92,30 @@ class AccountTest extends AbstractWebTestCase
         $phone = 541 .random_int(1000000, 4999999);
         $this->client($user)->jsonRequest('POST', '/v1/admin/account/manager', [
             'email' => $email,
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => $phone,
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'admin',
             'password' => '123123123',
             'frozen' => true,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isOk();
 
         // Duplicate Fail
         $this->client($user)->jsonRequest('POST', '/v1/admin/account/manager', [
             'email' => $email,
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => $phone,
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'admin',
             'password' => '123123123',
             'frozen' => true,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isFail();
         $this->assertEquals('This value is already used.', $this->json(null, 'errors')['email'][0]);
@@ -123,15 +123,15 @@ class AccountTest extends AbstractWebTestCase
         // Fail Super Admin
         $this->client($user)->jsonRequest('POST', '/v1/admin/account/manager', [
             'email' => mt_rand().'@test.app',
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => 541 .random_int(1000000, 4999999),
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'super_admin',
             'password' => '123123123',
             'frozen' => true,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isFail();
     }
@@ -158,15 +158,15 @@ class AccountTest extends AbstractWebTestCase
         $phone = 541 .random_int(1000000, 4999999);
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
             'email' => $email,
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => $phone,
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'admin',
             'password' => '123123123',
             'frozen' => false,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isOk();
 
@@ -180,15 +180,15 @@ class AccountTest extends AbstractWebTestCase
         $this->save($user2);
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
             'email' => $user2->getEmail(),
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => $user2->getPhone(),
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'admin',
             'password' => '123123123',
             'frozen' => false,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isFail();
         $this->assertEquals('This value is already used.', $this->json(null, 'errors')['email'][0]);
@@ -198,15 +198,15 @@ class AccountTest extends AbstractWebTestCase
         $this->save($superUser);
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/manager/'.$superUser->getId()->toBase32(), [
             'email' => $user2->getEmail(),
-            'emailApproved' => true,
+            'email_approved' => true,
             'phone' => $user2->getPhone(),
-            'phoneCountry' => 'TR',
-            'phoneApproved' => true,
+            'phone_country' => 'TR',
+            'phone_approved' => true,
             'type' => 'admin',
             'password' => '123123123',
             'frozen' => false,
-            'firstName' => 'John',
-            'lastName' => 'Doe',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
         ]);
         $this->isFail();
     }

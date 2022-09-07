@@ -202,10 +202,9 @@ class SecurityTest extends AbstractWebTestCase
         $this->assertJsonStructure([
             'errors' => [
                 'phone',
-                'email',
                 'password',
-                'firstName',
-                'lastName',
+                'first_name',
+                'last_name',
             ],
         ]);
 
@@ -213,8 +212,8 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test@test.com',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
         $this->assertEventFired(SecurityEvent::REGISTER);
@@ -224,18 +223,18 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test@test.com',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isFail();
 
         // Register Phone
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'phone' => '905414053420',
-            'phoneCountry' => 'TR',
+            'phone_country' => 'TR',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
         $this->assertEventFired(SecurityEvent::REGISTER);
@@ -244,10 +243,10 @@ class SecurityTest extends AbstractWebTestCase
         // Register Phone Duplicate
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'phone' => '905414053420',
-            'phoneCountry' => 'TR',
+            'phone_country' => 'TR',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isFail();
     }
@@ -257,10 +256,10 @@ class SecurityTest extends AbstractWebTestCase
         static::createClient();
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'phone' => '905414053421',
-            'phoneCountry' => 'TR',
+            'phone_country' => 'TR',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
 
@@ -297,8 +296,8 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test2@test3.com',
             'password' => '123123123',
-            'firstName' => 'Ramazan',
-            'lastName' => 'APAYDIN',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
 

@@ -16,5 +16,8 @@ export interface AccountEditProfileResponse {
     first_name: string,
     last_name: string,
     meta: Array<string|number|boolean>
+  },
+  message?: {
+    success?: Array<string|number|boolean>
   }
 }

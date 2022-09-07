@@ -57,7 +57,8 @@ class AccountController extends AbstractApiController
 
         return ApiResponse::create()
             ->setData($user)
-            ->setResource(UserResource::class);
+            ->setResource(UserResource::class)
+            ->addMessage('Changes are saved');
     }
 
     #[Thor(

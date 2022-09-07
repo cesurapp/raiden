@@ -2,15 +2,16 @@
   <div class="phone-input">
     <!--Phone-->
     <q-input outlined type="tel" v-model="proxyPhone" v-bind="$attrs"
-             :mask="masks[code].mask" fill-mask unmasked-value
+             :mask="phoneCodes[data.phoneCountry].mask" unmasked-value fill-mask
              :label="label" lazy-rules
+             :rules="dynamicRules(data.phoneCountry)"
              :error="$rules.ssrValid(serverSideInput)"
              :error-message="$rules.ssrException(serverSideInput)"
-             :rules="[$rules.required(), $rules.isPhone(code)]">
+    >
       <template v-slot:prepend>
         <!--Select Country-->
-        <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="code" :options="getCountryCodes" emit-value map-options>
-          <template v-slot:prepend><q-icon :name="'img:/images/flags/'+ masks[code].country +'.svg'"/></template>
+        <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="data.phoneCountry" @update:model-value="updateModel" :options="getCountryPhoneList" emit-value map-options>
+          <template v-slot:prepend><q-icon :name="'img:/images/flags/'+ data.phoneCountry +'.svg'"/></template>
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
               <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
@@ -21,6 +22,7 @@
             </q-item>
           </template>
         </q-select>
+        <!--End Select Country-->
       </template>
     </q-input>
   </div>
@@ -34,47 +36,57 @@ export default defineComponent({
   name: 'PhoneInput',
   inheritAttrs: false,
   props: {
-    modelValue: [String, Number],
+    phoneNumber: [String, Number],
+    phoneCode: [String],
+    phoneCountry: [String],
+
     label: [String],
-    serverSideInput: {
-      type: String,
-      default: 'phone',
-    }
+    required: {type: Boolean, default: true},
+    serverSideInput: {type: String, default: 'phone'}
   },
   data: () => ({
-    country: 'TR',
-    code: '90',
-    phone: '',
-    masks: phoneCodes,
+    data: {
+      phoneNumber: '',
+      phoneCode: '90',
+      phoneCountry: 'TR',
+    },
+    phoneCodes: phoneCodes,
   }),
+  mounted() {
+    if (this.phoneNumber && this.phoneCountry) {
+      this.data = extractPhone(this.phoneNumber, this.phoneCountry);
+    }
+  },
   computed: {
     proxyPhone: {
       get() {
-        return String(this.phone);
+        return String(this.data.phoneNumber);
       },
       set(val: string) {
-        this.phone = val;
-        this.$emit('update:modelValue', String(this.masks[this.code].code) + String(val));
+        this.data.phoneNumber = val;
+        this.updateModel();
       }
     },
-    getCountryCodes() {
-      return Object.entries(this.masks).map(([country, item]: [string, any]) => {
+    getCountryPhoneList() {
+      return Object.entries(this.phoneCodes).map(([phoneCountry, item]: [string, any]) => {
         return {
-          value: country,
-          description: `${String(item.label)} (+${String(item.code)})`,
-          icon: `img:/images/flags/${String(item.country)}.svg`
+          value: phoneCountry,
+          description: `${String(item.label)} (+${String(item.phoneCode)})`,
+          icon: `img:/images/flags/${String(phoneCountry)}.svg`
         };
       });
     }
   },
-  created() {
-    if (this.modelValue) {
-      const phone = extractPhone(String(this.modelValue));
-      if (phone) {
-        this.phone = phone.phone;
-        this.code = phone.code;
-        this.country = phone.country;
-      }
+  methods: {
+    updateModel() {
+      this.data.phoneCode = this.phoneCodes[this.data.phoneCountry].phoneCode;
+
+      this.$emit('update:phoneNumber', String(this.data.phoneNumber ? this.data.phoneCode + this.data.phoneNumber : ''));
+      this.$emit('update:phoneCode', String(this.data.phoneCode));
+      this.$emit('update:phoneCountry', String(this.data.phoneCountry));
+    },
+    dynamicRules(phoneCountry) {
+      return this.required ? [this.$rules.required(), this.$rules.isPhone(phoneCountry)] : [this.$rules.isPhone(phoneCountry)];
     }
   }
 })

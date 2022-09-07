@@ -8,17 +8,17 @@
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
       <!--Email-->
-      <q-input outlined lazy-rules v-model="email" :label="$t('Email')"
+      <q-input outlined lazy-rules v-model="data.email" :label="$t('Email')"
                :error="$rules.ssrValid('email')" :error-message="$rules.ssrException('email')"
                :rules="[$rules.required(), $rules.email()]">
         <template v-slot:prepend><q-icon name="email"/></template>
       </q-input>
 
       <!--Phone-->
-      <PhoneInput ref="phone" v-model="phone" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput v-model:phone-number="data.phone" v-model:phone-country="data.phone_country" :label="$t('Phone')"></PhoneInput>
 
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
+      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="data.password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
         <template v-slot:prepend><q-icon name="key"/></template>
         <template v-slot:append>
           <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
@@ -26,12 +26,12 @@
       </q-input>
 
       <!--FirstName-->
-      <q-input outlined v-model="firstName" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="data.first_name" :label="$t('First Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
 
       <!--LastName-->
-      <q-input outlined v-model="lastName" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
+      <q-input outlined v-model="data.last_name" :label="$t('Last Name')" lazy-rules :rules="[$rules.required(),$rules.minLength(2)]">
         <template v-slot:prepend><q-icon name="person"/></template>
       </q-input>
 
@@ -60,28 +60,25 @@ export default defineComponent({
   ],
   data: () => ({
     isPwd: true,
-    email: null,
-    phone: null,
-    password: null,
-    firstName: null,
-    lastName: null,
+    data: {
+      email: null,
+      phone: null,
+      phone_country: null,
+      password: null,
+      first_name: null,
+      last_name: null,
+    }
   }),
   methods: {
     onSubmit() {
       // Clear Backend Validation Errors
       this.$rules.clearSSRException();
 
+      console.log(this.data);
       // Register
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api.securityRegister({
-            password: this.password,
-            firstName: this.firstName,
-            lastName: this.lastName,
-            email: this.email,
-            phone: this.phone,
-            phoneCountry: this.$refs.phone.country,
-          }).then((r) => {
+          this.$api.securityRegister(this.data).then((r) => {
             // Redirect Login Page
             if (r.data.data.approved) {
               return this.$router.push({name: 'auth.login'});

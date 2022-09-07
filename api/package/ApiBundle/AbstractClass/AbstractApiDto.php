@@ -55,6 +55,11 @@ abstract class AbstractApiDto
         }
     }
 
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
+
     /**
      * Validate DTO Request.
      *
@@ -62,6 +67,11 @@ abstract class AbstractApiDto
      */
     final public function validate(bool $throw = false): bool
     {
+        // Append ID for Edit Request
+        if ($this->request->isMethod('PUT')) {
+            $this->id = $this->request->attributes->get('id', $this->request->attributes->get('uid'));
+        }
+
         // Start Validated
         $this->beforeValidated();
 
@@ -91,7 +101,19 @@ abstract class AbstractApiDto
             $this->validated = array_diff_key(get_object_vars($this), array_flip($this->exclude));
         }
 
-        return $key ? ($this->validated[$key] ?? null) : $this->validated;
+        if ($key) {
+            if (!isset($this->validated[$key])) {
+                return null;
+            }
+
+            if ('' === $this->validated[$key]) {
+                return null;
+            }
+
+            return $this->validated[$key];
+        }
+
+        return $this->validated;
     }
 
     /**
@@ -99,9 +121,6 @@ abstract class AbstractApiDto
      */
     protected function beforeValidated(): void
     {
-        if ($this->request->isMethod('PUT')) {
-            $this->id = $this->request->attributes->get('id', $this->request->attributes->get('uid'));
-        }
     }
 
     /**

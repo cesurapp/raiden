@@ -1,33 +1,19 @@
 const phoneCodes: any = {
-  90: {label: 'Türkiye', mask: '+90 (###) ### ## ##', length: [10, 10], code: '90', country: 'TR'},
-  49: {label: 'Germany', mask: '+49 (###) #### ###', length: [6, 13], code: '49', country: 'DE'},
-  1: {label: 'United States', mask: '+1 (###) ### ## ##', length: [10, 10], code: '1', country: 'US'},
+  TR: {label: 'Türkiye', mask: '+90 (###) ### ## ##', length: [10, 10], phoneCode: '90', phoneCountry: 'TR'},
+  DE: {label: 'Germany', mask: '+49 (###) #### ###', length: [6, 13], phoneCode: '49', phoneCountry: 'DE'},
+  US: {label: 'United States', mask: '+1 (###) ### ## ##', length: [10, 10], phoneCode: '1', phoneCountry: 'US'},
 }
 
-const extractPhone = (phoneNumber: string) => {
-  if (phoneNumber) {
-    const code = Object.keys(phoneCodes).reverse().find((code) => code === phoneNumber.substring(0, code.length));
-    return code ? {
-      code: code,
-      phone: phoneNumber.substring(code.length),
-      country: String(phoneCodes[code].country)
-    } : null
+const extractPhone = (phoneNumber: string, phoneCountry: string) => {
+  return {
+    phoneNumber: phoneCodes[phoneCountry].phoneCode === String(phoneNumber).substring(0, phoneCodes[phoneCountry].phoneCode.length) ? String(phoneNumber).substring(phoneCodes[phoneCountry].phoneCode.length) : phoneNumber,
+    phoneCode: phoneCodes[phoneCountry].phoneCode,
+    phoneCountry: phoneCodes[phoneCountry].phoneCountry
   }
-
-  return null
 }
 
-const isValidPhone = (phoneNumber: string, countryCode: string | null) => {
-  if (!countryCode) {
-    countryCode = String(Object.keys(phoneCodes).reverse().find((code) => code === phoneNumber.substring(0, code.length)));
-    if (countryCode === 'undefined' || !countryCode) {
-      return Boolean(false);
-    }
-    phoneNumber = phoneNumber.substring(countryCode.length)
-  }
-
-  return phoneNumber.length >= phoneCodes[countryCode].length[0]
-    && phoneNumber.length <= phoneCodes[countryCode].length[1]
+const isValidPhone = (phoneNumber: string, phoneCountry: string) => {
+  return phoneNumber.length >= phoneCodes[phoneCountry].length[0] && phoneNumber.length <= phoneCodes[phoneCountry].length[1]
 }
 
 export {phoneCodes, isValidPhone, extractPhone};

@@ -157,9 +157,12 @@ export default (app, t, globalExceptions) => {
         return (!isNaN(val) && val ? isValidPhone(val.replace('/\s/g', '')) : methods.email.$validator(val)) || message || t('Value is not a valid email or phone');
       }
     },
-    isPhone(countryCode, message = false) {
+    isPhone(phoneCountry, message = false) {
       return (val) => {
-        return isValidPhone(val.replace('/\s/g', ''), countryCode) || message || t('Value is not a valid phone number');
+        if (val === '') {
+          return true;
+        }
+        return isValidPhone(val.replace('/\s/g', ''), phoneCountry) || message || t('Value is not a valid phone number');
       }
     },
 
@@ -181,7 +184,7 @@ export default (app, t, globalExceptions) => {
      * Only Call
      */
     clearSSRException() {
-    globalExceptions.value = {};
+      globalExceptions.value = {};
     }
   }
 }

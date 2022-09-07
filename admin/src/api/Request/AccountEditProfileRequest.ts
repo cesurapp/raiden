@@ -2,16 +2,13 @@
 /* eslint-disable max-len */
 
 export type AccountEditProfileRequest = {
-  emailApproved: boolean,
-  phoneApproved: boolean,
-  frozen: boolean,
-  firstName: string,
-  lastName: string,
+  first_name: string,
+  last_name: string,
   email?: string,
-  phone?: number,
-  phoneCountry?: string,
-  type?: string,
+  phone?: string|number|null,
+  phone_country?: string,
   password?: string,
+  current_password?: string,
   language?: string,
   id?: string
 }

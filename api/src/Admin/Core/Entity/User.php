@@ -104,9 +104,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->phone;
     }
 
-    public function setPhone(?int $phone): self
+    public function setPhone(null|int|string $phone): self
     {
-        $this->phone = $phone;
+        $this->phone = $phone ? (int) $phone : null;
 
         return $this;
     }

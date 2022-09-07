@@ -2,14 +2,14 @@
 /* eslint-disable max-len */
 
 export type AccountCreateRequest = {
-  emailApproved: boolean,
-  phoneApproved: boolean,
+  email_approved: boolean,
+  phone_approved: boolean,
   frozen: boolean,
-  firstName: string,
-  lastName: string,
+  first_name: string,
+  last_name: string,
   email?: string,
-  phone?: number,
-  phoneCountry?: string,
+  phone?: string|number|null,
+  phone_country?: string,
   type?: string,
   password?: string,
   language?: string,

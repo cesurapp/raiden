@@ -85,5 +85,10 @@ export default {
   'Account Management': 'Hesap Yönetimi',
   'Accounts': 'Hesaplar',
   'Organization': 'Organizasyon',
-  'Account': 'Hesabım'
+  'Account': 'Hesabım',
+  'Save': 'Kaydet',
+
+  // Edit Profile
+  'Edit Profile': 'Profilim',
+  'Current Password': 'Mevcut Şifre'
 };

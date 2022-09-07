@@ -30,7 +30,7 @@
         <q-item v-for="item in resp.data" :key="item.id" class="cursor-pointer item" :active="!item.readed" active-class="text-blue">
           <q-item-section @click="read(item); open(item)">
             <q-item-label lines="1">{{ item.title || item.message }}</q-item-label>
-            <q-item-label caption>{{ item.createdAt.date }}</q-item-label>
+            <q-item-label caption>{{ item.created_at.date }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
             <q-btn @click="remove(item)" size="sm" flat round color="red" icon="delete">
@@ -247,7 +247,7 @@ export default defineComponent({
       let n = payload.data;
       n.data = JSON.parse(n.data);
       n.readed = JSON.parse(n.readed);
-      n.createdAt = JSON.parse(n.createdAt);
+      n.created_at = JSON.parse(n.created_at);
       if (!this.resp.hasOwnProperty('data')) {
         this.resp.data = [];
       }

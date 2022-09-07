@@ -3,11 +3,11 @@
 
 export type SecurityRegisterRequest = {
   password: string,
-  firstName: string,
-  lastName: string,
+  first_name: string,
+  last_name: string,
   email?: string,
-  phoneCountry?: string,
-  phone?: number,
+  phone_country?: string,
+  phone?: string|number|null,
   type?: string,
   id?: string
 }

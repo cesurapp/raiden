@@ -19,7 +19,7 @@
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else v-model="username" :class="{'q-pb-xs': isOtp}" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput v-else v-model:phone-number="username" :class="{'q-pb-xs': isOtp}" :label="$t('Phone')"></PhoneInput>
 
       <!--Password-->
       <q-input :disable="isOtp" v-show="!isOtp" class="q-pb-xs" outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">

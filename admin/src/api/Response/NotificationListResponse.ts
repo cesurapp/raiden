@@ -10,7 +10,7 @@ export interface NotificationListResponse {
       message: string,
       readed: boolean,
       data: Array<string|number|boolean>,
-      createdAt: string
+      created_at: string
     }
   ],
   pager: {

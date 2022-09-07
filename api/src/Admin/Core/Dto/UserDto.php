@@ -19,18 +19,17 @@ class UserDto extends AbstractApiDto
     public ?string $email = null;
 
     #[Assert\Type(type: 'boolean')]
-    public bool $emailApproved = false;
+    public bool $email_approved = false;
 
-    #[PhoneNumber(regionPath: 'phoneCountry')]
-    #[Assert\Type('numeric')]
+    #[PhoneNumber(regionPath: 'phone_country')]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
-    public ?int $phone = null;
+    public null|int|string $phone = null;
 
     #[Assert\Country]
-    public ?string $phoneCountry = null;
+    public ?string $phone_country = null;
 
     #[Assert\Type(type: 'bool')]
-    public bool $phoneApproved = false;
+    public bool $phone_approved = false;
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: [UserType::class, 'values'])]
@@ -48,34 +47,39 @@ class UserDto extends AbstractApiDto
 
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
-    public string $firstName;
+    public string $first_name;
 
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
-    public string $lastName;
+    public string $last_name;
 
     #[Assert\Callback]
     public function callbackValidator(ExecutionContextInterface $context): void
     {
         if (!$this->email) {
-            $err = $context->getValidator()->validate($this->phone, new NotNull());
+            $err = $context->getValidator()->validate($this->phone, [new NotNull(), new Assert\NotBlank()]);
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('phone')->addViolation();
             }
-        }
-
-        if (!$this->phone) {
-            $err = $context->getValidator()->validate($this->email, new NotNull());
+        } elseif (!$this->phone) {
+            $err = $context->getValidator()->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('email')->addViolation();
             }
         }
 
-        if ($this->id) {
+        if (!$this->id) {
             $err = $context->getValidator()->validate($this->password, new NotNull());
             if ($err->count() > 0) {
                 $context->buildViolation($err->get(0)->getMessage())->atPath('password')->addViolation();
             }
+        }
+    }
+
+    protected function beforeValidated(): void
+    {
+        if (empty($this->password)) {
+            $this->password = null;
         }
     }
 
@@ -86,14 +90,14 @@ class UserDto extends AbstractApiDto
     {
         return $object
             ->setEmail($this->validated('email'))
-            ->setEmailApproved($this->validated('emailApproved'))
+            ->setEmailApproved($this->validated('email_approved'))
             ->setPhone($this->validated('phone'))
-            ->setPhoneCountry($this->validated('phoneCountry'))
-            ->setPhoneApproved($this->validated('phoneApproved'))
+            ->setPhoneCountry($this->validated('phone_country'))
+            ->setPhoneApproved($this->validated('phone_approved'))
             ->setLanguage($this->validated('language'))
             ->setType(UserType::from($this->validated('type')))
             ->setFrozen($this->validated('frozen'))
-            ->setFirstName($this->validated('firstName'))
-            ->setLastName($this->validated('lastName'));
+            ->setFirstName($this->validated('first_name'))
+            ->setLastName($this->validated('last_name'));
     }
 }
