@@ -25,8 +25,12 @@ class Logger extends AbstractLogger
     /** @var resource|null */
     private $handle;
 
-    public function __construct(string $minLevel = null, string $output = null, callable $formatter = null, private bool $stdin = false)
-    {
+    public function __construct(
+        string $minLevel = null,
+        string $output = null,
+        callable $formatter = null,
+        private readonly bool $stdin = false
+    ) {
         if ($stdin) {
             $output = null;
         }
@@ -36,14 +40,18 @@ class Logger extends AbstractLogger
 
             if (isset($_ENV['SHELL_VERBOSITY']) || isset($_SERVER['SHELL_VERBOSITY'])) {
                 switch ((int) ($_ENV['SHELL_VERBOSITY'] ?? $_SERVER['SHELL_VERBOSITY'])) {
-                    case -1: $minLevel = LogLevel::ERROR;
-                    break;
-                    case 1: $minLevel = LogLevel::NOTICE;
-                    break;
-                    case 2: $minLevel = LogLevel::INFO;
-                    break;
-                    case 3: $minLevel = LogLevel::DEBUG;
-                    break;
+                    case -1:
+                        $minLevel = LogLevel::ERROR;
+                        break;
+                    case 1:
+                        $minLevel = LogLevel::NOTICE;
+                        break;
+                    case 2:
+                        $minLevel = LogLevel::INFO;
+                        break;
+                    case 3:
+                        $minLevel = LogLevel::DEBUG;
+                        break;
                 }
             }
         }
@@ -53,7 +61,7 @@ class Logger extends AbstractLogger
         }
 
         $this->minLevelIndex = self::LEVELS[$minLevel];
-        $this->formatter = $formatter instanceof \Closure ? $formatter : \Closure::fromCallable($formatter ?? [$this, 'format']);
+        $this->formatter = $formatter instanceof \Closure ? $formatter : ($formatter ?? [$this, 'format'])(...);
         /* @phpstan-ignore-next-line */
         if ($output && false === $this->handle = \is_resource($output) ? $output : @fopen($output, 'a')) {
             throw new InvalidArgumentException(sprintf('Unable to open "%s".', $output));
