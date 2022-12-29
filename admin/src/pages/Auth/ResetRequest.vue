@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
+import PhoneInput from 'components/Phone/PhoneInput.vue';
 import {createMetaMixin} from 'quasar';
 
 export default defineComponent({

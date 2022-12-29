@@ -1,7 +1,5 @@
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
 * UI -> DateTime Formatter
-* UI -> Language List
-* UI -> edit phone
 * 
 * DataTable
 * -- Filters

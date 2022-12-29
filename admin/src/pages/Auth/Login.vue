@@ -55,7 +55,7 @@
 import {defineComponent} from 'vue'
 import {createMetaMixin} from 'quasar';
 import {useAuthStore} from 'stores/AuthStore';
-import PhoneInput from 'components/PhoneValidation/PhoneInput.vue';
+import PhoneInput from 'components/Phone/PhoneInput.vue';
 
 export default defineComponent({
   name: 'AuthLogin',
