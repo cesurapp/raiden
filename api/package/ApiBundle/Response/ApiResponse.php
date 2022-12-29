@@ -270,6 +270,7 @@ class ApiResponse
         // Paginate
         $this->getQuery()?->setFirstResult(($page - 1) * $config['max'])->setMaxResults($config['max'] + 1);
         $paginator = new Paginator($this->getQuery(), $config['fetchJoin']);
+        /** @var \ArrayIterator $iterator */
         $iterator = $paginator->getIterator();
 
         $pager = [
