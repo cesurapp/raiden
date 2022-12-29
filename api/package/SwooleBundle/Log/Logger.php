@@ -2,7 +2,6 @@
 
 namespace Package\SwooleBundle\Log;
 
-use DateTimeInterface;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
@@ -37,10 +36,14 @@ class Logger extends AbstractLogger
 
             if (isset($_ENV['SHELL_VERBOSITY']) || isset($_SERVER['SHELL_VERBOSITY'])) {
                 switch ((int) ($_ENV['SHELL_VERBOSITY'] ?? $_SERVER['SHELL_VERBOSITY'])) {
-                    case -1: $minLevel = LogLevel::ERROR; break;
-                    case 1: $minLevel = LogLevel::NOTICE; break;
-                    case 2: $minLevel = LogLevel::INFO; break;
-                    case 3: $minLevel = LogLevel::DEBUG; break;
+                    case -1: $minLevel = LogLevel::ERROR;
+                    break;
+                    case 1: $minLevel = LogLevel::NOTICE;
+                    break;
+                    case 2: $minLevel = LogLevel::INFO;
+                    break;
+                    case 3: $minLevel = LogLevel::DEBUG;
+                    break;
                 }
             }
         }
@@ -99,7 +102,7 @@ class Logger extends AbstractLogger
 
         $log = sprintf('[%s] %s', $level, $message).($this->stdin ? '' : \PHP_EOL);
         if ($prefixDate) {
-            $log = date(DateTimeInterface::RFC3339).' '.$log;
+            $log = date(\DateTimeInterface::RFC3339).' '.$log;
         }
 
         return $log;

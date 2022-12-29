@@ -1,5 +1,8 @@
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
 * UI -> DateTime Formatter
+* Failed Task Cron
+* Cron Retry Parameter
+* 
 * 
 * DataTable
 * -- Filters
@@ -14,7 +17,6 @@
 * Composer 2+
 * PHP 8.1+
   * Swoole 4.11+ (`pecl install openswoole`)
-  * UUID (`pecl install uuid`)
   * Imagick (`pecl install imagick`)
   * Opcache
     * opcache.enable=1
@@ -36,8 +38,7 @@ brew install fswatch
 brew install util-linux
 
 # PECL Extension
-pecl install uuid # directory => /opt/homebrew/opt/util-linux | /usr/local/Cellar/util-linux/2.37.3
-pecl install openswoole # openssl - http2 - curl
+pecl install openswoole # openssl - http2 - curl - postgresql
 pecl install imagick
 
 cp .env .env.local

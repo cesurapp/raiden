@@ -8,6 +8,7 @@ use Package\SwooleBundle\Log\Logger;
 use Package\SwooleBundle\Task\TaskHandler;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 return static function (ContainerConfigurator $container) {

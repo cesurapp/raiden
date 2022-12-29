@@ -8,9 +8,7 @@ use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
-use ReflectionClass;
 use ReflectionMethod;
-use ReflectionUnionType;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
@@ -57,7 +55,7 @@ class ThorExtractor
         $data = [];
 
         foreach ($this->routerList() as $path => $route) {
-            $refController = new ReflectionClass($route['controller']);
+            $refController = new \ReflectionClass($route['controller']);
             $refMethod = $refController->getMethod($route['method']);
             $attrThor = $refMethod->getAttributes(Thor::class);
 
@@ -162,7 +160,7 @@ class ThorExtractor
         return $data;
     }
 
-    private function extractRoles(ReflectionMethod $method, array $attrThor): array
+    private function extractRoles(\ReflectionMethod $method, array $attrThor): array
     {
         $permissions = $method->getAttributes(IsGranted::class);
         if ($permissions) {
@@ -172,13 +170,13 @@ class ThorExtractor
 
         $permissions = array_map(static fn ($p) => $p instanceof \BackedEnum ? $p->value : $p, $permissions);
 
-        return array_merge($permissions, ($attrThor['roles'] ?? []));
+        return array_merge($permissions, $attrThor['roles'] ?? []);
     }
 
     /**
      * Extract Route Attributes.
      */
-    private function extractRouteAttr(Route $route, ReflectionMethod $method, array $attrThor): array
+    private function extractRouteAttr(Route $route, \ReflectionMethod $method, array $attrThor): array
     {
         $routerVars = $route->compile()->getVariables();
         if (!count($routerVars)) {
@@ -202,7 +200,7 @@ class ThorExtractor
                     return true;
                 };
 
-                if ($p->getType() instanceof ReflectionUnionType) {
+                if ($p->getType() instanceof \ReflectionUnionType) {
                     return count(array_filter($p->getType()->getTypes(), static fn ($item) => $check($item->getName())));
                 }
 
@@ -220,7 +218,7 @@ class ThorExtractor
             foreach ($routerVars as $index => $key) {
                 $isNull = false;
 
-                if ($controllerArgs[$index]->getType() instanceof ReflectionUnionType) {
+                if ($controllerArgs[$index]->getType() instanceof \ReflectionUnionType) {
                     if ($controllerArgs[$index]->getType()->allowsNull()) {
                         $isNull = true;
                     }
@@ -239,7 +237,7 @@ class ThorExtractor
 
                 $matched[$key] = implode('|', array_unique(array_map(function ($type) use ($key, $isNull) {
                     if (class_exists($type)) {
-                        $ref = new ReflectionClass($type);
+                        $ref = new \ReflectionClass($type);
                         if ($ref->hasProperty($key)) {
                             return implode('|', $this->extractTypes($ref->getProperty($key)->getType(), $isNull));
                         }
@@ -288,12 +286,12 @@ class ThorExtractor
     /**
      * Generate Exceptions.
      */
-    private function extractResponse(array $thorAttr, ReflectionMethod $refMethod, array $methods): array
+    private function extractResponse(array $thorAttr, \ReflectionMethod $refMethod, array $methods): array
     {
         // Render Exception Class
-        $renderException = static function (ReflectionClass|string $refClass, int|string $code) {
+        $renderException = static function (\ReflectionClass|string $refClass, int|string $code) {
             if (is_string($refClass)) {
-                $refClass = new ReflectionClass($refClass);
+                $refClass = new \ReflectionClass($refClass);
             }
             $parameters = array_reduce($refClass->getConstructor()?->getParameters(), static function ($result, $item) {
                 $result[$item->name] = $item;
@@ -337,9 +335,9 @@ class ThorExtractor
         };
 
         // Render Resource
-        $renderResource = static function (ReflectionClass|string $refClass) use ($thorAttr) {
+        $renderResource = static function (\ReflectionClass|string $refClass) use ($thorAttr) {
             if (is_string($refClass)) {
-                $refClass = new ReflectionClass($refClass);
+                $refClass = new \ReflectionClass($refClass);
             }
             $thorResource = $refClass->getMethod('toArray')->getAttributes(ThorResource::class);
             if (count($thorResource)) {
@@ -356,7 +354,7 @@ class ThorExtractor
         array_walk_recursive($thorAttr['response'], static function (&$resValue, $resKey) use ($renderResource, $renderException, &$thorAttr) {
             // Class
             if (!is_array($resValue) && class_exists($resValue)) {
-                $refClass = new ReflectionClass($resValue);
+                $refClass = new \ReflectionClass($resValue);
 
                 // Resources
                 if ($refClass->implementsInterface(ApiResourceInterface::class)) {
@@ -434,7 +432,7 @@ class ThorExtractor
 
         // Extract DTO Parameters
         if (isset($attrThor['dto'])) {
-            $dto = new ReflectionClass($attrThor['dto']);
+            $dto = new \ReflectionClass($attrThor['dto']);
             if ($dto->isSubclassOf(AbstractApiDto::class)) {
                 $attr = array_replace_recursive($attr, $this->extractDTOClass($dto));
             }
@@ -446,7 +444,7 @@ class ThorExtractor
     /**
      * Extract Request Validation Parameters using AbstractApiDto.
      */
-    private function extractDTOClass(ReflectionClass $class): array
+    private function extractDTOClass(\ReflectionClass $class): array
     {
         $parameters = [];
 
@@ -507,7 +505,7 @@ class ThorExtractor
     {
         $types = [];
 
-        if ($type instanceof ReflectionUnionType) {
+        if ($type instanceof \ReflectionUnionType) {
             $isNull = !$isNull ? $type->allowsNull() : true;
 
             foreach ($type->getTypes() as $item) {
@@ -525,9 +523,9 @@ class ThorExtractor
         return array_unique($types);
     }
 
-    private function getResponseType(\ReflectionNamedType|ReflectionUnionType|\ReflectionType $type): string
+    private function getResponseType(\ReflectionNamedType|\ReflectionUnionType|\ReflectionType $type): string
     {
-        if ($type instanceof ReflectionUnionType) {
+        if ($type instanceof \ReflectionUnionType) {
             return implode('|', array_map(fn (\ReflectionNamedType $t) => $this->baseClass($t->getName()), $type->getTypes()));
         }
 
@@ -574,7 +572,7 @@ class ThorExtractor
     /**
      * ReflectionMethod Get Source Code.
      */
-    private function getMethodSource(ReflectionMethod $method): string
+    private function getMethodSource(\ReflectionMethod $method): string
     {
         $start_line = $method->getStartLine() - 1;
         $length = $method->getEndLine() - $start_line;

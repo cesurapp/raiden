@@ -71,7 +71,6 @@ class ProfileDto extends AbstractApiDto
         }
     }
 
-
     /**
      * @param User $object
      */

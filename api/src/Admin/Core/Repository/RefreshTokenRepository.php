@@ -5,7 +5,6 @@ namespace App\Admin\Core\Repository;
 use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\RefreshToken;
 use App\Admin\Core\Entity\User;
-use DateTimeImmutable;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -29,7 +28,7 @@ class RefreshTokenRepository extends BaseRepository
     {
         $this->createQueryBuilder('t')
             ->where('t.expiredAt <= :expire')
-            ->setParameter('expire', new DateTimeImmutable())
+            ->setParameter('expire', new \DateTimeImmutable())
             ->delete()->getQuery()->execute();
     }
 
@@ -88,7 +87,7 @@ class RefreshTokenRepository extends BaseRepository
             ->where('t.token = :token')
             ->andWhere('t.expiredAt <= :expiredAt')
             ->setParameter('token', $token)
-            ->setParameter('expiredAt', DateTimeImmutable::createFromFormat('U', (string) $expiredTimeStamp))
+            ->setParameter('expiredAt', \DateTimeImmutable::createFromFormat('U', (string) $expiredTimeStamp))
             ->getQuery()->getOneOrNullResult();
     }
 }

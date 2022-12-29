@@ -3,7 +3,6 @@
 namespace App\Admin\Core\Entity;
 
 use App\Admin\Core\Repository\RefreshTokenRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
@@ -23,7 +22,7 @@ class RefreshToken
     private string $token;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $expiredAt;
+    private \DateTimeImmutable $expiredAt;
 
     public function getId(): ?Ulid
     {
@@ -42,12 +41,12 @@ class RefreshToken
         return $this;
     }
 
-    public function getExpiredAt(): DateTimeImmutable
+    public function getExpiredAt(): \DateTimeImmutable
     {
         return $this->expiredAt;
     }
 
-    public function setExpiredAt(DateTimeImmutable $expiredAt): self
+    public function setExpiredAt(\DateTimeImmutable $expiredAt): self
     {
         $this->expiredAt = $expiredAt;
 

@@ -3,8 +3,6 @@
 namespace Package\MediaBundle\Compressor;
 
 use Imagick;
-use ImagickDraw;
-use ImagickPixel;
 
 /**
  * Imagick Library.
@@ -25,7 +23,7 @@ class Image
     public const GRAVITY_BOTTOM = 'bottom';
     public const GRAVITY_BOTTOM_RIGHT = 'bottom-right';
 
-    public Imagick $image;
+    public \Imagick $image;
 
     private int $width;
 
@@ -39,7 +37,7 @@ class Image
 
     public function __construct(string $data)
     {
-        $this->image = new Imagick();
+        $this->image = new \Imagick();
         $this->image->readImageBlob($data);
 
         $this->width = $this->image->getImageWidth();
@@ -47,7 +45,7 @@ class Image
 
         // Use metadata to fetch rotation. Will be perform right before exporting
         $orientationType = $this->image->getImageProperties()['exif:Orientation'] ?? $this->image->getImageOrientation(
-            );
+        );
 
         // Reference: https://docs.imgix.com/apis/rendering/rotation/orient
         // Mirror rotations are ignored, because we don't support mirroring
@@ -178,7 +176,7 @@ class Image
 
     public function resize(int $height = 0, int $width = 0): Image
     {
-        $this->image->resizeImage($width, $height, Imagick::FILTER_LANCZOS, 1, true);
+        $this->image->resizeImage($width, $height, \Imagick::FILTER_LANCZOS, 1, true);
 
         return $this;
     }
@@ -194,14 +192,14 @@ class Image
 
     public function setBorderRadius(int $cornerRadius): self
     {
-        $mask = new Imagick();
-        $mask->newImage($this->width, $this->height, new ImagickPixel('transparent'), 'png');
+        $mask = new \Imagick();
+        $mask->newImage($this->width, $this->height, new \ImagickPixel('transparent'), 'png');
 
         $rectwidth = ($this->borderWidth > 0 ? ($this->width - ($this->borderWidth + 1)) : $this->width - 1);
         $rectheight = ($this->borderWidth > 0 ? ($this->height - ($this->borderWidth + 1)) : $this->height - 1);
 
-        $shape = new ImagickDraw();
-        $shape->setFillColor(new ImagickPixel('black'));
+        $shape = new \ImagickDraw();
+        $shape->setFillColor(new \ImagickPixel('black'));
         $shape->roundRectangle(
             $this->borderWidth,
             $this->borderWidth,
@@ -212,17 +210,17 @@ class Image
         );
 
         $mask->drawImage($shape);
-        $this->image->compositeImage($mask, Imagick::COMPOSITE_DSTIN, 0, 0);
+        $this->image->compositeImage($mask, \Imagick::COMPOSITE_DSTIN, 0, 0);
 
         if ($this->borderWidth > 0) {
-            $bc = new ImagickPixel();
+            $bc = new \ImagickPixel();
             $bc->setColor($this->borderColor);
 
-            $strokeCanvas = new Imagick();
-            $strokeCanvas->newImage($this->width, $this->height, new ImagickPixel('transparent'), 'png');
+            $strokeCanvas = new \Imagick();
+            $strokeCanvas->newImage($this->width, $this->height, new \ImagickPixel('transparent'), 'png');
 
-            $shape2 = new ImagickDraw();
-            $shape2->setFillColor(new ImagickPixel('transparent'));
+            $shape2 = new \ImagickDraw();
+            $shape2->setFillColor(new \ImagickPixel('transparent'));
             $shape2->setStrokeWidth($this->borderWidth);
             $shape2->setStrokeColor($bc);
             $shape2->roundRectangle(
@@ -235,7 +233,7 @@ class Image
             );
 
             $strokeCanvas->drawImage($shape2);
-            $strokeCanvas->compositeImage($this->image, Imagick::COMPOSITE_DEFAULT, 0, 0);
+            $strokeCanvas->compositeImage($this->image, \Imagick::COMPOSITE_DEFAULT, 0, 0);
 
             $this->image = $strokeCanvas;
         }
@@ -270,7 +268,7 @@ class Image
     public function setBackground(mixed $color): Image
     {
         $this->image->setImageBackgroundColor($color);
-        $this->image = $this->image->mergeImageLayers(Imagick::LAYERMETHOD_FLATTEN);
+        $this->image = $this->image->mergeImageLayers(\Imagick::LAYERMETHOD_FLATTEN);
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace App\Admin\Core\Entity;
 
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Repository\OtpKeyRepository;
-use DateTimeImmutable;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
@@ -32,7 +31,7 @@ class OtpKey implements \JsonSerializable
     private bool $used = false;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $expiredAt;
+    private \DateTimeImmutable $expiredAt;
 
     public function getId(): ?Ulid
     {
@@ -80,12 +79,12 @@ class OtpKey implements \JsonSerializable
         return $this->expiredAt->getTimestamp() < time();
     }
 
-    public function getExpiredAt(): DateTimeImmutable
+    public function getExpiredAt(): \DateTimeImmutable
     {
         return $this->expiredAt;
     }
 
-    public function setExpiredAt(DateTimeImmutable $expiredAt): self
+    public function setExpiredAt(\DateTimeImmutable $expiredAt): self
     {
         $this->expiredAt = $expiredAt;
 

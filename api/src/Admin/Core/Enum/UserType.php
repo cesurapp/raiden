@@ -9,6 +9,7 @@ enum UserType: string implements PermissionInterface
     case USER = 'user';
     case ADMIN = 'admin';
     case SUPERADMIN = 'super_admin';
+
     public static function values(): array
     {
         return array_map(static fn (self $type) => $type->value, self::cases());

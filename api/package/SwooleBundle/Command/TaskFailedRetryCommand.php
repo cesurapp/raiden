@@ -2,7 +2,9 @@
 
 namespace Package\SwooleBundle\Command;
 
+use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\NullLogger;
 use Swoole\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -35,7 +37,8 @@ class TaskFailedRetryCommand extends Command
             return Command::FAILURE;
         }
 
-        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger();
+        $this->entityManager->getConnection()->getConfiguration()
+            ->setMiddlewares([new Middleware(new NullLogger())]);
         $query = $this->entityManager->createQuery('select f from SwooleBundle:FailedTask f');
 
         // Send All

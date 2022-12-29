@@ -5,44 +5,40 @@
   "prefer-stable": true,
   "require": {
     "php": ">=8.1.0",
-    "ext-ctype": "*",
     "ext-curl": "*",
-    "ext-fileinfo": "*",
-    "ext-iconv": "*",
     "ext-imagick": "*",
-    "ext-uuid": "*",
     "adhocore/jwt": "^1.1",
     "async-aws/s3": "^1.12",
     "doctrine/doctrine-bundle": "^2.5",
     "doctrine/orm": "^2.10",
     "dragonmantank/cron-expression": "^3.3",
     "odolbeau/phone-number-bundle": "^3.7",
-    "symfony/console": "6.1.*",
-    "symfony/dotenv": "6.1.*",
-    "symfony/firebase-notifier": "6.1.*",
+    "symfony/console": "6.2.*",
+    "symfony/dotenv": "6.2.*",
+    "symfony/firebase-notifier": "6.2.*",
     "symfony/flex": "^2",
-    "symfony/framework-bundle": "6.1.*",
-    "symfony/lock": "6.1.*",
-    "symfony/mailer": "6.1.*",
-    "symfony/mime": "6.1.*",
-    "symfony/notifier": "6.1.*",
-    "symfony/runtime": "6.1.*",
-    "symfony/security-bundle": "6.1.*",
-    "symfony/translation": "6.1.*",
-    "symfony/uid": "6.1.*",
-    "symfony/validator": "6.1.*",
-    "symfony/yaml": "6.1.*"
+    "symfony/framework-bundle": "6.2.*",
+    "symfony/lock": "6.2.*",
+    "symfony/mailer": "6.2.*",
+    "symfony/mime": "6.2.*",
+    "symfony/notifier": "6.2.*",
+    "symfony/runtime": "6.2.*",
+    "symfony/security-bundle": "6.2.*",
+    "symfony/translation": "6.2.*",
+    "symfony/uid": "6.2.*",
+    "symfony/validator": "6.2.*",
+    "symfony/yaml": "6.2.*"
   },
   "require-dev": {
     "openswoole/ide-helper": "^4.10",
     "phpunit/phpunit": "^9.5",
-    "symfony/browser-kit": "6.1.*",
-    "symfony/debug-bundle": "6.1.*",
+    "symfony/browser-kit": "6.2.*",
+    "symfony/debug-bundle": "6.2.*",
     "symfony/maker-bundle": "^1.36",
-    "symfony/phpunit-bridge": "^6.1",
-    "symfony/process": "6.1.*",
-    "symfony/stopwatch": "6.1.*",
-    "symfony/web-profiler-bundle": "6.1.*"
+    "symfony/phpunit-bridge": "^6.2",
+    "symfony/process": "6.2.*",
+    "symfony/stopwatch": "6.2.*",
+    "symfony/web-profiler-bundle": "6.2.*"
   },
   "config": {
     "optimize-autoloader": true,
@@ -78,7 +74,6 @@
     "symfony/polyfill-php74": "*",
     "symfony/polyfill-php80": "*",
     "symfony/polyfill-php81": "*",
-    "symfony/polyfill-uuid": "*",
     "symfony/polyfill-intl-idn": "*"
   },
   "scripts": {
@@ -103,7 +98,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "6.1.*"
+      "require": "6.2.*"
     }
   }
 }

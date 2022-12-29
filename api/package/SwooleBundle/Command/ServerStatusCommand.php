@@ -71,7 +71,7 @@ class ServerStatusCommand extends Command
                             'Cache Table',
                             'Current > '.$data['server']['cache_table']['current'],
                             'Total > '.$data['server']['cache_table']['size'],
-                            'Memory Size > '.round(((int) $data['server']['cache_table']['memory_size'] / (1024 * 1024)), 2).'mb',
+                            'Memory Size > '.round((int) $data['server']['cache_table']['memory_size'] / (1024 * 1024), 2).'mb',
                         ],
                         [
                             'Memory',
