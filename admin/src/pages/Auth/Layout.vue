@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import LanguageChanger from 'components/LanguageChanger.vue';
+import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
 import {createMetaMixin} from 'quasar';
 

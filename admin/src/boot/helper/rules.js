@@ -1,5 +1,5 @@
 import * as methods from '@vuelidate/validators'
-import {isValidPhone} from 'components/PhoneValidation/PhoneCodeList';
+import {isValidPhone} from 'components/Phone/PhoneCodeList';
 
 /**
  * Global Form Validation Rules
