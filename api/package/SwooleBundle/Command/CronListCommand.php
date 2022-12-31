@@ -2,7 +2,7 @@
 
 namespace Package\SwooleBundle\Command;
 
-use Package\SwooleBundle\Cron\CronInterface;
+use Package\SwooleBundle\Cron\AbstractCronJob;
 use Package\SwooleBundle\Cron\CronWorker;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,11 +23,11 @@ class CronListCommand extends Command
         $output = new SymfonyStyle($input, $output);
 
         if (iterator_count($this->cronWorker->getAll())) {
-            $output->table(['Cron Services', 'Enable', 'Time', 'Next'], array_map(static fn (CronInterface $cron) => [
+            $output->table(['Cron Services', 'Enable', 'Time', 'Next'], array_map(static fn (AbstractCronJob $cron) => [
                 get_class($cron),
                 $cron::ENABLE ? 'True' : 'False',
                 $cron::TIME,
-                $cron->next->format('Y-m-d H:i:s'), // @phpstan-ignore-line
+                $cron->next->format('Y-m-d H:i:s'),
             ], [...$this->cronWorker->getAll()]));
         } else {
             $output->warning('Cron job not found!');

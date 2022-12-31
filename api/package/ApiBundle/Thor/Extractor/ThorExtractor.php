@@ -3,16 +3,15 @@
 namespace Package\ApiBundle\Thor\Extractor;
 
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
-use Package\ApiBundle\Attribute\IsGranted;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
-use ReflectionMethod;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ThorExtractor
 {

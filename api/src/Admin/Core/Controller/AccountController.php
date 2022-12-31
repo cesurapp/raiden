@@ -11,13 +11,13 @@ use App\Admin\Core\Permission\PermissionManager;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Attribute\IsGranted;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AccountController extends AbstractApiController
 {
@@ -69,7 +69,7 @@ class AccountController extends AbstractApiController
         order: 3
     )]
     #[Route(path: '/v1/admin/account/manager', methods: ['GET'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_LIST->value)]
     public function list(UserRepository $userRepo): ApiResponse
     {
         $query = $userRepo->createQueryBuilder('u');
@@ -88,7 +88,7 @@ class AccountController extends AbstractApiController
         order: 4
     )]
     #[Route(path: '/v1/admin/account/manager', methods: ['POST'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_CREATE])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_CREATE->value)]
     public function create(UserDto $dto): ApiResponse
     {
         if ($dto->validated('type') === UserType::SUPERADMIN->value) {
@@ -112,7 +112,7 @@ class AccountController extends AbstractApiController
         order: 5
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['PUT'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_EDIT])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_EDIT->value)]
     public function edit(User $user, UserDto $dto): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
@@ -137,7 +137,7 @@ class AccountController extends AbstractApiController
         order: 6,
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['GET'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_LIST])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_LIST->value)]
     public function show(User $user): ApiResponse
     {
         return ApiResponse::create()
@@ -151,7 +151,7 @@ class AccountController extends AbstractApiController
         order: 7
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['DELETE'])]
-    #[IsGranted(roles: [AccountPermission::ROLE_ACCOUNT_DELETE])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_DELETE->value)]
     public function delete(User $user, UserRepository $userRepo): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
@@ -176,7 +176,7 @@ class AccountController extends AbstractApiController
         order: 9
     )]
     #[Route(path: '/v1/admin/account/permission/{id}', methods: ['GET'])]
-    #[IsGranted([AccountPermission::ROLE_ACCOUNT_PERMISSION])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_PERMISSION->value)]
     public function showPermission(User $user, PermissionManager $permissionManager): ApiResponse
     {
         return ApiResponse::create()->setData([
@@ -194,7 +194,7 @@ class AccountController extends AbstractApiController
         order: 10
     )]
     #[Route(path: '/v1/admin/account/permission/{id}', methods: ['PUT'])]
-    #[IsGranted([AccountPermission::ROLE_ACCOUNT_PERMISSION])]
+    #[IsGranted(AccountPermission::ROLE_ACCOUNT_PERMISSION->value)]
     public function editPermission(User $user, Request $request, PermissionManager $permissionManager): ApiResponse
     {
         if (!$request->request->has('permissions')) {

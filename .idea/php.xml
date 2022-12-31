@@ -5,10 +5,24 @@
       <MessDetectorConfiguration tool_path="api/vendor/phpmd/phpmd/src/bin/phpmd" />
     </phpmd_settings>
   </component>
+  <component name="MessDetectorOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCSFixerOptionsConfiguration">
+    <option name="codingStandard" value="Custom" />
+    <option name="rulesetPath" value="$PROJECT_DIR$/api/.php-cs-fixer.php" />
+    <option name="transferred" value="true" />
+  </component>
+  <component name="PHPCodeSnifferOptionsConfiguration">
+    <option name="transferred" value="true" />
+  </component>
   <component name="PhpCSFixer">
     <phpcsfixer_settings>
       <PhpCSFixerConfiguration standards="PSR1;PSR2;Symfony;DoctrineAnnotation;PHP70Migration;PHP71Migration" tool_path="$PROJECT_DIR$/api/bin/tool/vendor/bin/php-cs-fixer" />
     </phpcsfixer_settings>
+  </component>
+  <component name="PhpExternalFormatter">
+    <option name="externalFormatter" value="PHP_CS_FIXER" />
   </component>
   <component name="PhpIncludePathManager">
     <include_path>
@@ -129,7 +143,7 @@
       <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-uuid" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
   <component name="PhpRuntimeConfiguration">
     <extensions>
       <extension name="Ev" enabled="false" />
@@ -210,9 +224,19 @@
       <PhpStanConfiguration tool_path="api/bin/tool/vendor/phpstan/phpstan/phpstan" timeout="10000" />
     </PhpStan_settings>
   </component>
+  <component name="PhpStanOptionsConfiguration">
+    <option name="autoload" value="$PROJECT_DIR$/api/vendor/autoload.php" />
+    <option name="config" value="$PROJECT_DIR$/api/phpstan.neon" />
+    <option name="fullProject" value="true" />
+    <option name="level" value="6" />
+    <option name="transferred" value="true" />
+  </component>
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/api/phpunit.xml" custom_loader_path="$PROJECT_DIR$/api/bin/phpunit" phpunit_phar_path="" use_configuration_file="true" />
     </phpunit_settings>
+  </component>
+  <component name="PsalmOptionsConfiguration">
+    <option name="transferred" value="true" />
   </component>
 </project>

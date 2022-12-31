@@ -3,15 +3,14 @@
 namespace App\Admin\Core\Cron;
 
 use App\Admin\Core\Repository\OtpKeyRepository;
-use Package\SwooleBundle\Cron\CronInterface;
+use Package\SwooleBundle\Cron\AbstractCronJob;
 
 /**
  * Clear Expired OTP Key Cron.
  */
-class ClearExpiredOtpKeyCron implements CronInterface
+class ClearExpiredOtpKeyCron extends AbstractCronJob
 {
     public const TIME = '@EveryMinute15';
-    public const ENABLE = true;
 
     public function __construct(private readonly OtpKeyRepository $repo)
     {

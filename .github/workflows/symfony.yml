@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           tools: phpunit-bridge
           extensions: imagick, openswoole, :xdebug
           ini-values: sys_temp_dir=${{ runner.temp }}

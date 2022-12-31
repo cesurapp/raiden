@@ -36,7 +36,7 @@ abstract class AbstractApiDto
             if (property_exists($this, $field)) {
                 try {
                     $this->$field = is_numeric($value) ? (int) $value : $value;
-                } catch (\TypeError $exception) {
+                } catch (\TypeError) {
                     $this->constraints->add(new ConstraintViolation(
                         'The type of this value is incorrect.',
                         'The type of this value is incorrect.',
