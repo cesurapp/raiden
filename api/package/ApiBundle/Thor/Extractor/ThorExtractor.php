@@ -161,15 +161,12 @@ class ThorExtractor
 
     private function extractRoles(\ReflectionMethod $method, array $attrThor): array
     {
-        $permissions = $method->getAttributes(IsGranted::class);
-        if ($permissions) {
-            $permissions = $permissions[0]->getArguments();
-            $permissions = $permissions[0] ?? $permissions['roles'];
+        $permission = $method->getAttributes(IsGranted::class);
+        if ($permission) {
+            $permission = $permission[0]->getArguments();
         }
 
-        $permissions = array_map(static fn ($p) => $p instanceof \BackedEnum ? $p->value : $p, $permissions);
-
-        return array_merge($permissions, $attrThor['roles'] ?? []);
+        return array_merge($permission ?? [], $attrThor['roles'] ?? []);
     }
 
     /**
