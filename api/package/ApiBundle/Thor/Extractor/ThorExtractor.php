@@ -166,7 +166,7 @@ class ThorExtractor
             $permission = $permission[0]->getArguments();
         }
 
-        return array_merge($permission ?? [], $attrThor['roles'] ?? []);
+        return array_merge($permission, $attrThor['roles'] ?? []);
     }
 
     /**
