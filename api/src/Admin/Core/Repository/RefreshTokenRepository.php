@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class RefreshTokenRepository extends BaseRepository
 {
-    public function __construct(ManagerRegistry $registry, private ParameterBagInterface $bag)
+    public function __construct(ManagerRegistry $registry, private readonly ParameterBagInterface $bag)
     {
         parent::__construct($registry, RefreshToken::class);
     }

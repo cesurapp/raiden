@@ -19,11 +19,14 @@ class FailedTask
     #[ORM\Column(type: 'string')]
     private string $task;
 
-    #[ORM\Column(type: 'array', nullable: true)]
+    #[ORM\Column(type: 'json', nullable: true)]
     private array $payload;
 
     #[ORM\Column(type: 'text')]
     private string $exception;
+
+    #[ORM\Column(type: 'smallint')]
+    protected int $attempt = 0;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTime $createdAt;
@@ -70,6 +73,18 @@ class FailedTask
     public function setException(string $exception): self
     {
         $this->exception = $exception;
+
+        return $this;
+    }
+
+    public function getAttempt(): int
+    {
+        return $this->attempt;
+    }
+
+    public function setAttempt(int $attempt): self
+    {
+        $this->attempt = $attempt;
 
         return $this;
     }

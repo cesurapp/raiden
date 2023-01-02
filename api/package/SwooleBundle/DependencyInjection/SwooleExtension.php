@@ -13,6 +13,11 @@ class SwooleExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        // Register Configuration
+        foreach ($this->processConfiguration(new SwooleConfiguration(), $configs) as $key => $value) {
+            $container->getParameterBag()->set('swoole.'.$key, $value);
+        }
+
         // Register Task & Cron Services
         $container->registerForAutoconfiguration(TaskInterface::class)
             ->addTag('tasks')

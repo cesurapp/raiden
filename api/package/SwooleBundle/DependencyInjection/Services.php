@@ -5,6 +5,7 @@ namespace Package\SwooleBundle\DependencyInjection;
 use Package\SwooleBundle\Adapter\SwooleCacheAdapter;
 use Package\SwooleBundle\Adapter\SwooleCacheFactory;
 use Package\SwooleBundle\Log\Logger;
+use Package\SwooleBundle\Task\FailedTaskCron;
 use Package\SwooleBundle\Task\TaskHandler;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -26,12 +27,10 @@ return static function (ContainerConfigurator $container) {
         ->tag('monolog.logger', ['channel' => 'cache']);
 
     // Commands
-    $services
-        ->load('Package\\SwooleBundle\\Command\\', '../Command/');
+    $services->load('Package\\SwooleBundle\\Command\\', '../Command/');
 
     // Repository
-    $services
-        ->load('Package\\SwooleBundle\\Repository\\', '../Repository');
+    $services->load('Package\\SwooleBundle\\Repository\\', '../Repository');
 
     // Logger
     $container->services()
@@ -50,4 +49,7 @@ return static function (ContainerConfigurator $container) {
             '$worker' => $services->get(TaskWorker::class),
         ]);
     }
+
+    // Failed Task Cron
+    $services->set(FailedTaskCron::class, FailedTaskCron::class);
 };

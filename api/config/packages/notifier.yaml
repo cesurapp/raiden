@@ -3,5 +3,5 @@ framework:
         chatter_transports:
             firebase: '%env(FIREBASE_DSN)%'
         texter_transports:
-            main: 'null://null'
-            #tr: 'null://null'
+            main: '%env(SMS_MAIN_TRANSPORT)%'
+            tr: '%env(SMS_TR_TRANSPORT)%'

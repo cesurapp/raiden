@@ -4,6 +4,7 @@ namespace Package\SwooleBundle\Command;
 
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\EntityManagerInterface;
+use Package\SwooleBundle\Entity\FailedTask;
 use Psr\Log\NullLogger;
 use Swoole\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -15,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'task:failed:retry', description: 'Send all failed tasks to queue.')]
 class TaskFailedRetryCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -42,10 +43,12 @@ class TaskFailedRetryCommand extends Command
         $query = $this->entityManager->createQuery('select f from SwooleBundle:FailedTask f');
 
         // Send All
+        /** @var FailedTask $task */
         foreach ($query->toIterable() as $index => $task) {
             $client->send('taskRetry::'.json_encode([
                     'class' => $task->getTask(),
                     'payload' => $task->getPayload(),
+                    'attempt' => $task->getAttempt() + 1,
                 ], JSON_THROW_ON_ERROR));
             if ('1' === $client->recv()) {
                 $this->entityManager->remove($task);

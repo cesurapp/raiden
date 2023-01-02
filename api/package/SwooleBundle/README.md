@@ -1,5 +1,13 @@
 ## Swoole Bundle
 
+### Configuration
+```shell
+swoole.yaml
+
+swoole:
+  failed_task_attempt: 1 # Failed Task Retry Count
+```
+
 ### Commands
 ```shell
 bin/console cron:list     # List Cron Jobs
@@ -17,7 +25,7 @@ bin/console task:list           # List Registered Tasks
 
 ### Create Cron Job
 ```php
-class ExampleJob implements \Package\SwooleBundle\Cron\CronInterface {
+class ExampleJob implements \Package\SwooleBundle\Cron\AbstractCronJob {
     /**
      * @see CronInterface
      */

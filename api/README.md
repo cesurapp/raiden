@@ -1,7 +1,6 @@
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
 * UI -> DateTime Formatter
-* Failed Task Cron
-* Cron Retry Parameter
+* Thor Fix
 * 
 * 
 * DataTable

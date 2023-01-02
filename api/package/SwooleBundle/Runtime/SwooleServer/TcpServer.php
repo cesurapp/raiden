@@ -6,7 +6,7 @@ use Swoole\Constant;
 use Swoole\Process;
 use Swoole\Server;
 
-class TcpServer
+readonly class TcpServer
 {
     public function __construct(HttpServer $server, private array $options)
     {
