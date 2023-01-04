@@ -64,7 +64,7 @@ export default {
   'Session expired, please login again.': 'Oturum süresi doldu, yeniden giriş yapın.',
   'Passwordless Login': 'Şifresiz Giriş',
   'Security Code': 'Güvenlik Kodu',
-  'Enter the 6-digit code sent to your account (mail/phone) to login.': 'Hesabınıza giriş için gönderilen (mail/phone) 6 haneli kodu girin.',
+  'Enter the 6-digit code sent to your account (mail/phone) to login.': 'Hesabınıza giriş için gönderilen (Eposta/Telefon) 6 haneli kodu girin.',
   'Back': 'Geri',
   'Dark Mode': 'Koyu Tema',
 
