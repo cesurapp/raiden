@@ -25,8 +25,8 @@ class CronListCommand extends Command
         if (iterator_count($this->cronWorker->getAll())) {
             $output->table(['Cron Services', 'Enable', 'Time', 'Next'], array_map(static fn (AbstractCronJob $cron) => [
                 get_class($cron),
-                $cron::ENABLE ? 'True' : 'False',
-                $cron::TIME,
+                $cron->ENABLE ? 'True' : 'False',
+                $cron->TIME,
                 $cron->next->format('Y-m-d H:i:s'),
             ], [...$this->cronWorker->getAll()]));
         } else {

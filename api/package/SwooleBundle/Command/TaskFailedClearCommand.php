@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'task:failed:clear', description: 'Clean up failed tasks.')]
 class TaskFailedClearCommand extends Command
 {
-    public function __construct(private FailedTaskRepository $failedTaskRepo)
+    public function __construct(private readonly FailedTaskRepository $failedTaskRepo)
     {
         parent::__construct();
     }

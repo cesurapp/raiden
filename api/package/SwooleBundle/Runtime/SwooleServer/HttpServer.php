@@ -18,7 +18,7 @@ class HttpServer extends Server
 {
     public Table $appCache;
 
-    public function __construct(private HttpKernelInterface $application, private array $options)
+    public function __construct(private readonly HttpKernelInterface $application, private readonly array $options)
     {
         parent::__construct(
             $this->options['http']['host'],

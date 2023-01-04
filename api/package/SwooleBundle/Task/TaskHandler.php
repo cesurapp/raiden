@@ -2,9 +2,9 @@
 
 namespace Package\SwooleBundle\Task;
 
-readonly class TaskHandler
+class TaskHandler
 {
-    public function __construct(private ?TaskWorker $worker = null)
+    public function __construct(private readonly ?TaskWorker $worker = null)
     {
     }
 

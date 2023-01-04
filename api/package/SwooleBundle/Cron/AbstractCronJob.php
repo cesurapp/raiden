@@ -23,12 +23,12 @@ abstract class AbstractCronJob implements CronInterface
      *
      * @see https://crontab.guru
      */
-    public const TIME = '@daily';
+    public string $TIME = '@daily';
 
     /**
      * Cron is Enable|Disable.
      */
-    public const ENABLE = true;
+    public bool $ENABLE = true;
 
     public ?bool $isDue = null;
     public ?\DateTime $next = null;

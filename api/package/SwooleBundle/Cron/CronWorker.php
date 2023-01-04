@@ -37,7 +37,7 @@ class CronWorker
     public function run(): void
     {
         foreach ($this->getAll() as $cron) {
-            if (!$cron || !$cron::ENABLE || !$cron->isDue) {
+            if (!$cron || !$cron->ENABLE || !$cron->isDue) {
                 continue;
             }
 
@@ -66,20 +66,13 @@ class CronWorker
     /**
      * Get CRON Instance.
      */
-    public function get(string $class): ?CronInterface
+    public function get(string $class): ?AbstractCronJob
     {
         if ($this->locator->has($class)) {
+            /** @var AbstractCronJob $cron */
             $cron = $this->locator->get($class);
-
-            if (!defined("$class::TIME")) {
-                throw new CronConstantNotFoundException();
-            }
-            if (!defined("$class::ENABLE")) {
-                throw new CronConstantNotFoundException('Cron ENABLE constant not found!');
-            }
-
             $aliases = CronExpression::getAliases();
-            $this->expression->setExpression($aliases[strtolower($cron::TIME)] ?? $cron::TIME);
+            $this->expression->setExpression($aliases[strtolower($cron->TIME)] ?? $cron->TIME);
             $cron->isDue = $this->expression->isDue();
             $cron->next = $this->expression->getNextRunDate();
 

@@ -10,8 +10,11 @@ class TaskServer
 {
     private TaskWorker $taskWorker;
 
-    public function __construct(private HttpKernelInterface $application, private HttpServer $server, private array $options)
-    {
+    public function __construct(
+        private readonly HttpKernelInterface $application,
+        private readonly HttpServer $server,
+        private readonly array $options
+    ) {
         if ($this->options['app']['task']) {
             // Init Worker
             $kernel = clone $this->application;

@@ -1,0 +1,3 @@
+swoole:
+  failed_task_retry: "@EveryMinute10"
+  failed_task_attempt: 1

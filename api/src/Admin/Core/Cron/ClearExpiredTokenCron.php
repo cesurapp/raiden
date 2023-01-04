@@ -10,7 +10,7 @@ use Package\SwooleBundle\Cron\AbstractCronJob;
  */
 class ClearExpiredTokenCron extends AbstractCronJob
 {
-    public const TIME = '@daily';
+    public string $TIME = '@daily';
 
     public function __construct(private readonly RefreshTokenRepository $repo)
     {

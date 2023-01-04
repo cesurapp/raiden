@@ -14,6 +14,7 @@ class SwooleConfiguration implements ConfigurationInterface
         // Thor Configuration
         $treeBuilder->getRootNode()
             ->children()
+                ->scalarNode('failed_task_retry')->defaultValue('@EveryMinute10')->end()
                 ->scalarNode('failed_task_attempt')->defaultValue(1)->end()
             ->end();
 

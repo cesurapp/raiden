@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'task:failed:view', description: 'Lists failed tasks.')]
 class TaskFailedViewCommand extends Command
 {
-    public function __construct(private FailedTaskRepository $failedTaskRepo)
+    public function __construct(private readonly FailedTaskRepository $failedTaskRepo)
     {
         parent::__construct();
     }
@@ -42,7 +42,7 @@ class TaskFailedViewCommand extends Command
 
             $table
                 ->setRows(array_map(static fn (FailedTask $task) => [
-                    $task->getId()->toBase32(),
+                    $task->getId()?->toBase32(),
                     $task->getTask(),
                     $task->getException(),
                     json_encode($task->getPayload(), JSON_THROW_ON_ERROR),

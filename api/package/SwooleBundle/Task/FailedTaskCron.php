@@ -12,10 +12,9 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class FailedTaskCron extends AbstractCronJob
 {
-    public const TIME = '@EveryMinute';
-
     public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ParameterBagInterface $bag)
     {
+        $this->TIME = $this->bag->get('swoole.failed_task_retry');
     }
 
     public function __invoke(): void

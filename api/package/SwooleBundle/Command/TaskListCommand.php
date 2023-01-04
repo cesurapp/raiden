@@ -12,7 +12,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'task:list', description: 'List Tasks')]
 class TaskListCommand extends Command
 {
-    public function __construct(private TaskWorker $taskWorker)
+    public function __construct(private readonly TaskWorker $taskWorker)
     {
         parent::__construct();
     }

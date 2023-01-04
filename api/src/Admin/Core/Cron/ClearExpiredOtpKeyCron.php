@@ -10,7 +10,7 @@ use Package\SwooleBundle\Cron\AbstractCronJob;
  */
 class ClearExpiredOtpKeyCron extends AbstractCronJob
 {
-    public const TIME = '@EveryMinute15';
+    public string $TIME = '@EveryMinute15';
 
     public function __construct(private readonly OtpKeyRepository $repo)
     {

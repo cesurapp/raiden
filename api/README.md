@@ -1,6 +1,5 @@
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
 * UI -> DateTime Formatter
-* Thor Fix
 * 
 * 
 * DataTable

@@ -3,7 +3,6 @@
 namespace Package\SwooleBundle\Runtime;
 
 use Swoole\Client;
-use Swoole\Process;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -13,7 +12,7 @@ class SwooleProcess
 {
     private array $options;
 
-    public function __construct(private SymfonyStyle $output, private string $rootDir)
+    public function __construct(private readonly SymfonyStyle $output, private readonly string $rootDir)
     {
         // Load Configuration
         $config = $rootDir.'/.server.local.php';

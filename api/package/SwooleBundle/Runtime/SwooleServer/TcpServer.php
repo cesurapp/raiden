@@ -4,14 +4,12 @@ namespace Package\SwooleBundle\Runtime\SwooleServer;
 
 use Swoole\Constant;
 use Swoole\Process;
-use Swoole\Server;
 
-readonly class TcpServer
+class TcpServer
 {
-    public function __construct(HttpServer $server, private array $options)
+    public function __construct(HttpServer $server, private readonly array $options)
     {
         if ($this->options['app']['tcp']) {
-            /** @var Server $tcpServer */
             $tcpServer = $server->addlistener(
                 $this->options['tcp']['port'],
                 $this->options['tcp']['port'],
