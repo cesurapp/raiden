@@ -18,17 +18,19 @@ class MediaColumnListener implements EventSubscriberInterface
 
     public function onFlush(OnFlushEventArgs $event): void
     {
-        $em = $event->getEntityManager();
+        $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         // Remove
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof MediaInterface) {
-                foreach ($entity->getMediaColumns() as $column) {
-                    if ($media = $entity->{'get'.ucfirst($column)}()) {
-                        foreach ($media as $item) {
-                            $this->updateMedia($item, $em);
-                        }
+            if (!$entity instanceof MediaInterface) {
+                continue;
+            }
+
+            foreach ($entity->getMediaColumns() as $column) {
+                if ($media = $entity->{'get'.ucfirst($column)}()) {
+                    foreach ($media as $item) {
+                        $this->updateMedia($item, $em);
                     }
                 }
             }
@@ -36,18 +38,20 @@ class MediaColumnListener implements EventSubscriberInterface
 
         // Update
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof MediaInterface) {
-                $changeSet = $uow->getEntityChangeSet($entity);
-                foreach ($entity->getMediaColumns() as $column) {
-                    if (isset($changeSet[$column])) {
-                        $diff = array_diff_key($changeSet[$column][0], $changeSet[$column][1]);
+            if (!$entity instanceof MediaInterface) {
+                continue;
+            }
 
-                        /** @var Media $item */
-                        foreach ($diff as $id => $item) {
-                            // Remove & Decrement Counter
-                            if (isset($changeSet[$column][0][$id])) {
-                                $this->updateMedia($item, $em);
-                            }
+            $changeSet = $uow->getEntityChangeSet($entity);
+            foreach ($entity->getMediaColumns() as $column) {
+                if (isset($changeSet[$column])) {
+                    $diff = array_diff_key($changeSet[$column][0], $changeSet[$column][1]);
+
+                    /** @var Media $item */
+                    foreach ($diff as $id => $item) {
+                        // Remove & Decrement Counter
+                        if (isset($changeSet[$column][0][$id])) {
+                            $this->updateMedia($item, $em);
                         }
                     }
                 }

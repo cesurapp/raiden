@@ -1,6 +1,6 @@
 ## Library
 
-### => Swoole Coroutine HTTP Client
+### Swoole Coroutine HTTP Client
 
 ---
 

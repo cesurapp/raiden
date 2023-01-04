@@ -2,7 +2,7 @@
 
 namespace Package\MediaBundle\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Package\MediaBundle\Entity\Media;
 use Package\StorageBundle\Storage\Storage;
 use Psr\Log\LoggerInterface;

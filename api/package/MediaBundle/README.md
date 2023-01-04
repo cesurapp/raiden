@@ -31,10 +31,10 @@ use \Package\MediaBundle\Manager\MediaManager;
 class ExampleController  {
     public function index(Request $request, MediaManager $manager): void {
         $images = $manager
-            ->setCompress(true)         // Enable Image Compressor
-            ->setConvertJPG(true)       // PNG to JPG Convertor
-            ->setImageQuality(75)       // Default Image Quality
-            ->setImageSize(1024,768)    // Maximum Image Size
+            ->setImageCompress(true)         // Enable Image Compressor
+            ->setImageConvertJPG(true)       // PNG to JPG Convertor
+            ->setImageQuality(75)            // Default Image Quality
+            ->setImageSize(1024,768)         // Maximum Image Size
             //->uploadFile($request)                            // HTTP File Upload
             //->uploadBase64($request, ['imageKey' => ''])      // Json Base64 Image Upload
             ->uploadLink($request, ['imageLink' => ''])         // Image Link Upload

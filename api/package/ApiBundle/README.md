@@ -105,7 +105,7 @@ class LoginDto extends AbstractApiDto {
 ```
 
 ### Generate Documentation
-Documentation: http:://127.0.0.1:8000/thor
+__View Documentation:__ http:://127.0.0.1:8000/thor
 ```shell
 bin/console thor:generate # Generate Documentation to JSON File
 ```

@@ -10,7 +10,7 @@ trait MediaTrait
     private ?array $media = [];
 
     /**
-     * @return array|Media[]
+     * @return Media[]|null
      */
     public function getMedia(): ?array
     {
@@ -28,9 +28,7 @@ trait MediaTrait
 
     public function addMedias(array $medias): self
     {
-        array_walk_recursive($medias, function (Media $media) {
-            $this->addMedia($media);
-        });
+        array_walk_recursive($medias, fn (Media $media) => $this->addMedia($media));
 
         return $this;
     }
@@ -48,9 +46,7 @@ trait MediaTrait
     {
         $this->media = [];
 
-        array_walk_recursive($medias, function (Media $media) {
-            $this->media[] = $media;
-        });
+        array_walk_recursive($medias, fn (Media $media) => $this->media[] = $media);
 
         return $this;
     }

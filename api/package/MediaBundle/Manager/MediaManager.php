@@ -14,8 +14,8 @@ use Symfony\Component\Uid\Ulid;
 
 class MediaManager
 {
-    private bool $compress = true;
-    private bool $convertJPG = true;
+    private bool $imageCompress = true;
+    private bool $imageConvertJPG = true;
     private int $imageQuality = 75;
     private int $imageHeight = 1280;
     private int $imageWidth = 720;
@@ -28,11 +28,11 @@ class MediaManager
     }
 
     /**
-     * Enable|Disable Compressor.
+     * Enable|Disable Image Compressor.
      */
-    public function setCompress(bool $compress): self
+    public function setImageCompress(bool $compress): self
     {
-        $this->compress = $compress;
+        $this->imageCompress = $compress;
 
         return $this;
     }
@@ -40,9 +40,9 @@ class MediaManager
     /**
      * PNG to JPG Converter Enable.
      */
-    public function setConvertJPG(bool $convertJPG): self
+    public function setImageConvertJPG(bool $convertJPG): self
     {
-        $this->convertJPG = $convertJPG;
+        $this->imageConvertJPG = $convertJPG;
 
         return $this;
     }
@@ -70,6 +70,8 @@ class MediaManager
 
     /**
      * Upload HTTP File Request.
+     *
+     * @return Media[]
      */
     public function uploadFile(Request $request, ?array $keys = null): array
     {
@@ -95,6 +97,9 @@ class MediaManager
         return $data;
     }
 
+    /**
+     * @return Media[]
+     */
     public function uploadBase64(Request $request, array $keys): array
     {
         $data = array_intersect_key($request->request->all(), $keys);
@@ -115,9 +120,12 @@ class MediaManager
         // Save
         $this->em->flush();
 
-        return $data;
+        return $data ?? []; // @phpstan-ignore-line
     }
 
+    /**
+     * @return Media[]
+     */
     public function uploadLink(Request $request, array $keys): array
     {
         $data = array_intersect_key($request->request->all(), $keys);
@@ -138,13 +146,13 @@ class MediaManager
         // Save
         $this->em->flush();
 
-        return $data;
+        return $data; // @phpstan-ignore-line
     }
 
     protected function createMedia(string $mimeType, string $extension, string $content, int $size): Media
     {
         // Convert JPG
-        if ($this->convertJPG) {
+        if ($this->imageConvertJPG) {
             $extension = match ($extension) {
                 'png', 'jpeg' => 'jpg',
                 default => $extension
@@ -156,7 +164,7 @@ class MediaManager
         }
 
         // Compress
-        if ($this->compress) {
+        if ($this->imageCompress) {
             $content = $this->compress($content, $extension);
         }
 

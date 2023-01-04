@@ -26,11 +26,6 @@ class MediaType extends Type
         return 'media';
     }
 
-    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
-    {
-        return !$platform->hasNativeJsonType();
-    }
-
     public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if (null === $value) {

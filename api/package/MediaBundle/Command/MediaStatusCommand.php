@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(name: 'media:status', description: 'View Media Storage Details')]
 class MediaStatusCommand extends Command
 {
-    public function __construct(private MediaRepository $repository)
+    public function __construct(private readonly MediaRepository $repository)
     {
         parent::__construct();
     }

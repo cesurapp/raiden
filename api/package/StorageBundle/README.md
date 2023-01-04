@@ -1,15 +1,11 @@
 ## Storage Bundle
 
-__Supported Drivers__
-
+### Supported Drivers
 1. BackBlaze
-2. S3
-3. DOSpaces
-4. Local
-5. Wasabi
-6. Linode
+2. CloudFlare
+3. Local
 
-__Configuration__
+### Configuration
 ```yaml
 storage:
   default: main
@@ -17,26 +13,27 @@ storage:
     local:
       driver: local
       root: "%kernel.project_dir%/storage/files"
-
+    
     main:
-      driver: s3 #s3, backblaze, linode, local, dospaces, wasabi
+      driver: s3 #backblaze, cloudflare, local
       root: "%kernel.project_dir%/storage/files"
       accessKey: "access_key"
       secretKey: "secret_key"
       bucket: "private_pdf"
-      region: !php/const Package\StorageBundle\Driver\S3::US_EAST_1
-      acl: !php/const Package\StorageBundle\Driver\S3::ACL_PRIVATE
+      region: "auto"
+      endPoint: "https://11d0547262baad2e6bdeb340e88f83be.r2.cloudflarestorage.com"
 ```
 
-__Tests__
-
-phpunit.xml.dist
+### Tests
 ```xml
-<server name="S3_ACCESS_KEY" value="KEY" />
-<server name="S3_SECRET" value="KEY" />
+<!--phpunit.xml.dist-->
+
+<server name="CLOUDFLARE_R2_ACCESS_KEY" value="KEY" />
+<server name="CLOUDFLARE_R2_SECRET" value="KEY" />
+<server name="CLOUDFLARE_R2_ENDPOINT" value="KEY" />
 ```
 
-__Usage:__
+### Usage
 ```php
 public function controllerAction(\Package\StorageBundle\Storage\Storage $storage) {
     // Upload File
