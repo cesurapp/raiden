@@ -18,7 +18,7 @@ jobs:
       - name: Install Quality Tools
         run: composer install-tool
       - name: Install App Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
       - name: PHPStan
         run: composer phpstan
       - name: PHPCS Fixer
