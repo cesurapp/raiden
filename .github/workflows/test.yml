@@ -1,5 +1,11 @@
 name: App Tester
 on: [push]
+
+env:
+  php-version: '8.2'
+  php-extensions: imagick, openswoole
+  key: php-cache
+
 jobs:
   quality:
     # Configuration
@@ -8,15 +14,11 @@ jobs:
     defaults:
       run:
         working-directory: ./api
-    env:
-      php-version: '8.2'
-      php-extensions: imagick, openswoole
-      key: phpext-cache
 
     # Steps
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Cache Environment
+      - name: Setup Cache PHP Extensions
         id: extcache
         uses: shivammathur/cache-extensions@v1
         with:
@@ -42,30 +44,48 @@ jobs:
       - name: PHPCS Fixer
         run: composer lint
 
-#  phpunit:
-#    needs: quality
-#
-#    # Configuration
-#    name: App Test
-#    runs-on: ubuntu-22.04
-#    defaults:
-#      run:
-#        working-directory: ./api
-#
-#    # Services
-#    services:
-#      postgres:
-#        image: postgres:latest
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: postgres
-#        ports:
-#          - 5432:5432
-#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
-#
-#    # Steps
-#    steps:
+  phpunit:
+    needs: quality
+
+    # Configuration
+    name: App Test
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./api
+
+    # Services
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+
+    # Steps
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Cache PHP Extensions
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: ${{ env.php-extensions }}
+          key: ${{ env.key }}
+      - name: Cache PHP Extensions
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: ${{ env.php-extensions }}
 #      - uses: shivammathur/setup-php@v2
 #        with:
 #          php-version: '8.2'
@@ -74,9 +94,8 @@ jobs:
 #          ini-values: sys_temp_dir=${{ runner.temp }}
 #        env:
 #          OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
-#      - uses: actions/checkout@v3
-#      - name: Install Quality Tools
-#        run: composer install-tool
+      #- name: Install Quality Tools
+      #  run: composer install-tool
 #      - name: Cache Composer Packages
 #        id: composer-cache
 #        uses: actions/cache@v3
@@ -85,13 +104,13 @@ jobs:
 #          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
 #          restore-keys: |
 #            ${{ runner.os }}-php-
-#      - name: Install Dependencies
-#        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-#      - name: Quality Tools - PHPStan
-#        run: composer phpstan
-#      - name: Quality Tools - PHPCS Fixer
-#        run: composer lint
-#      - name: Execute PHPUnit
-#        run: composer test-stop
-#        env:
-#          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      #- name: Quality Tools - PHPStan
+      #  run: composer phpstan
+      #- name: Quality Tools - PHPCS Fixer
+      #  run: composer lint
+      - name: Execute PHPUnit
+        run: composer test-stop
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
