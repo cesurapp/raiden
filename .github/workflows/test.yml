@@ -52,20 +52,20 @@ jobs:
           ini-values: sys_temp_dir=${{ runner.temp }}
         env:
           OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
-          
-#      - name: Cache Composer Packages
-#        id: composer-cache
-#        uses: actions/cache@v3
-#        with:
-#          path: vendor
-#          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#          restore-keys: |
-#            ${{ runner.os }}-php-
+      - name: Cache Composer Packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
       # Run Tests
       - name: Install Quality Tools
         run: composer install-tool
-      - name: Install App Dependencies
+      - if: steps.composer-cache.outputs.cache-hit != 'true'
+        name: Install App Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: PHPStan
         run: composer phpstan
