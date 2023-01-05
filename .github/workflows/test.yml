@@ -84,4 +84,4 @@ jobs:
       - name: Execute PHPUnit
         run: composer test-stop
         env:
-          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/postgres?serverVersion=14
+          DATABASE_URL: postgresql://postgres:postgres@0.0.0.0:5432/postgres?serverVersion=14
