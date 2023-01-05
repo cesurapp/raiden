@@ -242,9 +242,7 @@ class ApiResponse
         // Message Translator
         if (isset($this->data['message'])) {
             foreach ($this->data['message'] as $type => $messages) {
-                $this->data['message'][$type] = array_map(static function ($message) use ($translator) {
-                    return $translator->trans($message);
-                }, $messages);
+                $this->data['message'][$type] = array_map(static fn ($message) => $translator->trans($message), $messages);
             }
         }
 

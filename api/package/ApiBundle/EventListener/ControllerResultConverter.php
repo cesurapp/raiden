@@ -12,17 +12,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Controller Result Convert to Symfony Response.
  */
-class ControllerResultConverter implements EventSubscriberInterface
+readonly class ControllerResultConverter implements EventSubscriberInterface
 {
-    public function __construct(
-        private readonly ApiResourceLocator $resourceLocator,
-        private readonly TranslatorInterface $translator
-    ) {
+    public function __construct(private ApiResourceLocator $resourceLocator, private TranslatorInterface $translator)
+    {
     }
 
     public function onKernelView(ViewEvent $event): void
     {
-        /** @var ApiResponse $apiResponse */
         $apiResponse = $event->getControllerResult();
         if ($apiResponse instanceof ApiResponse) {
             $event->setResponse(

@@ -1,3 +1,4 @@
+/*
 import {LoadingBar} from 'quasar';
 
 LoadingBar.setDefaults({
@@ -5,19 +6,20 @@ LoadingBar.setDefaults({
   size: '3px',
   position: 'top'
 });
+*/
 
 function barStart() {
-  LoadingBar.setDefaults({color: 'info'})
-  LoadingBar.start();
+/*  LoadingBar.setDefaults({color: 'info'})
+  LoadingBar.start();*/
 }
 
 function barSuccess() {
-  LoadingBar.stop();
+/*  LoadingBar.stop();*/
 }
 
 function barDanger() {
-  LoadingBar.setDefaults({color: 'negative'})
-  LoadingBar.stop();
+/*  LoadingBar.setDefaults({color: 'negative'})
+  LoadingBar.stop();*/
 }
 
 export {

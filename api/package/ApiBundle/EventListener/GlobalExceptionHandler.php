@@ -12,9 +12,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Global Exception Handler.
  */
-class GlobalExceptionHandler implements EventSubscriberInterface
+readonly class GlobalExceptionHandler implements EventSubscriberInterface
 {
-    public function __construct(private readonly TranslatorInterface $translator)
+    public function __construct(private TranslatorInterface $translator)
     {
     }
 

@@ -18,7 +18,8 @@ security:
             stateless: true
             pattern: ^/(v1|v2)/(auth|main|user|admin)
             provider: user_provider
-            custom_authenticator: App\Admin\Core\Security\JwtAuthenticator
+            access_token:
+                token_handler: App\Admin\Core\Security\AccessTokenHandler
             user_checker: App\Admin\Core\Security\UserChecker
             switch_user: {
                 role: CAN_SWITCH_USER,

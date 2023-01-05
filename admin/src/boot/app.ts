@@ -23,7 +23,7 @@ import {ref} from 'vue';
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $client: AxiosInstance;
-    $isBusy: boolean
+    $isBusy: any
   }
 }
 
@@ -54,10 +54,11 @@ import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import {useAuthStore} from 'stores/AuthStore';
+import {Store} from 'pinia';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $auth: typeof useAuthStore
+    $auth: Store
   }
 }
 

@@ -11,9 +11,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * Append Request Attribute.
  */
-class GlobalRequestAttribute implements EventSubscriberInterface
+readonly class GlobalRequestAttribute implements EventSubscriberInterface
 {
-    public function __construct(private readonly TokenStorageInterface $tokenStorage)
+    public function __construct(private TokenStorageInterface $tokenStorage)
     {
     }
 
@@ -25,7 +25,7 @@ class GlobalRequestAttribute implements EventSubscriberInterface
             /** @var User|null $user */
             $user = $this->tokenStorage->getToken()?->getUser();
             if ($user) {
-                $request->attributes->set('uid', $user->getId()->toBase32());
+                $request->attributes->set('uid', $user->getId()?->toBase32());
             }
         }
     }
