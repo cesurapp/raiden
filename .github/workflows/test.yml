@@ -1,13 +1,44 @@
-name: Symfony Test
+name: App Tester
 on: [push]
 jobs:
-  phpunit-test:
+  quality:
+    # Configuration
     runs-on: ubuntu-22.04
     defaults:
       run:
         working-directory: ./api
 
-    # Services -> Postgres
+    # Steps
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - uses: actions/checkout@v3
+      - name: Install Quality Tools
+        run: composer install-tool
+      - name: Cache Packages
+        id: composer-packages
+        uses: actions/cache@v3
+        with:
+          path: bin/tool/vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('bin/tool/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: PHPStan
+        run: composer phpstan
+      - name: PHPCS Fixer
+        run: composer lint
+
+  phpunit:
+    needs: quality
+
+    # Configuration
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./api
+
+    # Services
     services:
       postgres:
         image: postgres:latest
