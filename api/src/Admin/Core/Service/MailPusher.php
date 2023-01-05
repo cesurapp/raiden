@@ -12,11 +12,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Send Mail to Task Queue.
  */
 #[Autoconfigure(public: true)]
-class MailPusher
+readonly class MailPusher
 {
     public function __construct(
-        private readonly TaskHandler $taskHandler,
-        private readonly TranslatorInterface $translator
+        private TaskHandler $taskHandler,
+        private TranslatorInterface $translator
     ) {
     }
 

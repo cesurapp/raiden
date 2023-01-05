@@ -1,6 +1,7 @@
 * UI -> Switch User -> ROLE_ALLOWED_TO_SWITCH
 * UI -> DateTime Formatter
-* 
+* UI -> Fix Responsive
+* UI -> Rounded Corners
 * 
 * DataTable
 * -- Filters

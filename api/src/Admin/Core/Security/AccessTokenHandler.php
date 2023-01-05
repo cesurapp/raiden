@@ -17,7 +17,7 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
 
     public function getUserBadgeFrom(#[\SensitiveParameter] string $accessToken): UserBadge
     {
-        return new UserBadge($accessToken, fn(string $token) => $this->userRepo->find($this->decodeJWT($token)['id']));
+        return new UserBadge($accessToken, fn (string $token) => $this->userRepo->find($this->decodeJWT($token)['id']));
     }
 
     private function decodeJWT(string $token): array

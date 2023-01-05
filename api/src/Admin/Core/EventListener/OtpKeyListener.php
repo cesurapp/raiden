@@ -24,12 +24,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
         'lazy' => true,
     ],
 ])]
-class OtpKeyListener
+readonly class OtpKeyListener
 {
     public function __construct(
-        private readonly SmsPusher $smsPusher,
-        private readonly MailPusher $mailPusher,
-        private readonly TranslatorInterface $translator
+        private SmsPusher $smsPusher,
+        private MailPusher $mailPusher,
+        private TranslatorInterface $translator
     ) {
     }
 
