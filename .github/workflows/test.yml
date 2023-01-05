@@ -16,16 +16,16 @@ jobs:
         working-directory: ./api
 
     # Services
-#    services:
-#      postgres:
-#        image: postgres:latest
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: postgres
-#        ports:
-#          - 5432:5432
-#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
     # Steps
     steps:
@@ -63,7 +63,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      # Run Quality Test
+      # Run Tests
       - name: Install Quality Tools
         run: composer install-tool
       - name: Install App Dependencies
@@ -72,16 +72,7 @@ jobs:
         run: composer phpstan
       - name: PHPCS Fixer
         run: composer lint
-
-      # Run App Test
-      - name: Setup PostgreSQL
-        uses: Daniel-Marynicz/postgresql-action@1.0.0
-        with:
-          postgres_image_tag: 14-alpine
-          app_user: postgres
-          app_user_password: postgres
-          app_db: postgres
       - name: Execute PHPUnit
         run: composer test-stop
         env:
-          DATABASE_URL: postgresql://postgres:postgres@0.0.0.0:5432/postgres?serverVersion=14
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
