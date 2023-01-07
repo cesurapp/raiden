@@ -11,7 +11,7 @@ class TcpServer
     {
         if ($this->options['app']['tcp']) {
             $tcpServer = $server->addlistener(
-                $this->options['tcp']['port'],
+                $this->options['tcp']['host'],
                 $this->options['tcp']['port'],
                 $this->options['tcp']['sock_type']
             );
