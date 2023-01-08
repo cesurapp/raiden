@@ -61,7 +61,7 @@ class ManagerTest extends KernelTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
 
         // Upload All
-        $medias = $manager->uploadBase64($request, ['imageBase64' => '']);
+        $medias = $manager->uploadBase64($request, ['imageBase64']);
 
         $this->assertInstanceOf(Media::class, $medias['imageBase64']);
         $this->assertTrue(
@@ -90,7 +90,7 @@ class ManagerTest extends KernelTestCase
         $em = self::getContainer()->get('doctrine')->getManager();
 
         // Upload All
-        $medias = $manager->uploadLink($request, ['filesLink' => '']);
+        $medias = $manager->uploadLink($request, ['filesLink']);
 
         $this->assertInstanceOf(Media::class, $medias['filesLink']);
         $this->assertTrue($storage->device($medias['filesLink']->getStorage())->exists($medias['filesLink']->getPath()));

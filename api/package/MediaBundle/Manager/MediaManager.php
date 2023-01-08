@@ -75,7 +75,7 @@ class MediaManager
      */
     public function uploadFile(Request $request, ?array $keys = null): array
     {
-        $data = $keys ? array_intersect_key($request->files->all(), $keys) : $request->files->all();
+        $data = $keys ? array_intersect_key($request->files->all(), array_flip($keys)) : $request->files->all();
 
         // Convert to Media Entity
         array_walk_recursive($data, function (&$item) {
@@ -102,7 +102,7 @@ class MediaManager
      */
     public function uploadBase64(Request $request, array $keys): array
     {
-        $data = array_intersect_key($request->request->all(), $keys);
+        $data = array_intersect_key($request->request->all(), array_flip($keys));
 
         // Convert to Media Entity
         array_walk_recursive($data, function (&$item) {
@@ -128,7 +128,7 @@ class MediaManager
      */
     public function uploadLink(Request $request, array $keys): array
     {
-        $data = array_intersect_key($request->request->all(), $keys);
+        $data = array_intersect_key($request->request->all(), array_flip($keys));
 
         // Convert to Media Entity
         array_walk_recursive($data, function (&$item) {

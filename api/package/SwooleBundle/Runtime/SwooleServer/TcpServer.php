@@ -5,9 +5,9 @@ namespace Package\SwooleBundle\Runtime\SwooleServer;
 use Swoole\Constant;
 use Swoole\Process;
 
-class TcpServer
+readonly class TcpServer
 {
-    public function __construct(HttpServer $server, private readonly array $options)
+    public function __construct(HttpServer $server, private array $options)
     {
         if ($this->options['app']['tcp']) {
             $tcpServer = $server->addlistener(

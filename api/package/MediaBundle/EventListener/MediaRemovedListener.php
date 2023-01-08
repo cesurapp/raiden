@@ -7,9 +7,9 @@ use Package\MediaBundle\Entity\Media;
 use Package\StorageBundle\Storage\Storage;
 use Psr\Log\LoggerInterface;
 
-class MediaRemovedListener
+readonly class MediaRemovedListener
 {
-    public function __construct(private readonly Storage $storage, private readonly LoggerInterface $logger)
+    public function __construct(private Storage $storage, private LoggerInterface $logger)
     {
     }
 

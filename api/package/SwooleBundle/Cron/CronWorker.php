@@ -42,7 +42,7 @@ class CronWorker
             }
 
             // Lock
-            $lock = $this->lockFactory->createLock(get_class($cron), 600, false);
+            $lock = $this->lockFactory->createLock(get_class($cron), 1200, false);
             if (!$lock->acquire()) {
                 continue;
             }

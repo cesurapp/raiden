@@ -1,33 +1,38 @@
-## Swoole Bundle
+# Swoole Bundle
+Built-in Swoole http server, background jobs (Task), scheduled task (Cron) worker are available.
+Failed jobs are saved in the database to be retried. Each server has built-in background task worker.
+Scheduled tasks run simultaneously on all servers. It is not possible for tasks to run at the same time as locking is used.
+
 
 ### Package Configuration
 ```shell
 # config/packages/swoole.yaml
-
 swoole:
   failed_task_retry: '@EveryMinute10'
   failed_task_attempt: 1 # Failed Task Retry Count
 ```
 
-### Commands
+### Server Commands
 ```shell
 # Cron Commands
-bin/console cron:list     # List Cron Jobs
+bin/console cron:list     # List cron jobs
 
 # Server Commands
-bin/console server:start  # Start Swoole Server
-bin/console server:stop   # Stop Swoole Server
-bin/console server:status # Status Swoole Server
-bin/console server:watch  # Watch Swoole Server
+bin/console server:start  # Start http server
+bin/console server:stop   # Stop http server
+bin/console server:status # Status http server
+bin/console server:watch  # Start http server for development mode (file watcher enabled)
 
 # Task|Job Commands
-bin/console task:list           # List Registered Tasks
-bin/console task:failed:clear   # Watch Swoole Server
-bin/console task:failed:retry   # Send all failed tasks to queue.
-bin/console task:failed:view    # Lists failed tasks.
+bin/console task:list           # List registered tasks
+bin/console task:failed:clear   # Clear all failed task
+bin/console task:failed:retry   # Forced send all failed tasks to swoole task worker
+bin/console task:failed:view    # Lists failed tasks
 ```
 
 ### Create Cron Job
+You can use cron expression for scheduled tasks, or you can use predefined expressions.
+
 ```php
 /**
  * Predefined Scheduling
@@ -64,7 +69,9 @@ class ExampleJob implements \Package\SwooleBundle\Cron\AbstractCronJob {
 }
 ```
 
-### Create Task (Background Job)
+### Create Task (Background Job or Queue)
+Data passed to jobs must be of type string, int, bool, array, objects cannot be serialized.
+
 Create: 
 ```php
 class ExampleTask implements \Package\SwooleBundle\Task\TaskInterface {

@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(name: 'task:list', description: 'List Tasks')]
+#[AsCommand(name: 'task:list', description: 'List tasks')]
 class TaskListCommand extends Command
 {
     public function __construct(private readonly TaskWorker $taskWorker)

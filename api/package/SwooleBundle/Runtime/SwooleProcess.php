@@ -19,7 +19,7 @@ class SwooleProcess
         if (!file_exists($config)) {
             $config = $rootDir.'/.server.php';
         }
-        $this->options = (require $config)();
+        $this->options = (require $config)(['project_dir' => $rootDir]);
     }
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Package\MediaBundle\Compressor;
 
-use Imagick;
-
 /**
  * Imagick Library.
  *

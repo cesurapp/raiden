@@ -10,7 +10,7 @@ class BackBlazeTest extends S3Base
     {
         $accessKey = $_SERVER['BACKBLAZE_ACCESS_KEY'] ?? '';
         $secretKey = $_SERVER['BACKBLAZE_SECRET'] ?? '';
-        $bucket = 'phpunit-test';
+        $bucket = $_SERVER['BACKBLAZE_BUCKET'] ?? 'unit-test';
 
         if (!$accessKey) {
             $this->markTestSkipped();

@@ -4,7 +4,7 @@ namespace App\Admin\Core\Entity;
 
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Repository\OtpKeyRepository;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Uid\Ulid;
@@ -95,7 +95,7 @@ class OtpKey implements \JsonSerializable
     public function prePersist(LifecycleEventArgs $event): void
     {
         // Disable Other OTP Code
-        $event->getEntityManager()->getRepository(OtpKey::class)->disableOtherCodes($this);
+        $event->getObjectManager()->getRepository(OtpKey::class)->disableOtherCodes($this);
     }
 
     public function jsonSerialize(): array

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6601d07c968445fc8fc2cdece02bd526",
+    "content-hash": "0143370e904ba6072761f2f47e910b42",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -616,16 +616,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.8.0",
+            "version": "2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "0421ebc069519a0f19b9c39e5dc18c359be0feab"
+                "reference": "251cd5aaea32bb92cdad4204840786b317dcdd4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/0421ebc069519a0f19b9c39e5dc18c359be0feab",
-                "reference": "0421ebc069519a0f19b9c39e5dc18c359be0feab",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/251cd5aaea32bb92cdad4204840786b317dcdd4c",
+                "reference": "251cd5aaea32bb92cdad4204840786b317dcdd4c",
                 "shasum": ""
             },
             "require": {
@@ -711,7 +711,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/DoctrineBundle/issues",
-                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.8.0"
+                "source": "https://github.com/doctrine/DoctrineBundle/tree/2.8.2"
             },
             "funding": [
                 {
@@ -727,7 +727,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-12-28T16:35:32+00:00"
+            "time": "2023-01-06T11:42:10+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -3261,16 +3261,16 @@
         },
         {
             "name": "symfony/http-client-contracts",
-            "version": "v3.1.1",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-client-contracts.git",
-                "reference": "fd038f08c623ab5d22b26e9ba35afe8c79071800"
+                "reference": "c5f587eb445224ddfeb05b5ee703476742d730bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/fd038f08c623ab5d22b26e9ba35afe8c79071800",
-                "reference": "fd038f08c623ab5d22b26e9ba35afe8c79071800",
+                "url": "https://api.github.com/repos/symfony/http-client-contracts/zipball/c5f587eb445224ddfeb05b5ee703476742d730bf",
+                "reference": "c5f587eb445224ddfeb05b5ee703476742d730bf",
                 "shasum": ""
             },
             "require": {
@@ -3282,7 +3282,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.1-dev"
+                    "dev-main": "3.3-dev"
                 },
                 "thanks": {
                     "name": "symfony/contracts",
@@ -3322,7 +3322,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/http-client-contracts/tree/v3.1.1"
+                "source": "https://github.com/symfony/http-client-contracts/tree/v3.2.0"
             },
             "funding": [
                 {
@@ -3338,7 +3338,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-22T07:30:54+00:00"
+            "time": "2022-11-25T10:21:52+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -8493,6 +8493,7 @@
     "platform": {
         "php": ">=8.2.0",
         "ext-curl": "*",
+        "ext-fileinfo": "*",
         "ext-imagick": "*",
         "ext-openswoole": "*"
     },

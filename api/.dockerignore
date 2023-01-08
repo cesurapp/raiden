@@ -1,0 +1,6 @@
+var/cache
+var/log
+.git
+.DS_Store
+.env.*
+.server.*.php

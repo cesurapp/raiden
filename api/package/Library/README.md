@@ -1,8 +1,6 @@
-## Library
+# Library
 
 ### Swoole Coroutine HTTP Client
-
----
 
 GET | DELETE Request:
 ```php

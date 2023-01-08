@@ -1,11 +1,17 @@
-## Media Bundle
+# Media Bundle
+It is used to keep track of files.
+It is used to keep track of files. When media is deleted, it is also automatically removed from storage.
+You can use the same media with multiple tables. You must create a new trait for each column.
+Imagick compression, resizing, conversion support is available for image files.
 
 ### Commands
+
 ```shell
 bin/console media:status     # View Media Storage Details
 ```
 
 ### Create Media Column
+
 __Note:__ Copy the "MediaTrait" for the new column.
 
 ```php
@@ -25,6 +31,7 @@ class UserEntity implements MediaInterface {
 ```
 
 ### Upload Image
+
 ```php
 use \Package\MediaBundle\Manager\MediaManager;
 
@@ -35,16 +42,14 @@ class ExampleController  {
             ->setImageConvertJPG(true)       // PNG to JPG Convertor
             ->setImageQuality(75)            // Default Image Quality
             ->setImageSize(1024,768)         // Maximum Image Size
-            //->uploadFile($request)                            // HTTP File Upload
-            //->uploadBase64($request, ['imageKey' => ''])      // Json Base64 Image Upload
-            ->uploadLink($request, ['imageLink' => ''])         // Image Link Upload
+            //->uploadFile($request)                         // HTTP File Upload
+            //->uploadBase64($request, ['base64DataKey'])    // Json Base64 Image Upload
+            ->uploadLink($request, ['imageLinkKey'])         // Image Link Upload
     }
 }
 ```
 
 ### Imagick Helper
-
----
 
 Compress JPG:
 

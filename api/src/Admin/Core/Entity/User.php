@@ -6,7 +6,7 @@ use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Permission\PermissionInterface;
 use App\Admin\Core\Repository\UserRepository;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
