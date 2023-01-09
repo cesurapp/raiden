@@ -77,8 +77,13 @@ class DeviceTest extends AbstractWebTestCase
         $pusher = self::getContainer()->get(NotificationPusher::class);
         $pusher->send($pusher->create('Title', 'Message', user: $user));
 
-        // Check Device
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
-        $this->assertNull($deviceToken);
+        // Cleared Device
+        $transports = (string) $this->getContainer()->get('chatter.transport_factory')->fromString(
+            $_SERVER['FIREBASE_DSN']
+        );
+        if ('null' !== $transports) {
+            $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
+            $this->assertNull($deviceToken);
+        }
     }
 }

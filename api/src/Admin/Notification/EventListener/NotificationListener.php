@@ -20,11 +20,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
     'entity' => Notification::class,
     'lazy' => true,
 ]])]
-class NotificationListener
+readonly class NotificationListener
 {
     public function __construct(
-        private readonly DeviceRepository $deviceRepo,
-        private readonly TaskHandler $taskHandler
+        private DeviceRepository $deviceRepo,
+        private TaskHandler $taskHandler
     ) {
     }
 
