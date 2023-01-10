@@ -31,4 +31,5 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: true
-          tags: arrrray/app:latest
+          tags: |
+            ghcr.io/writelnas/api-main:latest
