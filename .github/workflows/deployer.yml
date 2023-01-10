@@ -31,4 +31,4 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: true
-          tags: user/api-main:latest
+          tags: ${{ github.actor }}/api-main:latest
