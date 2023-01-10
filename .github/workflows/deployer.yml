@@ -31,4 +31,4 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: true
-          tags: ${{ github.action_repository }}:latest
+          tags: writelnas/api-main:latest
