@@ -8,9 +8,6 @@ jobs:
     # Configuration
     name: Image Deploy to GHCR
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: ./api
 
     # Steps
     steps:
@@ -28,9 +25,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CI_ACCESS_TOKEN }}
       -
-        name: Build and Push
+        name: Build & Push
         uses: docker/build-push-action@v3
         with:
-          context: api
+          context: ./api
+          file: ./api/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: user/api-main:latest
