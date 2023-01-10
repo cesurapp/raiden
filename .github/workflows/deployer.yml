@@ -31,5 +31,6 @@ jobs:
         name: Build and Push
         uses: docker/build-push-action@v3
         with:
+          context: api
           push: true
           tags: user/app:latest
