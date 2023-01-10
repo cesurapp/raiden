@@ -1,5 +1,5 @@
 name: App Tester
-on: [push]
+on: [ push ]
 
 env:
   php-version: '8.2'
