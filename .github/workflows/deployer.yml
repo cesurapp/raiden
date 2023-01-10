@@ -31,4 +31,4 @@ jobs:
           context: ./api
           file: ./api/Dockerfile
           push: true
-          tags: api-main:latest
+          tags: arrrray/app:latest
