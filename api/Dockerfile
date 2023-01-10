@@ -1,4 +1,5 @@
 FROM openswoole/swoole:22.0.0-php8.2-alpine
+LABEL org.opencontainers.image.source=https://github.com/writelnas/api-main
 
 ### Install Extensions
 RUN docker-php-ext-install opcache pdo_pgsql
