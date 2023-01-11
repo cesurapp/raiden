@@ -3,11 +3,18 @@ on:
   push:
     branches: [ production ]
 
+env:
+  registry: ghcr.io
+  app_image: ghcr.io/${{ github.repository }}:latest
+
 jobs:
   build:
     # Configuration
-    name: Image Deploy to GHCR
+    name: Image Build & Push GHCR
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
 
     # Steps
     steps:
@@ -18,13 +25,57 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.registry }}
           username: ${{ github.actor }}
-          password: ${{ secrets.CI_ACCESS_TOKEN }}
+          password: ${{ secrets.ACCESS_TOKEN }}
       - name: Build & Push
         uses: docker/build-push-action@v3
         with:
           context: ./api
-          file: ./api/Dockerfile
           push: true
-          tags: ghcr.io/writelnas/api-main:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ${{ env.app_image }}
+          labels: org.opencontainers.image.source="${{ github.event.repository.clone_url }}"
+
+  deploy:
+    # Configuration
+    needs: build
+    name: Deploy to Servers
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: read
+    env:
+      ssh_username: root
+      ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
+      ssh_hosts: ${{ join(fromJSON(vars.SERVER_HOSTS)) }}
+      cmd_host: ${{ fromJSON(vars.SERVER_HOSTS)[0] }}
+
+    # Steps
+    steps:
+      - name: Stop Servers && Update Images
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ env.ssh_hosts }}
+          username: ${{ env.ssh_username }}
+          key: ${{ env.ssh_privatekey }}
+          sync: true
+          script: |
+            echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
+            docker stop -t 120 $(docker ps -aq) || true && docker rm $(docker ps -aq) || true
+            docker pull ${{ env.app_image }}
+      - name: Run App Commands
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ env.cmd_host }}
+          username: ${{ env.ssh_username }}
+          key: ${{ env.ssh_privatekey }}
+          script: docker run --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
+      - name: Start Servers
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ env.ssh_hosts }}
+          username: ${{ env.ssh_username }}
+          key: ${{ env.ssh_privatekey }}
+          sync: true
+          script: docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}

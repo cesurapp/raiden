@@ -1,81 +1,80 @@
-name: App Deployer
-on:
-  push:
-    branches: [ production ]
+name: App Tester
+on: [ push ]
 
 env:
-  registry: ghcr.io
-  app_image: ghcr.io/${{ github.repository }}:latest
+  php-version: '8.2'
+  php-extensions: imagick, openswoole, :xdebug
+  key: php-cache
 
 jobs:
-  build:
+  phpunit:
     # Configuration
-    name: Image Build & Push GHCR
+    name: App Test
     runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-      packages: write
+    defaults:
+      run:
+        working-directory: ./api
+
+    # Services
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
     # Steps
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.registry }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.ACCESS_TOKEN }}
-      - name: Build & Push
-        uses: docker/build-push-action@v3
-        with:
-          context: ./api
-          push: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          tags: ${{ env.app_image }}
-          labels: org.opencontainers.image.source="${{ github.event.repository.clone_url }}"
 
-  deploy:
-    # Configuration
-    needs: build
-    name: Deploy to Servers
-    runs-on: ubuntu-22.04
-    permissions:
-      packages: read
-    env:
-      ssh_username: root
-      ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
-      ssh_hosts: ${{ join(fromJSON(vars.SERVER_HOSTS)) }}
-      cmd_host: ${{ fromJSON(vars.SERVER_HOSTS)[0] }}
+      # Install PHP
+      - name: Setup Cache PHP Extensions
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: ${{ env.php-extensions }}
+          key: ${{ env.key }}
+      - name: Cache PHP Extensions
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.php-version }}
+          extensions: ${{ env.php-extensions }}
+          ini-values: sys_temp_dir=${{ runner.temp }}
+        env:
+          OPENSWOOLE_CONFIGURE_SUFFIX_OPTS: "--enable-openssl"
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
-    # Steps
-    steps:
-      - name: Stop Servers && Update Images
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ env.ssh_hosts }}
-          username: ${{ env.ssh_username }}
-          key: ${{ env.ssh_privatekey }}
-          sync: true
-          script: |
-            echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
-            docker stop -t 120 $(docker ps -aq) || true && docker rm $(docker ps -aq) || true
-            docker pull ${{ env.app_image }}
-      - name: Run App Commands
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ env.cmd_host }}
-          username: ${{ env.ssh_username }}
-          key: ${{ env.ssh_privatekey }}
-          script: docker run --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
-      - name: Start Servers
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ env.ssh_hosts }}
-          username: ${{ env.ssh_username }}
-          key: ${{ env.ssh_privatekey }}
-          sync: true
-          script: docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}
+      # Run Tests
+      - name: Install Quality Tools
+        run: composer install-tool
+      - name: Install App Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: PHPStan
+        run: composer phpstan
+      - name: PHPCS Fixer
+        run: composer lint
+      - name: Execute PHPUnit
+        run: composer test-stop
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14
