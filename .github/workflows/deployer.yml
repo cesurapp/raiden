@@ -78,4 +78,6 @@ jobs:
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
           sync: true
-          script: docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}
+          script: | 
+            docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}
+            docker rmi $(docker images -q -f 'dangling=true') || true
