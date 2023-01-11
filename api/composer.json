@@ -6,6 +6,7 @@
   "require": {
     "php": ">=8.2.0",
     "ext-curl": "*",
+    "ext-intl": "*",
     "ext-fileinfo": "*",
     "ext-imagick": "*",
     "ext-openswoole": "*",
