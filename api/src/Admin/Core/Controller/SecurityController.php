@@ -45,7 +45,7 @@ class SecurityController extends AbstractApiController
     #[Thor(
         group: 'Security|1',
         groupDesc: 'Global',
-        desc: 'Login - User & Password asdasd',
+        desc: 'Login - User & Password',
         request: [
             'username' => 'string',
             'password' => 'string',
