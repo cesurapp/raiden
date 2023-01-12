@@ -78,10 +78,6 @@ jobs:
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
           sync: true
-          script: | 
-            docker run -d -p 80:80 --restart always --log-opt max-size=1g \
-              --log-driver=loki \
-              --log-opt loki-retries=5 \
-              --log-opt loki-url="https://362055:eyJrIjoiMzllY2I0YWFjZTg0MDIwN2ZlZDFjMmEwMmNmZmRmMTRkOTUxZWQ0YyIsIm4iOiJMb2tpVG9rZW4iLCJpZCI6NTk2NjI2fQ==@logs-prod-013.grafana.net/loki/api/v1/push" \
-              ${{ env.app_image }}
+          script: |
+            docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true
