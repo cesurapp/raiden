@@ -79,5 +79,6 @@ jobs:
           key: ${{ env.ssh_privatekey }}
           sync: true
           script: |
-            docker run -d -p 80:80 --restart always --log-opt max-size=1g ${{ env.app_image }}
+            echo -e "${{ join(fromJSON(vars.APP_ENVS), '\n') }}" > .env
+            docker run -d -p 80:80 --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true
