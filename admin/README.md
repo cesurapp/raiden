@@ -1,4 +1,4 @@
-# Radien Admin Panel
+# Raiden Admin Panel
 
 Admin Application UI for [Quasar 2.7](https://quasar.dev/) & Vue 3 & Vite
 

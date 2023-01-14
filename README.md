@@ -8,5 +8,5 @@ Cloudflare Pages for the panel. CI is written for api distribution, production b
 
 ### Documentation
 
-* [API Documentation](api/README.md)
-* [Admin Panel Documentation](admin/README.md)
+* [API Documentation](api)
+* [Admin Panel Documentation](admin)
