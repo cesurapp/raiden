@@ -1,8 +1,20 @@
 # Raiden API
+
 High concurrency, OpenSwoole based, Symfony 6 Api
 
-Requirement
---------------------
+__Features__
+* Swoole Http, Task(Queue), Cron server
+* Auto generated api documentation
+* Api typescript client generator
+* Github actions auto deployment
+* Horizontally scalable
+* Firebase integration for notifications
+* Cloudflare, Backblaze, Local drives for storage integration
+* Role based authentication
+* Enum permission system
+* Multi language support
+
+__Requirement__
 * Postgres 14+
 * Composer 2+
 * PHP 8.1+
@@ -29,6 +41,7 @@ Requirement
 Install
 --------------------
 __Development for MacOS__
+
 ```shell
 # MacOS Extension (Required for development server)
 brew install fswatch
@@ -51,20 +64,64 @@ bin/console doctrine:database:create
 bin/console doctrine:schema:update
 ```
 
-__Production__
-```shell
-composer install --no-dev
-composer dump-autoload --no-dev --classmap-authoritative
-```
+__Production using Docker__
+1. Clone the repository
+   ```shell
+   git clone <repo>
+   composer install --no-dev
+   composer dump-autoload --no-dev --classmap-authoritative
+   ```
+2. Configure Environment (Optional)
+   ```shell
+   cp .env .env.local
+   cp .server.php .server.local.php
+   ```
+3. Build Dockerfile & Run
+   ```shell
+   docker build -t raiden-api .
+   docker run -d -p 80:80 --restart always --name raiden-container raiden-api
+   ```
+4. Start Migration or Commands
+   ```shell
+   docker exec raiden-container "bin/console doctrine:database:create"
+   docker exec raiden-container "bin/console doctrine:schema:update"
+   ```
+__Github Actions Deployment__
+
+>You can deploy to multiple servers. Just provide the IP list. The application image is first sent to the Github
+Container Registry and then deployed to the servers via ssh.
+
+1. Generate SSH key for Deployment
+   ```shell
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+2. Create Actions Secrets (Repo -> Settings -> Secret and Variables)
+   ```shell
+   SERVER_PRIVATEKEY: SSH Private Key
+   ```
+3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
+   ```shell
+   SERVER_HOSTS: ["11.111.222.222"]
+   ```
+4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
+   ```shell
+   APP_ENVS: [
+     "APP_ENV=prod",
+     "APP_LOG_LEVEL=info"
+   ]
+   ```
+5. Create __Production__ branch and run __Deployer__ action.
 
 Run Tests
 --------------------
 __Configure Local PHPUnit__
+
 ```shell
 cp .phpunit.xml.dist .phpunit.xml
 ```
 
 __Commands__
+
 ```shell
 composer analyse    # PHPStan Analysis
 composer fix        # PHP-Cs-Fixer Fix
@@ -72,8 +129,9 @@ composer test       # PHPUnit Test
 composer test-stop  # PHPUnit Test stop First Error
 ```
 
-Packages
+Packages Documentation
 --------------------
+
 * [Swoole Server](package/SwooleBundle/README.md)
 * [Storage Bundle](package/StorageBundle/README.md)
 * [Media Bundle](package/MediaBundle/README.md)
