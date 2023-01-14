@@ -1,4 +1,4 @@
-# Raiden Admin
+# Raiden API
 High concurrency, OpenSwoole based, Symfony 6 Api
 
 Requirement

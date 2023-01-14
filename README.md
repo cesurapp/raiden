@@ -1,3 +1,9 @@
-# Raiden Admin
+# Raiden API & Admin Panel
 
-High concurrency, OpenSwoole based, Symfony 6 & Admin Dashboard. 
+Scalable, high performance symfony api with Swoole HTTP and TASK server. 
+There is an admin panel written in Vue for API management.
+There is an admin panel written in Vue for API management.
+
+### Documentation
+* [API Documentation](api/README.md)
+* [Admin Panel Documentation](admin/README.md)
