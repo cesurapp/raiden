@@ -67,6 +67,7 @@ bin/console doctrine:schema:update
 __Production using Docker__
 
 1. Clone the repository
+
     ```shell
     git clone <repo>
     composer install --no-dev
@@ -93,6 +94,7 @@ __Github Actions Deployment__
 Container Registry and then deployed to the servers via ssh.
 
 1. Generate SSH key for Deployment
+    
     ```shell
     ssh-keygen -t ed25519 -C "your_email@example.com"
     ```
