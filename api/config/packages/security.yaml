@@ -36,8 +36,8 @@ security:
         # Global
         - { path: ^/(v1|v2)/main, roles: [ROLE_USER, ROLE_ADMIN] }
 
-        # User
-        - { path: ^/(v1|v2)/user, roles: ROLE_USER }
+        # Client
+        - { path: ^/(v1|v2)/client, roles: ROLE_USER }
 
         # Admin
         - { path: ^/(v1|v2)/admin, roles: ROLE_ADMIN }

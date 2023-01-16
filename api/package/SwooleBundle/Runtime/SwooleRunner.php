@@ -28,6 +28,9 @@ class SwooleRunner implements RunnerInterface
         }
         $config = (require $config)($this->options);
 
+        // Replace Global Vars
+        $config = $this->replaceRuntimeEnv($config);
+
         // Configure
         $this->options = array_replace_recursive($config, $this->options);
         $this->options['app']['env'] = $_ENV[$this->options['env_var_name']];
@@ -36,6 +39,23 @@ class SwooleRunner implements RunnerInterface
         if (isset($_SERVER['watch'])) {
             $this->options['app']['watch'] = $_SERVER['watch'];
         }
+    }
+
+    private function replaceRuntimeEnv(array $options, ?string $parentKey = null): array
+    {
+        foreach ($options as $key => $option) {
+            if (is_array($option)) {
+                $options[$key] = $this->replaceRuntimeEnv($option, ($parentKey ? $parentKey.'_' : '').$key);
+                continue;
+            }
+
+            $searchKey = 'SERVER_'.strtoupper(($parentKey ? $parentKey.'_' : '').$key);
+            if (!empty($_ENV[$searchKey])) {
+                $options[$key] = $_ENV[$searchKey];
+            }
+        }
+
+        return $options;
     }
 
     public function run(): int
