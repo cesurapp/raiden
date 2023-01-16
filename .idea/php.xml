@@ -160,6 +160,7 @@
       <extension name="cubrid" enabled="false" />
       <extension name="decimal" enabled="false" />
       <extension name="dio" enabled="false" />
+      <extension name="elastic_apm" enabled="false" />
       <extension name="enchant" enabled="false" />
       <extension name="fann" enabled="false" />
       <extension name="ffmpeg" enabled="false" />
@@ -200,19 +201,20 @@
       <extension name="rar" enabled="false" />
       <extension name="recode" enabled="false" />
       <extension name="rrd" enabled="false" />
+      <extension name="snappy" enabled="false" />
       <extension name="snmp" enabled="false" />
       <extension name="sqlsrv" enabled="false" />
       <extension name="ssh2" enabled="false" />
       <extension name="suhosin" enabled="false" />
       <extension name="svn" enabled="false" />
       <extension name="sybase" enabled="false" />
-      <extension name="uuid" enabled="true" />
       <extension name="v8js" enabled="false" />
       <extension name="wddx" enabled="false" />
       <extension name="win32service" enabled="false" />
       <extension name="wincache" enabled="false" />
       <extension name="xdebug" enabled="false" />
       <extension name="xhprof" enabled="false" />
+      <extension name="xlswriter" enabled="false" />
       <extension name="xmlrpc" enabled="false" />
       <extension name="yaml" enabled="false" />
       <extension name="zend" enabled="false" />
