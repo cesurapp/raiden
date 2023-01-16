@@ -1,16 +1,16 @@
-name: App Deploy Production
+name: App Deploy Staging
 on:
   push:
-    branches: [ production ]
+    branches: [ staging ]
 
 env:
   registry: ghcr.io
-  app_image: ghcr.io/${{ github.repository }}:latest
+  app_image: ghcr.io/${{ github.repository }}:staging
   ssh_username: root
   ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
-  ssh_hosts: ${{ join(fromJSON(vars.SERVER_HOSTS)) }}
-  cmd_host: ${{ fromJSON(vars.SERVER_HOSTS)[0] }}
-  app_envs: ${{ join(fromJSON(vars.APP_ENVS), '\n') }}
+  ssh_hosts: ${{ join(fromJSON(vars.STAG_HOSTS)) }}
+  cmd_host: ${{ fromJSON(vars.STAG_HOSTS)[0] }}
+  app_envs: ${{ join(fromJSON(vars.STAG_ENVS), '\n') }}
 
 jobs:
   build:

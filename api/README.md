@@ -67,51 +67,90 @@ bin/console doctrine:schema:update
 __Production using Docker__
 
 1. Clone the repository
-    ```shell
-    git clone <repo>
-    composer install --no-dev
-    composer dump-autoload --no-dev --classmap-authoritative
-    ```
+ 
+   ```shell
+   git clone <repo>
+   composer install --no-dev
+   composer dump-autoload --no-dev --classmap-authoritative
+   ```
 2. Configure Environment (Optional)
-    ```shell
-    cp .env .env.local
-    cp .server.php .server.local.php
-    ```
+
+   ```shell
+   cp .env .env.local
+   cp .server.php .server.local.php
+   ```
 3. Build Dockerfile & Run
-    ```shell
-    docker build -t raiden-api .
-    docker run -d -p 80:80 --restart always --name raiden-container raiden-api
+
+   ```shell
+   docker build -t raiden-api .
+   docker run -d -p 80:80 --restart always --name raiden-container raiden-api
    ```
 4. Start Migration or Commands
-    ```shell
-    docker exec raiden-container "bin/console doctrine:database:create"
-    docker exec raiden-container "bin/console doctrine:schema:update"
-    ```
+
+   ```shell
+   docker exec raiden-container "bin/console doctrine:database:create"
+   docker exec raiden-container "bin/console doctrine:schema:update"
+   ```
 __Github Actions Deployment__
 
 >You can deploy to multiple servers. Just provide the IP list. The application image is first sent to the Github
 Container Registry and then deployed to the servers via ssh.
 
 1. Generate SSH key for Deployment
-    ```shell
-    ssh-keygen -t ed25519 -C "your_email@example.com"
-    ```
+
+   ```shell
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
 2. Create Actions Secrets (Repo -> Settings -> Secret and Variables)
-    ```shell
-    SERVER_PRIVATEKEY: SSH Private Key
-    ```
+
+   ```shell
+   SERVER_PRIVATEKEY: SSH Private Key
+   ```
 3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
-    ```shell
-    SERVER_HOSTS: ["11.111.222.222"]
-    ```
+
+   ```shell
+   SERVER_HOSTS: ["11.111.222.222"]
+   ```
 4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
-    ```shell
-    APP_ENVS: [
-      "APP_ENV=prod",
-      "APP_LOG_LEVEL=info"
-    ]
+
+   ```shell
+   APP_ENVS: [
+     "APP_ENV=prod",
+     "APP_LOG_LEVEL=info"
+   ]
    ```
 5. Create __Production__ branch and run __Deployer__ action.
+
+__Github Actions Staging Deploy__
+
+>You can deploy to multiple servers. Just provide the IP list. The application image is first sent to the Github
+Container Registry and then deployed to the servers via ssh.
+
+1. Generate SSH key for Deployment
+
+   ```shell
+   ssh-keygen -t ed25519 -C "your_email@example.com"
+   ```
+2. Create Actions Secrets (Repo -> Settings -> Secret and Variables)
+
+   ```shell
+   SERVER_PRIVATEKEY: SSH Private Key
+   ```
+3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
+
+   ```shell
+   STAG_HOSTS: ["11.111.222.222"]
+   ```
+4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
+
+   ```shell
+   STAG_ENVS: [
+     "APP_ENV=prod",
+     "APP_LOG_LEVEL=info"
+   ]
+   ```
+5. Create __Staging__ branch and run __Staging__ action.
+
 
 Run Tests
 --------------------
