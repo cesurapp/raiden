@@ -6,7 +6,13 @@
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/api/package" isTestSource="false" packagePrefix="Package\" />
       <sourceFolder url="file://$MODULE_DIR$/api/src" isTestSource="false" packagePrefix="App\" />
-      <sourceFolder url="file://$MODULE_DIR$/api/src/**/Test" isTestSource="true" packagePrefix="App\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/api/package/ApiBundle/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/package/Library/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/package/MediaBundle/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/package/StorageBundle/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/package/SwooleBundle/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/src/Admin/Core/Test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/api/src/Admin/Notification/Test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/runtime" />
       <excludeFolder url="file://$MODULE_DIR$/api/vendor/symfony/yaml" />
