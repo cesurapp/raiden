@@ -10,7 +10,7 @@ RUN touch "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "max_file_uploads=50;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "post_max_size=20M;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "upload_max_filesize=20M;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
-    && echo "memory_limit=512M;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
+    && echo "memory_limit=256M;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "realpath_cache_size=16M;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "realpath_cache_ttl=600;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.enable=1;" >> "$PHP_INI_DIR/conf.d/custom.ini" \

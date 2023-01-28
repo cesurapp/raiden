@@ -74,7 +74,6 @@ export default defineComponent({
       // Clear Backend Validation Errors
       this.$rules.clearSSRException();
 
-      console.log(this.data);
       // Register
       this.$refs.form.validate().then((success) => {
         if (success) {

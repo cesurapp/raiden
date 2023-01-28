@@ -3,10 +3,10 @@
 namespace App\Admin\Notification\Repository;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Repository\BaseRepository;
 use App\Admin\Notification\Entity\Notification;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method Notification|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Notification[]    findAll()
  * @method Notification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NotificationRepository extends BaseRepository
+class NotificationRepository extends ApiServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

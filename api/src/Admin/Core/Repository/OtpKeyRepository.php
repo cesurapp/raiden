@@ -6,6 +6,7 @@ use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
 use Doctrine\Persistence\ManagerRegistry;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method OtpKey|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method OtpKey[]    findAll()
  * @method OtpKey[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OtpKeyRepository extends BaseRepository
+class OtpKeyRepository extends ApiServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

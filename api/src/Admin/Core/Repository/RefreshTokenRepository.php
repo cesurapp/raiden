@@ -6,6 +6,7 @@ use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\RefreshToken;
 use App\Admin\Core\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
@@ -14,7 +15,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  * @method RefreshToken[]    findAll()
  * @method RefreshToken[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class RefreshTokenRepository extends BaseRepository
+class RefreshTokenRepository extends ApiServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, private readonly ParameterBagInterface $bag)
     {

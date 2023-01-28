@@ -4,6 +4,7 @@ namespace App\Admin\Core\Repository;
 
 use App\Admin\Core\Entity\Organization;
 use Doctrine\Persistence\ManagerRegistry;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method Organization|null find($id, $lockMode = null, $lockVersion = null)
@@ -11,7 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Organization[]    findAll()
  * @method Organization[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class OrganizationRepository extends BaseRepository
+class OrganizationRepository extends ApiServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -6,9 +6,9 @@
   "require": {
     "php": ">=8.2.0",
     "ext-curl": "*",
-    "ext-intl": "*",
     "ext-fileinfo": "*",
     "ext-imagick": "*",
+    "ext-intl": "*",
     "ext-openswoole": "*",
     "adhocore/jwt": "^1.1",
     "async-aws/s3": "^1.12",
@@ -16,6 +16,7 @@
     "doctrine/orm": "^2.10",
     "dragonmantank/cron-expression": "^3.3",
     "odolbeau/phone-number-bundle": "^3.7",
+    "sonata-project/exporter": "^3.1",
     "symfony/console": "6.2.*",
     "symfony/dotenv": "6.2.*",
     "symfony/firebase-notifier": "6.2.*",
@@ -66,7 +67,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Tests\\": "src/**/Test/"
+      "App\\Tests\\": "src/"
     }
   },
   "replace": {
@@ -91,9 +92,7 @@
     "test": "bin/phpunit",
     "test-stop": "bin/phpunit --stop-on-failure --verbose --testdox --colors",
     "test-coverage": "bin/phpunit --coverage-text",
-    "install-tool": [
-      "composer install --working-dir=bin/tool"
-    ]
+    "install-tool": "composer install --working-dir=bin/tool"
   },
   "conflict": {
     "symfony/symfony": "*"

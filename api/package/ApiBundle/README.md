@@ -104,6 +104,65 @@ class LoginDto extends AbstractApiDto {
 }
 ```
 
+### Create Doctrine Filter
+Filters are set according to the query parameter. Only matching records are filtered.
+
+Sample request `http://example.test/v1/userlist?filter[id]=1&filter[createdAt][min]=10.10.2023`
+
+```php
+class UserRepository extends ApiServiceEntityRepository
+{
+    // Default Filter
+    public static function filterDefault(): array
+    {
+        return [
+            'id' => static function (QueryBuilder $builder, string $alias, string $data) {
+                // Logic
+            },
+            'createdAt' => static function (QueryBuilder $builder, string $alias, array $data) {
+                if (isset($data['min'])) {
+                    // Logic
+                }
+                if (isset($data['max'])) {
+                    // Logic
+                }
+            },
+            'createdAt' => [
+                'min' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    // Logic
+                },
+                'max' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    // Logic
+                },
+            ]
+        ];
+    }
+    
+    // Custom Filter
+    public static function filterCustom(): array
+    {
+        return [];
+    }
+}
+```
+Call Filter:
+```php
+class AccountController extends AbstractApiController
+{
+    #[Thor(
+        filter: \App\Admin\Core\Repository\UserRepository::class,
+        filterId: 'custom' // default value is "default" -> optional
+    )]
+    public function showProfile(\Symfony\Component\HttpFoundation\Request $request, \App\Admin\Core\Repository\UserRepository $repository): ApiResponse
+    {
+        $filteredQuery = $repository->createFilteredQueryBuilder($request, 'default');
+        
+        // Call Custom Filter
+        // $filteredQuery = $repository->createFilteredQueryBuilder($request, 'custom');
+    }
+}
+```
+
 ### Generate Documentation
 __View Documentation:__ http:://127.0.0.1:8000/thor
 ```shell

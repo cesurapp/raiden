@@ -176,6 +176,15 @@
     "sebastian/version": {
         "version": "3.0.2"
     },
+    "sonata-project/exporter": {
+        "version": "3.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "2.4",
+            "ref": "93d6df022ef1dc24bdfa8667ddd560bbde89a7cc"
+        }
+    },
     "symfony/browser-kit": {
         "version": "v6.0.0"
     },

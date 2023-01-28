@@ -2,9 +2,9 @@
 
 namespace App\Admin\Core\Validator;
 
-use App\Admin\Core\Repository\BaseRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -43,7 +43,7 @@ class UniqueEntityConstraintValidator extends ConstraintValidator
             $criteria->andWhere(Criteria::expr()->neq('id', $this->context->getObject()->id));
         }
 
-        /** @var BaseRepository $repo */
+        /** @var ApiServiceEntityRepository $repo */
         $repo = $this->entityManager->getRepository($constraint->entityClass); // @phpstan-ignore-line
         $total = $repo->countBy($criteria);
 

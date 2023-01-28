@@ -17,9 +17,10 @@ __Features__
 __Requirement__
 * Postgres 14+
 * Composer 2+
-* PHP 8.1+
+* PHP 8.2+
   * Swoole 4.11+ (`pecl install openswoole`)
   * Imagick (`pecl install imagick`)
+  * Intl (`pecl install intl`)
   * Php.ini
     * max_file_uploads=50
     * post_max_size=20M
@@ -29,7 +30,7 @@ __Requirement__
     * realpath_cache_ttl=600
     * opcache.enable=1
     * opcache.enable_cli=1
-    * opcache.memory_consumption=512
+    * opcache.memory_consumption=256
     * opcache.interned_strings_buffer=64
     * opcache.max_accelerated_files=50000
     * opcache.validate_timestamps=0 (ONLY PROD)
@@ -89,7 +90,7 @@ __Production using Docker__
 
    ```shell
    docker exec raiden-container "bin/console doctrine:database:create"
-   docker exec raiden-container "bin/console doctrine:schema:update"
+   docker exec raiden-container "bin/console doctrine:schema:update --force"
    ```
 __Github Actions Deployment__
 

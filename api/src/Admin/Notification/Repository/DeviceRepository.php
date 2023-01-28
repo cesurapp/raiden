@@ -3,11 +3,11 @@
 namespace App\Admin\Notification\Repository;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Repository\BaseRepository;
 use App\Admin\Notification\Dto\FcmRegisterDto;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Enum\DeviceType;
 use Doctrine\Persistence\ManagerRegistry;
+use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 use Symfony\Component\Uid\Ulid;
 
 /**
@@ -16,7 +16,7 @@ use Symfony\Component\Uid\Ulid;
  * @method Device[]    findAll()
  * @method Device[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class DeviceRepository extends BaseRepository
+class DeviceRepository extends ApiServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

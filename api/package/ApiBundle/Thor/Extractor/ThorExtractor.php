@@ -258,7 +258,14 @@ class ThorExtractor
 
         // Append Paginator Query
         if (!empty($attrThor['paginate'])) {
-            $attr['page'] = 'int';
+            $attr['page?'] = 'int';
+        }
+
+        // Append Doctrine Filter
+        if (!empty($attrThor['filter'])) {
+            $filterKeys = sprintf('%s::%s', $attrThor['filter'], 'filter'.ucfirst($attrThor['filterId'] ?? 'default'))();
+            array_walk_recursive($filterKeys, static fn (&$v) => $v = '?any');
+            $attr['filter'] = $filterKeys;
         }
 
         return array_replace_recursive($attr, $attrThor['query'] ?? []);

@@ -18,10 +18,10 @@ swoole:
 bin/console cron:list     # List cron jobs
 
 # Server Commands
-bin/console server:start  # Start http server
-bin/console server:stop   # Stop http server
-bin/console server:status # Status http server
-bin/console server:watch  # Start http server for development mode (file watcher enabled)
+bin/console server:start  # Start http,cron,queue server
+bin/console server:stop   # Stop http,cron,queue server
+bin/console server:status # Status http,cron,queue server
+bin/console server:watch  # Start http,cron,queue server for development mode (file watcher enabled)
 
 # Task|Job Commands
 bin/console task:list           # List registered tasks

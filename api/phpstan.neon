@@ -3,7 +3,7 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     doctrine:
-        ormRepositoryClass: App\Admin\Core\Repository\BaseRepository
+        ormRepositoryClass: Package\ApiBundle\Repository\ApiServiceEntityRepository
     paths:
         - src
         - package

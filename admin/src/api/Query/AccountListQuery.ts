@@ -2,5 +2,5 @@
 /* eslint-disable max-len */
 
 export type AccountListQuery = {
-  page: number
+  page?: number
 }
