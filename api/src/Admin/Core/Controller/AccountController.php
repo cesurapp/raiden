@@ -64,7 +64,7 @@ class AccountController extends AbstractApiController
     #[Thor(
         group: 'Account Management',
         desc: 'List Accounts',
-        response: [200 => [UserResource::class]],
+        response: [200 => ['data' => UserResource::class]],
         paginate: true,
         order: 3
     )]

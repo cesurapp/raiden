@@ -23,11 +23,7 @@ class NotificationController extends AbstractApiController
         group: 'Notification|2',
         groupDesc: 'Global Notification',
         desc: 'List Notification',
-        response: [
-            200 => [
-                'data' => NotificationResource::class,
-            ],
-        ],
+        response: [200 => ['data' => NotificationResource::class]],
         paginate: true,
         order: 0
     )]

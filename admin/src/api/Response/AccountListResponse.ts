@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 
 export interface AccountListResponse {
-  [
+  data?: [
     {
       id: string,
       type: string,
