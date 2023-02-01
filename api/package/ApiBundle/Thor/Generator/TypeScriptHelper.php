@@ -42,8 +42,6 @@ class TypeScriptHelper
 
     public function renderEndpointPath(string $path, string $attributes): string
     {
-        $newPath = '';
-
         if (($qs = str_contains($attributes, 'query')) || str_contains($path, '{')) {
             $path = str_replace('{', '${', $path);
             $qs = $qs ? '${toQueryString(query)}' : '';
@@ -82,9 +80,10 @@ class TypeScriptHelper
                 if (!$isNull) {
                     $allNull = false;
                 }
+
                 $value = implode('|', array_unique(array_map(function ($item) {
                     return $this->convertTsType(str_replace('?', '', $item));
-                }, explode('|', explode(';', $value)[0]))));
+                }, explode('|', explode(';', is_bool($value) & !$value ? '0' : $value)[0]))));
             }
 
             if (is_array($attributes[$key]) && is_int($key)) {
@@ -118,12 +117,23 @@ class TypeScriptHelper
             $type = 'string';
         }
 
+        // Convert Array
+        if (str_starts_with($type, '[')) {
+            return sprintf("Array<'%s'", str_replace('[', '', $type));
+        }
+        if (str_ends_with($type, ']')) {
+            return sprintf("'%s'>", str_replace(']', '', $type));
+        }
+
         return match ($type) {
             'int' => 'number',
             'bool', 'boolean' => 'boolean',
             'string' => 'string',
             'null' => 'null',
+            'any' => 'any',
             'array' => 'Array<string|number|boolean>',
+            '1' => 'true',
+            '0' => 'false',
             default => "'$type'"
         };
     }

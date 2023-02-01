@@ -5,12 +5,11 @@ namespace Package\ApiBundle\Response;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\HeaderUtils;
+use Package\ApiBundle\Response\Traits\DoctrineFilterTrait;
+use Package\ApiBundle\Response\Traits\ExportTrait;
+use Package\ApiBundle\Response\Traits\FileDownloadTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -20,6 +19,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class ApiResponse
 {
+    use DoctrineFilterTrait;
+    use ExportTrait;
+    use FileDownloadTrait;
+
     private int $code = 200;
     private array $headers = [];
     private mixed $data = [];
@@ -54,13 +57,6 @@ class ApiResponse
     public function addHeader(string $key, string $value): self
     {
         $this->headers[$key] = $value;
-
-        return $this;
-    }
-
-    public function setCorsOrigin(?string $domain = null): self
-    {
-        $this->headers['Access-Control-Allow-Origin'] = $domain ?? getenv('APP_DEFAULT_URI');
 
         return $this;
     }
@@ -134,12 +130,11 @@ class ApiResponse
         return $this;
     }
 
-    /**
-     * Check HTTP Proxy Cache.
-     */
-    public function isHTTPCache(): bool
+    public function setCorsOrigin(?string $domain = null): self
     {
-        return $this->options['httpCache'] ?? false;
+        $this->headers['Access-Control-Allow-Origin'] = $domain ?? getenv('APP_DEFAULT_URI');
+
+        return $this;
     }
 
     public function getHTTPCache(): ?array
@@ -183,40 +178,6 @@ class ApiResponse
         return $this;
     }
 
-    /**
-     * Download Binary File.
-     */
-    public static function file(\SplFileInfo|string $path, string $fileName = '', string $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT): BinaryFileResponse
-    {
-        return (new BinaryFileResponse($path))->setContentDisposition($disposition, $fileName);
-    }
-
-    /**
-     * Download Large File.
-     */
-    public static function fileLarge(string $filePath, string $fileName = null): StreamedResponse
-    {
-        $file = new File($filePath);
-
-        return new StreamedResponse(static function () use ($filePath) {
-            $output = fopen('php://output', 'wb+');
-            $handle = fopen($filePath, 'rb');
-
-            while (!feof($handle)) {
-                fwrite($output, fread($handle, 2048));
-            }
-
-            fclose($output);
-            fclose($handle);
-        }, 200, [
-            'Content-Type' => $file->getMimeType(),
-            'Content-Disposition' => HeaderUtils::makeDisposition(
-                HeaderUtils::DISPOSITION_ATTACHMENT,
-                $fileName ?? $file->getFilename()
-            ),
-        ]);
-    }
-
     public static function create(int $code = 200): self
     {
         return (new self())->setCode($code);
@@ -225,32 +186,40 @@ class ApiResponse
     /**
      * Process Object Array Serialize.
      */
-    public function processResponse(Request $request, ApiResourceLocator $resourceLocator, TranslatorInterface $translator): JsonResponse
+    public function processResponse(Request $request, ApiResourceLocator $resLocator, TranslatorInterface $trans): JsonResponse|StreamedResponse
     {
+        if ($this->resource) {
+            $res = $resLocator->getResource($this->resource);
+
+            // Process Query Filter
+            if ($this->query) {
+                $this->filterQueryBuilder($this->query, $request, $res);
+            }
+
+            // Process Export
+            if ($this->isExport($request, $res)) {
+                return $this->exportStream($this->query, $request, $res);
+            }
+        }
+
         // Init Paginator
         if ($this->isPaginate()) {
             $this->paginate($request);
         }
 
         // Process Resource
-        array_walk_recursive($this->data, function (&$data) use ($resourceLocator) {
-            if (is_object($data)) {
-                $data = $resourceLocator->process($data, $this->getResource());
-            }
-        });
+        array_walk_recursive($this->data, fn (&$d) => !is_object($d) ?: $d = $resLocator->process($d, $this->resource));
 
         // Message Translator
         if (isset($this->data['message'])) {
             foreach ($this->data['message'] as $type => $messages) {
-                $this->data['message'][$type] = array_map(static fn ($message) => $translator->trans($message), $messages);
+                $this->data['message'][$type] = array_map(static fn ($msg) => $trans->trans($msg), $messages);
             }
         }
 
-        // Create Response
+        // Create JSON Response
         $response = new JsonResponse($this->getData(), $this->getCode(), $this->getHeaders());
-
-        // HTTP Cache
-        if ($this->isHTTPCache()) {
+        if ($this->getHTTPCache()) {
             $response->setCache($this->getHTTPCache());
         }
 

@@ -2,6 +2,8 @@
 /* eslint-disable max-len */
 
 export interface AccountShowPermissionResponse {
-  current: Array<string|number|boolean>,
-  permissions: 'object'
+  data: {
+    current: Array<string|number|boolean>,
+    permissions: Array<string|number|boolean>
+  }
 }

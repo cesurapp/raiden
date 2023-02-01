@@ -16,6 +16,7 @@ export interface AccountListResponse {
       language: string,
       first_name: string,
       last_name: string,
+      created_at: string,
       meta: Array<string|number|boolean>
     }
   ],

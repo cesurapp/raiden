@@ -8,4 +8,6 @@ namespace Package\ApiBundle\Response;
 interface ApiResourceInterface
 {
     public function toArray(object $item): array;
+
+    public function toResource(): array;
 }

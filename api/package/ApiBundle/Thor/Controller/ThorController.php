@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Thor\Controller;
 
+use Package\ApiBundle\Response\ApiResourceLocator;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Extractor\ThorExtractor;
@@ -16,8 +17,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ThorController extends AbstractController
 {
-    public function __construct(private readonly RouterInterface $router, private readonly ParameterBagInterface $bag)
-    {
+    public function __construct(
+        private readonly RouterInterface $router,
+        private readonly ParameterBagInterface $bag,
+        private readonly ApiResourceLocator $resourceLocator
+    ) {
     }
 
     /**
@@ -33,7 +37,7 @@ class ThorController extends AbstractController
         $docs = self::findDocs($this->getParameter('thor.storage_path'));
 
         // Render
-        $generator = new ThorExtractor($this->router, $this->bag);
+        $generator = new ThorExtractor($this->router, $this->bag, $this->resourceLocator);
 
         return $response->setContent(
             $generator->render(!empty($docs[$version]) ? json_decode(
@@ -58,7 +62,7 @@ class ThorController extends AbstractController
         // Find Docs
         $oldDocs = self::findDocs($this->getParameter('thor.storage_path'));
 
-        $extractor = new ThorExtractor($this->router, $this->bag);
+        $extractor = new ThorExtractor($this->router, $this->bag, $this->resourceLocator);
 
         // Generator
         $tsGenerator = new TypeScriptGenerator(
@@ -70,7 +74,7 @@ class ThorController extends AbstractController
             ) : $extractor->extractData(true)
         );
 
-        return ApiResponse::file($tsGenerator->generate()->compress());
+        return ApiResponse::downloadFile($tsGenerator->generate()->compress());
     }
 
     /**

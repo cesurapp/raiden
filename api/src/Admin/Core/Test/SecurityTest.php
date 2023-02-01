@@ -27,7 +27,7 @@ class SecurityTest extends AbstractWebTestCase
         // Assert
         $this->assertEventFired(SecurityEvent::LOGIN);
         $this->isOk();
-        $this->assertJsonStructure(['user', 'token', 'refresh_token']);
+        $this->assertJsonStructure(['data', 'token', 'refresh_token']);
     }
 
     public function testLoginPhone(): void
@@ -44,7 +44,7 @@ class SecurityTest extends AbstractWebTestCase
         // Assert
         $this->assertEventFired(SecurityEvent::LOGIN);
         $this->isOk();
-        $this->assertJsonStructure(['user', 'token', 'refresh_token']);
+        $this->assertJsonStructure(['data', 'token', 'refresh_token']);
     }
 
     public function testLoginToken(): void
@@ -117,7 +117,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/refresh-token', [
             'refresh_token' => $refreshToken,
         ]);
-        $newToken = $this->json(key: 'token');
+        $newToken = $this->json(key: 'data')['token'];
         $this->isOk();
         $this->assertNotSame($token, $newToken);
 

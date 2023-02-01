@@ -67,6 +67,50 @@ class AccountTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager');
         $this->isOk();
         $this->assertJsonStructure(['data' => [['id']]]);
+
+        // Export CSV
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager', [
+            'export' => 'csv',
+        ]);
+        $this->isOk();
+        $this->assertEquals('text/csv; charset=UTF-8', $this->client()->getInternalResponse()->getHeader('content-type'));
+        $this->assertStringContainsString('ID,Type', $this->client()->getInternalResponse()->getContent());
+
+        // Export CSV Custom Field
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager', [
+            'export' => 'csv',
+            'export_field' => ['ID', 'Type'],
+        ]);
+        $this->isOk();
+        $this->assertEquals('text/csv; charset=UTF-8', $this->client()->getInternalResponse()->getHeader('content-type'));
+        $this->assertStringContainsString('ID,Type'.PHP_EOL, $this->client()->getInternalResponse()->getContent());
+
+        // Filter
+        $this->createUser();
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
+            'filter' => [
+                'type' => UserType::USER->value,
+            ],
+        ]));
+        $this->isOk();
+        $this->assertJsonCount(1, 'data');
+
+        // Sort ASC
+        $this->save($this->createUser()->setFirstName('LastUser'));
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
+                'sort' => 'ASC',
+                'sort_by' => 'id',
+            ]));
+        $this->isOk();
+        $this->assertEquals('John', $this->json(null, 'data')[0]['first_name']);
+
+        // Sort DESC
+        $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
+                'sort' => 'DESC',
+                'sort_by' => 'id',
+            ]));
+        $this->isOk();
+        $this->assertEquals('LastUser', $this->json(null, 'data')[0]['first_name']);
     }
 
     public function testAccountCreate(): void

@@ -52,7 +52,7 @@ class SecurityController extends AbstractApiController
         ],
         response: [
             200 => [
-                'user' => UserResource::class,
+                'data' => UserResource::class,
                 'token' => 'string',
                 'refresh_token' => 'string',
             ],
@@ -76,7 +76,7 @@ class SecurityController extends AbstractApiController
 
         return ApiResponse::create()
             ->setData([
-                'user' => $user,
+                'data' => $user,
                 'token' => $this->jwt->encode(['id' => $user->getId()->toBase32()]),
                 'refresh_token' => $this->refreshTokenRepo->createToken($user, $this->jwt)->getToken(),
             ])
@@ -90,9 +90,7 @@ class SecurityController extends AbstractApiController
             'refresh_token' => 'string',
         ],
         response: [
-            200 => [
-                'token' => 'string',
-            ],
+            200 => ['data' => ['token' => 'string']],
             RefreshTokenExpiredException::class,
         ],
         requireAuth: false,
@@ -121,7 +119,7 @@ class SecurityController extends AbstractApiController
         }
 
         // Generate New Token
-        return ApiResponse::create()->setData(['token' => $jwt->encode(['id' => $token['id']])]);
+        return ApiResponse::create()->setData(['data' => ['token' => $jwt->encode(['id' => $token['id']])]]);
     }
 
     #[Thor(
@@ -154,7 +152,7 @@ class SecurityController extends AbstractApiController
         desc: 'Login - Using OTP Key',
         response: [
             200 => [
-                'user' => UserResource::class,
+                'data' => UserResource::class,
                 'token' => 'string',
                 'refresh_token' => 'string',
             ],

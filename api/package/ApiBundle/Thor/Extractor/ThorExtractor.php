@@ -5,6 +5,7 @@ namespace Package\ApiBundle\Thor\Extractor;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
+use Package\ApiBundle\Response\ApiResourceLocator;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -17,7 +18,7 @@ class ThorExtractor
 {
     protected array $defaults = [];
 
-    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag)
+    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, private readonly ApiResourceLocator $resourceLocator)
     {
         if (file_exists($bag->get('thor.globals'))) {
             $config = require $bag->get('thor.globals');
@@ -258,15 +259,44 @@ class ThorExtractor
 
         // Append Paginator Query
         if (!empty($attrThor['paginate'])) {
-            $attr['page?'] = 'int';
+            $attr['page'] = '?int';
         }
 
-        // Append Doctrine Filter
-        if (!empty($attrThor['filter'])) {
-            $filterKeys = sprintf('%s::%s', $attrThor['filter'], 'filter'.ucfirst($attrThor['filterId'] ?? 'default'))();
-            array_walk_recursive($filterKeys, static fn (&$v) => $v = '?any');
-            $attr['filter'] = $filterKeys;
-        }
+        // Append Doctrine Filter & Sort
+        array_walk_recursive($attrThor['response'], function ($val) use (&$attr, $attrThor) {
+            if (!is_array($val) && class_exists($val)) {
+                $refClass = new \ReflectionClass($val);
+                if ($refClass->implementsInterface(ApiResourceInterface::class)) {
+                    $resource = $this->resourceLocator->getResource($val);
+
+                    if (!empty($attrThor['paginate'])) {
+                        // Sort
+                        $sortableFields = array_filter($resource, static fn ($v) => !empty($v['table']['sortable']));
+                        if (count($sortableFields)) {
+                            $attr['sort'] = '?ASC|?DESC';
+                            $attr['sort_by'] = implode('|', array_map(static fn ($v) => '?'.$v, array_keys($sortableFields)));
+                        }
+
+                        // Export
+                        $exportFields = array_filter($resource, static fn ($v) => isset($v['table']));
+                        if (count($exportFields)) {
+                            $attr['export'] = '?csv|?xls';
+                            $attr['export_field'] = '['.implode('|', array_map(static fn ($v) => '?'.$v, array_keys($exportFields))).']';
+                        }
+
+                        // Filter
+                        $filteredFields = array_filter($resource, static fn ($v) => isset($v['filter']));
+                        foreach ($filteredFields as $key => $value) {
+                            if (!is_array($value['filter'])) {
+                                $attr['filter'][$key] = '?any';
+                            } else {
+                                $attr['filter'][$key] = array_map(static fn ($v) => '?any', array_flip(array_keys($value['filter'])));
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
         return array_replace_recursive($attr, $attrThor['query'] ?? []);
     }
@@ -337,31 +367,33 @@ class ThorExtractor
             return $exception;
         };
 
-        // Render Resource
-        $renderResource = static function (\ReflectionClass|string $refClass) use ($thorAttr) {
-            if (is_string($refClass)) {
-                $refClass = new \ReflectionClass($refClass);
-            }
-            $thorResource = $refClass->getMethod('toArray')->getAttributes(ThorResource::class);
-            if (count($thorResource)) {
-                $data = $thorResource[0]->getArguments()['data'];
-
-                return !empty($thorAttr['paginate']) ? [$data] : $data;
-            }
-
-            return [];
-        };
-
         $thorAttr['exception'] = [];
 
-        array_walk_recursive($thorAttr['response'], static function (&$resValue, $resKey) use ($renderResource, $renderException, &$thorAttr) {
+        array_walk_recursive($thorAttr['response'], function (&$resValue, $resKey) use ($renderException, &$thorAttr) {
             // Class
             if (!is_array($resValue) && class_exists($resValue)) {
                 $refClass = new \ReflectionClass($resValue);
 
-                // Resources
+                // Resources && DataTable
                 if ($refClass->implementsInterface(ApiResourceInterface::class)) {
-                    $resValue = $renderResource($refClass);
+                    $resource = $this->resourceLocator->getResource($resValue);
+                    $data = array_combine(array_keys($resource), array_column($resource, 'type'));
+                    $resValue = !empty($thorAttr['paginate']) ? [$data] : $data;
+
+                    if (!empty($thorAttr['paginate'])) {
+                        $tableFields = array_filter($resource, static fn ($v) => isset($v['table']));
+                        if (count($tableFields)) {
+                            foreach ($tableFields as $key => $tableField) {
+                                if (isset($tableField['table']['sortable_field'])) {
+                                    unset($tableFields[$key]['table']['sortable_field']);
+                                }
+                                if (isset($tableField['table']['exporter'])) {
+                                    unset($tableFields[$key]['table']['exporter']);
+                                }
+                            }
+                            $thorAttr['table'] = $tableFields;
+                        }
+                    }
                 }
 
                 // Exceptions
@@ -423,6 +455,7 @@ class ThorExtractor
         return [
             'response' => $thorAttr['response'],
             'exception' => $thorAttr['exception'],
+            'table' => $thorAttr['table'] ?? null,
         ];
     }
 

@@ -191,14 +191,19 @@
                                         <span class="uri"><?php echo $route['path']; ?></span>
                                         <span class="desc"><?php echo $route['desc']; ?></span>
                                         <span class="ms-auto"></span>
+                                        <?php if ($route['table']) { ?>
+                                          <div class="method clear">
+                                            <a class="auth bg-info" data-bs-toggle="tooltip" title="DataTable Table/<?php echo ucfirst($route['shortName']) ?>Table.ts"><i class="fa-solid fa-table"></i></a>
+                                          </div>
+                                        <?php } ?>
+                                        <?php if ($route['roles']) { ?>
+                                          <div class="method clear">
+                                            <a class="auth bg-info" data-bs-toggle="tooltip" title="Access Roles <?php echo implode(',', $route['roles']) ?>"><i class="fa-solid fa-shield"></i></a>
+                                          </div>
+                                        <?php } ?>
                                         <?php if ($route['requireAuth']) { ?>
                                             <div class="method clear">
                                                 <a class="auth bg-warning" data-bs-toggle="tooltip" title="Require Authentication"><i class="fa-solid fa-user-shield"></i></a>
-                                            </div>
-                                        <?php } ?>
-                                        <?php if ($route['roles']) { ?>
-                                            <div class="method clear">
-                                                <a class="auth bg-info" data-bs-toggle="tooltip" title="Access Roles <?php echo implode(',', $route['roles']) ?>"><i class="fa-solid fa-shield"></i></a>
                                             </div>
                                         <?php } ?>
                                         <div class="method clear">

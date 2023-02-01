@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 
 export interface SecurityLoginResponse {
-  user: {
+  data: {
     id: string,
     type: string,
     email: string,
@@ -15,6 +15,7 @@ export interface SecurityLoginResponse {
     language: string,
     first_name: string,
     last_name: string,
+    created_at: string,
     meta: Array<string|number|boolean>
   },
   token: string,

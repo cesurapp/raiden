@@ -2,5 +2,7 @@
 /* eslint-disable max-len */
 
 export interface SecurityRefreshTokenResponse {
-  token: string
+  data: {
+    token: string
+  }
 }

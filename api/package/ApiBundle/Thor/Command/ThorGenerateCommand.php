@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Thor\Command;
 
+use Package\ApiBundle\Response\ApiResourceLocator;
 use Package\ApiBundle\Thor\Extractor\ThorExtractor;
 use Package\ApiBundle\Thor\Generator\TypeScriptGenerator;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[AsCommand(name: 'thor:generate', description: 'Thor Generate Api Documentation to JSON File')]
 class ThorGenerateCommand extends Command
 {
-    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, protected ValidatorInterface $validator)
+    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, protected ValidatorInterface $validator, private ApiResourceLocator $resourceLocator)
     {
         parent::__construct();
     }
@@ -26,7 +27,7 @@ class ThorGenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Generate
-        $extractor = new ThorExtractor($this->router, $this->bag);
+        $extractor = new ThorExtractor($this->router, $this->bag, $this->resourceLocator);
         $apiData = $extractor->extractData(true);
         $tsGenerator = new TypeScriptGenerator($apiData);
 

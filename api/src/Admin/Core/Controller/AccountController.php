@@ -168,10 +168,10 @@ class AccountController extends AbstractApiController
         group: 'Account Management',
         desc: 'View Permission',
         response: [
-            200 => [
+            200 => ['data' => [
                 'current' => 'array',
-                'permissions' => 'object',
-            ],
+                'permissions' => 'array',
+            ]],
         ],
         order: 9
     )]
@@ -179,10 +179,10 @@ class AccountController extends AbstractApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_PERMISSION->value)]
     public function showPermission(User $user, PermissionManager $permissionManager): ApiResponse
     {
-        return ApiResponse::create()->setData([
+        return ApiResponse::create()->setData(['data' => [
             'current' => $user->getRoles(),
             'permissions' => $permissionManager->getPermissionsValues($user->getType()),
-        ]);
+        ]]);
     }
 
     #[Thor(

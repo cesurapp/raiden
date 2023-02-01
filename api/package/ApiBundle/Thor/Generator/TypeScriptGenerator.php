@@ -10,6 +10,7 @@ class TypeScriptGenerator
     private string $pathResponse;
     private string $pathRequest;
     private string $pathQuery;
+    private string $pathTable;
     private TypeScriptHelper $helper;
 
     public function __construct(private array $data)
@@ -22,8 +23,9 @@ class TypeScriptGenerator
         $this->pathResponse = $this->path.'/Response';
         $this->pathRequest = $this->path.'/Request';
         $this->pathQuery = $this->path.'/Query';
+        $this->pathTable = $this->path.'/Table';
 
-        foreach ([$this->path, $this->pathResponse, $this->pathRequest, $this->pathQuery] as $dir) {
+        foreach ([$this->path, $this->pathResponse, $this->pathRequest, $this->pathQuery, $this->pathTable] as $dir) {
             if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
             }
@@ -40,6 +42,7 @@ class TypeScriptGenerator
                 $this->generateResponse($route);
                 $this->generateRequest($route);
                 $this->generateQuery($route);
+                $this->generateTable($route);
             }
         }
 
@@ -134,6 +137,21 @@ class TypeScriptGenerator
 
         $name = sprintf('%sQuery.ts', ucfirst($route['shortName']));
         file_put_contents($this->pathQuery."/{$name}", $this->renderTemplate('query.ts.php', [
+            'data' => $route,
+        ]));
+    }
+
+    /**
+     * Generate DataTable Columns.
+     */
+    private function generateTable(array $route): void
+    {
+        if (!$route['table']) {
+            return;
+        }
+
+        $name = sprintf('%sTable.ts', ucfirst($route['shortName']));
+        file_put_contents($this->pathTable."/{$name}", $this->renderTemplate('table.ts.php', [
             'data' => $route,
         ]));
     }

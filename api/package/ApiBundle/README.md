@@ -38,21 +38,40 @@ class TestController extends AbstractApiController {
 ```
 
 ### Create Api Resource
+Filter and DataTable only work when pagination is enabled. Automatic TS columns are created for the table.
+Export is automatically enabled for all tables.
+
 ```php
 use \Package\ApiBundle\Response\ApiResourceInterface;
-use \Package\ApiBundle\Thor\Attribute\ThorResource;
 
 class UserResource implements ApiResourceInterface {
-    #[ThorResource(data: [[
-        'id' => 'string',
-        'name' => 'string',
-    ]])]
     public function toArray(object $item): array {
         return [
             'id' => $object->getId(),
             'name' => $object->getName()
         ]
     }
+    
+    public function toResource(): array {
+        return [
+              'id' => [
+                'type' => 'string', // Typescript Type
+                'filter' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id]=test
+                'filter' => [
+                    'min' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id][min]=test
+                    'max' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id][max]=test
+                ]
+                'table' => [ // Typescript DataTable Types
+                    'label' => 'ID',
+                    'sortable' => true,
+                    // 'exporter' => static fn($v) => $v, // Export Column Template
+                    // 'sortable_field' => 'firstName', // Doctrine Getter Method
+                    // 'sortable_field' => static fn (QueryBuilder $builder, string $direction) => $builder->orderBy('u.firstName', $direction),
+                ],
+            ]
+        ]   
+    }
+
 }
 ```
 

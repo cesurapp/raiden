@@ -5,9 +5,9 @@ namespace Package\ApiBundle\Response;
 use Package\ApiBundle\Exception\ResourceNotFoundException;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
-class ApiResourceLocator
+readonly class ApiResourceLocator
 {
-    public function __construct(private readonly ServiceLocator $locator)
+    public function __construct(private ServiceLocator $locator)
     {
     }
 
@@ -18,6 +18,11 @@ class ApiResourceLocator
         }
 
         throw new ResourceNotFoundException();
+    }
+
+    public function getResource(string $resource): array
+    {
+        return $this->get($resource)->toResource();
     }
 
     public function process(object|array $object, ?string $resource = null): ?array
