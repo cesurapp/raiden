@@ -18,6 +18,7 @@ class ApiConfiguration implements ConfigurationInterface
                 ->scalarNode('globals')->defaultValue('')->end()
                 ->scalarNode('base_url')->defaultValue('')->end()
                 ->scalarNode('ts_extra_path')->defaultValue('')->end()
+                ->booleanNode('versioning')->defaultFalse()->end()
             ->end();
 
         return $treeBuilder;

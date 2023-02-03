@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Thor\Extractor;
 
+use App\Admin\Core\Permission\PermissionManager;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
@@ -17,6 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ThorExtractor
 {
     protected array $defaults = [];
+    private PermissionManager $permissionManager;
 
     public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, private readonly ApiResourceLocator $resourceLocator)
     {
@@ -24,6 +26,8 @@ class ThorExtractor
             $config = require $bag->get('thor.globals');
             $this->defaults = $config();
         }
+
+        $this->permissionManager = new PermissionManager($this->bag);
     }
 
     /**
@@ -154,10 +158,20 @@ class ThorExtractor
                 $newDoc[$key] = $items;
             }
 
-            return $newDoc;
+            $data = $newDoc;
         }
 
+        // Append Enums
+        $data['_enums'] = $this->extractEnums();
+
         return $data;
+    }
+
+    private function extractEnums(): array
+    {
+        return array_merge([
+            'Permission' => $this->permissionManager->getPermissionsValues(),
+        ], $this->defaults['enums'] ?? []);
     }
 
     private function extractRoles(\ReflectionMethod $method, array $attrThor): array

@@ -20,5 +20,8 @@ return static function () {
         'response' => [],
         'hidden' => false,
         'paginate' => false,
+        'enums' => [
+            'UserType' => \App\Admin\Core\Enum\UserType::class,
+        ],
     ];
 };

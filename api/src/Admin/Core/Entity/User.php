@@ -142,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function hasRoles(PermissionInterface|UserType $permission): bool
     {
-        return in_array($permission instanceof UserType ? $permission->role() : $permission->value, $this->roles, true);
+        return in_array($permission->value, $this->roles, true);
     }
 
     public function addRoles(PermissionInterface $role): self
@@ -172,6 +172,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->type = $type;
 
         return $this;
+    }
+
+    public function hasType(UserType $type): bool
+    {
+        return $type === $this->type;
     }
 
     public function getPassword(): string
@@ -305,8 +310,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreFlush]
     public function preFlush(PreFlushEventArgs $event): void
     {
-        $roles = array_diff($this->getRoles(), UserType::roles());
-        $roles[] = $this->getType()->role();
+        $roles = array_diff($this->getRoles(), UserType::values());
+        $roles[] = $this->getType()->value;
 
         $this->roles = array_unique($roles);
     }

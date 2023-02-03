@@ -9,12 +9,39 @@ use \Symfony\Component\Routing\Annotation\Route;
 
 class TestController extends AbstractApiController {
     #[Thor(
-        group: 'Login',
+        group: 'Login|1',
+        groupDesc: 'Global',
         desc: 'Login EndPoint',
+        request: [
+            'username' => 'string',
+            'password' => 'string',
+        ],
+        response: [
+            200 => ['data' => UserResource::class],
+            BadCredentialsException::class,
+            TokenExpiredException::class,
+            AccessDeniedException::class
+        ],
         dto: LoginDto::class, 
         requireAuth: false, 
-        paginate: true, 
-        response: UserResource::class,
+        paginate: false, 
+        order: 0
+    )]
+    #[Route(name: 'Login', path: '/login', methods: ['POST'])]
+    public function getMethod(LoginDto $loginDto): ApiResponse {
+        return ApiResponse::create()
+            ->setData(['custom-data'])
+            ->setQuery('QueryBuilder')
+            ->setHTTPCache(60)  // Enable HTTP Cache
+            ->setPaginate()     // Enable QueryBuilder Paginator
+            ->setHeaders([])    // Custom Header
+            ->setResource(UserResource::class)
+    }
+    
+    #[Thor(
+        group: 'Profile|2',
+        groupDesc: 'Global',
+        desc: 'Profile EndPoint',
         query: [
             'name' => '?string',
             'filter' => [
@@ -22,14 +49,18 @@ class TestController extends AbstractApiController {
                 'name' => '?string',
                 'fullName' => '?string',
             ],
-        ]
+        ],
+        response: [200 => ['data' => UserResource::class]],
+        requireAuth: true, 
+        paginate: false, 
+        order: 0
     )]
-    #[Route(name: 'Login', path: '/login', methods: ['POST'])]
-    public function index(LoginDto $loginDto): ApiResponse {
+    #[Route(name: 'GetExample', path: '/get', methods: ['GET'])]
+    public function postMethod(): ApiResponse {
+        $query = $userRepo->createQueryBuilder('u');
+        
         return ApiResponse::create()
-            ->setData(['custom-data'])
-            ->setQuery('QueryBuilder')
-            ->setHTTPCache(60)  // Enable HTTP Cache
+            ->setQuery($query)
             ->setPaginate()     // Enable QueryBuilder Paginator
             ->setHeaders([])    // Custom Header
             ->setResource(UserResource::class)
@@ -68,12 +99,25 @@ class UserResource implements ApiResourceInterface {
                     // 'sortable_field' => 'firstName', // Doctrine Getter Method
                     // 'sortable_field' => static fn (QueryBuilder $builder, string $direction) => $builder->orderBy('u.firstName', $direction),
                 ],
+            ],
+            'created_at' => [
+                'type' => 'string',
+                'filter' => [
+                    'min' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][min]=test
+                    'max' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][max]=test
+                ]
             ]
         ]   
     }
 
 }
 ```
+
+__Using Filter__
+
+Filters are set according to the query parameter. Only matching records are filtered.
+
+Sample request `http://example.test/v1/userlist?filter[id]=1&filter[createdAt][min]=10.10.2023`
 
 ### Create Form Validation
 ```php
@@ -120,65 +164,6 @@ class LoginDto extends AbstractApiDto {
         'label' => 'string|int|boolean',
     ]])]
     public ?array $data;
-}
-```
-
-### Create Doctrine Filter
-Filters are set according to the query parameter. Only matching records are filtered.
-
-Sample request `http://example.test/v1/userlist?filter[id]=1&filter[createdAt][min]=10.10.2023`
-
-```php
-class UserRepository extends ApiServiceEntityRepository
-{
-    // Default Filter
-    public static function filterDefault(): array
-    {
-        return [
-            'id' => static function (QueryBuilder $builder, string $alias, string $data) {
-                // Logic
-            },
-            'createdAt' => static function (QueryBuilder $builder, string $alias, array $data) {
-                if (isset($data['min'])) {
-                    // Logic
-                }
-                if (isset($data['max'])) {
-                    // Logic
-                }
-            },
-            'createdAt' => [
-                'min' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    // Logic
-                },
-                'max' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    // Logic
-                },
-            ]
-        ];
-    }
-    
-    // Custom Filter
-    public static function filterCustom(): array
-    {
-        return [];
-    }
-}
-```
-Call Filter:
-```php
-class AccountController extends AbstractApiController
-{
-    #[Thor(
-        filter: \App\Admin\Core\Repository\UserRepository::class,
-        filterId: 'custom' // default value is "default" -> optional
-    )]
-    public function showProfile(\Symfony\Component\HttpFoundation\Request $request, \App\Admin\Core\Repository\UserRepository $repository): ApiResponse
-    {
-        $filteredQuery = $repository->createFilteredQueryBuilder($request, 'default');
-        
-        // Call Custom Filter
-        // $filteredQuery = $repository->createFilteredQueryBuilder($request, 'custom');
-    }
 }
 ```
 

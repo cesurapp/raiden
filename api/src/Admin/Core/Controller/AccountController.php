@@ -92,7 +92,7 @@ class AccountController extends AbstractApiController
     public function create(UserDto $dto): ApiResponse
     {
         if ($dto->validated('type') === UserType::SUPERADMIN->value) {
-            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+            $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
 
         // Init & Save
@@ -116,7 +116,7 @@ class AccountController extends AbstractApiController
     public function edit(User $user, UserDto $dto): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
-            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+            $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
 
         $user = $dto->initObject($user);
@@ -155,7 +155,7 @@ class AccountController extends AbstractApiController
     public function delete(User $user, UserRepository $userRepo): ApiResponse
     {
         if ($user->hasRoles(UserType::SUPERADMIN)) {
-            $this->isGrantedDeny(UserType::SUPERADMIN->role());
+            $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
 
         // Remove

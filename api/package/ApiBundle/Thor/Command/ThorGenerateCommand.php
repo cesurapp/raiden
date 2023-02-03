@@ -38,10 +38,12 @@ class ThorGenerateCommand extends Command
         }
 
         // Dump
-        file_put_contents(
-            sprintf('%s/%s.json', $path, time()),
-            json_encode($apiData, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
-        );
+        if ($this->bag->get('thor.versioning')) {
+            file_put_contents(
+                sprintf('%s/%s.json', $path, time()),
+                json_encode($apiData, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT)
+            );
+        }
 
         // Copy Custom Directory
         if ($this->bag->get('thor.ts_extra_path')) {

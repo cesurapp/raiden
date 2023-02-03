@@ -27,7 +27,7 @@ class RegisterDto extends AbstractApiDto
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: 'getTypes')]
-    public ?string $type = 'user';
+    public ?string $type = UserType::USER->value;
 
     #[Assert\Length(min: 8)]
     #[Assert\NotNull]

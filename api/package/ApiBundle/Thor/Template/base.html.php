@@ -167,7 +167,7 @@
         -->
         <div class="col-3">
             <div id="lists" class="list-group sticky-top bg-body rounded" style="top: 1rem">
-                <?php foreach ($data as $groupName => $routes) { ?>
+                <?php foreach ($data as $groupName => $routes) { if (str_starts_with($groupName, '_')) continue; ?>
                     <a class="list-group-item list-group-item-action" href="#<?php echo $groupName ?? '/'; ?>"><?php echo $groupName ?? '/'; ?></a>
                 <?php } ?>
             </div>
@@ -177,7 +177,7 @@
             Routes
         -->
         <div class="col-9">
-            <?php foreach ($data as $groupName => $routes) { ?>
+            <?php foreach ($data as $groupName => $routes) { if (str_starts_with($groupName, '_')) continue; ?>
                 <div class="group-item">
                     <?php if (!empty($groupName)) { ?><h5 class="title" id="<?php echo $groupName; ?>"><?php echo $groupName; ?></h5><?php } ?>
                     <div class="accordion shadow-sm rounded mb-3">

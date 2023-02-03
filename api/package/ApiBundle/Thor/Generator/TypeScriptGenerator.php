@@ -11,9 +11,10 @@ class TypeScriptGenerator
     private string $pathRequest;
     private string $pathQuery;
     private string $pathTable;
+    private string $pathEnum;
     private TypeScriptHelper $helper;
 
-    public function __construct(private array $data)
+    public function __construct(private readonly array $data)
     {
         // Create Template Helper
         $this->helper = new TypeScriptHelper();
@@ -24,8 +25,9 @@ class TypeScriptGenerator
         $this->pathRequest = $this->path.'/Request';
         $this->pathQuery = $this->path.'/Query';
         $this->pathTable = $this->path.'/Table';
+        $this->pathEnum = $this->path.'/Enum';
 
-        foreach ([$this->path, $this->pathResponse, $this->pathRequest, $this->pathQuery, $this->pathTable] as $dir) {
+        foreach ([$this->path, $this->pathResponse, $this->pathRequest, $this->pathQuery, $this->pathTable, $this->pathEnum] as $dir) {
             if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
             }
@@ -37,7 +39,15 @@ class TypeScriptGenerator
      */
     public function generate(): self
     {
-        foreach ($this->data as $groupRoutes) {
+        foreach ($this->data as $key => $groupRoutes) {
+            if (str_starts_with($key, '_')) {
+                if ('_enums' === $key) {
+                    $this->generateEnum($groupRoutes);
+                }
+
+                continue;
+            }
+
             foreach ($groupRoutes as $route) {
                 $this->generateResponse($route);
                 $this->generateRequest($route);
@@ -48,7 +58,7 @@ class TypeScriptGenerator
 
         // Render Index
         file_put_contents($this->path.'/index.ts', $this->renderTemplate('index.ts.php', [
-            'data' => $this->data,
+            'data' => array_filter($this->data, static fn ($k) => !str_starts_with($k, '_'), ARRAY_FILTER_USE_KEY),
         ]));
 
         // Render Dependency
@@ -94,6 +104,20 @@ class TypeScriptGenerator
             }
             usleep(50000);
         }
+    }
+
+    /**
+     * Render PHP Template.
+     */
+    private function renderTemplate(string $template, array $data = []): string
+    {
+        $data['helper'] = $this->helper;
+        extract($data, EXTR_OVERWRITE);
+
+        ob_start();
+        include __DIR__.'/../Template/typescript/'.$template;
+
+        return ob_get_clean();
     }
 
     /**
@@ -157,16 +181,18 @@ class TypeScriptGenerator
     }
 
     /**
-     * Render PHP Template.
+     * Generate DataTable Columns.
      */
-    private function renderTemplate(string $template, array $data = []): string
+    private function generateEnum(array $enumsGroup): void
     {
-        $data['helper'] = $this->helper;
-        extract($data, EXTR_OVERWRITE);
-
-        ob_start();
-        include __DIR__.'/../Template/typescript/'.$template;
-
-        return ob_get_clean();
+        foreach ($enumsGroup as $namespace => $enumData) {
+            $file = 'Permission' === $namespace ? 'permission.ts.php' : 'enum.ts.php';
+            $name = sprintf('%s.ts', ucfirst($namespace));
+            $enumData = is_array($enumData) ? $enumData : $enumData::cases();
+            file_put_contents($this->pathEnum."/{$name}", $this->renderTemplate($file, [
+                'namespace' => $namespace,
+                'data' => $enumData,
+            ]));
+        }
     }
 }
