@@ -3,7 +3,6 @@
 namespace Package\ApiBundle\Thor\Extractor;
 
 use App\Admin\Core\Permission\PermissionManager;
-use App\Admin\Core\Resource\UserResource;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;

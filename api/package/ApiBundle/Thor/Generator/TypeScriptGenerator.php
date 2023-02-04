@@ -55,8 +55,9 @@ class TypeScriptGenerator
         foreach ($this->data as $key => $groupRoutes) {
             if (str_starts_with($key, '_')) {
                 switch ($key) {
-                    case '_enums' : $this->generateEnum($groupRoutes); break;
-                    case '_resource' : $this->generateResources($groupRoutes);
+                    case '_enums': $this->generateEnum($groupRoutes);
+                    break;
+                    case '_resource': $this->generateResources($groupRoutes);
                 }
 
                 continue;
@@ -153,7 +154,7 @@ class TypeScriptGenerator
         $name = sprintf('%sResponse.ts', ucfirst($route['shortName']));
         file_put_contents($this->pathResponse."/{$name}", $this->renderTemplate('response.ts.php', [
             'data' => $route,
-            'resources' => $resources
+            'resources' => $resources,
         ]));
     }
 
