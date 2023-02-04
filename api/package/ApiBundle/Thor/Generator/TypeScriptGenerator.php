@@ -56,7 +56,7 @@ class TypeScriptGenerator
             if (str_starts_with($key, '_')) {
                 switch ($key) {
                     case '_enums': $this->generateEnum($groupRoutes);
-                    break;
+                        break;
                     case '_resource': $this->generateResources($groupRoutes);
                 }
 
