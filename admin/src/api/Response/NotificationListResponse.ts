@@ -1,17 +1,10 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
+import { NotificationResource } from '../Resource/NotificationResource';
+
 export interface NotificationListResponse {
-  data?: [
-    {
-      id: string,
-      type: string,
-      title: string,
-      message: string,
-      readed: boolean,
-      data: Array<string|number|boolean>,
-      created_at: string
-    }
+  data: [
+    NotificationResource
   ],
   pager: {
     max: number,

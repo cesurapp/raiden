@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /* eslint-disable max-len */
 
 export enum <?php echo ucfirst($namespace); ?> {

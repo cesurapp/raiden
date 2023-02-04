@@ -25,6 +25,11 @@ readonly class ApiResourceLocator
         return $this->get($resource)->toResource();
     }
 
+    public function all(): array
+    {
+        return $this->locator->getProvidedServices();
+    }
+
     public function process(object|array $object, ?string $resource = null): ?array
     {
         $res = $this->get($resource);

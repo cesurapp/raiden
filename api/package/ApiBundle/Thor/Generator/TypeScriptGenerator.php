@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\Thor\Generator;
 
+use Package\ApiBundle\Response\ApiResourceInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 class TypeScriptGenerator
@@ -12,6 +13,7 @@ class TypeScriptGenerator
     private string $pathQuery;
     private string $pathTable;
     private string $pathEnum;
+    private string $pathResource;
     private TypeScriptHelper $helper;
 
     public function __construct(private readonly array $data)
@@ -26,8 +28,19 @@ class TypeScriptGenerator
         $this->pathQuery = $this->path.'/Query';
         $this->pathTable = $this->path.'/Table';
         $this->pathEnum = $this->path.'/Enum';
+        $this->pathResource = $this->path.'/Resource';
 
-        foreach ([$this->path, $this->pathResponse, $this->pathRequest, $this->pathQuery, $this->pathTable, $this->pathEnum] as $dir) {
+        foreach (
+            [
+                $this->path,
+                $this->pathResponse,
+                $this->pathRequest,
+                $this->pathQuery,
+                $this->pathTable,
+                $this->pathEnum,
+                $this->pathResource,
+            ] as $dir
+        ) {
             if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
             }
@@ -41,8 +54,9 @@ class TypeScriptGenerator
     {
         foreach ($this->data as $key => $groupRoutes) {
             if (str_starts_with($key, '_')) {
-                if ('_enums' === $key) {
-                    $this->generateEnum($groupRoutes);
+                switch ($key) {
+                    case '_enums' : $this->generateEnum($groupRoutes); break;
+                    case '_resource' : $this->generateResources($groupRoutes);
                 }
 
                 continue;
@@ -129,9 +143,17 @@ class TypeScriptGenerator
             return;
         }
 
+        $resources = [];
+        array_walk_recursive($route, static function ($val) use (&$resources) {
+            if (is_string($val) && class_exists($val) && in_array(ApiResourceInterface::class, class_implements($val), true)) {
+                $resources[] = TypeScriptHelper::baseClass($val);
+            }
+        });
+
         $name = sprintf('%sResponse.ts', ucfirst($route['shortName']));
         file_put_contents($this->pathResponse."/{$name}", $this->renderTemplate('response.ts.php', [
             'data' => $route,
+            'resources' => $resources
         ]));
     }
 
@@ -192,6 +214,20 @@ class TypeScriptGenerator
             file_put_contents($this->pathEnum."/{$name}", $this->renderTemplate($file, [
                 'namespace' => $namespace,
                 'data' => $enumData,
+            ]));
+        }
+    }
+
+    /**
+     * Generate Resources.
+     */
+    private function generateResources(array $resourceGroup): void
+    {
+        foreach ($resourceGroup as $namespace => $data) {
+            $name = sprintf('%s.ts', ucfirst($namespace));
+            file_put_contents($this->pathResource."/{$name}", $this->renderTemplate('resource.ts.php', [
+                'namespace' => $namespace,
+                'data' => $data,
             ]));
         }
     }

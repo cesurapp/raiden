@@ -9,19 +9,17 @@ LoadingBar.setDefaults({
 */
 
 function barStart() {
-/*  LoadingBar.setDefaults({color: 'info'})
+  /*  LoadingBar.setDefaults({color: 'info'})
   LoadingBar.start();*/
 }
 
 function barSuccess() {
-/*  LoadingBar.stop();*/
+  /*  LoadingBar.stop();*/
 }
 
 function barDanger() {
-/*  LoadingBar.setDefaults({color: 'negative'})
+  /*  LoadingBar.setDefaults({color: 'negative'})
   LoadingBar.stop();*/
 }
 
-export {
-  barStart, barSuccess, barDanger
-}
+export { barStart, barSuccess, barDanger };

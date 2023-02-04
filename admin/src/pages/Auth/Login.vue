@@ -2,41 +2,99 @@
   <div>
     <!--Header-->
     <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Welcome') }}</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Login to continue') }}</h6>
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
+        {{ $t('Welcome') }}
+      </h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">
+        {{ $t('Login to continue') }}
+      </h6>
     </div>
 
     <!-- Login Form-->
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-tabs v-model="type" align="left" inline-label no-caps active-bg-color="dark-transparent-1" class="text-primary q-mb-lg">
+      <q-tabs
+        v-model="type"
+        align="left"
+        inline-label
+        no-caps
+        active-bg-color="dark-transparent-1"
+        class="text-primary q-mb-lg"
+      >
         <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
         <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
       </q-tabs>
 
       <!--Username-->
-      <q-input v-if="type === 'email'" :class="{'q-pb-xs': isOtp}" bottom-slots outlined v-model="username" :label="$t('Email')" lazy-rules :rules="[$rules.required(),$rules.email()]">
-        <template v-slot:prepend><q-icon name="mail"/></template>
+      <q-input
+        v-if="type === 'email'"
+        :class="{ 'q-pb-xs': isOtp }"
+        bottom-slots
+        outlined
+        v-model="username"
+        :label="$t('Email')"
+        lazy-rules
+        :rules="[$rules.required(), $rules.email()]"
+      >
+        <template v-slot:prepend><q-icon name="mail" /></template>
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else v-model:phone-number="username" :class="{'q-pb-xs': isOtp}" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput
+        v-else
+        v-model:phone-number="username"
+        :class="{ 'q-pb-xs': isOtp }"
+        :label="$t('Phone')"
+      ></PhoneInput>
 
       <!--Password-->
-      <q-input :disable="isOtp" v-show="!isOtp" class="q-pb-xs" outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
-        <template v-slot:prepend><q-icon name="key"/></template>
+      <q-input
+        :disable="isOtp"
+        v-show="!isOtp"
+        class="q-pb-xs"
+        outlined
+        :type="isPwd ? 'password' : 'text'"
+        v-model="password"
+        :label="$t('Password')"
+        lazy-rules
+        :rules="[$rules.required(), $rules.minLength(8)]"
+      >
+        <template v-slot:prepend><q-icon name="key" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
         </template>
       </q-input>
 
       <!--PasswordLess Login-->
       <div class="flex justify-between items-center">
         <q-checkbox v-model="isOtp" :label="$t('Passwordless Login')" />
-        <q-btn :disable="isOtp" color="grey-7" v-show="!isOtp" flat dense no-caps size="md" class="q-px-sm" :to="{ name: 'auth.reset.request' }" :label="$t('Forgot Password')"></q-btn>
+        <q-btn
+          :disable="isOtp"
+          color="grey-7"
+          v-show="!isOtp"
+          flat
+          dense
+          no-caps
+          size="md"
+          class="q-px-sm"
+          :to="{ name: 'auth.reset.request' }"
+          :label="$t('Forgot Password')"
+        ></q-btn>
       </div>
 
       <!--Submit-->
-      <q-btn class="q-mt-lg" no-caps :label="$t('Login')" :loading="$isBusy.value" @click="onSubmit" color="primary"  icon="login"/>
+      <q-btn
+        class="q-mt-lg"
+        no-caps
+        :label="$t('Login')"
+        :loading="$isBusy.value"
+        @click="onSubmit"
+        color="primary"
+        icon="login"
+      />
     </q-form>
 
     <!-- Footer-->
@@ -45,27 +103,34 @@
 
       <!-- Register Link-->
       <div class="register-actions">
-        <q-btn :to="{ name: 'auth.register' }" :label="$t('Register')" type="button" color="primary" icon="email" class="full-width"/>
+        <q-btn
+          :to="{ name: 'auth.register' }"
+          :label="$t('Register')"
+          type="button"
+          color="primary"
+          icon="email"
+          class="full-width"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {createMetaMixin} from 'quasar';
-import {useAuthStore} from 'stores/AuthStore';
+import { defineComponent } from 'vue';
+import { createMetaMixin } from 'quasar';
+import { useAuthStore } from 'stores/AuthStore';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 
 export default defineComponent({
   name: 'AuthLogin',
-  components: {PhoneInput},
+  components: { PhoneInput },
   mixins: [
-    createMetaMixin(function() {
+    createMetaMixin(function () {
       return {
-        title: this.$t('Login')
-      }
-    })
+        title: this.$t('Login'),
+      };
+    }),
   ],
   data() {
     return {
@@ -74,7 +139,7 @@ export default defineComponent({
       isOtp: false,
       username: null,
       password: null,
-    }
+    };
   },
   methods: {
     onSubmit() {
@@ -86,10 +151,10 @@ export default defineComponent({
             useAuthStore().loginUsername(this.username, this.password);
           }
         }
-      })
-    }
-  }
-})
+      });
+    },
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -100,7 +165,7 @@ export default defineComponent({
   justify-content: center;
 
   &:before {
-    content: " ";
+    content: ' ';
     position: absolute;
     height: 2px;
     left: 0;
@@ -109,7 +174,7 @@ export default defineComponent({
   }
 
   span {
-    background: #FFF;
+    background: #fff;
     z-index: 2;
     padding: 0 2rem;
     line-height: 5px;

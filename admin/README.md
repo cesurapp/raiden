@@ -2,16 +2,18 @@
 
 Admin Application UI for [Quasar 2.7](https://quasar.dev/) & Vue 3 & Vite
 
-__Features__
-* Developed with Quasar 2.7.
-* Firebase integration for notifications
-* Responsive design
-* Role based authentication
-* Route permission
-* Permission helper
-* Dynamic form validation
+**Features**
 
-__Requirements__
+- Developed with Quasar 2.7.
+- Firebase integration for notifications
+- Responsive design
+- Role based authentication
+- Route permission
+- Permission helper
+- Dynamic form validation
+
+**Requirements**
+
 ```
 "node": "^18 || ^16 || ^14.19",
 "npm": ">= 6.13.4",
@@ -19,6 +21,7 @@ __Requirements__
 ```
 
 ### Install
+
 ```bash
 yarn global add @quasar/cli # Install Quasar CLI
 yarn install

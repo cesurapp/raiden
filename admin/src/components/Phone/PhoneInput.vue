@@ -1,20 +1,42 @@
 <template>
   <div class="phone-input">
     <!--Phone-->
-    <q-input outlined type="tel" v-model="proxyPhone" v-bind="$attrs"
-             :mask="phoneCodes[data.phoneCountry].mask" unmasked-value fill-mask
-             :label="label" lazy-rules
-             :rules="dynamicRules(data.phoneCountry)"
-             :error="$rules.ssrValid(serverSideInput)"
-             :error-message="$rules.ssrException(serverSideInput)"
+    <q-input
+      outlined
+      type="tel"
+      v-model="proxyPhone"
+      v-bind="$attrs"
+      :mask="phoneCodes[data.phoneCountry].mask"
+      unmasked-value
+      fill-mask
+      :label="label"
+      lazy-rules
+      :rules="dynamicRules(data.phoneCountry)"
+      :error="$rules.ssrValid(serverSideInput)"
+      :error-message="$rules.ssrException(serverSideInput)"
     >
       <template v-slot:prepend>
         <!--Select Country-->
-        <q-select class="country-input" hide-selected outlined dense :dropdown-icon="null" v-model="data.phoneCountry" @update:model-value="updateModel" :options="getCountryPhoneList" emit-value map-options>
-          <template v-slot:prepend><q-icon :name="'img:/images/flags/'+ data.phoneCountry +'.svg'"/></template>
+        <q-select
+          class="country-input"
+          hide-selected
+          outlined
+          dense
+          :dropdown-icon="null"
+          v-model="data.phoneCountry"
+          @update:model-value="updateModel"
+          :options="getCountryPhoneList"
+          emit-value
+          map-options
+        >
+          <template v-slot:prepend
+            ><q-icon :name="'img:/images/flags/' + data.phoneCountry + '.svg'"
+          /></template>
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
-              <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
+              <q-item-section avatar
+                ><q-icon :name="scope.opt.icon"
+              /></q-item-section>
               <q-item-section>
                 <q-item-label>{{ scope.opt.label }}</q-item-label>
                 <q-item-label>{{ scope.opt.description }}</q-item-label>
@@ -29,8 +51,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-import {phoneCodes, extractPhone} from './PhoneCodeList';
+import { defineComponent } from 'vue';
+import { phoneCodes, extractPhone } from './PhoneCodeList';
 
 export default defineComponent({
   name: 'PhoneInput',
@@ -41,8 +63,8 @@ export default defineComponent({
     phoneCountry: [String],
 
     label: [String],
-    required: {type: Boolean, default: true},
-    serverSideInput: {type: String, default: 'phone'}
+    required: { type: Boolean, default: true },
+    serverSideInput: { type: String, default: 'phone' },
   },
   data: () => ({
     data: {
@@ -65,31 +87,42 @@ export default defineComponent({
       set(val: string) {
         this.data.phoneNumber = val;
         this.updateModel();
-      }
+      },
     },
     getCountryPhoneList() {
-      return Object.entries(this.phoneCodes).map(([phoneCountry, item]: [string, any]) => {
-        return {
-          value: phoneCountry,
-          description: `${String(item.label)} (+${String(item.phoneCode)})`,
-          icon: `img:/images/flags/${String(phoneCountry)}.svg`
-        };
-      });
-    }
+      return Object.entries(this.phoneCodes).map(
+        ([phoneCountry, item]: [string, any]) => {
+          return {
+            value: phoneCountry,
+            description: `${String(item.label)} (+${String(item.phoneCode)})`,
+            icon: `img:/images/flags/${String(phoneCountry)}.svg`,
+          };
+        }
+      );
+    },
   },
   methods: {
     updateModel() {
       this.data.phoneCode = this.phoneCodes[this.data.phoneCountry].phoneCode;
 
-      this.$emit('update:phoneNumber', String(this.data.phoneNumber ? this.data.phoneCode + this.data.phoneNumber : ''));
+      this.$emit(
+        'update:phoneNumber',
+        String(
+          this.data.phoneNumber
+            ? this.data.phoneCode + this.data.phoneNumber
+            : ''
+        )
+      );
       this.$emit('update:phoneCode', String(this.data.phoneCode));
       this.$emit('update:phoneCountry', String(this.data.phoneCountry));
     },
     dynamicRules(phoneCountry) {
-      return this.required ? [this.$rules.required(), this.$rules.isPhone(phoneCountry)] : [this.$rules.isPhone(phoneCountry)];
-    }
-  }
-})
+      return this.required
+        ? [this.$rules.required(), this.$rules.isPhone(phoneCountry)]
+        : [this.$rules.isPhone(phoneCountry)];
+    },
+  },
+});
 </script>
 
 <style lang="scss">

@@ -1,6 +1,6 @@
-import {barStart, barSuccess, barDanger} from 'src/helper/LoadingBarHelper';
-import {useAuthStore} from 'stores/AuthStore';
-import {notifyShow, notifyDanger} from 'src/helper/NotifyHelper';
+import { barStart, barSuccess, barDanger } from 'src/helper/LoadingBarHelper';
+import { useAuthStore } from 'stores/AuthStore';
+import { notifyShow, notifyDanger } from 'src/helper/NotifyHelper';
 
 function requestConfig(config, i18n, isBusy, authStore) {
   // Add Language
@@ -25,12 +25,15 @@ function requestError(error, isBusy) {
 
 function responseSuccess(response, isBusy) {
   // Process Response Message
-  if (response.data.hasOwnProperty('message') && (response.config.message ?? true)) {
+  if (
+    response.data.hasOwnProperty('message') &&
+    (response.config.message ?? true)
+  ) {
     Object.keys(response.data.message).forEach((type) => {
       Object.values(response.data.message[type]).forEach((message: any) => {
-        notifyShow(message, undefined, type)
-      })
-    })
+        notifyShow(message, undefined, type);
+      });
+    });
   }
 
   // Loading Success
@@ -40,7 +43,13 @@ function responseSuccess(response, isBusy) {
   return response;
 }
 
-async function responseError(error, client, authStore, isBusy, globalExceptions) {
+async function responseError(
+  error,
+  client,
+  authStore,
+  isBusy,
+  globalExceptions
+) {
   // Loading Error
   barDanger();
   isBusy.value = false;
@@ -78,7 +87,7 @@ async function responseError(error, client, authStore, isBusy, globalExceptions)
 }
 
 export default (client, store, i18n, isBusy, globalExceptions) => {
-  const authStore = useAuthStore(store)
+  const authStore = useAuthStore(store);
 
   client.interceptors.request.use(
     async (config) => requestConfig(config, i18n, isBusy, authStore),
@@ -86,7 +95,7 @@ export default (client, store, i18n, isBusy, globalExceptions) => {
   );
   client.interceptors.response.use(
     async (response) => responseSuccess(response, isBusy),
-    async (error) => responseError(error, client, authStore, isBusy, globalExceptions)
+    async (error) =>
+      responseError(error, client, authStore, isBusy, globalExceptions)
   );
 };
-

@@ -2,56 +2,107 @@
   <div>
     <!--Header-->
     <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Change Password') }}</h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Reset your password.') }}</h6>
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
+        {{ $t('Change Password') }}
+      </h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">
+        {{ $t('Reset your password.') }}
+      </h6>
     </div>
 
     <q-form @submit.stop="onSubmit" class="q-gutter-xs" ref="form">
       <!--OTP Key-->
-      <q-input outlined lazy-rules v-model="otp_key"
-               mask="# # # # # #" fill-mask unmasked-value
-               :error="$rules.ssrValid('otp_key')"
-               :error-message="$rules.ssrException('otp_key')"
-               :label="$t('Code')" :rules="[$rules.required(),$rules.minLength(6),$rules.maxLength(6)]">
-        <template v-slot:prepend><q-icon name="key"/></template>
+      <q-input
+        outlined
+        lazy-rules
+        v-model="otp_key"
+        mask="# # # # # #"
+        fill-mask
+        unmasked-value
+        :error="$rules.ssrValid('otp_key')"
+        :error-message="$rules.ssrException('otp_key')"
+        :label="$t('Code')"
+        :rules="[$rules.required(), $rules.minLength(6), $rules.maxLength(6)]"
+      >
+        <template v-slot:prepend><q-icon name="key" /></template>
       </q-input>
 
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password" :label="$t('Password')" lazy-rules :rules="[$rules.required(),$rules.minLength(8)]">
-        <template v-slot:prepend><q-icon name="key"/></template>
+      <q-input
+        outlined
+        :type="isPwd ? 'password' : 'text'"
+        v-model="password"
+        :label="$t('Password')"
+        lazy-rules
+        :rules="[$rules.required(), $rules.minLength(8)]"
+      >
+        <template v-slot:prepend><q-icon name="key" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
         </template>
       </q-input>
 
       <!--Password-->
-      <q-input outlined :type="isPwd ? 'password' : 'text'" v-model="password_confirm" :label="$t('Password Confirm')" lazy-rules :rules="[$rules.required(),$rules.minLength(8),$rules.sameAs(this.password)]">
-        <template v-slot:prepend><q-icon name="key"/></template>
+      <q-input
+        outlined
+        :type="isPwd ? 'password' : 'text'"
+        v-model="password_confirm"
+        :label="$t('Password Confirm')"
+        lazy-rules
+        :rules="[
+          $rules.required(),
+          $rules.minLength(8),
+          $rules.sameAs(this.password),
+        ]"
+      >
+        <template v-slot:prepend><q-icon name="key" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd"/>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="isPwd = !isPwd"
+          />
         </template>
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" no-caps :loading="$isBusy.value" type="submit" color="primary" icon="how_to_reg"/>
-        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm"/>
+        <q-btn
+          :label="$t('Change')"
+          no-caps
+          :loading="$isBusy.value"
+          type="submit"
+          color="primary"
+          icon="how_to_reg"
+        />
+        <q-btn
+          :label="$t('Login')"
+          no-caps
+          color="primary"
+          flat
+          :to="{ name: 'auth.login' }"
+          class="q-ml-sm"
+        />
       </div>
     </q-form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import {createMetaMixin} from 'quasar';
+import { defineComponent } from 'vue';
+import { createMetaMixin } from 'quasar';
 
 export default defineComponent({
   name: 'ResetPassword',
   mixins: [
-    createMetaMixin( function() {
+    createMetaMixin(function () {
       return {
-        title: this.$t('Change Password')
-      }
-    })
+        title: this.$t('Change Password'),
+      };
+    }),
   ],
   data() {
     return {
@@ -60,23 +111,25 @@ export default defineComponent({
       otp_key: null,
       password: null,
       password_confirm: null,
-    }
+    };
   },
   methods: {
     onSubmit() {
-      this.$refs.form.validate().then(success => {
+      this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api.securityResetPassword({
-            username: atob(this.$route.params.id),
-            otp_key: this.otp_key,
-            password: this.password,
-            password_confirm: this.password_confirm
-          }).then(() => {
-            this.$router.push({name: 'auth.login'});
-          })
+          this.$api
+            .securityResetPassword({
+              username: atob(this.$route.params.id),
+              otp_key: this.otp_key,
+              password: this.password,
+              password_confirm: this.password_confirm,
+            })
+            .then(() => {
+              this.$router.push({ name: 'auth.login' });
+            });
         }
-      })
-    }
-  }
-})
+      });
+    },
+  },
+});
 </script>

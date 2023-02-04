@@ -1,33 +1,35 @@
 <template>
   <div class="page-footer">
-    <div :class="{
-      'bg-dark': $q.dark.isActive && !borderless,
-      'bg-white': !$q.dark.isActive && !borderless,
-      'rounded-borders shadow-1 q-pa-md': !borderless,
-      'content-fixed q-mx-md': !liquid,
-      'content-liquid q-mx-md': liquid,
-    }">
+    <div
+      :class="{
+        'bg-dark': $q.dark.isActive && !borderless,
+        'bg-white': !$q.dark.isActive && !borderless,
+        'rounded-borders shadow-1 q-pa-md': !borderless,
+        'content-fixed q-mx-md': !liquid,
+        'content-liquid q-mx-md': liquid,
+      }"
+    >
       <slot></slot>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'PageFooter',
   props: {
     liquid: {
       type: Boolean,
-      default: false
+      default: false,
     },
     borderless: {
       type: Boolean,
-      default: false
-    }
-  }
-})
+      default: false,
+    },
+  },
+});
 </script>
 
 <style lang="scss">
@@ -45,4 +47,3 @@ export default defineComponent({
   }
 }
 </style>
-

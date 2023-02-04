@@ -1,8 +1,14 @@
-import {route} from 'quasar/wrappers';
+import { route } from 'quasar/wrappers';
 /**
  * Routes
  */
-import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw} from 'vue-router';
+import {
+  createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteRecordRaw,
+} from 'vue-router';
 import AdminRoutes from './admin';
 import AuthRoutes from './auth';
 
@@ -22,10 +28,12 @@ routes.push({
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
-    : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory);
+    : process.env.VUE_ROUTER_MODE === 'history'
+    ? createWebHistory
+    : createWebHashHistory;
 
   return createRouter({
-    scrollBehavior: () => ({left: 0, top: 0}),
+    scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
     // Leave this as is and make changes in quasar.conf.js instead!
     // quasar.conf.js -> build -> vueRouterMode

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "noImplicitThis": false,
-    "noImplicitAny": false,
+    "noImplicitAny": false
     //"strict": false
   }
 }

@@ -8,7 +8,12 @@
         <!--BreadCrumbs & Title-->
         <q-toolbar-title class="q-pl-none">
           <q-breadcrumbs class="breadcrumbs">
-            <q-breadcrumbs-el v-for="(route, index) in getBreadcrumbs" :key="index" :label="$t(route.meta.breadcrumb)" :to="route.path"/>
+            <q-breadcrumbs-el
+              v-for="(route, index) in getBreadcrumbs"
+              :key="index"
+              :label="$t(route.meta.breadcrumb)"
+              :to="route.path"
+            />
           </q-breadcrumbs>
         </q-toolbar-title>
 
@@ -26,7 +31,12 @@
     <!--Container-->
     <q-page-container>
       <router-view v-slot="{ Component }">
-        <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+        <transition
+          appear
+          mode="out-in"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
           <component :is="Component"></component>
         </transition>
       </router-view>
@@ -35,57 +45,57 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {createMetaMixin} from 'quasar';
+import { defineComponent } from 'vue';
+import { createMetaMixin } from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import Navigation from './Components/Navigation.vue';
 import Profile from './Components/ProfileNav.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
-  components: {Notifications, Navigation, Profile},
+  components: { Notifications, Navigation, Profile },
   mixins: [
     createMetaMixin(function () {
       return {
         title: 'Raiden Admin',
-        titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
-      }
-    })
+        titleTemplate: (title) => `${title} - ` + process.env.APP_TITLE,
+      };
+    }),
   ],
   computed: {
     getBreadcrumbs() {
       return this.$route.matched.filter((route) => {
         return route.meta?.breadcrumb;
-      })
-    }
+      });
+    },
   },
   async created() {
     await this.$auth.reloadUser();
-  }
-})
+  },
+});
 </script>
 
 <style lang="scss">
-body{
+body {
   background: #f6f7f9;
 }
 
 .breadcrumbs {
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255, 255, 255, .8);
+  color: rgba(255, 255, 255, 0.8);
 
   a {
-    color: rgba(255, 255, 255, .8);
-    transition: .2s all;
+    color: rgba(255, 255, 255, 0.8);
+    transition: 0.2s all;
 
     &:hover {
-      color: #FFF;
+      color: #fff;
     }
   }
 
   .q-breadcrumbs--last a {
-    color: #FFF;
+    color: #fff;
   }
 
   @media (max-width: $breakpoint-xs-max) {

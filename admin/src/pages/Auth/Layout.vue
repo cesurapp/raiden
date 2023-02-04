@@ -1,14 +1,26 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="bg-indigo-12 column justify-center items-center" :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-indigo-12']">
+  <q-layout
+    view="lHh Lpr lFf"
+    class="bg-indigo-12 column justify-center items-center"
+    :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-indigo-12']"
+  >
     <div class="auth-main flex column no-wrap q-pa-lg">
-      <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper row full-width rounded-borders" >
+      <div
+        :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']"
+        class="wrapper row full-width rounded-borders"
+      >
         <div class="xs-hide sm-hide col-12 col-md-7 q-pa-lg flex items-center">
-          <q-img src="/images/login.svg" style="width: 100%"/>
+          <q-img src="/images/login.svg" style="width: 100%" />
         </div>
         <div class="col-12 col-md-5 justify-center items-center flex">
           <div class="q-pa-xs-lg q-pa-sm-xl full-width">
             <router-view v-slot="{ Component }">
-              <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+              <transition
+                appear
+                mode="out-in"
+                enter-active-class="animated fadeIn"
+                leave-active-class="animated fadeOut"
+              >
                 <component :is="Component"></component>
               </transition>
             </router-view>
@@ -16,7 +28,9 @@
         </div>
       </div>
 
-      <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
+      <div
+        class="lang-wrap full-width flex items-center justify-end q-pt-md text-white"
+      >
         <!--Dark Mode Changer-->
         <DarkModeChanger></DarkModeChanger>
 
@@ -30,19 +44,19 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import { defineComponent } from 'vue';
 import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
-import {createMetaMixin} from 'quasar';
+import { createMetaMixin } from 'quasar';
 
-export default defineComponent( {
+export default defineComponent({
   name: 'AuthLayout',
-  components: {LanguageChanger, DarkModeChanger},
+  components: { LanguageChanger, DarkModeChanger },
   mixins: [
     createMetaMixin({
       title: 'Authentication',
-      titleTemplate: title => `${title} - ` + process.env.APP_TITLE,
-    })
+      titleTemplate: (title) => `${title} - ` + process.env.APP_TITLE,
+    }),
   ],
 });
 </script>

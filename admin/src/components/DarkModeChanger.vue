@@ -1,21 +1,30 @@
 <template>
   <slot>
-    <q-btn v-bind="$attrs" :color="!isDarkMode ? (onlyWhite ? 'white' : 'dark') : 'white'" round :ripple="false" size="md" flat @click="$q.dark.set(!$q.dark.isActive)" :icon="!isDarkMode ? 'dark_mode' : 'mode_night'">
+    <q-btn
+      v-bind="$attrs"
+      :color="!isDarkMode ? (onlyWhite ? 'white' : 'dark') : 'white'"
+      round
+      :ripple="false"
+      size="md"
+      flat
+      @click="$q.dark.set(!$q.dark.isActive)"
+      :icon="!isDarkMode ? 'dark_mode' : 'mode_night'"
+    >
       <q-tooltip>{{ $t('Dark Mode') }}</q-tooltip>
     </q-btn>
   </slot>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'DarkModeChanger',
   props: {
     onlyWhite: {
       type: Boolean,
-      default: null
-    }
+      default: null,
+    },
   },
   computed: {
     isDarkMode() {
@@ -25,7 +34,7 @@ export default defineComponent({
   watch: {
     isDarkMode(val) {
       this.$q.localStorage.set('dark_mode', val);
-    }
-  }
-})
+    },
+  },
+});
 </script>

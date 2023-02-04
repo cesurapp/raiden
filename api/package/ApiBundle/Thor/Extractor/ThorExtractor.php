@@ -3,6 +3,7 @@
 namespace Package\ApiBundle\Thor\Extractor;
 
 use App\Admin\Core\Permission\PermissionManager;
+use App\Admin\Core\Resource\UserResource;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Exception\ValidationException;
 use Package\ApiBundle\Response\ApiResourceInterface;
@@ -20,8 +21,11 @@ class ThorExtractor
     protected array $defaults = [];
     private PermissionManager $permissionManager;
 
-    public function __construct(private readonly RouterInterface $router, protected ParameterBagInterface $bag, private readonly ApiResourceLocator $resourceLocator)
-    {
+    public function __construct(
+        private readonly RouterInterface $router,
+        protected ParameterBagInterface $bag,
+        private readonly ApiResourceLocator $resourceLocator
+    ) {
         if (file_exists($bag->get('thor.globals'))) {
             $config = require $bag->get('thor.globals');
             $this->defaults = $config();
@@ -163,6 +167,7 @@ class ThorExtractor
 
         // Append Enums
         $data['_enums'] = $this->extractEnums();
+        $data['_resource'] = $this->extractResources();
 
         return $data;
     }
@@ -172,6 +177,18 @@ class ThorExtractor
         return array_merge([
             'Permission' => $this->permissionManager->getPermissionsValues(),
         ], $this->defaults['enums'] ?? []);
+    }
+
+    private function extractResources(): array
+    {
+        $resources = [];
+
+        foreach ($this->resourceLocator->all() as $class => $type) {
+            $resource = $this->resourceLocator->get($class)->toResource();
+            $resources[$this->baseClass($class)] = array_combine(array_keys($resource), array_column($resource, 'type'));
+        }
+
+        return $resources;
     }
 
     private function extractRoles(\ReflectionMethod $method, array $attrThor): array
@@ -391,8 +408,7 @@ class ThorExtractor
                 // Resources && DataTable
                 if ($refClass->implementsInterface(ApiResourceInterface::class)) {
                     $resource = $this->resourceLocator->getResource($resValue);
-                    $data = array_combine(array_keys($resource), array_column($resource, 'type'));
-                    $resValue = !empty($thorAttr['paginate']) ? [$data] : $data;
+                    $resValue = !empty($thorAttr['paginate']) ? [$resValue] : $resValue;
 
                     if (!empty($thorAttr['paginate'])) {
                         $tableFields = array_filter($resource, static fn ($v) => isset($v['table']));

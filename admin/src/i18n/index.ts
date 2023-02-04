@@ -3,5 +3,5 @@ import trTR from './tr-TR';
 
 export default {
   'en-US': enUS,
-  'tr-TR': trTR
+  'tr-TR': trTR,
 };

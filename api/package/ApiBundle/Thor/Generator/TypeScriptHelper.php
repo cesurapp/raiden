@@ -2,6 +2,8 @@
 
 namespace Package\ApiBundle\Thor\Generator;
 
+use Package\ApiBundle\Response\ApiResourceInterface;
+
 class TypeScriptHelper
 {
     public function renderAttributes(array $data): string
@@ -86,7 +88,7 @@ class TypeScriptHelper
                 }, explode('|', explode(';', is_bool($value) & !$value ? '0' : $value)[0]))));
             }
 
-            if (is_array($attributes[$key]) && is_int($key)) {
+            if (is_array($attributes) && is_int($key)) {
                 $attrs[] = str_repeat('  ', $sub).$value;
             } else {
                 $attrs[] = str_repeat('  ', $sub).$key.($isNull ? '?: ' : ': ').$value;
@@ -113,6 +115,9 @@ class TypeScriptHelper
 
     private function convertTsType(string $type): string
     {
+        if (class_exists($type) && in_array(ApiResourceInterface::class, class_implements($type), true)) {
+            return self::baseClass($type);
+        }
         if (class_exists($type)) {
             $type = 'string';
         }
@@ -136,5 +141,13 @@ class TypeScriptHelper
             '0' => 'false',
             default => "'$type'"
         };
+    }
+
+    /**
+     * Extract Class Name.
+     */
+    public static function baseClass(string|object|null $class): string|null
+    {
+        return $class ? basename(str_replace('\\', '/', is_object($class) ? get_class($class) : $class)) : null;
     }
 }
