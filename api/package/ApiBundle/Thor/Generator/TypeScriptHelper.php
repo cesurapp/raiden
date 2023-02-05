@@ -83,7 +83,7 @@ class TypeScriptHelper
                     $allNull = false;
                 }
 
-                $value = implode('|', array_unique(array_map(function ($item) {
+                $value = implode(' | ', array_unique(array_map(function ($item) {
                     return $this->convertTsType(str_replace('?', '', $item));
                 }, explode('|', explode(';', is_bool($value) & !$value ? '0' : $value)[0]))));
             }

@@ -4,22 +4,10 @@
     <PageHeader liquid>
       <template #tabs>
         <q-route-tab to="/" name="mailss" label="Home" no-caps />
-        <q-route-tab
-          to="/accounts"
-          name="mails"
-          label="Şifremi Değiştir"
-          no-caps
-        />
+        <q-route-tab to="/accounts" name="mails" label="Şifremi Değiştir" no-caps />
       </template>
       <template #actions>
-        <q-btn
-          rounded
-          no-caps
-          size="md"
-          color="primary"
-          icon="add"
-          v-if="$auth.hasGranted('ROLE_ACCOUNT_CREATE')"
-        >
+        <q-btn rounded no-caps size="md" color="primary" icon="add" v-if="$auth.hasPermission('ROLE_ACCOUNT_CREATE')">
           <q-tooltip>{{ $t('Create') }}</q-tooltip>
         </q-btn>
       </template>

@@ -25,10 +25,7 @@ function requestError(error, isBusy) {
 
 function responseSuccess(response, isBusy) {
   // Process Response Message
-  if (
-    response.data.hasOwnProperty('message') &&
-    (response.config.message ?? true)
-  ) {
+  if (response.data.hasOwnProperty('message') && (response.config.message ?? true)) {
     Object.keys(response.data.message).forEach((type) => {
       Object.values(response.data.message[type]).forEach((message: any) => {
         notifyShow(message, undefined, type);
@@ -43,13 +40,7 @@ function responseSuccess(response, isBusy) {
   return response;
 }
 
-async function responseError(
-  error,
-  client,
-  authStore,
-  isBusy,
-  globalExceptions
-) {
+async function responseError(error, client, authStore, isBusy, globalExceptions) {
   // Loading Error
   barDanger();
   isBusy.value = false;
@@ -95,7 +86,6 @@ export default (client, store, i18n, isBusy, globalExceptions) => {
   );
   client.interceptors.response.use(
     async (response) => responseSuccess(response, isBusy),
-    async (error) =>
-      responseError(error, client, authStore, isBusy, globalExceptions)
+    async (error) => responseError(error, client, authStore, isBusy, globalExceptions)
   );
 };

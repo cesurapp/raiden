@@ -8,15 +8,7 @@
       <div class="h2 text-h4 text-weight-light">
         {{ $t('Oops. Nothing here...') }}
       </div>
-      <q-btn
-        class="q-mt-xl q-mb-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        :label="$t('Go Home')"
-        no-caps
-      />
+      <q-btn class="q-mt-xl q-mb-xl" color="white" text-color="blue" unelevated to="/" :label="$t('Go Home')" no-caps />
     </div>
   </div>
 </template>

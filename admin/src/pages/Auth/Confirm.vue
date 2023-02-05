@@ -36,14 +36,7 @@
           color="primary"
           icon="task_alt"
         />
-        <q-btn
-          :label="$t('Login')"
-          no-caps
-          color="primary"
-          flat
-          :to="{ name: 'auth.login' }"
-          class="q-ml-sm"
-        />
+        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>

@@ -6,11 +6,7 @@
         {{ $t('Security Code') }}
       </h4>
       <h6 class="q-ma-none text-grey-7 text-subtitle1">
-        {{
-          $t(
-            'Enter the 6-digit code sent to your account (mail/phone) to login.'
-          )
-        }}
+        {{ $t('Enter the 6-digit code sent to your account (mail/phone) to login.') }}
       </h6>
     </div>
 
@@ -40,14 +36,7 @@
           color="primary"
           icon="task_alt"
         />
-        <q-btn
-          :label="$t('Back')"
-          no-caps
-          color="primary"
-          flat
-          :to="{ name: 'auth.login' }"
-          class="q-ml-sm"
-        />
+        <q-btn :label="$t('Back')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>

@@ -15,17 +15,12 @@ export default {
   'The value is not a valid IP address': 'Geçerli bir IP adresi değil',
   'The value is not a valid MAC Address': 'Geçerli bir MAC Adresi değil',
   'The value is not a valid URL address': 'Geçerli bir URL adresi değil',
-  'The value does not match any of the provided validators':
-    'Değer, sağlanan doğrulayıcıların hiçbiriyle eşleşmiyor',
-  'The value does not match all of the provided validators':
-    'Değer, sağlanan tüm doğrulayıcılarla eşleşmiyor',
-  'The value does not match the provided validator':
-    'Değer, sağlanan doğrulayıcıyla eşleşmiyor',
-  'Value is not a valid email or phone':
-    'Geçerli bir e-posta veya telefon değil',
+  'The value does not match any of the provided validators': 'Değer, sağlanan doğrulayıcıların hiçbiriyle eşleşmiyor',
+  'The value does not match all of the provided validators': 'Değer, sağlanan tüm doğrulayıcılarla eşleşmiyor',
+  'The value does not match the provided validator': 'Değer, sağlanan doğrulayıcıyla eşleşmiyor',
+  'Value is not a valid email or phone': 'Geçerli bir e-posta veya telefon değil',
   'Value is not a valid phone number': 'Geçerli bir telefon numarası değil',
-  'This field should be at least 0 characters long':
-    'Bu alan en az 0 karakter uzunluğunda olmalıdır',
+  'This field should be at least 0 characters long': 'Bu alan en az 0 karakter uzunluğunda olmalıdır',
   'The maximum length allowed is 0': 'İzin verilen maksimum uzunluk 0',
   'The minimum value allowed is 0': "İzin verilen minimum değer 0'dır",
   'The maximum value allowed is 0': "İzin verilen maksimum değer 0'dır",
@@ -33,8 +28,7 @@ export default {
 
   // Global
   'Access denied!': 'Erişim engellendi!',
-  'Access denied! Unauthorized operation.':
-    'Erişim engellendi! Yetkisiz işlem.',
+  'Access denied! Unauthorized operation.': 'Erişim engellendi! Yetkisiz işlem.',
 
   // 404 Page
   'Oops. Nothing here...': 'Hata. Hiçbir şey bulamadık...',
@@ -49,8 +43,7 @@ export default {
   Login: 'Giriş',
   'Forgot Password': 'Şifremi Unuttum',
   Register: 'Kayıt Ol',
-  'Reset password by Email or Phone.':
-    'Telefon yada E-posta ile şifrenizi sıfırlayın.',
+  'Reset password by Email or Phone.': 'Telefon yada E-posta ile şifrenizi sıfırlayın.',
   Send: 'Gönder',
   Confirmation: 'Hesap Doğrulama',
   Email: 'E-posta',
@@ -63,14 +56,12 @@ export default {
   'Password Confirm': 'Şifre Onay',
   Change: 'Değiştir',
   'Approve Account': 'Hesabınızı Doğrulayın',
-  'Enter the code sent to your phone or e-mail address.':
-    'Telefonunuza veya e-posta adresinize gönderilen kodu girin.',
+  'Enter the code sent to your phone or e-mail address.': 'Telefonunuza veya e-posta adresinize gönderilen kodu girin.',
   Code: 'Kod',
   Approve: 'Onayla',
   Reset: 'Sıfırla',
   'Passwords do not match.': 'Şifreler eşleşmiyor.',
-  'Session expired, please login again.':
-    'Oturum süresi doldu, yeniden giriş yapın.',
+  'Session expired, please login again.': 'Oturum süresi doldu, yeniden giriş yapın.',
   'Passwordless Login': 'Şifresiz Giriş',
   'Security Code': 'Güvenlik Kodu',
   'Enter the 6-digit code sent to your account (mail/phone) to login.':

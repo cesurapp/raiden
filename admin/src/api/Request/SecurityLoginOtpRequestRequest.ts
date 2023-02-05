@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
 export type SecurityLoginOtpRequestRequest = {
-  username: string|number,
+  username: string | number,
   id?: string
 }

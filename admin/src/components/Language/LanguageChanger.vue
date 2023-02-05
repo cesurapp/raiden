@@ -1,14 +1,6 @@
 <template>
   <slot :options="localeOptions">
-    <q-select
-      :dark="onlyWhite"
-      v-model="$i18n.locale"
-      :options="localeOptions"
-      borderless
-      emit-value
-      map-options
-      dense
-    >
+    <q-select :dark="onlyWhite" v-model="$i18n.locale" :options="localeOptions" borderless emit-value map-options dense>
       <template v-slot:prepend><q-icon name="language" /></template>
 
       <template v-slot:option="scope">

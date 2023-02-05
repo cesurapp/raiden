@@ -29,14 +29,10 @@
           emit-value
           map-options
         >
-          <template v-slot:prepend
-            ><q-icon :name="'img:/images/flags/' + data.phoneCountry + '.svg'"
-          /></template>
+          <template v-slot:prepend><q-icon :name="'img:/images/flags/' + data.phoneCountry + '.svg'" /></template>
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
-              <q-item-section avatar
-                ><q-icon :name="scope.opt.icon"
-              /></q-item-section>
+              <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
               <q-item-section>
                 <q-item-label>{{ scope.opt.label }}</q-item-label>
                 <q-item-label>{{ scope.opt.description }}</q-item-label>
@@ -90,15 +86,13 @@ export default defineComponent({
       },
     },
     getCountryPhoneList() {
-      return Object.entries(this.phoneCodes).map(
-        ([phoneCountry, item]: [string, any]) => {
-          return {
-            value: phoneCountry,
-            description: `${String(item.label)} (+${String(item.phoneCode)})`,
-            icon: `img:/images/flags/${String(phoneCountry)}.svg`,
-          };
-        }
-      );
+      return Object.entries(this.phoneCodes).map(([phoneCountry, item]: [string, any]) => {
+        return {
+          value: phoneCountry,
+          description: `${String(item.label)} (+${String(item.phoneCode)})`,
+          icon: `img:/images/flags/${String(phoneCountry)}.svg`,
+        };
+      });
     },
   },
   methods: {
@@ -107,11 +101,7 @@ export default defineComponent({
 
       this.$emit(
         'update:phoneNumber',
-        String(
-          this.data.phoneNumber
-            ? this.data.phoneCode + this.data.phoneNumber
-            : ''
-        )
+        String(this.data.phoneNumber ? this.data.phoneCode + this.data.phoneNumber : '')
       );
       this.$emit('update:phoneCode', String(this.data.phoneCode));
       this.$emit('update:phoneCountry', String(this.data.phoneCountry));

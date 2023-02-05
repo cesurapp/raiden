@@ -37,11 +37,7 @@
       </q-input>
 
       <!--Phone-->
-      <PhoneInput
-        v-else
-        v-model:phone-number="username"
-        :label="$t('Phone')"
-      ></PhoneInput>
+      <PhoneInput v-else v-model:phone-number="username" :label="$t('Phone')"></PhoneInput>
 
       <div>
         <q-btn
@@ -53,14 +49,7 @@
           color="primary"
           icon="login"
         />
-        <q-btn
-          :label="$t('Login')"
-          no-caps
-          color="primary"
-          flat
-          :to="{ name: 'auth.login' }"
-          class="q-ml-sm"
-        />
+        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -91,14 +80,12 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success: boolean) => {
         if (success) {
-          this.$api
-            .securityResetRequest({ username: this.username })
-            .then(() => {
-              this.$router.push({
-                name: 'auth.reset.password',
-                params: { id: btoa(this.username) },
-              });
+          this.$api.securityResetRequest({ username: this.username }).then(() => {
+            this.$router.push({
+              name: 'auth.reset.password',
+              params: { id: btoa(this.username) },
             });
+          });
         }
       });
     },

@@ -42,11 +42,7 @@
       >
         <template v-slot:prepend><q-icon name="key" /></template>
         <template v-slot:append>
-          <q-icon
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            @click="isPwd = !isPwd"
-          />
+          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
 
@@ -81,14 +77,7 @@
           color="primary"
           icon="how_to_reg"
         />
-        <q-btn
-          :label="$t('Login')"
-          no-caps
-          color="primary"
-          flat
-          :to="{ name: 'auth.login' }"
-          class="q-ml-sm"
-        />
+        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>

@@ -1,9 +1,5 @@
-importScripts(
-  'https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js'
-);
-importScripts(
-  'https://www.gstatic.com/firebasejs/9.1.3/firebase-messaging-compat.js'
-);
+importScripts('https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.1.3/firebase-messaging-compat.js');
 
 firebase.initializeApp({
   apiKey: '<FIREBASE_APIKEY>',
@@ -19,8 +15,6 @@ firebase.messaging().onBackgroundMessage((payload) => {
   // Customize notification here for 'data' key
   let { data } = payload;
   if (data && data.title && data.body) {
-    self.registration.showNotification(data.title || 'Raiden App', {
-      body: data.body || '',
-    });
+    self.registration.showNotification(data.title || 'Raiden App', { body: data.body || '' });
   }
 });

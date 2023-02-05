@@ -6,9 +6,7 @@
         <q-item
           ><q-item-section>
             <div>
-              <strong
-                >{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong
-              >
+              <strong>{{ $auth.user.first_name }} {{ $auth.user.last_name }}</strong>
             </div>
           </q-item-section></q-item
         >

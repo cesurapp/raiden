@@ -25,14 +25,8 @@ const phoneCodes: any = {
 const extractPhone = (phoneNumber: string, phoneCountry: string) => {
   return {
     phoneNumber:
-      phoneCodes[phoneCountry].phoneCode ===
-      String(phoneNumber).substring(
-        0,
-        phoneCodes[phoneCountry].phoneCode.length
-      )
-        ? String(phoneNumber).substring(
-            phoneCodes[phoneCountry].phoneCode.length
-          )
+      phoneCodes[phoneCountry].phoneCode === String(phoneNumber).substring(0, phoneCodes[phoneCountry].phoneCode.length)
+        ? String(phoneNumber).substring(phoneCodes[phoneCountry].phoneCode.length)
         : phoneNumber,
     phoneCode: phoneCodes[phoneCountry].phoneCode,
     phoneCountry: phoneCodes[phoneCountry].phoneCountry,
@@ -41,8 +35,7 @@ const extractPhone = (phoneNumber: string, phoneCountry: string) => {
 
 const isValidPhone = (phoneNumber: string, phoneCountry: string) => {
   return (
-    phoneNumber.length >= phoneCodes[phoneCountry].length[0] &&
-    phoneNumber.length <= phoneCodes[phoneCountry].length[1]
+    phoneNumber.length >= phoneCodes[phoneCountry].length[0] && phoneNumber.length <= phoneCodes[phoneCountry].length[1]
   );
 };
 

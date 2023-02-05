@@ -1,4 +1,5 @@
 import { UserType } from 'src/api/Enum/UserType';
+import { Permission } from 'src/api/Enum/Permission';
 
 export default [
   {
@@ -7,7 +8,7 @@ export default [
     component: () => import('pages/Admin/Layout.vue'),
     meta: {
       requireAuth: true,
-      type: [UserType.ADMIN, UserType.SUPERADMIN],
+      userType: [UserType.ADMIN, UserType.SUPERADMIN],
       breadcrumb: 'Dashboard',
     },
 
@@ -16,7 +17,6 @@ export default [
       {
         path: '/',
         component: () => import('pages/Admin/Dashboard/Index.vue'),
-        meta: { roles: ['ROLE_ADMIN'] },
       },
       {
         path: '/account/profile',
@@ -28,7 +28,10 @@ export default [
       {
         path: '/account',
         component: () => import('pages/Admin/Account/Accounts.vue'),
-        meta: { roles: ['ROLE_ACCOUNT_LIST'], breadcrumb: 'Accounts' },
+        meta: {
+          breadcrumb: 'Accounts',
+          permission: [Permission.AdminAccount.LIST],
+        },
       },
     ],
   },

@@ -97,23 +97,11 @@ module.exports = configure(function (ctx) {
                     .toString()
                     .replace('<FIREBASE_APIKEY>', process.env.FIREBASE_APIKEY)
                     .replace('<FIREBASE_DOMAIN>', process.env.FIREBASE_DOMAIN)
-                    .replace(
-                      '<FIREBASE_PROJECTID>',
-                      process.env.FIREBASE_PROJECTID
-                    )
-                    .replace(
-                      '<FIREBASE_STORAGEBUCKET>',
-                      process.env.FIREBASE_STORAGEBUCKET
-                    )
-                    .replace(
-                      '<FIREBASE_SENDERID>',
-                      process.env.FIREBASE_SENDERID
-                    )
+                    .replace('<FIREBASE_PROJECTID>', process.env.FIREBASE_PROJECTID)
+                    .replace('<FIREBASE_STORAGEBUCKET>', process.env.FIREBASE_STORAGEBUCKET)
+                    .replace('<FIREBASE_SENDERID>', process.env.FIREBASE_SENDERID)
                     .replace('<FIREBASE_APPID>', process.env.FIREBASE_APPID)
-                    .replace(
-                      '<FIREBASE_MEASUREMENTID>',
-                      process.env.FIREBASE_MEASUREMENTID
-                    ),
+                    .replace('<FIREBASE_MEASUREMENTID>', process.env.FIREBASE_MEASUREMENTID),
               },
             ],
           },

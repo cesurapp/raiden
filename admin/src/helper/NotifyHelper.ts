@@ -13,12 +13,7 @@ const convertMessageType = function (type) {
   return type || 'positive';
 };
 
-function notifyShow(
-  message?: string,
-  caption?: string,
-  type?: string,
-  options: object = {}
-) {
+function notifyShow(message?: string, caption?: string, type?: string, options: object = {}) {
   const opts: object = {
     type: convertMessageType(type),
     caption: caption,
@@ -48,11 +43,7 @@ function notifyShow(
   });
 }
 
-function notifyWarning(
-  message?: string,
-  caption?: string,
-  options: object = {}
-) {
+function notifyWarning(message?: string, caption?: string, options: object = {}) {
   notifyShow(message, caption, 'warning', options);
 }
 
@@ -60,19 +51,11 @@ function notifyInfo(message?: string, caption?: string, options: object = {}) {
   notifyShow(message, caption, 'info', options);
 }
 
-function notifyDanger(
-  message?: string,
-  caption?: string,
-  options: object = {}
-) {
+function notifyDanger(message?: string, caption?: string, options: object = {}) {
   notifyShow(message, caption, 'danger', options);
 }
 
-function notifySuccess(
-  message?: string,
-  caption?: string,
-  options: object = {}
-) {
+function notifySuccess(message?: string, caption?: string, options: object = {}) {
   notifyShow(message, caption, 'success', options);
 }
 

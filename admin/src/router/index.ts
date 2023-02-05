@@ -1,14 +1,9 @@
 import { route } from 'quasar/wrappers';
+
 /**
  * Routes
  */
-import {
-  createMemoryHistory,
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-  RouteRecordRaw,
-} from 'vue-router';
+import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from 'vue-router';
 import AdminRoutes from './admin';
 import AuthRoutes from './auth';
 

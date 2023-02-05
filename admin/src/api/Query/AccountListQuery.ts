@@ -2,10 +2,10 @@
 
 export type AccountListQuery = {
   page?: number,
-  sort?: 'ASC'|'DESC',
-  sort_by?: 'id'|'type'|'email'|'email_approved'|'phone'|'phone_country'|'phone_approved'|'approved'|'language'|'created_at',
-  export?: 'csv'|'xls',
-  export_field?: Array<'id'|'type'|'email'|'email_approved'|'phone'|'phone_country'|'phone_approved'|'approved'|'roles'|'language'|'first_name'|'last_name'|'created_at'>,
+  sort?: 'ASC' | 'DESC',
+  sort_by?: 'id' | 'type' | 'email' | 'email_approved' | 'phone' | 'phone_country' | 'phone_approved' | 'approved' | 'language' | 'created_at',
+  export?: 'csv' | 'xls',
+  export_field?: Array<'id' | 'type' | 'email' | 'email_approved' | 'phone' | 'phone_country' | 'phone_approved' | 'approved' | 'roles' | 'language' | 'first_name' | 'last_name' | 'created_at'>,
   filter?: {
     id?: any,
     type?: any,

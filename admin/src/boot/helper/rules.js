@@ -25,11 +25,7 @@ export default (app, t, globalExceptions) => {
     },
     required(message = false) {
       return (val) => {
-        return (
-          methods.required.$validator(val) ||
-          message ||
-          t(methods.required.$message)
-        );
+        return methods.required.$validator(val) || message || t(methods.required.$message);
       };
     },
     requiredIf(ref, message = false) {
@@ -47,41 +43,25 @@ export default (app, t, globalExceptions) => {
     minLength(length, message = false) {
       return (val) => {
         const r = methods.minLength(length);
-        return (
-          r.$validator(val) ||
-          message ||
-          t(r.$message({ $params: { min: 0 } })).replace('0', length)
-        );
+        return r.$validator(val) || message || t(r.$message({ $params: { min: 0 } })).replace('0', length);
       };
     },
     maxLength(length, message = false) {
       return (val) => {
         const r = methods.maxLength(length);
-        return (
-          r.$validator(val) ||
-          message ||
-          t(r.$message({ $params: { max: 0 } })).replace('0', length)
-        );
+        return r.$validator(val) || message || t(r.$message({ $params: { max: 0 } })).replace('0', length);
       };
     },
     minValue(value, message = false) {
       return (val) => {
         const r = methods.minValue(value);
-        return (
-          r.$validator(val) ||
-          message ||
-          t(r.$message({ $params: { min: 0 } })).replace('0', value)
-        );
+        return r.$validator(val) || message || t(r.$message({ $params: { min: 0 } })).replace('0', value);
       };
     },
     maxValue(value, message = false) {
       return (val) => {
         const r = methods.maxValue(value);
-        return (
-          r.$validator(val) ||
-          message ||
-          t(r.$message({ $params: { max: 0 } })).replace('0', value)
-        );
+        return r.$validator(val) || message || t(r.$message({ $params: { max: 0 } })).replace('0', value);
       };
     },
     between(min, max, message = false) {
@@ -105,61 +85,37 @@ export default (app, t, globalExceptions) => {
     },
     alpha(message = false) {
       return (val) => {
-        return (
-          methods.alpha.$validator(val) || message || t(methods.alpha.$message)
-        );
+        return methods.alpha.$validator(val) || message || t(methods.alpha.$message);
       };
     },
     alphaNum(message = false) {
       return (val) => {
-        return (
-          methods.alphaNum.$validator(val) ||
-          message ||
-          t(methods.alphaNum.$message)
-        );
+        return methods.alphaNum.$validator(val) || message || t(methods.alphaNum.$message);
       };
     },
     numeric(message = false) {
       return (val) => {
-        return (
-          methods.numeric.$validator(val) ||
-          message ||
-          t(methods.numeric.$message)
-        );
+        return methods.numeric.$validator(val) || message || t(methods.numeric.$message);
       };
     },
     integer(message = false) {
       return (val) => {
-        return (
-          methods.integer.$validator(val) ||
-          message ||
-          t(methods.integer.$message)
-        );
+        return methods.integer.$validator(val) || message || t(methods.integer.$message);
       };
     },
     decimal(message = false) {
       return (val) => {
-        return (
-          methods.decimal.$validator(val) ||
-          message ||
-          t(methods.decimal.$message)
-        );
+        return methods.decimal.$validator(val) || message || t(methods.decimal.$message);
       };
     },
     email(message = false) {
       return (val) => {
-        return (
-          methods.email.$validator(val) || message || t(methods.email.$message)
-        );
+        return methods.email.$validator(val) || message || t(methods.email.$message);
       };
     },
     ipAddress(message = false) {
       return (val) => {
-        return (
-          methods.ipAddress.$validator(val) ||
-          message ||
-          t(methods.ipAddress.$message)
-        );
+        return methods.ipAddress.$validator(val) || message || t(methods.ipAddress.$message);
       };
     },
     macAddress(separator = ':', message = false) {
@@ -170,9 +126,7 @@ export default (app, t, globalExceptions) => {
     },
     url(message = false) {
       return (val) => {
-        return (
-          methods.url.$validator(val) || message || t(methods.url.$message)
-        );
+        return methods.url.$validator(val) || message || t(methods.url.$message);
       };
     },
     or(...args) {
@@ -209,9 +163,7 @@ export default (app, t, globalExceptions) => {
     isIdentity(message = false) {
       return (val) => {
         return (
-          (!isNaN(val) && val
-            ? isValidPhone(val.replace('/s/g', ''))
-            : methods.email.$validator(val)) ||
+          (!isNaN(val) && val ? isValidPhone(val.replace('/s/g', '')) : methods.email.$validator(val)) ||
           message ||
           t('Value is not a valid email or phone')
         );
@@ -222,11 +174,7 @@ export default (app, t, globalExceptions) => {
         if (val === '') {
           return true;
         }
-        return (
-          isValidPhone(val.replace('/s/g', ''), phoneCountry) ||
-          message ||
-          t('Value is not a valid phone number')
-        );
+        return isValidPhone(val.replace('/s/g', ''), phoneCountry) || message || t('Value is not a valid phone number');
       };
     },
 

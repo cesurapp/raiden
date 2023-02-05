@@ -24,9 +24,7 @@
 
         <!--Actions-->
         <div class="actions" v-if="$slots.actions">
-          <q-btn-group class="xs-hide"
-            ><slot name="actions"></slot
-          ></q-btn-group>
+          <q-btn-group class="xs-hide"><slot name="actions"></slot></q-btn-group>
           <div class="sm-hide md-hide lg-hide">
             <q-btn-dropdown
               dropdown-icon="more_vert"

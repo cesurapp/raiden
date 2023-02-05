@@ -3,9 +3,7 @@
     <template v-slot:prepend><q-icon name="language" /></template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps" dense>
-        <q-item-section avatar
-          ><q-icon :name="scope.opt.icon"
-        /></q-item-section>
+        <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
         <q-item-section>
           <q-item-label>{{ scope.opt.label }}</q-item-label>
           <q-item-label>{{ scope.opt.description }}</q-item-label>

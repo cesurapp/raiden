@@ -1,10 +1,5 @@
 <template>
-  <q-drawer
-    show-if-above
-    class="main-nav text-white"
-    v-model="menu"
-    :width="280"
-  >
+  <q-drawer show-if-above class="main-nav text-white" v-model="menu" :width="280">
     <!--Logo-->
     <q-toolbar class="logo">
       <q-toolbar-title>Raiden Admin</q-toolbar-title>
@@ -14,9 +9,7 @@
     <q-list class="menus">
       <div class="item" v-for="(nav, index) in getNavs" :key="index">
         <!--Header-->
-        <q-item-label v-if="nav.header" header>{{
-          $t(nav.header)
-        }}</q-item-label>
+        <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
 
         <!--Single-->
         <q-item
@@ -30,9 +23,7 @@
           active-class="active-link"
         >
           <q-item-section avatar><q-icon :name="nav.icon" /></q-item-section>
-          <q-item-section class="text-weight-medium">{{
-            $t(nav.text)
-          }}</q-item-section>
+          <q-item-section class="text-weight-medium">{{ $t(nav.text) }}</q-item-section>
         </q-item>
 
         <!--Multiple-->
@@ -57,12 +48,8 @@
               active-class="active-link"
               class="menu-link"
             >
-              <q-item-section avatar
-                ><q-icon :name="childNav.icon"
-              /></q-item-section>
-              <q-item-section class="text-weight-medium">{{
-                $t(childNav.text)
-              }}</q-item-section>
+              <q-item-section avatar><q-icon :name="childNav.icon" /></q-item-section>
+              <q-item-section class="text-weight-medium">{{ $t(childNav.text) }}</q-item-section>
             </q-item>
           </q-list>
         </q-expansion-item>
@@ -75,26 +62,11 @@
       <q-separator class="q-mx-sm" dark vertical inset />
       <DarkModeChanger dense :only-white="true"></DarkModeChanger>
       <q-separator class="q-mx-sm" dark vertical inset />
-      <q-btn
-        flat
-        dense
-        round
-        icon="arrow_back_ios_new"
-        size="md"
-        @click="toggle"
-      />
+      <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="toggle" />
     </div>
 
     <teleport to="#head-toolbar" v-if="!menu && mounted">
-      <q-btn
-        flat
-        dense
-        round
-        icon="menu"
-        size="md"
-        class="q-mr-sm"
-        @click="toggle"
-      />
+      <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="toggle" />
     </teleport>
   </q-drawer>
 </template>
@@ -135,19 +107,12 @@ export default defineComponent({
     getNavs() {
       return this.navs
         .filter((nav) => {
-          if (
-            nav.hasOwnProperty('roles') &&
-            !this.$auth.hasGranted(nav.roles)
-          ) {
+          if (nav.hasOwnProperty('roles') && !this.$auth.hasPermission(nav.roles)) {
             return false;
           }
           if (nav.hasOwnProperty('child')) {
             nav.child = nav.child.filter(
-              (navChild) =>
-                !(
-                  navChild.hasOwnProperty('roles') &&
-                  !this.$auth.hasGranted(navChild.roles)
-                )
+              (navChild) => !(navChild.hasOwnProperty('roles') && !this.$auth.hasPermission(navChild.roles))
             );
             if (nav.child.length === 0) {
               return false;

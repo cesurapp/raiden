@@ -5,10 +5,7 @@
     :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-indigo-12']"
   >
     <div class="auth-main flex column no-wrap q-pa-lg">
-      <div
-        :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']"
-        class="wrapper row full-width rounded-borders"
-      >
+      <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper row full-width rounded-borders">
         <div class="xs-hide sm-hide col-12 col-md-7 q-pa-lg flex items-center">
           <q-img src="/images/login.svg" style="width: 100%" />
         </div>
@@ -28,9 +25,7 @@
         </div>
       </div>
 
-      <div
-        class="lang-wrap full-width flex items-center justify-end q-pt-md text-white"
-      >
+      <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
         <!--Dark Mode Changer-->
         <DarkModeChanger></DarkModeChanger>
 

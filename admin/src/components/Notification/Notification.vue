@@ -4,34 +4,16 @@
     <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
 
     <!--Notifications-->
-    <q-menu
-      @before-show="onShowPanel"
-      anchor="bottom end"
-      self="top end"
-      style="min-width: 290px"
-      :offset="[0, 12]"
-    >
+    <q-menu @before-show="onShowPanel" anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0, 12]">
       <q-card class="bg-info q-my-md q-mx-md" v-if="access.permission !== true">
         <q-card-section class="flex items-center q-py-sm q-px-md">
           <div class="q-mr-md">
             <div class="text-subtitle1">{{ $t('System Notification') }}</div>
             <div class="text-body2">
-              {{
-                $t(
-                  'Enable browser notifications for instant system alerts and file downloads.'
-                )
-              }}
+              {{ $t('Enable browser notifications for instant system alerts and file downloads.') }}
             </div>
           </div>
-          <q-btn
-            outline
-            color="primary"
-            size="md"
-            icon="done"
-            rounded
-            dense
-            @click="accessNotification(true)"
-          >
+          <q-btn outline color="primary" size="md" icon="done" rounded dense @click="accessNotification(true)">
             <q-tooltip>{{ $t('Activate') }}</q-tooltip>
           </q-btn>
         </q-card-section>
@@ -41,15 +23,7 @@
         <!--Header-->
         <q-item-label header class="flex items-center justify-between">
           <span class="header">{{ $t('Notifications') }}</span>
-          <q-btn
-            color="primary"
-            size="sm"
-            flat
-            round
-            icon="done_all"
-            @click="readAll"
-            v-close-popup
-          >
+          <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
             <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
           </q-btn>
         </q-item-label>
@@ -68,20 +42,11 @@
               open(item);
             "
           >
-            <q-item-label lines="1">{{
-              item.title || item.message
-            }}</q-item-label>
+            <q-item-label lines="1">{{ item.title || item.message }}</q-item-label>
             <q-item-label caption>{{ item.created_at.date }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
-            <q-btn
-              @click="remove(item)"
-              size="sm"
-              flat
-              round
-              color="red"
-              icon="delete"
-            >
+            <q-btn @click="remove(item)" size="sm" flat round color="red" icon="delete">
               <q-tooltip>{{ $t('Remove') }}</q-tooltip>
             </q-btn>
           </q-item-section>
@@ -105,31 +70,12 @@
     <q-card style="width: 350px">
       <q-card-section class="row items-center no-wrap">
         <div>
-          <div class="text-h6 text-weight-regular q-mb-xs">
-            System Notification
-          </div>
-          <div class="text-grey">
-            Enable browser notifications for instant system alerts and file
-            downloads.
-          </div>
+          <div class="text-h6 text-weight-regular q-mb-xs">System Notification</div>
+          <div class="text-grey">Enable browser notifications for instant system alerts and file downloads.</div>
         </div>
         <q-space />
-        <q-btn
-          flat
-          round
-          icon="close"
-          v-close-popup
-          color="red"
-          @click="accessNotification(false)"
-        />
-        <q-btn
-          flat
-          round
-          icon="done"
-          v-close-popup
-          color="green"
-          @click="accessNotification(true)"
-        >
+        <q-btn flat round icon="close" v-close-popup color="red" @click="accessNotification(false)" />
+        <q-btn flat round icon="done" v-close-popup color="green" @click="accessNotification(true)">
           <q-tooltip>Activate</q-tooltip>
         </q-btn>
       </q-card-section>
@@ -184,22 +130,20 @@ export default defineComponent({
       });
     },
     load() {
-      this.$api
-        .notificationList({ page: this.resp.pager?.current || 1 })
-        .then((r) => {
-          if (!Object.keys(this.resp).length) {
-            return (this.resp = r.data);
+      this.$api.notificationList({ page: this.resp.pager?.current || 1 }).then((r) => {
+        if (!Object.keys(this.resp).length) {
+          return (this.resp = r.data);
+        }
+
+        r.data.data.map((n) => {
+          if (!this.resp.data.some((d) => d.id === n.id)) {
+            this.resp.data?.push(n);
           }
-
-          r.data.data.map((n) => {
-            if (!this.resp.data.some((d) => d.id === n.id)) {
-              this.resp.data?.push(n);
-            }
-          });
-
-          //this.resp.data?.push(...r.data.data);
-          this.resp.pager = r.data.pager;
         });
+
+        //this.resp.data?.push(...r.data.data);
+        this.resp.pager = r.data.pager;
+      });
     },
     read(item) {
       if (item.readed) {
@@ -281,9 +225,7 @@ export default defineComponent({
           this.access.permission = false;
           this.$q.dialog({
             title: this.$t('System Notification'),
-            message: this.$t(
-              'Push notifications are turned off, reset browser permissions to enable it.'
-            ),
+            message: this.$t('Push notifications are turned off, reset browser permissions to enable it.'),
           });
         }
       });
@@ -315,11 +257,9 @@ export default defineComponent({
     saveFirebaseToken(token: string) {
       const fbToken = LocalStorage.getItem('fbToken');
       if (fbToken !== token) {
-        this.$api
-          .deviceRegister({ token: token, device: 'web' }, { message: false })
-          .then(() => {
-            LocalStorage.set('fbToken', token);
-          });
+        this.$api.deviceRegister({ token: token, device: 'web' }, { message: false }).then(() => {
+          LocalStorage.set('fbToken', token);
+        });
       }
     },
     onFirebaseMessage(payload) {
