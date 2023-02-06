@@ -2,10 +2,10 @@
   <div class="page-content">
     <div
       :class="{
-        'bg-dark': $q.dark.isActive && !borderless,
-        'bg-white': !$q.dark.isActive && !borderless,
-        'rounded-borders shadow-1 q-pa-md': !borderless,
-        'content-fixed q-mx-md q-my-md': !liquid,
+        'bg-dark dark-shadow-1': $q.dark.isActive && !borderless,
+        'bg-white shadow-1': !$q.dark.isActive && !borderless,
+        'rounded-borders q-pa-md': !borderless,
+        'content-fixed q-mx-lg q-my-lg': !liquid,
         'content-liquid q-mx-md q-my-md': liquid,
       }"
     >

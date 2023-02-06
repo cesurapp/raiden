@@ -17,7 +17,7 @@
         inline-label
         no-caps
         active-bg-color="dark-transparent-1"
-        class="text-primary q-mb-lg"
+        class="text-primary q-mb-md"
       >
         <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
         <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />

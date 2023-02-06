@@ -10,10 +10,10 @@
  */
 .q-field__control,
 .q-field__marginal {
-  height: 48px;
+  height: 44px;
 }
 .q-field__label {
-  top: 14px;
+  top: 12px;
 }
 .q-field--with-bottom {
   min-height: 60px;
@@ -32,6 +32,23 @@
 }
 
 /**
+ * Q-Item
+ */
+.q-item {
+  min-height: 40px;
+  padding: 8px 16px;
+}
+
+.q-tab{
+  min-height: 44px;
+  border-radius: 4px;
+}
+
+.body.desktop .q-checkbox--dense:not(.disabled):focus .q-checkbox__inner:before, body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before{
+  transform: scale3d(1.8, 1.8, 1);
+}
+
+/**
  * Outline Input for Google Material Design
  */
 .q-field--outlined {
@@ -42,7 +59,7 @@
   }
 
   &.q-field--float .q-field__label {
-    transform: translateY(-108%) scale(0.85) !important;
+    transform: translateY(-100%) scale(0.85) !important;
   }
 
   &.q-field--labeled .q-field__native {
@@ -132,13 +149,6 @@ body.body--dark {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
-/**
- * Q-Item
- */
-.q-item {
-  min-height: 40px;
-  padding: 8px 16px;
-}
 
 /**
  * Notify Close Btn

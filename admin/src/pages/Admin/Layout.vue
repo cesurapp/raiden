@@ -2,7 +2,7 @@
   <q-layout class="admin" view="lHr lpR fFf">
     <!--Header-->
     <q-header elevated>
-      <q-toolbar class="q-pl-md-md q-pr-md-sm">
+      <q-toolbar class="q-pl-lg-lg q-pl-md-md q-pr-md-sm q-pr-lg-md">
         <div id="head-toolbar"></div>
 
         <!--BreadCrumbs & Title-->

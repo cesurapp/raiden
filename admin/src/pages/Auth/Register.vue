@@ -126,7 +126,7 @@ export default defineComponent({
             // Redirect Approve Page
             return this.$router.push({
               name: 'auth.register.confirm',
-              params: { id: btoa(this.email ?? this.phone) },
+              params: { id: btoa(this.data.email ?? this.data.phone) },
             });
           });
         }

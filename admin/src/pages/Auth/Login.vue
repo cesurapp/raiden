@@ -18,7 +18,7 @@
         inline-label
         no-caps
         active-bg-color="dark-transparent-1"
-        class="text-primary q-mb-lg"
+        class="text-primary q-mb-md"
       >
         <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
         <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
@@ -66,7 +66,7 @@
 
       <!--PasswordLess Login-->
       <div class="flex justify-between items-center">
-        <q-checkbox v-model="isOtp" :label="$t('Passwordless Login')" />
+        <q-checkbox v-model="isOtp" dense :label="$t('Passwordless Login')" />
         <q-btn
           :disable="isOtp"
           color="grey-7"
@@ -83,7 +83,7 @@
 
       <!--Submit-->
       <q-btn
-        class="q-mt-lg"
+        class="q-mt-md"
         no-caps
         :label="$t('Login')"
         :loading="$isBusy.value"

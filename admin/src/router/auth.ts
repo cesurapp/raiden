@@ -21,7 +21,7 @@ export default [
       },
       {
         path: '/confirm/:id',
-        component: () => import('pages/Auth/Confirm.vue'),
+        component: () => import('pages/Auth/RegisterConfirm.vue'),
         name: 'auth.register.confirm',
       },
       {

@@ -9,13 +9,13 @@
   >
     <div
       :class="{
-        'content-fixed q-mx-md': !liquid,
-        'content-liquid ': liquid,
+        'content-fixed q-mx-lg': !liquid,
+        'content-liquid': liquid,
       }"
     >
       <div
         class="title-area q-pt-md flex items-center justify-between"
-        :class="{ 'q-px-md': liquid, 'q-pb-md': !borderless && !$slots.tabs }"
+        :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-lg': !borderless && !$slots.tabs }"
       >
         <!--Title-->
         <div class="title text-h4">
@@ -25,7 +25,7 @@
         <!--Actions-->
         <div class="actions" v-if="$slots.actions">
           <q-btn-group class="xs-hide"><slot name="actions"></slot></q-btn-group>
-          <div class="sm-hide md-hide lg-hide">
+          <div class="sm-hide md-hide lg-hide xl-hide">
             <q-btn-dropdown
               dropdown-icon="more_vert"
               content-class="transparent shadow-0"
@@ -52,7 +52,7 @@
         align="left"
         :breakpoint="200"
         :narrow-indicator="liquid"
-        class="bg-transparent text-primary page-tabs q-mt-sm"
+        class="bg-transparent text-primary page-tabs q-mt-sm q-mx-lg-sm"
         :class="{ borderless: borderless }"
       >
         <slot name="tabs"></slot>

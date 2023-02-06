@@ -5,44 +5,25 @@ import { boot } from 'quasar/wrappers';
  */
 import messages from 'src/i18n';
 import { createI18n } from 'vue-i18n';
-
 const i18n = createI18n({
   locale: localStorage.getItem('locale') ?? 'en-US',
   fallbackLocale: 'en-US',
   messages,
 });
-export { i18n };
 
 /**
  * Create Axios
  */
 import axios, { AxiosInstance } from 'axios';
 import { ref } from 'vue';
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $client: AxiosInstance;
-    $isBusy: any;
-  }
-}
-
 const client = axios.create({ baseURL: process.env.API });
 const isBusy = ref(false);
-export { client, isBusy };
 
 /**
  * Create API Client
  */
 import Api from 'src/api';
-
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $api: Api;
-  }
-}
-
 const api = new Api(client);
-export { api };
 
 /**
  * Init Vue Global Properties
@@ -52,13 +33,16 @@ import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import { useAuthStore } from 'stores/AuthStore';
 import { Store } from 'pinia';
-
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
+    $api: Api;
+    $client: AxiosInstance;
+    $isBusy: any;
     $auth: Store;
   }
 }
 
+export { i18n, client, isBusy, api };
 export default boot(({ app, router, store }) => {
   const exceptions = ref({});
 

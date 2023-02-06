@@ -155,12 +155,12 @@ export default defineComponent({
   overflow: hidden !important;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 5px 2px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 5px 2px rgb(0 0 0 / 15%);
 
   .menus {
     flex: 1;
     overflow: auto;
-    padding: 8px 6px;
+    padding: 8px 12px;
   }
 
   .item {
@@ -169,7 +169,7 @@ export default defineComponent({
 
   .logo {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0 22px;
+    padding: 0 30px;
   }
 
   .q-item {

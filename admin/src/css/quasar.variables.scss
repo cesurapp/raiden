@@ -12,18 +12,35 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
+/*$primary: #1976d2;
 $secondary: #26a69a;
 $accent: #9c27b0;
 $positive: #21ba45;
 $negative: #c10015;
 $info: #31ccec;
-$warning: #f2c037;
+$warning: #f2c037;*/
 
-$input-font-size: 16px;
-$button-font-size: 16px;
+// Theme Color
+$primary: #1976d2;
+$secondary: #6c757d;
+$accent: #9C27B0;
+$dark: #2b3035;
+$dark-page: #212529;
+$positive: #21BA45;
+$negative: #C10015;
+$info: #42a0ed;
+$warning: #f2c73a;
+
+// Theme Size
+$input-font-size: 15px;
+$button-font-size: 15px;
 $tooltip-fontsize: 13px;
-$dark: #2d333b;
-$dark-page: #1c2128;
+
 $separator-color: rgba(0, 0, 0, 0.12);
 $separator-dark-color: rgba(255, 255, 255, 0.12);
+$menu-box-shadow-dark: 0 2px 10px rgb(0,0,0,.2), 0 2px 2px rgb(0,0,0,.14), 0 3px 1px -2px rgb(0,0,0,.22);
+$layout-shadow: 0 0 10px 2px rgba(0, 0, 0, .15), 0 0px 5px rgba(0, 0, 0, 0.24);
+$layout-shadow-dark: 0 0 10px 1px rgba(0, 0, 0, .15), 0 0px 10px rgba(0, 0, 0, .24);
+.dark-shadow-1 {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%), 0 1px 1px rgb(0 0 0 / 14%), 0 2px 1px -1px rgb(0 0 0 / 12%);
+}
