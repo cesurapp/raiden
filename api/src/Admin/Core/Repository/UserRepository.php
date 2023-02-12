@@ -46,7 +46,7 @@ class UserRepository extends ApiServiceEntityRepository implements PasswordUpgra
         $q = $this->createQueryBuilder('u');
 
         if (is_numeric($identifier)) {
-            $q->where('u.phone = :identity')->setParameter('identity', (int)$identifier);
+            $q->where('u.phone = :identity')->setParameter('identity', (int) $identifier);
         } else {
             $q->where('u.email = :identity')->setParameter('identity', $identifier);
         }

@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
     user: LocalStorage.getItem('user') as UserResource,
     appToken: LocalStorage.getItem('appToken'),
     refreshToken: LocalStorage.getItem('refreshToken'),
-    switchedUser: LocalStorage.getItem('switchedUser')
+    switchedUser: LocalStorage.getItem('switchedUser'),
   }),
 
   actions: {
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
       await api.securityLoginOtpRequest({ username: username }).then(() => {
         this.router.push({
           name: 'auth.login.otp',
-          params: { id: btoa(username) }
+          params: { id: btoa(username) },
         });
       });
     },
@@ -62,12 +62,10 @@ export const useAuthStore = defineStore('auth', {
       const refreshToken = this.refreshToken;
       this.clearToken();
 
-      return await api
-        .securityRefreshToken({ refresh_token: refreshToken })
-        .then((r) => {
-          this.appToken = r.data.data.token;
-          config.headers['Authorization'] = `Bearer ${this.appToken}`;
-        });
+      return await api.securityRefreshToken({ refresh_token: refreshToken }).then((r) => {
+        this.appToken = r.data.data.token;
+        config.headers['Authorization'] = `Bearer ${this.appToken}`;
+      });
     },
 
     /**
@@ -172,8 +170,8 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return this.user.roles.includes(permission);
-    }
-  }
+    },
+  },
 });
 
 // Set State to LocalStorage
