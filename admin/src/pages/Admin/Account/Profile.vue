@@ -1,10 +1,10 @@
 <template>
   <q-page>
     <!--Page Header-->
-    <PageHeader borderless></PageHeader>
+    <PageHeader borderless liquid></PageHeader>
 
     <!--Page Content-->
-    <PageContent>
+    <PageContent liquid>
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
         <q-input
@@ -16,9 +16,7 @@
           :error-message="$rules.ssrException('email')"
           :rules="[$rules.email()]"
         >
-          <template v-slot:prepend>
-            <q-icon name="email" />
-          </template>
+          <template v-slot:prepend><q-icon name="email" /></template>
         </q-input>
 
         <!--Phone-->
@@ -41,9 +39,7 @@
           lazy-rules
           :rules="[$rules.minLength(8)]"
         >
-          <template v-slot:prepend>
-            <q-icon name="key" />
-          </template>
+          <template v-slot:prepend><q-icon name="key" /></template>
           <template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
@@ -58,9 +54,7 @@
           lazy-rules
           :rules="[$rules.minLength(8)]"
         >
-          <template v-slot:prepend>
-            <q-icon name="key" />
-          </template>
+          <template v-slot:prepend><q-icon name="key" /></template>
           <template v-slot:append>
             <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
@@ -74,9 +68,7 @@
           lazy-rules
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
+          <template v-slot:prepend><q-icon name="person" /></template>
         </q-input>
 
         <!--LastName-->
@@ -88,9 +80,7 @@
           key="222"
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
-          <template v-slot:prepend>
-            <q-icon name="person" />
-          </template>
+          <template v-slot:prepend><q-icon name="person" /></template>
         </q-input>
 
         <!--Actions-->
@@ -111,8 +101,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import PageHeader from '../Components/PageHeader.vue';
-import PageContent from '../Components/PageContent.vue';
+import PageHeader from '../Components/Layout/PageHeader.vue';
+import PageContent from '../Components/Layout/PageContent.vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 
 import { createMetaMixin } from 'quasar';
@@ -141,8 +131,8 @@ export default defineComponent({
   }),
   created() {
     Object.keys(this.data).forEach((id) => {
-      if (this.$auth.user.hasOwnProperty(id)) {
-        this.data[id] = this.$auth.user[id];
+      if (this.$authStore.user.hasOwnProperty(id)) {
+        this.data[id] = this.$authStore.user[id];
       }
     });
   },
@@ -155,7 +145,7 @@ export default defineComponent({
       this.$refs.form.validate().then((success) => {
         if (success) {
           this.$api.accountEditProfile(this.data).then((r) => {
-            this.$auth.updateUser(r.data.data);
+            this.$authStore.updateUser(r.data.data);
           });
         }
       });

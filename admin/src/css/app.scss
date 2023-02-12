@@ -12,13 +12,16 @@
 .q-field__marginal {
   height: 44px;
 }
+
 .q-field__label {
   top: 12px;
 }
+
 .q-field--with-bottom {
   min-height: 60px;
   padding-bottom: 0;
 }
+
 .q-field__bottom--animated {
   position: relative;
   transform: translateY(0%);
@@ -39,12 +42,13 @@
   padding: 8px 16px;
 }
 
-.q-tab{
+.q-tab {
   min-height: 44px;
   border-radius: 4px;
 }
 
-.body.desktop .q-checkbox--dense:not(.disabled):focus .q-checkbox__inner:before, body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before{
+.body.desktop .q-checkbox--dense:not(.disabled):focus .q-checkbox__inner:before,
+body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   transform: scale3d(1.8, 1.8, 1);
 }
 
@@ -92,6 +96,38 @@ body.body--dark {
   }
 }
 
+/**
+ * Field | Input
+ */
+.q-field--dark .q-field__control:before {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+// Dropdown Menu
+.q-menu {
+  backdrop-filter: blur(50px);
+  padding: 0.35rem 0;
+
+  .q-item {
+    min-height: 32px;
+    padding: 0.4rem 0.8rem;
+    margin: 0 0.3rem;
+    border-radius: 0.25rem;
+
+    display: flex;
+    align-items: center;
+
+    .q-icon {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+    }
+  }
+}
+.q-menu:not(.q-menu--dark) {
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
 /*
  * Divider
  */
@@ -124,31 +160,45 @@ body.body--dark {
 .bg-dark-transparent-1 {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
 .bg-dark-transparent-2 {
   background-color: rgba(0, 0, 0, 0.2);
 }
+
 .bg-dark-transparent-3 {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
 .bg-dark-transparent-4 {
   background-color: rgba(0, 0, 0, 0.4);
 }
+
 .bg-dark-transparent-5 {
   background-color: rgba(0, 0, 0, 0.5);
 }
+
 .bg-dark-transparent-6 {
   background-color: rgba(0, 0, 0, 0.6);
 }
+
 .bg-dark-transparent-7 {
   background-color: rgba(0, 0, 0, 0.7);
 }
+
 .bg-dark-transparent-8 {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
 .bg-dark-transparent-9 {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+.dark-shadow-1 {
+  box-shadow: 0 0 2px 0 rgb(0, 0, 0, 0.25);
+}
+.shadow-1 {
+  box-shadow: 0 0 2px 0 rgb(0, 0, 0, 0.25);
+}
 
 /**
  * Notify Close Btn
@@ -159,9 +209,11 @@ body.body--dark {
   bottom: calc(100% - 8px);
   transform: scale(0.95);
 }
+
 .q-notifications__list--top {
   top: 10px;
 }
+
 .q-notification {
   margin: 14px 10px 0;
 }

@@ -1,10 +1,7 @@
 // Router Guard
 import { notifyDanger } from 'src/helper/NotifyHelper';
-import { useAuthStore } from 'stores/AuthStore';
 
-export default (router, store, t) => {
-  const authStore = useAuthStore(store);
-
+export default (router, authStore, t) => {
   router.beforeEach((to, from, next) => {
     // Auhenticated Access
     if (to.matched.some((record) => record.meta.requireAuth)) {

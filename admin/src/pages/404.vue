@@ -22,7 +22,7 @@ export default defineComponent({
     createMetaMixin(function () {
       return {
         title: this.$t('404 Not Found'),
-        titleTemplate: (title) => `${title} - ` + process.env.APP_TITLE,
+        titleTemplate: (title) => `${title} - ` + this.$appStore.title,
       };
     }),
   ],

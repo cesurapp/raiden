@@ -5,8 +5,8 @@
         'bg-dark': $q.dark.isActive && !borderless,
         'bg-white': !$q.dark.isActive && !borderless,
         'rounded-borders shadow-1 q-pa-md': !borderless,
-        'content-fixed q-mx-md': !liquid,
-        'content-liquid q-mx-md': liquid,
+        'content-fixed q-mx-md q-mx-lg-lg': !liquid,
+        'content-liquid q-mx-md q-mx-lg-lg': liquid,
       }"
     >
       <slot></slot>

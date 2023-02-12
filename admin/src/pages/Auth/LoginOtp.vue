@@ -45,7 +45,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
-import { useAuthStore } from 'stores/AuthStore';
 
 export default defineComponent({
   name: 'AuthConfirm',
@@ -66,7 +65,7 @@ export default defineComponent({
       this.$rules.clearSSRException();
       this.$refs.form.validate().then((success) => {
         if (success) {
-          useAuthStore().loginOtp(atob(this.$route.params.id), this.otp_key);
+          this.$authStore.loginOtp(atob(this.$route.params.id), this.otp_key);
         }
       });
     },

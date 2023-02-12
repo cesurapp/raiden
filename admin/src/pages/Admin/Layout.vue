@@ -1,8 +1,11 @@
 <template>
-  <q-layout class="admin" view="lHr lpR fFf">
+  <q-layout class="admin" view="lHh LpR lFr">
     <!--Header-->
     <q-header elevated>
-      <q-toolbar class="q-pl-lg-lg q-pl-md-md q-pr-md-sm q-pr-lg-md">
+      <q-toolbar
+        class="q-pr-md-sm q-pr-lg-md"
+        :class="{ 'q-pl-md-md q-pl-lg-lg': menuActived, 'q-pl-md-sm q-pl-lg-md': !menuActived }"
+      >
         <div id="head-toolbar"></div>
 
         <!--BreadCrumbs & Title-->
@@ -17,18 +20,23 @@
           </q-breadcrumbs>
         </q-toolbar-title>
 
-        <!--Right-->
-        <Notifications></Notifications>
+        <!--Notification Button-->
+        <q-btn @click="$refs.notification.toggle()" dense flat round icon="notifications" size="md">
+          <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
+        </q-btn>
 
         <!-- Profile Menu-->
         <Profile></Profile>
       </q-toolbar>
     </q-header>
 
-    <!--Left Navigation-->
-    <Navigation ref="nav"></Navigation>
+    <!--Navigation Drawer-->
+    <Navigation v-model:activated="menuActived"></Navigation>
 
-    <!--Container-->
+    <!--Notification Drawer-->
+    <Notifications v-model:unreadcount="unreadCount" ref="notification"></Notifications>
+
+    <!--Page Container-->
     <q-page-container>
       <router-view v-slot="{ Component }">
         <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
@@ -43,17 +51,20 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
-import Navigation from './Components/Navigation.vue';
-import Profile from './Components/ProfileNav.vue';
+import Navigation from './Components/Layout/Navigation.vue';
+import Profile from './Components/Layout/ProfileNav.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
   components: { Notifications, Navigation, Profile },
+  data: () => ({
+    menuActived: true,
+    unreadCount: 0,
+  }),
   mixins: [
     createMetaMixin(function () {
       return {
-        title: 'Raiden Admin',
-        titleTemplate: (title) => `${title} - ` + process.env.APP_TITLE,
+        titleTemplate: (title) => `${title} - ` + this.$appStore.title,
       };
     }),
   ],
@@ -65,7 +76,7 @@ export default defineComponent({
     },
   },
   async created() {
-    await this.$auth.reloadUser();
+    await this.$authStore.reloadUser();
   },
 });
 </script>

@@ -15,7 +15,7 @@ const i18n = createI18n({
  * Create Axios
  */
 import axios, { AxiosInstance } from 'axios';
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 const client = axios.create({ baseURL: process.env.API });
 const isBusy = ref(false);
 
@@ -32,27 +32,33 @@ import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import { useAuthStore } from 'stores/AuthStore';
-import { Store } from 'pinia';
+import { useAppStore } from 'stores/AppStore';
+const typeAuthStore = useAuthStore();
+const typeAppStore = useAppStore();
+
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $api: Api;
     $client: AxiosInstance;
-    $isBusy: any;
-    $auth: Store;
+    $isBusy: Ref;
+    $authStore: typeof typeAuthStore;
+    $appStore: typeof typeAppStore;
   }
 }
 
 export { i18n, client, isBusy, api };
 export default boot(({ app, router, store }) => {
   const exceptions = ref({});
+  const authStore = useAuthStore(store);
+  const appStore = useAppStore(store);
 
   app.use(i18n);
 
   // Route Guard
-  routeGuard(router, store, i18n.global.t);
+  routeGuard(router, authStore, i18n.global.t);
 
   // Axios Interceptors
-  axiosInterceptors(client, store, i18n, isBusy, exceptions);
+  axiosInterceptors(client, authStore, i18n, isBusy, exceptions);
 
   // Validation Rules
   validationRules(app, i18n.global.t, exceptions);
@@ -61,5 +67,6 @@ export default boot(({ app, router, store }) => {
   app.config.globalProperties.$api = api;
   app.config.globalProperties.$client = client;
   app.config.globalProperties.$isBusy = isBusy;
-  app.config.globalProperties.$auth = useAuthStore(store);
+  app.config.globalProperties.$authStore = authStore;
+  app.config.globalProperties.$appStore = appStore;
 });

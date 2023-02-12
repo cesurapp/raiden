@@ -2,20 +2,20 @@
   <div
     class="page-header"
     :class="{
-      'q-header--bordered': !borderless,
+      bordered: !borderless,
       'bg-dark': $q.dark.isActive && !borderless,
       'bg-white': !$q.dark.isActive && !borderless,
     }"
   >
     <div
       :class="{
-        'content-fixed q-mx-lg': !liquid,
+        'content-fixed q-mx-md q-mx-lg-lg': !liquid,
         'content-liquid': liquid,
       }"
     >
       <div
         class="title-area q-pt-md flex items-center justify-between"
-        :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-lg': !borderless && !$slots.tabs }"
+        :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-md': !borderless && !$slots.tabs }"
       >
         <!--Title-->
         <div class="title text-h4">
@@ -52,8 +52,8 @@
         align="left"
         :breakpoint="200"
         :narrow-indicator="liquid"
-        class="bg-transparent text-primary page-tabs q-mt-sm q-mx-lg-sm"
-        :class="{ borderless: borderless }"
+        class="bg-transparent text-primary page-tabs q-mt-sm"
+        :class="{ borderless: borderless, 'q-mx-lg-sm': liquid }"
       >
         <slot name="tabs"></slot>
       </q-tabs>
@@ -114,6 +114,17 @@ export default defineComponent({
 .page-header {
   display: flex;
   justify-content: center;
+  position: relative;
+
+  &.bordered:before {
+    background: rgba(0, 0, 0, 0.12);
+    position: absolute;
+    height: 1px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    content: ' ';
+  }
 
   .title {
     font-size: 2rem;

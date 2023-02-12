@@ -1,19 +1,16 @@
 <template>
-  <q-btn dense flat round icon="notifications" size="md">
-    <q-tooltip>{{ $t('Notifications') }}</q-tooltip>
-    <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
-
-    <!--Notifications-->
-    <q-menu @before-show="onShowPanel" anchor="bottom end" self="top end" style="min-width: 290px" :offset="[0, 12]">
-      <q-card class="bg-info q-my-md q-mx-md" v-if="access.permission !== true">
-        <q-card-section class="flex items-center q-py-sm q-px-md">
+  <q-drawer side="right" :width="300" :breakpoint="1440" v-model="drawer" elevated @before-show="onShowPanel">
+    <q-scroll-area class="fit">
+      <!--System Notification Alert-->
+      <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true">
+        <q-card-section class="flex no-wrap items-center q-py-md q-px-md">
           <div class="q-mr-md">
             <div class="text-subtitle1">{{ $t('System Notification') }}</div>
             <div class="text-body2">
               {{ $t('Enable browser notifications for instant system alerts and file downloads.') }}
             </div>
           </div>
-          <q-btn outline color="primary" size="md" icon="done" rounded dense @click="accessNotification(true)">
+          <q-btn outline color="white" size="md" icon="done" rounded dense @click="accessNotification(true)">
             <q-tooltip>{{ $t('Activate') }}</q-tooltip>
           </q-btn>
         </q-card-section>
@@ -21,7 +18,11 @@
 
       <q-list>
         <!--Header-->
-        <q-item-label header class="flex items-center justify-between">
+        <q-item-label
+          header
+          class="flex items-center justify-between q-py-sm"
+          :class="{ 'bg-grey-3': !$q.dark.isActive, 'bg-dark-page': $q.dark.isActive }"
+        >
           <span class="header">{{ $t('Notifications') }}</span>
           <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
             <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
@@ -30,7 +31,7 @@
 
         <!--Items-->
         <q-item
-          v-for="item in resp.data"
+          v-for="item in getData"
           :key="item.id"
           class="cursor-pointer item"
           :active="!item.readed"
@@ -60,10 +61,11 @@
           :label="$t('Load More')"
           size="md"
           flat
+          square
         ></q-btn>
       </q-list>
-    </q-menu>
-  </q-btn>
+    </q-scroll-area>
+  </q-drawer>
 
   <!--Firebase Request Access-->
   <q-dialog v-model="access.modal" seamless position="top">
@@ -90,9 +92,11 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 import { notifyShow } from 'src/helper/NotifyHelper';
 import { LocalStorage } from 'quasar';
+import { dateFormat } from 'src/helper/DateHelper';
 
 export default defineComponent({
   name: 'NotificationComponent',
+  inheritAttrs: false,
   data: () => ({
     resp: {} as NotificationListResponse,
     unreadCount: 0,
@@ -100,6 +104,7 @@ export default defineComponent({
       app: null,
       messaging: null,
     },
+    drawer: false,
     access: {
       modal: false,
       permission: LocalStorage.getItem('fbPermission'),
@@ -113,8 +118,24 @@ export default defineComponent({
     'access.permission'(val) {
       LocalStorage.set('fbPermission', val);
     },
+    unreadCount(v) {
+      this.$emit('update:unreadcount', v);
+    },
+  },
+  computed: {
+    getData() {
+      return this.resp.data
+        ? this.resp.data.map((item) => {
+            item.created_at.date = dateFormat(item.created_at.date);
+            return item;
+          })
+        : null;
+    },
   },
   methods: {
+    toggle() {
+      this.drawer = !this.drawer;
+    },
     onShowPanel() {
       if (!this.resp.pager) {
         this.load();
@@ -141,7 +162,6 @@ export default defineComponent({
           }
         });
 
-        //this.resp.data?.push(...r.data.data);
         this.resp.pager = r.data.pager;
       });
     },
@@ -153,7 +173,7 @@ export default defineComponent({
       // Descrease Unread Count
       this.unreadCount--;
 
-      this.$api.notificationRead(item.id, { message: false }).then(() => {
+      this.$api.notificationRead(item.id, { showMessage: false }).then(() => {
         item.readed = true;
       });
     },
@@ -257,7 +277,7 @@ export default defineComponent({
     saveFirebaseToken(token: string) {
       const fbToken = LocalStorage.getItem('fbToken');
       if (fbToken !== token) {
-        this.$api.deviceRegister({ token: token, device: 'web' }, { message: false }).then(() => {
+        this.$api.deviceRegister({ token: token, device: 'web' }, { showMessage: false }).then(() => {
           LocalStorage.set('fbToken', token);
         });
       }

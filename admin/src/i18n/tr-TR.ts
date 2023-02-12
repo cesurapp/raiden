@@ -1,5 +1,5 @@
 export default {
-  // Language
+  // Language,
   'tr-TR': 'Türkçe',
   'en-US': 'English',
 
@@ -29,6 +29,9 @@ export default {
   // Global
   'Access denied!': 'Erişim engellendi!',
   'Access denied! Unauthorized operation.': 'Erişim engellendi! Yetkisiz işlem.',
+  'Network Error': 'Ağ hatası',
+  'Could not connect to the server, refresh the page.': 'Sunucuya bağlanılamadı, sayfayı yenileyin.',
+  'Refresh Page': 'Sayfayı Yenile',
 
   // 404 Page
   'Oops. Nothing here...': 'Hata. Hiçbir şey bulamadık...',
@@ -88,8 +91,10 @@ export default {
   'Account Management': 'Hesap Yönetimi',
   Accounts: 'Hesaplar',
   Organization: 'Organizasyon',
-  Account: 'Hesabım',
   Save: 'Kaydet',
+  Profile: 'Profilim',
+  'Return Admin': "Admin'e Dön",
+  'Sign out': 'Çıkış',
 
   // Edit Profile
   'Edit Profile': 'Profilim',

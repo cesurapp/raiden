@@ -2,7 +2,7 @@
   <q-drawer show-if-above class="main-nav text-white" v-model="menu" :width="280">
     <!--Logo-->
     <q-toolbar class="logo">
-      <q-toolbar-title>Raiden Admin</q-toolbar-title>
+      <q-toolbar-title>{{ this.$appStore.title }}</q-toolbar-title>
     </q-toolbar>
 
     <!--Menu List-->
@@ -62,11 +62,11 @@
       <q-separator class="q-mx-sm" dark vertical inset />
       <DarkModeChanger dense :only-white="true"></DarkModeChanger>
       <q-separator class="q-mx-sm" dark vertical inset />
-      <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="toggle" />
+      <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="this.menu = !this.menu" />
     </div>
 
     <teleport to="#head-toolbar" v-if="!menu && mounted">
-      <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="toggle" />
+      <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="this.menu = !this.menu" />
     </teleport>
   </q-drawer>
 </template>
@@ -75,6 +75,7 @@
 import { defineComponent } from 'vue';
 import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
+import { Permission } from 'src/api/Enum/Permission';
 
 export default defineComponent({
   name: 'AdminNavigation',
@@ -91,7 +92,7 @@ export default defineComponent({
         text: 'Accounts',
         to: '/account',
         header: 'Account Management',
-        roles: ['ROLE_ACCOUNT_LIST'],
+        roles: [Permission.AdminAccount.LIST],
       },
       {
         icon: 'workspaces',
@@ -100,19 +101,19 @@ export default defineComponent({
         roles: [],
       },
 
-      /*{icon: 'logout', text: 'Logout', header:'Header Text', to: {name: 'auth.logout'}, roles: ['ROLE_USER'], child: []},*/
+      /*{icon: 'logout', text: 'Logout', header:'Header Text', to: {name: 'auth.logout'}, roles: [Permission.AdminAccount.LIST'], child: []},*/
     ],
   }),
   computed: {
     getNavs() {
       return this.navs
         .filter((nav) => {
-          if (nav.hasOwnProperty('roles') && !this.$auth.hasPermission(nav.roles)) {
+          if (nav.hasOwnProperty('roles') && !this.$authStore.hasPermission(nav.roles)) {
             return false;
           }
           if (nav.hasOwnProperty('child')) {
             nav.child = nav.child.filter(
-              (navChild) => !(navChild.hasOwnProperty('roles') && !this.$auth.hasPermission(navChild.roles))
+              (navChild) => !(navChild.hasOwnProperty('roles') && !this.$authStore.hasPermission(navChild.roles))
             );
             if (nav.child.length === 0) {
               return false;
@@ -141,9 +142,9 @@ export default defineComponent({
   mounted() {
     this.mounted = true;
   },
-  methods: {
-    toggle() {
-      this.menu = !this.menu;
+  watch: {
+    menu(v) {
+      this.$emit('update:activated', v);
     },
   },
 });
@@ -155,7 +156,7 @@ export default defineComponent({
   overflow: hidden !important;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 5px 2px rgb(0 0 0 / 15%);
+  box-shadow: 0 0 5px 2px rgb(0 0 0 / 10%);
 
   .menus {
     flex: 1;

@@ -115,7 +115,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
-import { useAuthStore } from 'stores/AuthStore';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 
 export default defineComponent({
@@ -142,9 +141,9 @@ export default defineComponent({
       this.$refs.form.validate().then((success: any) => {
         if (success) {
           if (this.isOtp) {
-            useAuthStore().loginOtpRequest(this.username);
+            this.$authStore.loginOtpRequest(this.username);
           } else {
-            useAuthStore().loginUsername(this.username, this.password);
+            this.$authStore.loginUsername(this.username, this.password);
           }
         }
       });

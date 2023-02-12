@@ -27,12 +27,12 @@
 
       <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
         <!--Dark Mode Changer-->
-        <DarkModeChanger :only-white='true'></DarkModeChanger>
+        <DarkModeChanger :only-white="true"></DarkModeChanger>
 
         <span class="divider"></span>
 
         <!--Language Changer-->
-        <LanguageChanger :only-white='true'></LanguageChanger>
+        <LanguageChanger :only-white="true"></LanguageChanger>
       </div>
     </div>
   </q-layout>
@@ -48,9 +48,10 @@ export default defineComponent({
   name: 'AuthLayout',
   components: { LanguageChanger, DarkModeChanger },
   mixins: [
-    createMetaMixin({
-      title: 'Authentication',
-      titleTemplate: (title) => `${title} - ` + process.env.APP_TITLE,
+    createMetaMixin(function () {
+      return {
+        titleTemplate: (title) => `${title} - ` + this.$appStore.title,
+      };
     }),
   ],
 });

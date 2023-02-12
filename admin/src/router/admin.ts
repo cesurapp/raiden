@@ -14,10 +14,7 @@ export default [
 
     children: [
       // Global
-      {
-        path: '/',
-        component: () => import('pages/Admin/Dashboard/Index.vue'),
-      },
+      { path: '/', component: () => import('pages/Admin/Dashboard/Index.vue') },
       {
         path: '/account/profile',
         component: () => import('pages/Admin/Account/Profile.vue'),
