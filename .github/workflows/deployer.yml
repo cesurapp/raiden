@@ -64,13 +64,14 @@ jobs:
             echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker stop -t 120 $(docker ps -aq) || true && docker rm $(docker ps -aq) || true
             docker pull ${{ env.app_image }}
+            echo -e "${{ env.app_envs }}" > .env
       - name: Run App Commands
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ env.cmd_host }}
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
-          script: docker run --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
+          script: docker run --env-file .env --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force --complete" || true
       - name: Start Servers
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -79,6 +80,5 @@ jobs:
           key: ${{ env.ssh_privatekey }}
           sync: true
           script: |
-            echo -e "${{ env.app_envs }}" > .env
             docker run -d -p 80:80 --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true

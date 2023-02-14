@@ -73,7 +73,7 @@ jobs:
           key: ${{ env.ssh_privatekey }}
           script: |
             docker run --name postgres -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -d postgres:14-alpine || true
-            docker run --link=postgres:postgres --env-file .env --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
+            docker run --link=postgres:postgres --env-file .env --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force --complete" || true
       - name: Start Servers
         uses: appleboy/ssh-action@v0.1.7
         with:
