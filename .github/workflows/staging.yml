@@ -62,7 +62,7 @@ jobs:
           sync: true
           script: |
             echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
-            docker stop -t 120 $(docker ps -aq) || true && docker rm $(docker ps -aq) || true
+            docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
       - name: Run App Commands
         uses: appleboy/ssh-action@v0.1.7
@@ -70,7 +70,12 @@ jobs:
           host: ${{ env.cmd_host }}
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
-          script: docker run --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
+          script: |
+            docker run --name postgres \ 
+              -e POSTGRES_PASSWORD=postgres2315 \
+              -v /var/lib/postgresql/data:/var/lib/postgresql/data \ 
+              -d postgres || true
+            docker run --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force" || true
       - name: Start Servers
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -80,5 +85,5 @@ jobs:
           sync: true
           script: |
             echo -e "${{ env.app_envs }}" > .env
-            docker run -d -p 80:80 --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
+            docker run -d -p 80:80 --name mainapp --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true
