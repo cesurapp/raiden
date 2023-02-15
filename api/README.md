@@ -110,7 +110,7 @@ Container Registry and then deployed to the servers via ssh.
 3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
 
    ```shell
-   SERVER_HOSTS: ["11.111.222.222"]
+   APP_HOSTS: ["11.111.222.222"]
    ```
 4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
 
@@ -118,14 +118,15 @@ Container Registry and then deployed to the servers via ssh.
    APP_ENVS: [
      "APP_ENV=prod",
      "APP_LOG_LEVEL=info"
+     "DATABASE_URL=postgres://ramazan:@127.0.0.1:5432/raiden?charset=utf8&serverVersion=14"
+     "LOCK_DSN=semaphore"
    ]
    ```
 5. Create __Production__ branch and run __Deployer__ action.
 
 __Github Actions Staging Deploy__
 
->You can deploy to multiple servers. Just provide the IP list. The application image is first sent to the Github
-Container Registry and then deployed to the servers via ssh.
+>You can deploy to single server. Just provide the IP address. The application image is first sent to the Github Container Registry and then deployed to the server via ssh. PostgreSql container is created automatically.
 
 1. Generate SSH key for Deployment
 
@@ -140,7 +141,7 @@ Container Registry and then deployed to the servers via ssh.
 3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
 
    ```shell
-   STAG_HOSTS: ["11.111.222.222"]
+   STAG_HOSTS: 11.111.222.222
    ```
 4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
 
