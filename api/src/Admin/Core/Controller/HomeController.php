@@ -12,8 +12,8 @@ class HomeController extends AbstractApiController
     #[Thor(
         group: 'Home Page|0',
         desc: 'View Home Page',
-        response: [200 => 'OK'],
-        requireAuth: false
+        requireAuth: false,
+        hidden: true
     )]
     #[Route(path: '/', methods: ['GET'])]
     public function home(): ApiResponse
