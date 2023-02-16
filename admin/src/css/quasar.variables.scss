@@ -12,6 +12,8 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
+$dark-shadow-color: #000;
+
 @import 'quasar/src/css/variables';
 
 // Theme Color
@@ -24,6 +26,7 @@ $positive: #21ba45;
 $negative: #c10015;
 $info: #42a0ed;
 $warning: #f2c73a;
+$body-color: #f6f7f9;
 
 // Theme Size
 $input-font-size: 15px;

@@ -53,7 +53,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 }
 
 /**
- * Outline Input for Google Material Design
+ * Outline Input
  */
 .q-field--outlined {
   .q-field__label {
@@ -86,21 +86,127 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
       font-size: 14px;
     }
   }
-}
 
-body.body--dark {
-  .q-field--outlined {
+  // Dark
+  &.q-field--dark {
+    .q-field__control:before {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .q-field__control:hover:before {
+      border-color: rgba(255, 255, 255, .75);
+    }
+
     .q-field__label {
       background-color: var(--q-dark);
     }
   }
 }
 
+.borderless {
+  .q-field--outlined {
+    .q-field__label {
+      background-color: $body-color;
+    }
+
+    &.q-field--dark {
+      .q-field__label {
+        background-color: var(--q-dark-page);
+      }
+    }
+  }
+}
+
 /**
- * Field | Input
+ * Filled - Input
  */
-.q-field--dark .q-field__control:before {
-  border-color: rgba(255, 255, 255, 0.25);
+.q-field--filled {
+  .q-field__control {
+    border-radius: 4px;
+
+    &:before {
+      display: none;
+    }
+  }
+
+  .q-field__control:after {
+    border: 2px solid transparent;
+    height: 100%;
+    border-radius: 4px;
+    background: transparent;
+    transform: scale3d(1, 1, 1);
+  }
+
+  &:hover .q-field__control:after{
+    transition: .2s all;
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  &.q-field--highlighted .q-field__control:after {
+    border-color: currentColor;
+  }
+
+  .q-field__label {
+    padding: 0 3px;
+    z-index: 2;
+    border-radius: 4px;
+  }
+
+  &.q-field--float .q-field__label {
+    background: linear-gradient(180deg, #FFF 0%, #FFF 50%, #f2f2f2 50%);
+    transform: translateY(-100%) scale(0.85) !important;
+  }
+
+  &.q-field--labeled .q-field__native {
+    padding-top: 10px;
+    padding-left: 3px;
+  }
+
+  &.q-textarea.q-field--labeled .q-field__control-container {
+    padding-top: 10px;
+  }
+
+  // Dense
+  &.q-field--dense {
+    &.q-field--float .q-field__label {
+      transform: translateY(-85%) scale(0.8) !important;
+    }
+
+    &.q-field--labeled .q-field__native {
+      padding-top: 4px;
+      font-size: 14px;
+    }
+  }
+
+  // Dark
+  &.q-field--dark {
+    .q-field__control {
+      background: var(--q-dark-page);
+    }
+
+    &.q-field--float .q-field__label {
+      background: linear-gradient(180deg, var(--q-dark) 0%, var(--q-dark) 50%, var(--q-dark-page) 50%);
+      transform: translateY(-100%) scale(0.85) !important;
+    }
+  }
+}
+
+.borderless {
+  .q-field--filled {
+    &.q-field--float .q-field__label {
+      background: linear-gradient(180deg, $body-color 0%, $body-color 50%, #e9eaec 50%);
+    }
+
+    &.q-field--dark {
+      .q-field__control {
+        background: var(--q-dark);
+      }
+
+      &.q-field--float .q-field__label {
+        background: linear-gradient(180deg, var(--q-dark-page) 0%, var(--q-dark-page) 50%, var(--q-dark) 50%);
+      }
+    }
+  }
 }
 
 // Dropdown Menu
@@ -123,6 +229,7 @@ body.body--dark {
     }
   }
 }
+
 .q-menu:not(.q-menu--dark) {
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -196,6 +303,7 @@ body.body--dark {
 .dark-shadow-1 {
   box-shadow: 0 0 2px 0 rgb(0, 0, 0, 0.25);
 }
+
 .shadow-1 {
   box-shadow: 0 0 2px 0 rgb(0, 0, 0, 0.25);
 }
@@ -205,15 +313,15 @@ body.body--dark {
  */
 .notify-close-btn {
   position: absolute;
-  left: calc(100% - 1px);
-  bottom: calc(100% - 8px);
-  transform: scale(0.95);
+  top: 0;
+  margin-left: 12px;
+  font-size: 12px !important;
+
+  .q-icon {
+    font-weight: bold;
+  }
 }
 
 .q-notifications__list--top {
   top: 10px;
-}
-
-.q-notification {
-  margin: 14px 10px 0;
 }

@@ -30,7 +30,7 @@ export default defineComponent({
         locales.push({
           value: locale,
           label: this.$t(locale),
-          icon: `img:/images/flags/${String(country)}.svg`,
+          icon: `img:/images/flags/${String(country).toLowerCase()}.svg`,
         });
       });
       return locales;

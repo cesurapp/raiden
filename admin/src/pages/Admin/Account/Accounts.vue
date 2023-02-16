@@ -14,7 +14,8 @@
     </PageHeader>
 
     <!--Page Content-->
-    <PageContent liquid></PageContent>
+    <PageContent liquid borderless>İçerik</PageContent>
+    <PageFooter liquid>Footer</PageFooter>
   </q-page>
 </template>
 
@@ -23,10 +24,11 @@ import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import PageHeader from '../Components/Layout/PageHeader.vue';
 import PageContent from '../Components/Layout/PageContent.vue';
+import PageFooter from 'pages/Admin/Components/Layout/PageFooter.vue';
 
 export default defineComponent({
   name: 'AccountListing',
-  components: { PageHeader, PageContent },
+  components: { PageFooter, PageHeader, PageContent },
   mixins: [
     createMetaMixin(function () {
       return {

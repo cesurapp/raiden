@@ -8,8 +8,7 @@ env:
   app_image: ghcr.io/${{ github.repository }}:staging
   ssh_username: root
   ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
-  ssh_hosts: ${{ join(fromJSON(vars.STAG_HOSTS)) }}
-  cmd_host: ${{ fromJSON(vars.STAG_HOSTS)[0] }}
+  ssh_hosts: ${{ vars.STAG_HOSTS }}
   app_envs: ${{ join(fromJSON(vars.STAG_ENVS), '\n') }}
 
 jobs:
@@ -53,34 +52,20 @@ jobs:
 
     # Steps
     steps:
-      - name: Stop Servers && Update Images
+      - name: Deploy App
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ env.ssh_hosts }}
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
-          sync: true
           script: |
+            echo -e "${{ env.app_envs }}" > .env
+            echo "DATABASE_URL=postgres://postgres:postgres2315@postgres:5432/postgres?charset=utf8&serverVersion=14" >> .env
+            echo "LOCK_DSN=postgresql+advisory://postgres:postgres2315@postgres:5432/postgres?serverVersion=14" >> .env
             echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
-            echo -e "${{ env.app_envs }}" > .env
-      - name: Run App Commands
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ env.cmd_host }}
-          username: ${{ env.ssh_username }}
-          key: ${{ env.ssh_privatekey }}
-          script: |
-            docker run --name postgres -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -d postgres:14-alpine || true
+            docker run --name postgres -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres:14-alpine || true
             docker run --link=postgres:postgres --env-file .env --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force --complete" || true
-      - name: Start Servers
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ env.ssh_hosts }}
-          username: ${{ env.ssh_username }}
-          key: ${{ env.ssh_privatekey }}
-          sync: true
-          script: |
-            docker run -d -p 80:80 --name mainapp --link=postgres:postgres --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
+            docker run --link=postgres:postgres --env-file .env -d -p 80:80 --name mainapp --restart always --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true
