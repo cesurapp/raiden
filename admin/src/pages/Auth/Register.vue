@@ -26,6 +26,7 @@
 
       <!--Phone-->
       <PhoneInput
+        outlined
         v-model:phone-number="data.phone"
         v-model:phone-country="data.phone_country"
         :label="$t('Phone')"

@@ -41,6 +41,7 @@
       <!--Phone-->
       <PhoneInput
         v-else
+        outlined
         v-model:phone-number="username"
         :class="{ 'q-pb-xs': isOtp }"
         :label="$t('Phone')"

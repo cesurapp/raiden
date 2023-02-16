@@ -4,11 +4,11 @@
     <PageHeader borderless liquid></PageHeader>
 
     <!--Page Content-->
-    <PageContent liquid>
+    <PageContent liquid borderless>
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
         <q-input
-          outlined
+          filled
           lazy-rules
           v-model="data.email"
           :label="$t('Email')"
@@ -21,6 +21,7 @@
 
         <!--Phone-->
         <PhoneInput
+          filled
           ref="phone"
           v-model:phone-number="data.phone"
           v-model:phone-country="data.phone_country"
@@ -30,7 +31,7 @@
 
         <!--Current Password-->
         <q-input
-          outlined
+          filled
           :type="isPwd ? 'password' : 'text'"
           v-model="data.current_password"
           :label="$t('Current Password')"
@@ -47,7 +48,7 @@
 
         <!--Password-->
         <q-input
-          outlined
+          filled
           :type="isPwd ? 'password' : 'text'"
           v-model="data.password"
           :label="$t('Password')"
@@ -62,7 +63,7 @@
 
         <!--FirstName-->
         <q-input
-          outlined
+          filled
           v-model="data.first_name"
           :label="$t('First Name')"
           lazy-rules
@@ -73,7 +74,7 @@
 
         <!--LastName-->
         <q-input
-          outlined
+          filled
           v-model="data.last_name"
           :label="$t('Last Name')"
           lazy-rules

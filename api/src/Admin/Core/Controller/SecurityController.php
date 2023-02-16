@@ -106,7 +106,7 @@ class SecurityController extends AbstractApiController
 
         // Verify Refresh Token
         try {
-            $token = $jwt->decode($request->get('refresh_token'));
+            $token = $jwt->decode($request->get('refresh_token', ''));
             if (!$repo->checkToken($request->get('refresh_token'), $token['exp'])) {
                 throw new RefreshTokenExpiredException();
             }

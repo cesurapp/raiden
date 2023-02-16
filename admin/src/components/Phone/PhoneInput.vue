@@ -2,7 +2,6 @@
   <div class="phone-input">
     <!--Phone-->
     <q-input
-      outlined
       type="tel"
       v-model="proxyPhone"
       v-bind="$attrs"

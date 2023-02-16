@@ -5,8 +5,10 @@
         'bg-dark dark-shadow-1': $q.dark.isActive && !borderless,
         'bg-white shadow-1': !$q.dark.isActive && !borderless,
         'rounded-borders q-pa-md': !borderless,
-        'content-fixed q-mx-md q-mx-lg-lg q-my-md': !liquid,
-        'content-liquid q-mx-md q-mx-lg-lg q-my-md': liquid,
+        'content-fixed q-my-md': !liquid,
+        'content-liquid q-my-md': liquid,
+        'q-mx-md q-mx-lg-lg': !clear,
+        'borderless': borderless
       }"
     >
       <slot></slot>
@@ -24,6 +26,10 @@ export default defineComponent({
       default: false,
     },
     borderless: {
+      type: Boolean,
+      default: false,
+    },
+    clear: {
       type: Boolean,
       default: false,
     },

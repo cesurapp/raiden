@@ -109,6 +109,12 @@ export default defineComponent({
       border-bottom-color: rgba(255, 255, 255, 0.12);
     }
   }
+
+  .page-header {
+    &.bordered:before {
+      background: rgba(0,0,0,.25);
+    }
+  }
 }
 
 .page-header {

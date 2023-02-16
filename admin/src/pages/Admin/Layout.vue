@@ -83,7 +83,7 @@ export default defineComponent({
 
 <style lang="scss">
 body {
-  background: #f6f7f9;
+  background: $body-color;
 }
 
 .breadcrumbs {

@@ -37,7 +37,7 @@
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else v-model:phone-number="username" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput v-else outlined v-model:phone-number="username" :label="$t('Phone')"></PhoneInput>
 
       <div>
         <q-btn

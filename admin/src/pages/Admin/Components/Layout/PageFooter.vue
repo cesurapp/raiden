@@ -2,11 +2,13 @@
   <div class="page-footer">
     <div
       :class="{
-        'bg-dark': $q.dark.isActive && !borderless,
-        'bg-white': !$q.dark.isActive && !borderless,
-        'rounded-borders shadow-1 q-pa-md': !borderless,
-        'content-fixed q-mx-md q-mx-lg-lg': !liquid,
-        'content-liquid q-mx-md q-mx-lg-lg': liquid,
+        'bg-dark dark-shadow-1': $q.dark.isActive && !borderless,
+        'bg-white shadow-1': !$q.dark.isActive && !borderless,
+        'rounded-borders q-pa-md': !borderless,
+        'content-fixed': !liquid,
+        'content-liquid': liquid,
+        'q-mx-md q-mx-lg-lg': !clear,
+        'borderless': borderless
       }"
     >
       <slot></slot>
@@ -25,6 +27,10 @@ export default defineComponent({
       default: false,
     },
     borderless: {
+      type: Boolean,
+      default: false,
+    },
+    clear: {
       type: Boolean,
       default: false,
     },

@@ -25,10 +25,9 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
       {
         icon: 'close',
         dense: true,
-        color: 'red',
-        flat: false,
+        color: 'white',
         class: 'notify-close-btn',
-        size: 'sm',
+        size: 'md',
       },
     ],
   };
