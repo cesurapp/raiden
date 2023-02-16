@@ -28,7 +28,7 @@
           emit-value
           map-options
         >
-          <template v-slot:prepend><q-icon :name="'img:/images/flags/' + data.phoneCountry + '.svg'" /></template>
+          <template v-slot:prepend><q-icon :name="'img:/images/flags/' + data.phoneCountry.toLowerCase() + '.svg'" /></template>
           <template v-slot:option="scope">
             <q-item v-bind="scope.itemProps">
               <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
