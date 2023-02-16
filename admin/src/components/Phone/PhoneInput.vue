@@ -89,7 +89,7 @@ export default defineComponent({
         return {
           value: phoneCountry,
           description: `${String(item.label)} (+${String(item.phoneCode)})`,
-          icon: `img:/images/flags/${String(phoneCountry)}.svg`,
+          icon: `img:/images/flags/${String(phoneCountry).toLowerCase()}.svg`,
         };
       });
     },
