@@ -90,11 +90,10 @@ export const useAuthStore = defineStore('auth', {
      * Logout User and Clear Token
      */
     async logout(showMessage = true) {
-      await api
-        .securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
-        .finally(() => this.clearToken());
-
-      this.router.push({ name: 'auth.login' });
+      this.router.push({ name: 'auth.login' }).then(() => {
+        this.clearToken();
+        api.securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage });
+      });
     },
 
     /**

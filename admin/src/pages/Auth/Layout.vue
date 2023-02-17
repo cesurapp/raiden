@@ -54,6 +54,11 @@ export default defineComponent({
       };
     }),
   ],
+  mounted() {
+    if (this.$authStore.isLoggedIn()) {
+      this.$router.push({ path: '/' });
+    }
+  },
 });
 </script>
 

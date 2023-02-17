@@ -112,7 +112,7 @@ export default defineComponent({
 
   .page-header {
     &.bordered:before {
-      background: rgba(0,0,0,.25);
+      background: rgba(0, 0, 0, 0.25);
     }
   }
 }

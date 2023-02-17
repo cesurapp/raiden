@@ -75,10 +75,10 @@ class DeviceTest extends AbstractWebTestCase
         // Create Notification
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
-        $pusher->send($pusher->create('Title', 'Message', user: $user));
+        $pusher->create('Title', 'Message', user: $user)->send();
 
         // Cleared Device
-        $transports = (string) $this->getContainer()->get('chatter.transport_factory')->fromString(
+        $transports = (string) self::getContainer()->get('chatter.transport_factory')->fromString(
             $_SERVER['FIREBASE_DSN']
         );
         if ('null' !== $transports) {

@@ -86,13 +86,18 @@
     },
     "post-install-cmd": "@auto-scripts",
     "post-update-cmd": "@auto-scripts",
-    "phpstan": "bin/tool/vendor/bin/phpstan analyse --no-progress --ansi --memory-limit 512m",
-    "lint": "PHP_CS_FIXER_IGNORE_ENV=true bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
-    "fix": "PHP_CS_FIXER_IGNORE_ENV=true bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
+    "qa:phpstan": "bin/tool/vendor/bin/phpstan analyse --no-progress --ansi --memory-limit 512m",
+    "qa:lint": "PHP_CS_FIXER_IGNORE_ENV=true bin/tool/vendor/bin/php-cs-fixer fix --dry-run --diff --ansi --allow-risky=yes",
+    "qa:fix": "PHP_CS_FIXER_IGNORE_ENV=true bin/tool/vendor/bin/php-cs-fixer fix --ansi --allow-risky=yes",
+    "qa:install": "composer install --working-dir=bin/tool",
     "test": "bin/phpunit",
-    "test-stop": "bin/phpunit --stop-on-failure --verbose --testdox --colors",
-    "test-coverage": "bin/phpunit --coverage-text",
-    "install-tool": "composer install --working-dir=bin/tool"
+    "test:stop": "bin/phpunit --stop-on-failure --verbose --testdox --colors",
+    "test:coverage": "bin/phpunit --coverage-text",
+    "fix": [
+      "@qa:fix",
+      "@qa:phpstan",
+      "@test"
+    ]
   },
   "conflict": {
     "symfony/symfony": "*"

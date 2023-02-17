@@ -16,18 +16,18 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $pusher->send($pusher->create('Test', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 2', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 3', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 4', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 5', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 6', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 7', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 8', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 9', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 10', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 11', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 12', 'Test Message', user: $user));
+        $pusher->create('Test', 'Test Message', user: $user)->send();
+        $pusher->create('Test 2', 'Test Message', user: $user)->send();
+        $pusher->create('Test 3', 'Test Message', user: $user)->send();
+        $pusher->create('Test 4', 'Test Message', user: $user)->send();
+        $pusher->create('Test 5', 'Test Message', user: $user)->send();
+        $pusher->create('Test 6', 'Test Message', user: $user)->send();
+        $pusher->create('Test 7', 'Test Message', user: $user)->send();
+        $pusher->create('Test 8', 'Test Message', user: $user)->send();
+        $pusher->create('Test 9', 'Test Message', user: $user)->send();
+        $pusher->create('Test 10', 'Test Message', user: $user)->send();
+        $pusher->create('Test 11', 'Test Message', user: $user)->send();
+        $pusher->create('Test 12', 'Test Message', user: $user)->send();
 
         // List Notification
         $this->client($user)->request('GET', '/v1/main/notification');
@@ -47,8 +47,8 @@ class NotificationTest extends AbstractWebTestCase
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
         $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $pusher->send($notification);
-        $this->assertFalse($notification->isReaded());
+        $notification->send();
+        $this->assertFalse($notification->get()->isReaded());
 
         // List Notification
         $this->client($user)->request('GET', '/v1/main/notification/unread-count');
@@ -65,13 +65,13 @@ class NotificationTest extends AbstractWebTestCase
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
         $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $pusher->send($notification);
-        $this->assertFalse($notification->isReaded());
+        $notification->send();
+        $this->assertFalse($notification->get()->isReaded());
 
         // List Notification
-        $this->client($user)->request('PUT', '/v1/main/notification/'.$notification->getId()->toBase32());
+        $this->client($user)->request('PUT', '/v1/main/notification/'.$notification->get()->getId()->toBase32());
         $this->isOk();
-        $this->assertTrue($notification->isReaded());
+        $this->assertTrue($notification->get()->isReaded());
     }
 
     public function testDelete(): void
@@ -83,13 +83,13 @@ class NotificationTest extends AbstractWebTestCase
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
         $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $pusher->send($notification);
-        $this->assertFalse($notification->isReaded());
+        $notification->send();
+        $this->assertFalse($notification->get()->isReaded());
 
         // List Notification
-        $this->client($user)->request('DELETE', '/v1/main/notification/'.$notification->getId()->toBase32());
+        $this->client($user)->request('DELETE', '/v1/main/notification/'.$notification->get()->getId()->toBase32());
         $this->isOk();
-        $this->assertNull($notification->getId());
+        $this->assertNull($notification->get()->getId());
     }
 
     public function testReadAll(): void
@@ -100,9 +100,9 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $pusher->send($pusher->create('Test 6', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 7', 'Test Message', user: $user));
-        $pusher->send($pusher->create('Test 8', 'Test Message', user: $user));
+        $pusher->create('Test 6', 'Test Message', user: $user)->send();
+        $pusher->create('Test 7', 'Test Message', user: $user)->send();
+        $pusher->create('Test 8', 'Test Message', user: $user)->send();
 
         // List Notification
         $this->client($user)->request('POST', '/v1/main/notification/read-all');

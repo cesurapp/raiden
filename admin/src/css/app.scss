@@ -94,7 +94,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
     }
 
     .q-field__control:hover:before {
-      border-color: rgba(255, 255, 255, .75);
+      border-color: rgba(255, 255, 255, 0.75);
     }
 
     .q-field__label {
@@ -137,9 +137,9 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
     transform: scale3d(1, 1, 1);
   }
 
-  &:hover .q-field__control:after{
-    transition: .2s all;
-    border-color: rgba(255,255,255,0.15);
+  &:hover .q-field__control:after {
+    transition: 0.2s all;
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   &.q-field--highlighted .q-field__control:after {
@@ -153,7 +153,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   }
 
   &.q-field--float .q-field__label {
-    background: linear-gradient(180deg, #FFF 0%, #FFF 50%, #f2f2f2 50%);
+    background: linear-gradient(180deg, #fff 0%, #fff 50%, #f2f2f2 50%);
     transform: translateY(-100%) scale(0.85) !important;
   }
 
