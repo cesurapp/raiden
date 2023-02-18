@@ -71,6 +71,16 @@ NODE_VERSION=16
 
 ## Documentation
 
+#### Date Helper
+
+Localized Formatter.
+
+```vue
+import { dateFormat } from 'src/helper/DateHelper'; dateFormat(date, 'format')
+```
+
+Quasar Date Helper [Documentation](https://quasar.dev/quasar-utils/date-utils)
+
 #### Translate
 
 ```vue
@@ -85,7 +95,7 @@ Generally all components have dark mode. You can use it for special operations a
 
 ```vue
 <template>
-  <div :class="{ 'dark': $q.dark.isActive }">Content</div>
+  <div :class="{ dark: $q.dark.isActive }">Content</div>
 </template>
 ```
 
@@ -174,6 +184,7 @@ const appStore = useAppStore();
 ```
 
 ### Check Permission
+
 ```vue
 <template>
   <q-btn rounded icon="add" v-if="$authStore.hasPermission($permission.AdminAccount.LIST)"></q-btn>
@@ -185,27 +196,30 @@ import { Permission } from 'api/Enum/Permission';
 export default defineComponent({
   name: 'TestPage',
   methods: {
-   test() {
-     // Using Global
-     if (this.$authStore.hasPermission(this.$permission.AdminAccount.LIST)) {}
+    test() {
+      // Using Global
+      if (this.$authStore.hasPermission(this.$permission.AdminAccount.LIST)) {
+      }
 
-     // Using Import
-     if (this.$authStore.hasPermission(Permission.AdminAccount.LIST)) {}
-   }
+      // Using Import
+      if (this.$authStore.hasPermission(Permission.AdminAccount.LIST)) {
+      }
+    },
   },
 });
 </script>
 ```
 
 ### Add Route & BreadCrumbs
+
 ```js
 export default [
   {
-    path: '/',            // Route Path
-    name: 'admin',        // Route Name
+    path: '/', // Route Path
+    name: 'admin', // Route Name
     component: () => import('pages/Admin/Layout.vue'), // Dynamic Component
     meta: {
-      requireAuth: true,  // Login Required
+      requireAuth: true, // Login Required
       userType: [UserType.ADMIN, UserType.SUPERADMIN], // Required User Type
       breadcrumb: 'Dashboard', // Breadcrumbs Name Translated
     },
@@ -222,11 +236,13 @@ export default [
       },
     ],
   },
-]
+];
 ```
 
 ### Create New Dashboard (Seller Panel)
+
 Create routes file: `routes/seller.ts`
+
 ```js
 import { UserType } from 'src/api/Enum/UserType';
 
@@ -247,6 +263,7 @@ export default [
 ```
 
 Import routes to `routes/index.ts`:
+
 ```js
 import SellerRoutes from './seller';
 
@@ -254,6 +271,7 @@ const routes: RouteRecordRaw[] = [...SellerRoutes];
 ```
 
 Create dashboard layout `pages\Seller\Layout.ts`
+
 ```vue
 <template>
   <q-layout class="seller" view="lHh LpR lFr">
@@ -312,7 +330,7 @@ export default defineComponent({
   },
   created() {
     this.$authStore.reloadUser();
-  }
+  },
 });
 </script>
 ```
