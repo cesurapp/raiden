@@ -27,6 +27,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 /**
@@ -104,10 +105,14 @@ class SecurityController extends AbstractApiController
             throw $this->createAccessDeniedException();
         }
 
+        if (!$token = $request->get('refresh_token')) {
+            throw new TokenNotFoundException('Refresh token not found!');
+        }
+
         // Verify Refresh Token
         try {
-            $token = $jwt->decode($request->get('refresh_token', ''));
-            if (!$repo->checkToken($request->get('refresh_token'), $token['exp'])) {
+            $decodedToken = $jwt->decode($token);
+            if (!$repo->checkToken($token, $decodedToken['exp'])) {
                 throw new RefreshTokenExpiredException();
             }
         } catch (JWTException $exception) {
@@ -119,7 +124,7 @@ class SecurityController extends AbstractApiController
         }
 
         // Generate New Token
-        return ApiResponse::create()->setData(['data' => ['token' => $jwt->encode(['id' => $token['id']])]]);
+        return ApiResponse::create()->setData(['data' => ['token' => $jwt->encode(['id' => $decodedToken['id']])]]);
     }
 
     #[Thor(

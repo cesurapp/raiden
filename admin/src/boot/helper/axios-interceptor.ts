@@ -1,8 +1,12 @@
 import { notifyShow, notifyDanger } from 'src/helper/NotifyHelper';
 import { Dialog } from 'quasar';
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { Ref } from 'vue';
 
-function requestConfig(config: AxiosRequestConfig, i18n, isBusy, authStore) {
+/**
+ * Configure Request
+ */
+function requestConfig(config: AxiosRequestConfig, i18n, isBusy: Ref, authStore) {
   // Language
   config.headers.common['Accept-Language'] = i18n.global.locale['value'];
 
@@ -20,14 +24,13 @@ function requestConfig(config: AxiosRequestConfig, i18n, isBusy, authStore) {
   return config;
 }
 
-function requestError(error, isBusy) {
-  isBusy.value = false;
-  return Promise.reject(error);
-}
+/**
+ * Success Response
+ */
+function responseSuccess(response: AxiosResponse, isBusy: Ref) {
+  const msg = response.config.showMessage;
 
-function responseSuccess(response: AxiosResponse, isBusy) {
-  // Show Message
-  if (response.data.hasOwnProperty('message') && (response.config.showMessage ?? true)) {
+  if ((typeof msg === 'undefined' || msg) && response.data.hasOwnProperty('message')) {
     Object.keys(response.data.message).forEach((type) => {
       Object.values(response.data.message[type]).forEach((message: any) => {
         notifyShow(message, undefined, type);
@@ -41,7 +44,15 @@ function responseSuccess(response: AxiosResponse, isBusy) {
 }
 
 let networkError = false;
-async function responseError(error: AxiosError, client, authStore, isBusy, globalExceptions, i18n) {
+
+async function responseError(
+  error: AxiosError,
+  client: AxiosInstance,
+  authStore,
+  isBusy: Ref,
+  globalExceptions: Ref,
+  i18n
+) {
   isBusy.value = false;
 
   // Api Network Error
@@ -62,42 +73,54 @@ async function responseError(error: AxiosError, client, authStore, isBusy, globa
     return;
   }
 
-  // Response NotFound
-  if (!error.response) {
-    return;
-  }
+  // Render Response Error
+  if (error.response) {
+    const type = error.response.data?.type;
 
-  const type = error.response.data?.type;
+    // Token Refresh and Continue Current Request
+    if (['TokenExpiredException'].includes(type) && !error.config.retry) {
+      error.config.retry = true;
+      delete error.config.headers['Authorization'];
 
-  if (['TokenExpiredException'].includes(type) && !error.config.retry) {
-    const config = error.config;
-    config.retry = true;
-    await authStore.reloadTokenWithRefreshToken(config);
-    return client(config);
-  }
+      // Reload Token
+      return authStore
+        .reloadTokenWithRefreshToken()
+        .then(() => {
+          return client(error.config);
+        })
+        .catch(() => {
+          authStore.logout(false);
+        });
+    }
 
-  // Show Error Message
-  if (error.response.data.message) {
-    notifyDanger(error.response.data.message);
-  }
+    // Logout for JWTException
+    if (['JWTException'].includes(type)) {
+      return authStore.logout(false);
+    }
 
-  if (['RefreshTokenExpiredException'].includes(type) || ['JWTException'].includes(type)) {
-    return authStore.logout(false);
-  }
+    // Global Exception Handling
+    if (['ValidationException'].includes(type)) {
+      if (Object.keys(error.response.data.errors).length > 0) {
+        globalExceptions.value = error.response.data.errors;
+      }
+    }
 
-  if (['ValidationException'].includes(type)) {
-    if (Object.keys(error.response.data.errors).length > 0) {
-      globalExceptions.value = error.response.data.errors;
+    // Show Error Message
+    if (error.response.data.message) {
+      notifyDanger(error.response.data.message);
     }
   }
 
   return Promise.reject(error);
 }
 
-export default (client, authStore, i18n, isBusy, globalExceptions) => {
+export default (client, authStore, i18n, isBusy: Ref, globalExceptions: Ref) => {
   client.interceptors.request.use(
     async (config) => requestConfig(config, i18n, isBusy, authStore),
-    async (error) => requestError(error, isBusy)
+    async (error) => () => {
+      isBusy.value = false;
+      return Promise.reject(error);
+    }
   );
   client.interceptors.response.use(
     async (response) => responseSuccess(response, isBusy),

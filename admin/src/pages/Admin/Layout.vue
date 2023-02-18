@@ -75,8 +75,8 @@ export default defineComponent({
       });
     },
   },
-  async created() {
-    await this.$authStore.reloadUser();
+  created() {
+    this.$authStore.reloadUser();
   },
 });
 </script>

@@ -8,7 +8,7 @@
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
         <q-input
-          filled
+          outlined
           lazy-rules
           v-model="data.email"
           :label="$t('Email')"
@@ -21,7 +21,7 @@
 
         <!--Phone-->
         <PhoneInput
-          filled
+          outlined
           ref="phone"
           v-model:phone-number="data.phone"
           v-model:phone-country="data.phone_country"

@@ -24,6 +24,7 @@ const isBusy = ref(false);
  */
 import Api from 'src/api';
 const api = new Api(client);
+const apiRaw = new Api(axios.create({ baseURL: process.env.API }));
 
 /**
  * Init Vue Global Properties
@@ -46,27 +47,21 @@ declare module '@vue/runtime-core' {
   }
 }
 
-export { i18n, client, isBusy, api };
+export { i18n, client, isBusy, api, apiRaw };
 export default boot(({ app, router, store }) => {
+  app.use(i18n);
   const exceptions = ref({});
   const authStore = useAuthStore(store);
-  const appStore = useAppStore(store);
-
-  app.use(i18n);
-
-  // Route Guard
-  routeGuard(router, authStore, i18n.global.t);
-
-  // Axios Interceptors
-  axiosInterceptors(client, authStore, i18n, isBusy, exceptions);
-
-  // Validation Rules
-  validationRules(app, i18n.global.t, exceptions);
 
   // Init Global Properties
   app.config.globalProperties.$api = api;
   app.config.globalProperties.$client = client;
   app.config.globalProperties.$isBusy = isBusy;
   app.config.globalProperties.$authStore = authStore;
-  app.config.globalProperties.$appStore = appStore;
+  app.config.globalProperties.$appStore = useAppStore(store);
+
+  // Route Guard
+  routeGuard(router, authStore, i18n);
+  axiosInterceptors(client, authStore, i18n, isBusy, exceptions);
+  validationRules(app, i18n, exceptions);
 });

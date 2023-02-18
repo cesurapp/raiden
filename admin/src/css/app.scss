@@ -13,6 +13,10 @@
   height: 44px;
 }
 
+.q-field__marginal {
+  color: $input-marjinal-color;
+}
+
 .q-field__label {
   top: 12px;
 }
@@ -44,7 +48,7 @@
 
 .q-tab {
   min-height: 44px;
-  border-radius: 4px;
+  border-radius: $generic-border-radius;
 }
 
 .body.desktop .q-checkbox--dense:not(.disabled):focus .q-checkbox__inner:before,
@@ -64,6 +68,14 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
   &.q-field--float .q-field__label {
     transform: translateY(-100%) scale(0.85) !important;
+  }
+
+  .q-field__control:before {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .q-field__control:hover:before {
+    border-color: rgba(0, 0, 0, 0.5);
   }
 
   &.q-field--labeled .q-field__native {
@@ -121,8 +133,16 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
  * Filled - Input
  */
 .q-field--filled {
+  .q-field__control, .q-field__marginal {
+    height: 50px;
+  }
+
+  .q-field__label {
+    top: 15px;
+  }
+
   .q-field__control {
-    border-radius: 4px;
+    border-radius: $generic-border-radius;
 
     &:before {
       display: none;
@@ -132,78 +152,40 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   .q-field__control:after {
     border: 2px solid transparent;
     height: 100%;
-    border-radius: 4px;
+    border-radius: $generic-border-radius;
     background: transparent;
     transform: scale3d(1, 1, 1);
   }
 
   &:hover .q-field__control:after {
     transition: 0.2s all;
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(0,0,0, 0.1);
   }
 
   &.q-field--highlighted .q-field__control:after {
     border-color: currentColor;
   }
 
-  .q-field__label {
-    padding: 0 3px;
-    z-index: 2;
-    border-radius: 4px;
-  }
-
   &.q-field--float .q-field__label {
-    background: linear-gradient(180deg, #fff 0%, #fff 50%, #f2f2f2 50%);
-    transform: translateY(-100%) scale(0.85) !important;
+    transform: translateY(-40%) scale(0.8) !important;
   }
 
-  &.q-field--labeled .q-field__native {
-    padding-top: 10px;
-    padding-left: 3px;
-  }
-
-  &.q-textarea.q-field--labeled .q-field__control-container {
-    padding-top: 10px;
-  }
-
-  // Dense
-  &.q-field--dense {
-    &.q-field--float .q-field__label {
-      transform: translateY(-85%) scale(0.8) !important;
-    }
-
-    &.q-field--labeled .q-field__native {
-      padding-top: 4px;
-      font-size: 14px;
-    }
-  }
-
-  // Dark
   &.q-field--dark {
     .q-field__control {
       background: var(--q-dark-page);
     }
 
-    &.q-field--float .q-field__label {
-      background: linear-gradient(180deg, var(--q-dark) 0%, var(--q-dark) 50%, var(--q-dark-page) 50%);
-      transform: translateY(-100%) scale(0.85) !important;
+    &:hover .q-field__control:after {
+      border-color: rgba(255, 255, 255, 0.15);
     }
   }
 }
 
 .borderless {
   .q-field--filled {
-    &.q-field--float .q-field__label {
-      background: linear-gradient(180deg, $body-color 0%, $body-color 50%, #e9eaec 50%);
-    }
-
     &.q-field--dark {
       .q-field__control {
         background: var(--q-dark);
-      }
-
-      &.q-field--float .q-field__label {
-        background: linear-gradient(180deg, var(--q-dark-page) 0%, var(--q-dark-page) 50%, var(--q-dark) 50%);
       }
     }
   }
@@ -218,7 +200,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
     min-height: 32px;
     padding: 0.4rem 0.8rem;
     margin: 0 0.3rem;
-    border-radius: 0.25rem;
+    border-radius: $generic-border-radius;
 
     display: flex;
     align-items: center;
