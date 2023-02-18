@@ -21,7 +21,7 @@
         <q-item-label
           header
           class="flex items-center justify-between q-py-sm panel-head"
-          :class="{ 'dark': $q.dark.isActive }"
+          :class="{ dark: $q.dark.isActive }"
         >
           <span class="header">{{ $t('Notifications') }}</span>
           <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
@@ -35,7 +35,10 @@
           :key="item.id"
           v-ripple
           clickable
-          @click="read(item);open(item);"
+          @click="
+            read(item);
+            open(item);
+          "
           class="cursor-pointer item"
           :active="!item.readed"
           active-class="text-blue"
@@ -52,17 +55,9 @@
         </q-item>
 
         <!--Items-->
-        <div class='full-width flex justify-center q-my-xs'>
-          <q-btn
-            v-if="resp.pager?.next"
-            @click="next()"
-            :label="$t('Load More')"
-            size="md"
-            icon='refresh'
-            flat
-          ></q-btn>
+        <div class="full-width flex justify-center q-my-xs">
+          <q-btn v-if="resp.pager?.next" @click="next()" :label="$t('Load More')" size="md" icon="refresh" flat></q-btn>
         </div>
-
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -188,7 +183,7 @@ export default defineComponent({
       this.unreadCount = 0;
     },
     remove(item) {
-      this.$api.notificationDelete(item.id, {showMessage: false}).then(() => {
+      this.$api.notificationDelete(item.id, { showMessage: false }).then(() => {
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       });
     },
@@ -310,7 +305,7 @@ export default defineComponent({
 
   &.dark {
     background: linear-gradient(180deg, #212529b8, transparent);
-    color: #FFF;
+    color: #fff;
   }
 
   .header {
@@ -325,7 +320,7 @@ export default defineComponent({
   border-radius: 6px;
 
   &:hover {
-    background: rgba(255,255,255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 

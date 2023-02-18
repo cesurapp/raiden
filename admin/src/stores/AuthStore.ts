@@ -12,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
     refreshToken: LocalStorage.getItem('refreshToken'),
     switchedUser: LocalStorage.getItem('switchedUser'),
     isRefreshingState: false,
-    isLogoutState: false
+    isLogoutState: false,
   }),
 
   actions: {
@@ -37,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
       await api.securityLoginOtpRequest({ username: username }).then(() => {
         this.router.push({
           name: 'auth.login.otp',
-          params: { id: btoa(username) }
+          params: { id: btoa(username) },
         });
       });
     },
@@ -64,12 +64,12 @@ export const useAuthStore = defineStore('auth', {
         return this.isRefreshingState;
       }
 
-      return this.isRefreshingState = apiRaw
+      return (this.isRefreshingState = apiRaw
         .securityRefreshToken({ refresh_token: this.refreshToken })
         .then((r) => {
           this.appToken = r.data.data.token;
         })
-        .finally(() => (this.isRefreshingState = false));
+        .finally(() => (this.isRefreshingState = false)));
     },
 
     /**
@@ -98,7 +98,7 @@ export const useAuthStore = defineStore('auth', {
         if (!this.isLogoutState) {
           this.isLogoutState = api
             .securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
-            .finally(() => this.isLogoutState = false);
+            .finally(() => (this.isLogoutState = false));
         }
       });
     },
@@ -176,8 +176,8 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return this.user.roles.includes(permission);
-    }
-  }
+    },
+  },
 });
 
 // Set State to LocalStorage
