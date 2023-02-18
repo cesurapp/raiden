@@ -5,6 +5,15 @@
   --animate-duration: 170ms;
 }
 
+.q-item__section--side {
+  padding-right: 12px;
+  color: currentColor !important;
+
+  & > .q-icon {
+    font-size: 22px;
+  }
+}
+
 /**
  * Q-Input
  */
@@ -43,7 +52,7 @@
  */
 .q-item {
   min-height: 40px;
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .q-tab {
@@ -56,14 +65,23 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   transform: scale3d(1.8, 1.8, 1);
 }
 
+.q-item__section--avatar {
+  min-width: 34px;
+}
+
 /**
  * Outline Input
  */
 .q-field--outlined {
+  &.q-field--auto-height.q-field--labeled .q-field__control-container {
+    padding-top: 0;
+  }
+
   .q-field__label {
     background: #fff;
-    padding: 0 3px;
     z-index: 2;
+    padding: 0 4px;
+    margin-left: -4px;
   }
 
   &.q-field--float .q-field__label {
@@ -80,7 +98,6 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
   &.q-field--labeled .q-field__native {
     padding-top: 10px;
-    padding-left: 3px;
   }
 
   &.q-textarea.q-field--labeled .q-field__control-container {
@@ -176,7 +193,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
       background: var(--q-dark-page);
     }
 
-    &:hover .q-field__control:after {
+    &:hover:not(.q-field--highlighted) .q-field__control:after {
       border-color: rgba(255, 255, 255, 0.15);
     }
   }
@@ -192,30 +209,67 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   }
 }
 
-// Dropdown Menu
+/**
+ * Select
+ */
+.q-field--auto-height .q-field__control,
+.q-field--auto-height .q-field__native {
+  min-height: 44px;
+}
+
+.q-select {
+  .q-chip {
+    margin: 4px 4px 0px 0;
+
+    &.q-chip--dense {
+      padding: 2px 8px;
+      min-height: 22px;
+
+      .q-chip__icon {
+        font-size: 1.34em;
+      }
+    }
+  }
+}
+
+// Q-Menu
 .q-menu {
   backdrop-filter: blur(50px);
-  padding: 0.35rem 0;
+  padding: 6px 0;
 
   .q-item {
-    min-height: 32px;
-    padding: 0.4rem 0.8rem;
-    margin: 0 0.3rem;
+    min-height: 36px;
+    padding: 6px 8px;
+    margin: 0 6px;
     border-radius: $generic-border-radius;
 
     display: flex;
     align-items: center;
+  }
+}
 
-    .q-icon {
-      margin-right: 0.8rem;
-      font-size: 1.2rem;
-    }
+/**
+ * Dropdown
+ */
+.disable-icon {
+  .q-btn-dropdown__arrow,
+  .q-select__dropdown-icon {
+    display: none;
   }
 }
 
 .q-menu:not(.q-menu--dark) {
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/**
+ * Pagination
+ */
+.q-pagination__content > .q-btn,
+.q-pagination__content > .q-input,
+.q-pagination__middle > .q-btn {
+  min-width: 30px !important;
 }
 
 /*

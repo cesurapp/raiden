@@ -1,19 +1,5 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <q-btn label="asdass" @click="test"></q-btn>
-
-    <div>{{ $authStore.user.id }}</div>
-    <div>{{ $authStore.user.first_name }}</div>
-    <div>{{ $authStore.user.last_name }}</div>
-
-    <q-btn
-      rounded
-      size="md"
-      color="primary"
-      icon="add"
-      v-if="$authStore.hasPermission($permission.AdminAccount.LIST)"
-    ></q-btn>
-  </q-page>
+  <q-page class="row q-mx-md q-my-md borderless" style="width: 200px"> </q-page>
 </template>
 
 <script lang="ts">
@@ -22,6 +8,34 @@ import { createMetaMixin } from 'quasar';
 
 export default defineComponent({
   name: 'AdminDashboard',
+  data: () => ({
+    confirm: false,
+    current: 5,
+    options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
+    group: 'op1',
+    options2: [
+      {
+        label: 'Option 1',
+        value: 'op1',
+      },
+      {
+        label: 'Option 2',
+        value: 'op2',
+      },
+      {
+        label: 'Option 3',
+        value: 'op3',
+      },
+    ],
+    model22: { from: '2020/07/08', to: '2020/07/17' },
+    model2: null,
+    model: null,
+    teal: true,
+    orange: false,
+    red: false,
+    cyan: true,
+    value: false,
+  }),
   mixins: [
     createMetaMixin(function () {
       return {

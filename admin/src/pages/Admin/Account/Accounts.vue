@@ -7,7 +7,7 @@
         <q-route-tab to="/accounts" name="mails" label="Change Password" no-caps />
       </template>-->
       <template #actions>
-        <q-btn rounded size="md" color="primary" icon="add" v-if="$authStore.hasPermission('ROLE_ACCOUNT_CREATE')">
+        <q-btn size="md" color="primary" icon="add" v-if="$authStore.hasPermission('ROLE_ACCOUNT_CREATE')">
           <q-tooltip>{{ $t('Create') }}</q-tooltip>
         </q-btn>
       </template>

@@ -58,7 +58,7 @@
 
     <!--Footer-->
     <div class="footer flex items-center justify-evenly">
-      <LanguageChanger :only-white="true"></LanguageChanger>
+      <LanguageChanger dense></LanguageChanger>
       <q-separator class="q-mx-sm" dark vertical inset />
       <DarkModeChanger dense :only-white="true"></DarkModeChanger>
       <q-separator class="q-mx-sm" dark vertical inset />

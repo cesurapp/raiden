@@ -299,9 +299,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .panel-head {
-  background: linear-gradient(180deg, #2125293b -20px, transparent);
+  background: linear-gradient(180deg, #21252929 -20px, transparent);
   font-weight: bold;
   color: #000;
+  height: 50px;
 
   &.dark {
     background: linear-gradient(180deg, #212529b8, transparent);

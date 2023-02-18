@@ -32,7 +32,7 @@
         <span class="divider"></span>
 
         <!--Language Changer-->
-        <LanguageChanger :only-white="true"></LanguageChanger>
+        <LanguageChanger></LanguageChanger>
       </div>
     </div>
   </q-layout>

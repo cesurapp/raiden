@@ -1,21 +1,22 @@
 <template>
-  <slot :options="localeOptions">
-    <q-select :dark="onlyWhite" v-model="$i18n.locale" :options="localeOptions" borderless emit-value map-options dense>
-      <template v-slot:prepend><q-icon name="language" /></template>
-
-      <template v-slot:option="scope">
-        <q-item v-bind="scope.itemProps" dense>
-          <q-item-section avatar>
-            <q-icon :name="scope.opt.icon" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>{{ scope.opt.label }}</q-item-label>
-            <q-item-label>{{ scope.opt.description }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </template>
-    </q-select>
-  </slot>
+  <q-btn-dropdown
+    flat
+    rounded
+    class="disable-icon"
+    icon="language"
+    :menu-offset="[0, 8]"
+    no-caps
+    :label="$t(curentLocale)"
+  >
+    <q-list style="min-width: 140px" v-close-popup>
+      <q-item v-for="locale in localeOptions" :key="locale" @click="$i18n.locale = locale.value" clickable>
+        <q-item-section side><q-icon :name="locale.icon" /></q-item-section>
+        <q-item-section
+          ><q-item-label>{{ locale.label }}</q-item-label></q-item-section
+        >
+      </q-item>
+    </q-list>
+  </q-btn-dropdown>
 </template>
 
 <script lang="ts">
@@ -23,12 +24,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'LanguageChanger',
-  props: {
-    onlyWhite: {
-      type: Boolean,
-      default: null,
-    },
-  },
   computed: {
     curentLocale() {
       return this.$i18n.locale as string;
