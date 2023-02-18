@@ -85,7 +85,7 @@ Generally all components have dark mode. You can use it for special operations a
 
 ```vue
 <template>
-  <div :class="{ dark: $q.dark.isActive }">Content</div>
+  <div :class="{ 'dark': $q.dark.isActive }">Content</div>
 </template>
 ```
 
@@ -122,8 +122,6 @@ notifyShow('message', 'caption', 'info', {});
 #### SFC Globals
 
 ```js
-import { createMetaMixin } from 'quasar';
-
 export default defineComponent({
   name: 'LoginPage',
   mounted() {
@@ -135,6 +133,9 @@ export default defineComponent({
 
     // Axios isBusy (type Ref)
     this.$isBusy;
+
+    // Api Permisson List
+    this.$permission;
 
     // Auth Store -> stores/AuthStore.ts
     this.$authStore;
@@ -170,4 +171,148 @@ client;
 // Using Store
 const authStore = useAuthStore();
 const appStore = useAppStore();
+```
+
+### Check Permission
+```vue
+<template>
+  <q-btn rounded icon="add" v-if="$authStore.hasPermission($permission.AdminAccount.LIST)"></q-btn>
+</template>
+
+<script>
+import { Permission } from 'api/Enum/Permission';
+
+export default defineComponent({
+  name: 'TestPage',
+  methods: {
+   test() {
+     // Using Global
+     if (this.$authStore.hasPermission(this.$permission.AdminAccount.LIST)) {}
+
+     // Using Import
+     if (this.$authStore.hasPermission(Permission.AdminAccount.LIST)) {}
+   }
+  },
+});
+</script>
+```
+
+### Add Route & BreadCrumbs
+```js
+export default [
+  {
+    path: '/',            // Route Path
+    name: 'admin',        // Route Name
+    component: () => import('pages/Admin/Layout.vue'), // Dynamic Component
+    meta: {
+      requireAuth: true,  // Login Required
+      userType: [UserType.ADMIN, UserType.SUPERADMIN], // Required User Type
+      breadcrumb: 'Dashboard', // Breadcrumbs Name Translated
+    },
+
+    // Sub Routes
+    children: [
+      {
+        path: '/account',
+        component: () => import('pages/Admin/Account/Accounts.vue'),
+        meta: {
+          breadcrumb: 'Accounts',
+          permission: [Permission.AdminAccount.LIST],
+        },
+      },
+    ],
+  },
+]
+```
+
+### Create New Dashboard (Seller Panel)
+Create routes file: `routes/seller.ts`
+```js
+import { UserType } from 'src/api/Enum/UserType';
+
+export default [
+  {
+    path: '/',
+    name: 'seller',
+    component: () => import('pages/Seller/Layout.vue'),
+    meta: {
+      requireAuth: true,
+      userType: [UserType.SELLER], // Only Seller Account
+      breadcrumb: 'Seller Dashboard',
+    },
+
+    children: [],
+  },
+];
+```
+
+Import routes to `routes/index.ts`:
+```js
+import SellerRoutes from './seller';
+
+const routes: RouteRecordRaw[] = [...SellerRoutes];
+```
+
+Create dashboard layout `pages\Seller\Layout.ts`
+```vue
+<template>
+  <q-layout class="seller" view="lHh LpR lFr">
+    <!--Header-->
+    <q-header elevated>
+      <q-toolbar class="q-pr-md-sm q-pr-lg-md q-pl-md-md q-pl-lg-lg">
+        <div id="head-toolbar"></div>
+
+        <!--BreadCrumbs & Title-->
+        <q-toolbar-title class="q-pl-none">
+          <q-breadcrumbs class="breadcrumbs">
+            <q-breadcrumbs-el
+              v-for="(route, index) in getBreadcrumbs"
+              :key="index"
+              :label="$t(route.meta.breadcrumb)"
+              :to="route.path"
+            />
+          </q-breadcrumbs>
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-header>
+
+    <!--Page Container-->
+    <q-page-container>
+      <router-view v-slot="{ Component }">
+        <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+          <component :is="Component"></component>
+        </transition>
+      </router-view>
+    </q-page-container>
+  </q-layout>
+</template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { createMetaMixin } from 'quasar';
+
+export default defineComponent({
+  name: 'SellerLayout',
+  data: () => ({
+    test: true,
+  }),
+  mixins: [
+    createMetaMixin(function () {
+      return {
+        titleTemplate: (title) => `${title} - ` + this.$appStore.title,
+      };
+    }),
+  ],
+  computed: {
+    getBreadcrumbs() {
+      return this.$route.matched.filter((route) => {
+        return route.meta?.breadcrumb;
+      });
+    },
+  },
+  created() {
+    this.$authStore.reloadUser();
+  }
+});
+</script>
 ```

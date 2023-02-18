@@ -34,6 +34,7 @@ import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import { useAuthStore } from 'stores/AuthStore';
 import { useAppStore } from 'stores/AppStore';
+import { Permission } from 'src/api/Enum/Permission';
 const typeAuthStore = useAuthStore();
 const typeAppStore = useAppStore();
 
@@ -44,6 +45,7 @@ declare module '@vue/runtime-core' {
     $isBusy: Ref;
     $authStore: typeof typeAuthStore;
     $appStore: typeof typeAppStore;
+    $permission: typeof Permission;
   }
 }
 
@@ -59,6 +61,7 @@ export default boot(({ app, router, store }) => {
   app.config.globalProperties.$isBusy = isBusy;
   app.config.globalProperties.$authStore = authStore;
   app.config.globalProperties.$appStore = useAppStore(store);
+  app.config.globalProperties.$permission = Permission;
 
   // Route Guard
   routeGuard(router, authStore, i18n);
