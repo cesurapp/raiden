@@ -99,4 +99,5 @@ export default {
   // Edit Profile
   'Edit Profile': 'Profilim',
   'Current Password': 'Mevcut Şifre',
+  'Language': 'Dil'
 };

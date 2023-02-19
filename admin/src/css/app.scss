@@ -2,7 +2,7 @@
  * Animate CSS
  */
 :root {
-  --animate-duration: 170ms;
+  --animate-duration: 150ms;
 }
 
 .q-item__section--side {
@@ -288,6 +288,44 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 body.body--dark {
   .divider {
     background: $grey-6;
+  }
+}
+
+/**
+ * Table
+ */
+.q-table th, .q-table td {
+  padding: 5px 10px;
+}
+.q-table thead tr, .q-table tbody td{
+  height: 46px;
+}
+.q-table--dark .q-table__bottom, .q-table--dark thead, .q-table--dark tr, .q-table--dark th, .q-table--dark td{
+  border-color: rgba(255,255,255, 0.15);
+}
+.q-table--dark thead, .q-table--dark th,
+.q-table--dark .q-table__bottom{
+  background: $dark-page;
+}
+/*
+.q-table__top,
+.q-table__bottom,
+thead tr:first-child th {
+  background-color: #c1f4cd;
+}*/
+
+.table-sticky {  /* height or max-height is important */
+  height: calc(100vh - 72px - 46px);
+
+  thead tr th {
+    position: sticky;
+    z-index: 1;
+  }
+  thead tr:first-child th {
+    top: 0;
+  }
+  &.q-table--loading thead tr:last-child th {
+    top: 48px;
   }
 }
 

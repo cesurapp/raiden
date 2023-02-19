@@ -170,7 +170,7 @@ export default defineComponent({
 
   .logo {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0 30px;
+    padding: 0 24px;
   }
 
   .q-item {

@@ -28,15 +28,13 @@
           <div class="sm-hide md-hide lg-hide xl-hide">
             <q-btn-dropdown
               dropdown-icon="more_vert"
-              content-class="transparent shadow-0"
+              content-class="transparent shadow-0 action-dropdown"
               dense
               outline
-              auto-close
               rounded
               color="primary"
-              class="action_dropdown"
             >
-              <div class="column q-gutter-sm q-py-sm">
+              <div class="column q-gutter-sm">
                 <slot name="actions"></slot>
               </div>
             </q-btn-dropdown>
@@ -144,5 +142,9 @@ export default defineComponent({
   .content-liquid {
     width: 100%;
   }
+}
+
+.action-dropdown{
+  backdrop-filter: none;
 }
 </style>

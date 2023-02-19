@@ -5,7 +5,7 @@
     clearable
     v-model="locale"
     :options="localeOptions"
-    label="Language"
+    :label="$t('Language')"
     emit-value
     map-options
   >
@@ -36,7 +36,7 @@ export default defineComponent({
         let country = locale.split('-')[1].toLowerCase();
 
         locales.push({
-          value: locale,
+          value: locale.split('-')[0].toLowerCase(),
           label: this.$t(locale),
           icon: `img:/images/flags/${String(country).toLowerCase()}.svg`,
         });

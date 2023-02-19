@@ -5,9 +5,10 @@
         'bg-dark dark-shadow-1': $q.dark.isActive && !borderless,
         'bg-white shadow-1': !$q.dark.isActive && !borderless,
         'rounded-borders q-pa-md': !borderless,
-        'content-fixed q-my-md': !liquid,
-        'content-liquid q-my-md': liquid,
-        'q-mx-md q-mx-lg-lg': !clear,
+        'content-fixed': !liquid,
+        'content-liquid': liquid,
+        'q-mx-md q-mx-lg-lg q-my-md': !clear,
+        'cleared': clear,
         borderless: borderless,
       }"
     >
@@ -41,6 +42,7 @@ export default defineComponent({
 .page-content {
   display: flex;
   justify-content: center;
+  flex: 1;
 
   .content-fixed {
     width: 100%;
@@ -49,6 +51,21 @@ export default defineComponent({
 
   .content-liquid {
     width: 100%;
+  }
+
+  .cleared {
+    .q-table__card{
+      border-radius: 0;
+    }
+
+    .q-table th:first-of-type,
+    .q-table td:first-of-type {
+      padding-left: 24px;
+    }
+    .q-table th:last-of-type,
+    .q-table td:last-of-type {
+      padding-right: 24px;
+    }
   }
 }
 </style>
