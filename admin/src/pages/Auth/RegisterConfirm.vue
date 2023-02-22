@@ -31,7 +31,7 @@
         <q-btn
           :label="$t('Approve')"
           @click="onSubmit"
-          :loading="$isBusy.value"
+          :loading="$appStore.isBusy"
           no-caps
           color="primary"
           icon="task_alt"

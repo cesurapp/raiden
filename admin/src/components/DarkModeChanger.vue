@@ -5,7 +5,6 @@
       :color="!isDarkMode ? (onlyWhite ? 'white' : 'dark') : 'white'"
       round
       :ripple="false"
-      size="md"
       flat
       @click="$q.dark.set(!$q.dark.isActive)"
       :icon="!isDarkMode ? 'dark_mode' : 'mode_night'"

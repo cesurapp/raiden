@@ -91,7 +91,7 @@
           <q-btn
             :label="$t('Save')"
             @click="onSubmit"
-            :loading="$isBusy.value"
+            :loading="$appStore.isBusy"
             color="primary"
             icon="how_to_reg"
           />

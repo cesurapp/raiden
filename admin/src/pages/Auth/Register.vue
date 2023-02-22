@@ -73,7 +73,7 @@
         <q-btn
           :label="$t('Register')"
           @click="onSubmit"
-          :loading="$isBusy.value"
+          :loading="$appStore.isBusy"
           no-caps
           color="primary"
           icon="how_to_reg"

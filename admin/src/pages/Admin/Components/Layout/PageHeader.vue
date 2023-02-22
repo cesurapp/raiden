@@ -4,57 +4,34 @@
     :class="{
       bordered: !borderless,
       'bg-dark': $q.dark.isActive && !borderless,
-      'bg-white': !$q.dark.isActive && !borderless,
+      'tabbed': $slots.tabs
     }"
   >
-    <div
-      :class="{
-        'content-fixed q-mx-md q-mx-lg-lg': !liquid,
-        'content-liquid': liquid,
-      }"
-    >
-      <div
-        class="title-area q-pt-md flex items-center justify-between"
-        :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-md': !borderless && !$slots.tabs }"
-      >
+    <div :class="{ 'content-fixed q-mx-md q-mx-lg-lg': !liquid, 'content-liquid': liquid }">
+      <div class="q-pt-smh flex items-center justify-between full-height" :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-smh': !borderless && !$slots.tabs }">
         <!--Title-->
-        <div class="title text-h4">
-          <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
-        </div>
+        <div class='title text-h4'><slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot></div>
 
-        <!--Actions-->
-        <div class="actions" v-if="$slots.actions">
-          <q-btn-group class="xs-hide"><slot name="actions"></slot></q-btn-group>
-          <div class="sm-hide md-hide lg-hide xl-hide">
-            <q-btn-dropdown
-              dropdown-icon="more_vert"
-              content-class="transparent shadow-0 action-dropdown"
-              dense
-              outline
-              rounded
-              color="primary"
-            >
-              <div class="column q-gutter-sm">
-                <slot name="actions"></slot>
-              </div>
-            </q-btn-dropdown>
-          </div>
+        <!--Header Actions-->
+        <div class="header-actions" v-if="$slots.headerActions">
+          <q-btn-group unelevated class="xs-hide" v-if='!$q.screen.xs'><slot name="headerActions"></slot></q-btn-group>
+          <q-btn-dropdown
+            v-else
+            dropdown-icon="more_vert"
+            content-class="shadow-0 transparent-dropdown"
+            dense
+            outline
+            rounded
+            color="primary"
+            :menu-offset='[0,12]'
+          >
+            <div class="column q-gutter-sm"><slot name="headerActions"></slot></div>
+          </q-btn-dropdown>
         </div>
       </div>
 
       <!--Tabs-->
-      <q-tabs
-        v-if="$slots.tabs"
-        v-model="tabs"
-        dense
-        align="left"
-        :breakpoint="200"
-        :narrow-indicator="liquid"
-        class="bg-transparent text-primary page-tabs q-mt-sm"
-        :class="{ borderless: borderless, 'q-mx-lg-sm': liquid }"
-      >
-        <slot name="tabs"></slot>
-      </q-tabs>
+      <slot name="tabs"></slot>
     </div>
   </div>
 </template>
@@ -119,6 +96,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   position: relative;
+  min-height: 60px;
 
   &.bordered:before {
     background: rgba(0, 0, 0, 0.12);
@@ -132,6 +110,7 @@ export default defineComponent({
 
   .title {
     font-size: 1.8rem;
+    line-height: 1.8rem;
   }
 
   .content-fixed {
@@ -142,9 +121,9 @@ export default defineComponent({
   .content-liquid {
     width: 100%;
   }
-}
 
-.action-dropdown{
-  backdrop-filter: none;
+  .title-area:not(:empty) + .title {
+    display: none;
+  }
 }
 </style>

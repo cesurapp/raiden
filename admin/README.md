@@ -142,7 +142,7 @@ export default defineComponent({
     this.$client;
 
     // Axios isBusy (type Ref)
-    this.$isBusy;
+    this.$appStore.isBusy;
 
     // Api Permisson List
     this.$permission;

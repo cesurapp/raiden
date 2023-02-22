@@ -16,18 +16,17 @@
         </q-card-section>
       </q-card>
 
-      <q-list>
+      <q-list v-ripple='false'>
         <!--Header-->
-        <q-item-label
-          header
-          class="flex items-center justify-between q-py-sm panel-head"
-          :class="{ dark: $q.dark.isActive }"
-        >
-          <span class="header">{{ $t('Notifications') }}</span>
-          <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
-            <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
-          </q-btn>
-        </q-item-label>
+        <q-item class='panel-head q-mb-sm'>
+          <q-item-section avatar><q-icon color="white" name="notifications" /></q-item-section>
+          <q-item-section><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section>
+          <q-item-section side top>
+            <q-btn color="white" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
+              <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
+            </q-btn>
+          </q-item-section>
+        </q-item>
 
         <!--Items-->
         <q-item
@@ -299,15 +298,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .panel-head {
-  background: linear-gradient(180deg, #21252929 -20px, transparent);
   font-weight: bold;
-  color: #000;
-  height: 50px;
-
-  &.dark {
-    background: linear-gradient(180deg, #212529b8, transparent);
-    color: #fff;
-  }
+  height: 46px;
+  background: $primary;
+  color: #FFF;
 
   .header {
     font-size: 16px;

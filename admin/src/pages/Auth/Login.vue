@@ -87,7 +87,7 @@
         class="q-mt-md"
         no-caps
         :label="$t('Login')"
-        :loading="$isBusy.value"
+        :loading="$appStore.isBusy"
         @click="onSubmit"
         color="primary"
         icon="login"

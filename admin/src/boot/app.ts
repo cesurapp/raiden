@@ -15,9 +15,8 @@ const i18n = createI18n({
  * Create Axios
  */
 import axios, { AxiosInstance } from 'axios';
-import { ref, Ref } from 'vue';
+import { ref } from 'vue';
 const client = axios.create({ baseURL: process.env.API });
-const isBusy = ref(false);
 
 /**
  * Create API Client
@@ -42,29 +41,28 @@ declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $api: Api;
     $client: AxiosInstance;
-    $isBusy: Ref;
     $authStore: typeof typeAuthStore;
     $appStore: typeof typeAppStore;
     $permission: typeof Permission;
   }
 }
 
-export { i18n, client, isBusy, api, apiRaw };
+export { i18n, client, api, apiRaw };
 export default boot(({ app, router, store }) => {
   app.use(i18n);
   const exceptions = ref({});
   const authStore = useAuthStore(store);
+  const appStore = useAppStore(store);
 
   // Init Global Properties
   app.config.globalProperties.$api = api;
   app.config.globalProperties.$client = client;
-  app.config.globalProperties.$isBusy = isBusy;
   app.config.globalProperties.$authStore = authStore;
-  app.config.globalProperties.$appStore = useAppStore(store);
+  app.config.globalProperties.$appStore = appStore;
   app.config.globalProperties.$permission = Permission;
 
   // Route Guard
   routeGuard(router, authStore, i18n);
-  axiosInterceptors(client, authStore, i18n, isBusy, exceptions);
+  axiosInterceptors(client, authStore, appStore, i18n, exceptions);
   validationRules(app, i18n, exceptions);
 });

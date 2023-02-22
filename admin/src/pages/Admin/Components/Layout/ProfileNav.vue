@@ -31,9 +31,7 @@
       </q-item>
       <q-item clickable v-close-popup class="text-red-5" @click="$authStore.logout()">
         <q-item-section side><q-icon color="red-5" name="logout" /></q-item-section>
-        <q-item-section
-          ><q-item-label>{{ $t('Sign out') }}</q-item-label></q-item-section
-        >
+        <q-item-section><q-item-label>{{ $t('Sign out') }}</q-item-label></q-item-section>
       </q-item>
     </q-list>
   </q-btn-dropdown>

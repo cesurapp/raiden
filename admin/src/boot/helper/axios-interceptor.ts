@@ -6,7 +6,10 @@ import { Ref } from 'vue';
 /**
  * Configure Request
  */
-function requestConfig(config: AxiosRequestConfig, i18n, isBusy: Ref, authStore) {
+function requestConfig(config: AxiosRequestConfig, i18n, authStore, appStore) {
+  config.uniqId = Math.random().toString(36).replace('0.','');
+  appStore.busyProcess(config.uniqId);
+
   // Language
   config.headers.common['Accept-Language'] = i18n.global.locale['value'];
 
@@ -20,14 +23,13 @@ function requestConfig(config: AxiosRequestConfig, i18n, isBusy: Ref, authStore)
     config.headers.common['SWITCH_USER'] = authStore.switchedUser;
   }
 
-  isBusy.value = true;
   return config;
 }
 
 /**
  * Success Response
  */
-function responseSuccess(response: AxiosResponse, isBusy: Ref) {
+function responseSuccess(response: AxiosResponse, appStore) {
   const msg = response.config.showMessage;
 
   if ((typeof msg === 'undefined' || msg) && response.data.hasOwnProperty('message')) {
@@ -38,7 +40,7 @@ function responseSuccess(response: AxiosResponse, isBusy: Ref) {
     });
   }
 
-  isBusy.value = false;
+  appStore.busyComplete(response.config.uniqId);
 
   return response;
 }
@@ -49,12 +51,10 @@ async function responseError(
   error: AxiosError,
   client: AxiosInstance,
   authStore,
-  isBusy: Ref,
+  appStore,
   globalExceptions: Ref,
   i18n
 ) {
-  isBusy.value = false;
-
   // Api Network Error
   if (error.message === 'Network Error') {
     if (!networkError) {
@@ -75,6 +75,7 @@ async function responseError(
 
   // Render Response Error
   if (error.response) {
+    appStore.busyComplete(error.response?.config);
     const type = error.response.data?.type;
 
     // Token Refresh and Continue Current Request
@@ -114,16 +115,16 @@ async function responseError(
   return Promise.reject(error);
 }
 
-export default (client, authStore, i18n, isBusy: Ref, globalExceptions: Ref) => {
+export default (client, authStore, appStore, i18n, globalExceptions: Ref) => {
   client.interceptors.request.use(
-    async (config) => requestConfig(config, i18n, isBusy, authStore),
-    async (error) => () => {
-      isBusy.value = false;
+    async (config: AxiosRequestConfig) => requestConfig(config, i18n, authStore, appStore),
+    async (error: AxiosError) => () => {
+      appStore.busyProcess(error.config.uniqId);
       return Promise.reject(error);
     }
   );
   client.interceptors.response.use(
-    async (response) => responseSuccess(response, isBusy),
-    async (error) => responseError(error, client, authStore, isBusy, globalExceptions, i18n)
+    async (response) => responseSuccess(response, appStore),
+    async (error) => responseError(error, client, authStore, appStore, globalExceptions, i18n)
   );
 };

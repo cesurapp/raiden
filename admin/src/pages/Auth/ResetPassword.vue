@@ -58,7 +58,7 @@
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" no-caps :loading="$isBusy.value" type="submit" color="primary" icon="how_to_reg" />
+        <q-btn :label="$t('Change')" no-caps :loading="$appStore.isBusy" type="submit" color="primary" icon="how_to_reg" />
         <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>

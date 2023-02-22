@@ -58,14 +58,12 @@
 
     <!--Footer-->
     <div class="footer flex items-center justify-evenly">
-      <LanguageChanger dense></LanguageChanger>
-      <q-separator class="q-mx-sm" dark vertical inset />
-      <DarkModeChanger dense :only-white="true"></DarkModeChanger>
-      <q-separator class="q-mx-sm" dark vertical inset />
-      <q-btn flat dense round icon="arrow_back_ios_new" size="md" @click="this.menu = !this.menu" />
+      <LanguageChanger size='sm'></LanguageChanger>
+      <DarkModeChanger size='sm' :only-white="true"></DarkModeChanger>
     </div>
 
-    <teleport to="#head-toolbar" v-if="!menu && mounted">
+    <!--Toogle Button-->
+    <teleport to="#head-toolbar" v-if="mounted">
       <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="this.menu = !this.menu" />
     </teleport>
   </q-drawer>
@@ -201,10 +199,15 @@ export default defineComponent({
     background: $primary;
   }
 
+  .q-item__label--header{
+    color: rgba(255, 255, 255, 0.64);
+  }
+
   .footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    min-height: 44px;
     & > * {
-      transform: scale(0.8);
+      transform: scale(1.1);
     }
   }
 }

@@ -1,41 +1,26 @@
 <template>
-  <q-page class="row q-mx-md q-my-md borderless" style="width: 200px"> </q-page>
+  <q-page>
+    <PageContent borderless liquid>
+      <q-btn label='Open' @click='test' :loading='$appStore.isBusy'></q-btn>
+
+      <q-dialog v-model="fixed">
+        <q-card>
+          <SimpleTable></SimpleTable>
+        </q-card>
+      </q-dialog>
+    </PageContent>
+  </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
+import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
+import SimpleTable from 'components/SimpleTable/Index.vue';
 
 export default defineComponent({
   name: 'AdminDashboard',
-  data: () => ({
-    confirm: false,
-    current: 5,
-    options: ['Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'],
-    group: 'op1',
-    options2: [
-      {
-        label: 'Option 1',
-        value: 'op1',
-      },
-      {
-        label: 'Option 2',
-        value: 'op2',
-      },
-      {
-        label: 'Option 3',
-        value: 'op3',
-      },
-    ],
-    model22: { from: '2020/07/08', to: '2020/07/17' },
-    model2: null,
-    model: null,
-    teal: true,
-    orange: false,
-    red: false,
-    cyan: true,
-    value: false,
-  }),
+  components: { SimpleTable, PageContent },
   mixins: [
     createMetaMixin(function () {
       return {
@@ -43,10 +28,15 @@ export default defineComponent({
       };
     }),
   ],
+  data: () => ({
+    fixed: false,
+  }),
   methods: {
     test() {
+      console.log(this.$appStore.isBusy)
+      this.$api.accountList();
       // Super
-      this.$authStore.switchUser('asd@sadsa.com');
+      //this.$authStore.switchUser('asd@sadsa.com');
     },
   },
 });

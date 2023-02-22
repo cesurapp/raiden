@@ -43,6 +43,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   flex: 1;
+  width: 100%;
 
   .content-fixed {
     width: 100%;
@@ -59,12 +60,31 @@ export default defineComponent({
     }
 
     .q-table th:first-of-type,
-    .q-table td:first-of-type {
+    .q-table td:first-of-type,
+    .q-table__bottom {
       padding-left: 24px;
     }
     .q-table th:last-of-type,
-    .q-table td:last-of-type {
+    .q-table td:last-of-type,
+    .q-table__bottom{
       padding-right: 24px;
+    }
+  }
+}
+
+.screen--xs .page-content,
+.screen--sm .page-content,
+.screen--md .page-content {
+  .cleared {
+    .q-table th:first-of-type,
+    .q-table td:first-of-type,
+    .q-table__bottom {
+      padding-left: 16px;
+    }
+    .q-table th:last-of-type,
+    .q-table td:last-of-type,
+    .q-table__bottom{
+      padding-right: 16px;
     }
   }
 }
