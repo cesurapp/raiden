@@ -14,12 +14,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Create Notification Current User or Specific User.
  */
 #[Autoconfigure(public: true)]
-readonly class NotificationPusher
+class NotificationPusher
 {
+    private Notification $notification;
+
     public function __construct(
-        private TranslatorInterface $translator,
-        private NotificationRepository $repo,
-        private CurrentUser $currentUser
+        private readonly TranslatorInterface $translator,
+        private readonly NotificationRepository $repo,
+        private readonly CurrentUser $currentUser
     ) {
     }
 
@@ -31,16 +33,23 @@ readonly class NotificationPusher
         ?string $title = null,
         NotificationType $type = NotificationType::SUCCESS,
         User $user = null
-    ): Notification {
-        return (new Notification())
+    ): self {
+        $this->notification = (new Notification())
             ->setOwner($user ?? $this->currentUser->get())
             ->setType($type)
             ->setTitle($title ? $this->translator->trans($title) : null)
             ->setMessage($this->translator->trans($message));
+
+        return $this;
     }
 
-    public function send(Notification $notification): void
+    public function get(): Notification
     {
-        $this->repo->add($notification);
+        return $this->notification;
+    }
+
+    public function send(): void
+    {
+        $this->repo->add($this->notification);
     }
 }

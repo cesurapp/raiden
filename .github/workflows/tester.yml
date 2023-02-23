@@ -70,14 +70,14 @@ jobs:
 
       # Run Tests
       - name: Install Quality Tools
-        run: composer install-tool
+        run: composer qa:install
       - name: Install App Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: PHPStan
-        run: composer phpstan
+        run: composer qa:phpstan
       - name: PHPCS Fixer
-        run: composer lint
+        run: composer qa:lint
       - name: Execute PHPUnit
-        run: composer test-stop
+        run: composer test:stop
         env:
           DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?serverVersion=14

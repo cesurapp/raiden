@@ -4,11 +4,11 @@
     <PageHeader borderless liquid></PageHeader>
 
     <!--Page Content-->
-    <PageContent liquid borderless>
+    <PageContent borderless liquid >
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
         <q-input
-          filled
+          outlined
           lazy-rules
           v-model="data.email"
           :label="$t('Email')"
@@ -21,17 +21,42 @@
 
         <!--Phone-->
         <PhoneInput
-          filled
-          ref="phone"
+          outlined
           v-model:phone-number="data.phone"
           v-model:phone-country="data.phone_country"
           :required="false"
           :label="$t('Phone')"
         ></PhoneInput>
 
+        <!--FirstName-->
+        <q-input
+          outlined
+          v-model="data.first_name"
+          :label="$t('First Name')"
+          lazy-rules
+          :rules="[$rules.required(), $rules.minLength(2)]"
+        >
+          <template v-slot:prepend><q-icon name="person" /></template>
+        </q-input>
+
+        <!--LastName-->
+        <q-input
+          outlined
+          v-model="data.last_name"
+          :label="$t('Last Name')"
+          lazy-rules
+          key="222"
+          :rules="[$rules.required(), $rules.minLength(2)]"
+        >
+          <template v-slot:prepend><q-icon name="person" /></template>
+        </q-input>
+
+        <!-- Language -->
+        <LanguageInput v-model='data.language'></LanguageInput>
+
         <!--Current Password-->
         <q-input
-          filled
+          outlined
           :type="isPwd ? 'password' : 'text'"
           v-model="data.current_password"
           :label="$t('Current Password')"
@@ -48,7 +73,7 @@
 
         <!--Password-->
         <q-input
-          filled
+          outlined
           :type="isPwd ? 'password' : 'text'"
           v-model="data.password"
           :label="$t('Password')"
@@ -61,36 +86,12 @@
           </template>
         </q-input>
 
-        <!--FirstName-->
-        <q-input
-          filled
-          v-model="data.first_name"
-          :label="$t('First Name')"
-          lazy-rules
-          :rules="[$rules.required(), $rules.minLength(2)]"
-        >
-          <template v-slot:prepend><q-icon name="person" /></template>
-        </q-input>
-
-        <!--LastName-->
-        <q-input
-          filled
-          v-model="data.last_name"
-          :label="$t('Last Name')"
-          lazy-rules
-          key="222"
-          :rules="[$rules.required(), $rules.minLength(2)]"
-        >
-          <template v-slot:prepend><q-icon name="person" /></template>
-        </q-input>
-
         <!--Actions-->
         <div>
           <q-btn
             :label="$t('Save')"
             @click="onSubmit"
-            :loading="$isBusy.value"
-            no-caps
+            :loading="$appStore.isBusy"
             color="primary"
             icon="how_to_reg"
           />
@@ -105,12 +106,12 @@ import { defineComponent } from 'vue';
 import PageHeader from '../Components/Layout/PageHeader.vue';
 import PageContent from '../Components/Layout/PageContent.vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
-
 import { createMetaMixin } from 'quasar';
+import LanguageInput from 'components/Language/LanguageInput.vue';
 
 export default defineComponent({
   name: 'EditProfile',
-  components: { PageHeader, PageContent, PhoneInput },
+  components: { LanguageInput, PageHeader, PageContent, PhoneInput },
   mixins: [
     createMetaMixin(function () {
       return {
@@ -124,10 +125,11 @@ export default defineComponent({
       email: null,
       phone: null,
       phone_country: null,
-      password: null,
-      current_password: null,
       first_name: null,
       last_name: null,
+      language: null,
+      current_password: null,
+      password: null,
     },
   }),
   created() {

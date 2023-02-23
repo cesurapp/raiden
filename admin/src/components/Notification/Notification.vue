@@ -1,5 +1,5 @@
 <template>
-  <q-drawer side="right" :width="300" :breakpoint="1440" v-model="drawer" elevated @before-show="onShowPanel">
+  <q-drawer side="right" :width="320" :breakpoint="1440" v-model="drawer" elevated @before-show="onShowPanel">
     <q-scroll-area class="fit">
       <!--System Notification Alert-->
       <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true">
@@ -16,53 +16,47 @@
         </q-card-section>
       </q-card>
 
-      <q-list>
+      <q-list v-ripple='false'>
         <!--Header-->
-        <q-item-label
-          header
-          class="flex items-center justify-between q-py-sm"
-          :class="{ 'bg-grey-3': !$q.dark.isActive, 'bg-dark-page': $q.dark.isActive }"
-        >
-          <span class="header">{{ $t('Notifications') }}</span>
-          <q-btn color="primary" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
-            <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
-          </q-btn>
-        </q-item-label>
+        <q-item class='panel-head q-mb-sm'>
+          <q-item-section avatar><q-icon color="white" name="notifications" /></q-item-section>
+          <q-item-section><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section>
+          <q-item-section side top>
+            <q-btn color="white" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
+              <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
+            </q-btn>
+          </q-item-section>
+        </q-item>
 
         <!--Items-->
         <q-item
           v-for="item in getData"
           :key="item.id"
+          v-ripple
+          clickable
+          @click="
+            read(item);
+            open(item);
+          "
           class="cursor-pointer item"
           :active="!item.readed"
           active-class="text-blue"
         >
-          <q-item-section
-            @click="
-              read(item);
-              open(item);
-            "
-          >
+          <q-item-section>
             <q-item-label lines="1">{{ item.title || item.message }}</q-item-label>
             <q-item-label caption>{{ item.created_at.date }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
-            <q-btn @click="remove(item)" size="sm" flat round color="red" icon="delete">
+            <q-btn @click.stop="remove(item)" size="sm" flat round color="red" icon="delete">
               <q-tooltip>{{ $t('Remove') }}</q-tooltip>
             </q-btn>
           </q-item-section>
         </q-item>
 
         <!--Items-->
-        <q-btn
-          v-if="resp.pager?.next"
-          @click="next()"
-          class="full-width"
-          :label="$t('Load More')"
-          size="md"
-          flat
-          square
-        ></q-btn>
+        <div class="full-width flex justify-center q-my-xs">
+          <q-btn v-if="resp.pager?.next" @click="next()" :label="$t('Load More')" size="md" icon="refresh" flat></q-btn>
+        </div>
       </q-list>
     </q-scroll-area>
   </q-drawer>
@@ -188,7 +182,7 @@ export default defineComponent({
       this.unreadCount = 0;
     },
     remove(item) {
-      this.$api.notificationDelete(item.id).then(() => {
+      this.$api.notificationDelete(item.id, { showMessage: false }).then(() => {
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       });
     },
@@ -303,13 +297,25 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.header {
-  font-size: 16px;
+.panel-head {
+  font-weight: bold;
+  height: 46px;
+  background: $primary;
+  color: #FFF;
+
+  .header {
+    font-size: 16px;
+  }
 }
 
 .item {
+  min-height: 40px;
+  padding: 8px 10px;
+  margin: 0 6px;
+  border-radius: 6px;
+
   &:hover {
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 

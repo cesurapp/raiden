@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
-import { api } from 'boot/app';
+import { api, apiRaw } from 'boot/app';
 import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
-import { AxiosRequestConfig } from 'axios';
 import { watch } from 'vue';
 
 export const useAuthStore = defineStore('auth', {
@@ -12,6 +11,8 @@ export const useAuthStore = defineStore('auth', {
     appToken: LocalStorage.getItem('appToken'),
     refreshToken: LocalStorage.getItem('refreshToken'),
     switchedUser: LocalStorage.getItem('switchedUser'),
+    isRefreshingState: false,
+    isLogoutState: false,
   }),
 
   actions: {
@@ -58,14 +59,17 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Reload token with Refresh Token
      */
-    async reloadTokenWithRefreshToken(config: AxiosRequestConfig): Promise<any> {
-      const refreshToken = this.refreshToken;
-      this.clearToken();
+    reloadTokenWithRefreshToken(): Promise<any> {
+      if (this.isRefreshingState) {
+        return this.isRefreshingState;
+      }
 
-      return await api.securityRefreshToken({ refresh_token: refreshToken }).then((r) => {
-        this.appToken = r.data.data.token;
-        config.headers['Authorization'] = `Bearer ${this.appToken}`;
-      });
+      return (this.isRefreshingState = apiRaw
+        .securityRefreshToken({ refresh_token: this.refreshToken })
+        .then((r) => {
+          this.appToken = r.data.data.token;
+        })
+        .finally(() => (this.isRefreshingState = false)));
     },
 
     /**
@@ -73,9 +77,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async reloadUser() {
       if (this.isLoggedIn()) {
-        await api.accountShowProfile().then((r) => {
-          this.updateUser(r.data.data);
-        });
+        await api.accountShowProfile().then((r) => this.updateUser(r.data.data));
       }
     },
 
@@ -89,12 +91,16 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Logout User and Clear Token
      */
-    async logout(showMessage = true) {
-      await api
-        .securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
-        .finally(() => this.clearToken());
+    async logout(showMessage = false) {
+      this.router.push({ name: 'auth.login' }).then(() => {
+        this.clearToken();
 
-      this.router.push({ name: 'auth.login' });
+        if (!this.isLogoutState) {
+          this.isLogoutState = api
+            .securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
+            .finally(() => (this.isLogoutState = false));
+        }
+      });
     },
 
     /**
@@ -177,6 +183,10 @@ export const useAuthStore = defineStore('auth', {
 // Set State to LocalStorage
 watch(useAuthStore().$state, (states) => {
   Object.entries(states).forEach(([k, v]) => {
+    if (['isLogoutState', 'isRefreshingState'].includes(k)) {
+      return;
+    }
+
     if (v === null) {
       LocalStorage.remove(k);
     } else {

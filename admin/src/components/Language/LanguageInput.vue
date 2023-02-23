@@ -1,13 +1,21 @@
 <template>
-  <q-select :options="localeOptions" emit-value map-options dense>
+  <q-select
+    bottom-slots
+    outlined
+    clearable
+    v-model="locale"
+    :options="localeOptions"
+    :label="$t('Language')"
+    emit-value
+    map-options
+  >
     <template v-slot:prepend><q-icon name="language" /></template>
     <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" dense>
+      <q-item v-bind="scope.itemProps">
         <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
-        <q-item-section>
-          <q-item-label>{{ scope.opt.label }}</q-item-label>
-          <q-item-label>{{ scope.opt.description }}</q-item-label>
-        </q-item-section>
+        <q-item-section
+          ><q-item-label>{{ scope.opt.label }}</q-item-label></q-item-section
+        >
       </q-item>
     </template>
   </q-select>
@@ -28,7 +36,7 @@ export default defineComponent({
         let country = locale.split('-')[1].toLowerCase();
 
         locales.push({
-          value: locale,
+          value: locale.split('-')[0].toLowerCase(),
           label: this.$t(locale),
           icon: `img:/images/flags/${String(country).toLowerCase()}.svg`,
         });

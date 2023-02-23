@@ -8,7 +8,7 @@
         'content-fixed': !liquid,
         'content-liquid': liquid,
         'q-mx-md q-mx-lg-lg': !clear,
-        'borderless': borderless
+        borderless: borderless,
       }"
     >
       <slot></slot>

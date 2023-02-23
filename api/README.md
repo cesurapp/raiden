@@ -57,7 +57,7 @@ cp .env .env.local
 cp .server.php .server.local.php
 
 # Install Dependency
-composer install-tool # (PHPStan - PHPCs Fixer)
+composer qa:install # (PHPStan - PHPCsFixer)
 composer install
 
 # Create PostgreSql Database
@@ -164,14 +164,17 @@ cp .phpunit.xml.dist .phpunit.xml
 __Commands__
 
 ```shell
-composer analyse    # PHPStan Analysis
-composer fix        # PHP-Cs-Fixer Fix
-composer test       # PHPUnit Test
-composer test-stop  # PHPUnit Test stop First Error
+composer qa:phpstan    # PHPStan Analysis
+composer qa:lint       # PHPCsFixer Linter
+composer qa:fix        # PHPCsFixer Fix
+composer test          # PHPUnit Test
+composer test:stop     # PHPUnit Test stop First Error
+composer fix           # Run All QA & Test
 ```
 
-Packages Documentation
+Documentation
 --------------------
+### Packages
 
 * [Swoole Server](package/SwooleBundle/README.md)
 * [Storage Bundle](package/StorageBundle/README.md)
@@ -179,5 +182,45 @@ Packages Documentation
 * [Api Bundle](package/ApiBundle/README.md)
 * [Library (Coroutine HTTP Client)](package/Library/README.md)
 
-Realtime Notification (Firebase)
---------------------
+### Realtime Notification (Firebase)
+
+__Configure__
+1. Create Firebase Project [Open Firebase Console](https://console.firebase.google.com/)
+2. Open -> Project Settings -> Cloud Messaging
+3. Enable -> Cloud Messaging API (Legacy)
+4. Configure .env ``FIREBASE_DSN=firebase://<ServerKey>@default``
+
+__Send Notification__
+```php
+public function test(NotificationPusher $pusher)
+{
+    $pusher->create('Message Content', 'Title', NotificationType::SUCCESS)->send();
+}
+```
+
+### Mail & Sms Pusher
+__Send Mail__
+```php
+public function sendMail(MailPusher $pusher)
+{
+    $pusher->send(
+        (new \Symfony\Component\Mime\Email())
+            ->to('test@test.com')
+            ->from('test@test.com')
+            ->subject('Subject')
+            ->html('Body')
+    );
+}
+```
+
+__Send SMS__
+```php
+public function sendSms(\App\Admin\Core\Service\SmsPusher $pusher)
+{
+    $pusher
+        ->setPhone(5111111111)
+        ->setCountryCode(90)
+        ->setSubject('Subject, Content')
+        ->send();;
+}
+```

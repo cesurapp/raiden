@@ -43,7 +43,7 @@
         <q-btn
           :label="$t('Reset')"
           no-caps
-          :loading="$isBusy.value"
+          :loading="$appStore.isBusy"
           @click="onSubmit"
           type="button"
           color="primary"

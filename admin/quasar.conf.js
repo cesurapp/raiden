@@ -10,6 +10,7 @@
 
 const { configure } = require('quasar/wrappers');
 const path = require('path');
+require('dotenv').config();
 
 module.exports = configure(function (ctx) {
   return {
@@ -53,6 +54,16 @@ module.exports = configure(function (ctx) {
         browser: ['es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1'],
         node: 'node16',
       },
+      env: {
+        API: process.env.API,
+        FIREBASE_APIKEY: process.env.FIREBASE_APIKEY,
+        FIREBASE_DOMAIN: process.env.FIREBASE_DOMAIN,
+        FIREBASE_PROJECTID: process.env.FIREBASE_PROJECTID,
+        FIREBASE_STORAGEBUCKET: process.env.FIREBASE_STORAGEBUCKET,
+        FIREBASE_SENDERID: process.env.FIREBASE_SENDERID,
+        FIREBASE_APPID: process.env.FIREBASE_APPID,
+        FIREBASE_MEASUREMENTID: process.env.FIREBASE_MEASUREMENTID,
+      },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
@@ -63,7 +74,7 @@ module.exports = configure(function (ctx) {
 
       // publicPath: '/',
       // analyze: true,
-      env: require('dotenv').config().parsed,
+      //env: require('dotenv').config().parsed,
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -121,6 +132,9 @@ module.exports = configure(function (ctx) {
         notify: {
           /* look at QuasarConfOptions from the API card */
         },
+        screen: {
+          bodyClasses: true
+        }
       },
       cssAddon: true,
       // iconSet: 'material-icons', // Quasar icon set

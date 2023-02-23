@@ -99,4 +99,19 @@ export default {
   // Edit Profile
   'Edit Profile': 'Profilim',
   'Current Password': 'Mevcut Şifre',
+  'Language': 'Dil',
+
+  // Table
+  "There were no results!": "Sonuç bulunamadı!",
+  "count record selected": "count kayıt seçildi",
+  'Edit': 'Düzenle',
+  'Delete': 'Sil',
+  'Refresh':'Yenile',
+  'Export': 'Dışarı Aktar',
+  'Yes': 'Evet',
+  'No': 'Hayır',
+  'Cancel': 'İptal',
+  'Delete All': 'Tümünü Sil',
+  'Are you sure you want to delete?': 'Silmek istediğinizden emin misiniz?',
+  'Are you sure you want to delete the selected items?': 'Seçilen öğeleri silmek istediğinizden emin misiniz?',
 };

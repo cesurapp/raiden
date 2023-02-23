@@ -26,13 +26,9 @@
       </div>
 
       <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
-        <!--Dark Mode Changer-->
-        <DarkModeChanger :only-white="true"></DarkModeChanger>
-
+        <DarkModeChanger size='md' :only-white="true"></DarkModeChanger>
         <span class="divider"></span>
-
-        <!--Language Changer-->
-        <LanguageChanger :only-white="true"></LanguageChanger>
+        <LanguageChanger></LanguageChanger>
       </div>
     </div>
   </q-layout>
@@ -54,6 +50,11 @@ export default defineComponent({
       };
     }),
   ],
+  mounted() {
+    if (this.$authStore.isLoggedIn()) {
+      this.$router.push({ path: '/' });
+    }
+  },
 });
 </script>
 

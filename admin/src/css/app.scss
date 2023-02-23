@@ -2,8 +2,30 @@
  * Animate CSS
  */
 :root {
-  --animate-duration: 170ms;
+  --animate-duration: 150ms;
 }
+
+.q-item__section--side {
+  padding-right: 12px;
+  color: currentColor !important;
+
+  & > .q-icon {
+    font-size: 22px;
+  }
+}
+
+.q-pt-smh {
+  padding-top: 12px;
+}
+
+.q-pb-smh {
+  padding-bottom: 12px;
+}
+
+/**
+ * SM Button
+ */
+
 
 /**
  * Q-Input
@@ -11,6 +33,10 @@
 .q-field__control,
 .q-field__marginal {
   height: 44px;
+}
+
+.q-field__marginal {
+  color: $input-marjinal-color;
 }
 
 .q-field__label {
@@ -39,12 +65,12 @@
  */
 .q-item {
   min-height: 40px;
-  padding: 8px 16px;
+  padding: 6px 12px;
 }
 
 .q-tab {
   min-height: 44px;
-  border-radius: 4px;
+  border-radius: $generic-border-radius;
 }
 
 .body.desktop .q-checkbox--dense:not(.disabled):focus .q-checkbox__inner:before,
@@ -52,23 +78,39 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   transform: scale3d(1.8, 1.8, 1);
 }
 
+.q-item__section--avatar {
+  min-width: 34px;
+}
+
 /**
  * Outline Input
  */
 .q-field--outlined {
+  &.q-field--auto-height.q-field--labeled .q-field__control-container {
+    padding-top: 0;
+  }
+
   .q-field__label {
     background: #fff;
-    padding: 0 3px;
     z-index: 2;
+    padding: 0 4px;
+    margin-left: -4px;
   }
 
   &.q-field--float .q-field__label {
     transform: translateY(-100%) scale(0.85) !important;
   }
 
+  .q-field__control:before {
+    border: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .q-field__control:hover:before {
+    border-color: rgba(0, 0, 0, 0.5);
+  }
+
   &.q-field--labeled .q-field__native {
     padding-top: 10px;
-    padding-left: 3px;
   }
 
   &.q-textarea.q-field--labeled .q-field__control-container {
@@ -94,7 +136,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
     }
 
     .q-field__control:hover:before {
-      border-color: rgba(255, 255, 255, .75);
+      border-color: rgba(255, 255, 255, 0.75);
     }
 
     .q-field__label {
@@ -121,8 +163,17 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
  * Filled - Input
  */
 .q-field--filled {
+  .q-field__control,
+  .q-field__marginal {
+    height: 50px;
+  }
+
+  .q-field__label {
+    top: 15px;
+  }
+
   .q-field__control {
-    border-radius: 4px;
+    border-radius: $generic-border-radius;
 
     &:before {
       display: none;
@@ -132,107 +183,111 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   .q-field__control:after {
     border: 2px solid transparent;
     height: 100%;
-    border-radius: 4px;
+    border-radius: $generic-border-radius;
     background: transparent;
     transform: scale3d(1, 1, 1);
   }
 
-  &:hover .q-field__control:after{
-    transition: .2s all;
-    border-color: rgba(255,255,255,0.15);
+  &:hover .q-field__control:after {
+    transition: 0.2s all;
+    border-color: rgba(0, 0, 0, 0.1);
   }
 
   &.q-field--highlighted .q-field__control:after {
     border-color: currentColor;
   }
 
-  .q-field__label {
-    padding: 0 3px;
-    z-index: 2;
-    border-radius: 4px;
-  }
-
   &.q-field--float .q-field__label {
-    background: linear-gradient(180deg, #FFF 0%, #FFF 50%, #f2f2f2 50%);
-    transform: translateY(-100%) scale(0.85) !important;
+    transform: translateY(-40%) scale(0.8) !important;
   }
 
-  &.q-field--labeled .q-field__native {
-    padding-top: 10px;
-    padding-left: 3px;
-  }
-
-  &.q-textarea.q-field--labeled .q-field__control-container {
-    padding-top: 10px;
-  }
-
-  // Dense
-  &.q-field--dense {
-    &.q-field--float .q-field__label {
-      transform: translateY(-85%) scale(0.8) !important;
-    }
-
-    &.q-field--labeled .q-field__native {
-      padding-top: 4px;
-      font-size: 14px;
-    }
-  }
-
-  // Dark
   &.q-field--dark {
     .q-field__control {
       background: var(--q-dark-page);
     }
 
-    &.q-field--float .q-field__label {
-      background: linear-gradient(180deg, var(--q-dark) 0%, var(--q-dark) 50%, var(--q-dark-page) 50%);
-      transform: translateY(-100%) scale(0.85) !important;
+    &:hover:not(.q-field--highlighted) .q-field__control:after {
+      border-color: rgba(255, 255, 255, 0.15);
     }
   }
 }
 
 .borderless {
   .q-field--filled {
-    &.q-field--float .q-field__label {
-      background: linear-gradient(180deg, $body-color 0%, $body-color 50%, #e9eaec 50%);
-    }
-
     &.q-field--dark {
       .q-field__control {
         background: var(--q-dark);
-      }
-
-      &.q-field--float .q-field__label {
-        background: linear-gradient(180deg, var(--q-dark-page) 0%, var(--q-dark-page) 50%, var(--q-dark) 50%);
       }
     }
   }
 }
 
-// Dropdown Menu
+/**
+ * Select
+ */
+.q-field--auto-height .q-field__control,
+.q-field--auto-height .q-field__native {
+  min-height: 44px;
+}
+
+.q-select {
+  .q-chip {
+    margin: 4px 4px 0px 0;
+
+    &.q-chip--dense {
+      padding: 2px 8px;
+      min-height: 22px;
+
+      .q-chip__icon {
+        font-size: 1.34em;
+      }
+    }
+  }
+}
+
+// Q-Menu
 .q-menu {
   backdrop-filter: blur(50px);
-  padding: 0.35rem 0;
+  padding: 6px 0;
 
   .q-item {
-    min-height: 32px;
-    padding: 0.4rem 0.8rem;
-    margin: 0 0.3rem;
-    border-radius: 0.25rem;
+    min-height: 36px;
+    padding: 6px 8px;
+    margin: 0 6px;
+    border-radius: $generic-border-radius;
 
     display: flex;
     align-items: center;
+  }
+}
 
-    .q-icon {
-      margin-right: 0.8rem;
-      font-size: 1.2rem;
-    }
+/**
+ * Dropdown
+ */
+.disable-icon {
+  .q-btn-dropdown__arrow,
+  .q-select__dropdown-icon {
+    display: none;
   }
 }
 
 .q-menu:not(.q-menu--dark) {
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.transparent-dropdown{
+  background: transparent !important;
+  backdrop-filter: none;
+}
+
+/**
+ * Pagination
+ */
+.q-pagination__content > .q-btn,
+.q-pagination__content > .q-input,
+.q-pagination__middle > .q-btn {
+  min-width: 30px !important;
 }
 
 /*
@@ -252,6 +307,142 @@ body.body--dark {
   .divider {
     background: $grey-6;
   }
+}
+
+/**
+ * Table
+ */
+.q-table th, .q-table td {
+  padding: 5px 10px;
+}
+
+.q-table thead tr, .q-table tbody td {
+  height: 44px;
+}
+
+.q-table__card .q-table__middle {
+  flex: 0 1 auto;
+}
+
+.q-table__container {
+  background: transparent;
+  box-shadow: none;
+}
+
+.q-table__bottom {
+  min-height: 44px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid $table-border-color;
+
+  &.q-table__bottom--nodata {
+    border-top: none;
+  }
+}
+
+.table-loading {
+  position: absolute;
+  z-index: 3;
+  top: 42px;
+
+  &.headed {
+    top: 102px;
+  }
+}
+
+.q-table{
+  .q-table__progress .q-linear-progress {
+    background: var(--q-primary);
+  }
+}
+
+.q-table th {
+  font-size: 13px;
+  border-top: 1px solid $table-border-color;
+}
+
+.q-table__bottom--nodata {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+// Color
+.q-table thead,
+.q-table th,
+.q-table__bottom {
+  background: #e5e6e7;
+}
+
+// Dark
+.q-table--dark .q-table__bottom,
+.q-table--dark thead,
+.q-table--dark tr,
+.q-table--dark th,
+.q-table--dark td {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.q-table--dark thead,
+.q-table--dark th,
+.q-table--dark .q-table__bottom {
+  background: $dark;
+}
+
+.q-table--dark tbody,
+.q-table--dark td {
+  background: $dark-page;
+}
+
+// Sticky Header
+.table-sticky {
+  height: calc(100vh - 46px);
+
+  thead tr th {
+    position: sticky;
+    z-index: 2 !important;
+  }
+
+  thead tr:first-child th {
+    top: 0;
+  }
+}
+
+// Sticky Column
+.sticky-action {
+  max-width: 100%;
+
+  td.actions-column {
+    background-color: $body-color;
+    padding: 5px;
+  }
+
+  &.q-table--dark {
+    td.actions-column {
+      background-color: $dark-page;
+    }
+  }
+
+  td.actions-column {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+}
+
+.custom-bottom {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+
+  td {
+    border-top: 1px solid $table-border-color;
+  }
+}
+
+.tabbed + .page-content .table-sticky {
+  height: calc(100vh - 46px - 36px);
 }
 
 /**

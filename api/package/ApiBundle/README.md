@@ -1,5 +1,11 @@
 ## Api Bundle
 
+### Generate Documentation
+__View Documentation:__ http:://127.0.0.1:8000/thor
+```shell
+bin/console thor:generate # Generate Documentation to JSON File
+```
+
 ### Create Api Response
 ```php
 use \Package\ApiBundle\AbstractClass\AbstractApiController;
@@ -165,10 +171,4 @@ class LoginDto extends AbstractApiDto {
     ]])]
     public ?array $data;
 }
-```
-
-### Generate Documentation
-__View Documentation:__ http:://127.0.0.1:8000/thor
-```shell
-bin/console thor:generate # Generate Documentation to JSON File
 ```

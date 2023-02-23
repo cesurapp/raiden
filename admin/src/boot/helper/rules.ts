@@ -1,8 +1,9 @@
 import * as methods from '@vuelidate/validators';
 import { isValidPhone } from 'components/Phone/PhoneCodeList';
+import { Ref } from 'vue';
 
 class Rules {
-  constructor(public app, public t, public globalExceptions) {}
+  constructor(public app, public t, public globalExceptions: Ref) {}
 
   is(value, message) {
     message = message !== undefined ? message : false;
@@ -216,6 +217,6 @@ declare module '@vue/runtime-core' {
 /**
  * Global Form Validation Rules
  */
-export default (app, t, globalExceptions) => {
-  app.config.globalProperties.$rules = new Rules(app, t, globalExceptions);
+export default (app, i18n, globalExceptions: Ref) => {
+  app.config.globalProperties.$rules = new Rules(app, i18n.global.t, globalExceptions);
 };

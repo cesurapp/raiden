@@ -27,11 +27,15 @@ $negative: #c10015;
 $info: #42a0ed;
 $warning: #f2c73a;
 $body-color: #f6f7f9;
+$input-text-color: rgba(0, 0, 0, 0.8);
+$input-label-color: rgba(0, 0, 0, 0.6);
+$input-marjinal-color: rgba(0, 0, 0, 0.6);
 
 // Theme Size
-$input-font-size: 15px;
-$button-font-size: 15px;
+$input-font-size: 14px;
+$button-font-size: 14px;
 $tooltip-fontsize: 13px;
+$button-padding: 7px 16px;
 
 $separator-color: rgba(0, 0, 0, 0.12);
 $separator-dark-color: rgba(255, 255, 255, 0.12);
@@ -42,3 +46,6 @@ $generic-border-radius: 4px;
 $button-border-radius: 4px;
 $button-shadow: $shadow-1;
 $button-shadow-active: $shadow-3;
+$toolbar-min-height: 46px;
+$table-box-shadow: $shadow-1;
+$table-box-shadow-dark: $dark-shadow-0;

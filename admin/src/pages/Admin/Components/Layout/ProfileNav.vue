@@ -1,33 +1,40 @@
 <template>
-  <q-btn
-    class="q-ml-sm"
-    :class="{ 'text-amber-7': $authStore.isSwitchedUser() }"
+  <q-btn-dropdown
+    rounded
     dense
+    size="md"
     :flat="!$authStore.isSwitchedUser()"
     :outline="$authStore.isSwitchedUser()"
-    round
+    class="q-ml-sm disable-icon"
     icon="account_circle"
-    size="md"
+    :class="{ 'text-amber-7': $authStore.isSwitchedUser() }"
+    :menu-offset="[0, 14]"
   >
-    <q-menu fit anchor="bottom end" self="top end" :offset="[0, 12]">
-      <q-list>
-        <q-item clickable to="/account/profile">
-          <q-icon name="person" /><span>{{ $t('Edit Profile') }}</span>
-        </q-item>
-        <q-item
-          class="text-amber-7"
-          clickable
-          v-if="$authStore.isSwitchedUser()"
-          @click="$authStore.switchUserLogout(true)"
+    <q-list style="min-width: 140px">
+      <q-item clickable v-close-popup to="/account/profile">
+        <q-item-section side><q-icon name="person" /></q-item-section>
+        <q-item-section
+          ><q-item-label>{{ $t('Edit Profile') }}</q-item-label></q-item-section
         >
-          <q-icon name="switch_account" /><span>{{ $t('Return Admin') }}</span>
-        </q-item>
-        <q-item clickable @click="$authStore.logout()">
-          <q-icon name="logout" /><span>{{ $t('Sign out') }}</span>
-        </q-item>
-      </q-list>
-    </q-menu>
-  </q-btn>
+      </q-item>
+      <q-item
+        clickable
+        v-close-popup
+        class="text-amber-7"
+        v-show="$authStore.isSwitchedUser()"
+        @click="$authStore.switchUserLogout(true)"
+      >
+        <q-item-section side><q-icon color="amber-7" name="switch_account" /></q-item-section>
+        <q-item-section
+          ><q-item-label>{{ $t('Return Admin') }}</q-item-label></q-item-section
+        >
+      </q-item>
+      <q-item clickable v-close-popup class="text-red-5" @click="$authStore.logout()">
+        <q-item-section side><q-icon color="red-5" name="logout" /></q-item-section>
+        <q-item-section><q-item-label>{{ $t('Sign out') }}</q-item-label></q-item-section>
+      </q-item>
+    </q-list>
+  </q-btn-dropdown>
 </template>
 
 <script lang="ts">
