@@ -419,6 +419,9 @@ class ThorExtractor
                                 if (isset($tableField['table']['exporter'])) {
                                     unset($tableFields[$key]['table']['exporter']);
                                 }
+                                if (isset($tableField['table'])) {
+                                    $tableFields[$key]['table']['export'] = true;
+                                }
                             }
                             $thorAttr['table'] = $tableFields;
                         }

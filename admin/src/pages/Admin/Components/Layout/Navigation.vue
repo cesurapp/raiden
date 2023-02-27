@@ -58,13 +58,13 @@
 
     <!--Footer-->
     <div class="footer flex items-center justify-evenly">
-      <LanguageChanger size='sm'></LanguageChanger>
-      <DarkModeChanger size='sm' :only-white="true"></DarkModeChanger>
+      <LanguageChanger size="sm"></LanguageChanger>
+      <DarkModeChanger size="sm" :only-white="true"></DarkModeChanger>
     </div>
 
     <!--Toogle Button-->
     <teleport to="#head-toolbar" v-if="mounted">
-      <q-btn flat dense round icon="menu" size="md" class="q-mr-sm" @click="this.menu = !this.menu" />
+      <q-btn flat dense round :icon="mdiMenu" size="md" class="q-mr-sm" @click="this.menu = !this.menu" />
     </teleport>
   </q-drawer>
 </template>
@@ -74,29 +74,25 @@ import { defineComponent } from 'vue';
 import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
 import { Permission } from 'src/api/Enum/Permission';
+import { mdiMenu, mdiViewDashboard, mdiAccountMultiple } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AdminNavigation',
+  setup: () => ({ mdiMenu }),
   components: { LanguageChanger, DarkModeChanger },
   data: () => ({
     mounted: false,
     menu: false,
     navs: [
-      { icon: 'dashboard', text: 'Dashboard', to: '/' },
+      { icon: mdiViewDashboard, text: 'Dashboard', to: '/' },
 
       // Account Management
       {
-        icon: 'group',
+        icon: mdiAccountMultiple,
         text: 'Accounts',
         to: '/account',
         header: 'Account Management',
         roles: [Permission.AdminAccount.LIST],
-      },
-      {
-        icon: 'workspaces',
-        text: 'Organization',
-        to: '/organization',
-        roles: [],
       },
 
       /*{icon: 'logout', text: 'Logout', header:'Header Text', to: {name: 'auth.logout'}, roles: [Permission.AdminAccount.LIST'], child: []},*/
@@ -191,7 +187,7 @@ export default defineComponent({
   }
 
   .q-item__section--side > .q-icon {
-    font-size: 22px;
+    font-size: $button-font-size + 10;
   }
 
   .active-link {
@@ -199,7 +195,7 @@ export default defineComponent({
     background: $primary;
   }
 
-  .q-item__label--header{
+  .q-item__label--header {
     color: rgba(255, 255, 255, 0.64);
   }
 

@@ -42,6 +42,9 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'ID',
                     'sortable' => true,
+                    'sortable_default' => true,
+                    'sortable_desc' => true,
+                    'filter_input' => 'input'
                 ],
             ],
             'type' => [
@@ -52,6 +55,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Type',
                     'sortable' => true,
+                    'filter_input' => 'select'
                 ],
             ],
             'email' => [
@@ -62,6 +66,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Email',
                     'sortable' => true,
+                    'filter_input' => 'input'
                 ],
             ],
             'email_approved' => [
@@ -72,6 +77,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Email Approved',
                     'sortable' => true,
+                    'filter_input' => 'checkbox'
                 ],
             ],
             'phone' => [
@@ -82,6 +88,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Phone',
                     'sortable' => true,
+                    'filter_input' => 'number'
                 ],
             ],
             'phone_country' => [
@@ -102,6 +109,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Phone Approved',
                     'sortable' => true,
+                    'filter_input' => 'checkbox'
                 ],
             ],
             'approved' => [
@@ -112,6 +120,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Approved',
                     'sortable' => true,
+                    'filter_input' => 'checkbox'
                 ],
             ],
             'roles' => [
@@ -139,6 +148,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'First Name',
                     'sortable' => false,
+                    'filter_input' => 'input'
                 ],
             ],
             'last_name' => [
@@ -149,21 +159,23 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Last Name',
                     'sortable' => false,
+                    'filter_input' => 'input'
                 ],
             ],
             'created_at' => [
                 'type' => 'string',
                 'filter' => [
-                    'min' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    'from' => static function (QueryBuilder $builder, string $alias, string $data) {
                         $builder->andWhere("$alias.createdAt >= :cMin")->setParameter('cMin', $data);
                     },
-                    'max' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    'to' => static function (QueryBuilder $builder, string $alias, string $data) {
                         $builder->andWhere("$alias.createdAt <= :cMax")->setParameter('cMax', $data);
                     },
                 ],
                 'table' => [
                     'label' => 'Created',
                     'sortable' => true,
+                    'filter_input' => 'daterange'
                 ],
             ],
             'meta' => ['type' => 'array'],

@@ -21,7 +21,7 @@
         :error-message="$rules.ssrException('email')"
         :rules="[$rules.required(), $rules.email()]"
       >
-        <template v-slot:prepend><q-icon name="email" /></template>
+        <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
       </q-input>
 
       <!--Phone-->
@@ -41,9 +41,9 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(8)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiKey" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
 
@@ -55,7 +55,7 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(2)]"
       >
-        <template v-slot:prepend><q-icon name="person" /></template>
+        <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
       </q-input>
 
       <!--LastName-->
@@ -66,7 +66,7 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(2)]"
       >
-        <template v-slot:prepend><q-icon name="person" /></template>
+        <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
       </q-input>
 
       <div>
@@ -76,7 +76,7 @@
           :loading="$appStore.isBusy"
           no-caps
           color="primary"
-          icon="how_to_reg"
+          :icon="mdiAccountPlus"
         />
         <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
@@ -88,9 +88,11 @@
 import { defineComponent } from 'vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import { createMetaMixin } from 'quasar';
+import { mdiEmail, mdiEye, mdiEyeOff, mdiKey, mdiAccount, mdiAccountPlus } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AuthRegister',
+  setup: () => ({ mdiEmail, mdiKey, mdiEye, mdiEyeOff, mdiAccount, mdiAccountPlus }),
   components: { PhoneInput },
   mixins: [
     createMetaMixin(function () {

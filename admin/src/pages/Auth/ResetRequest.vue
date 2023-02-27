@@ -19,8 +19,8 @@
         active-bg-color="dark-transparent-1"
         class="text-primary q-mb-md"
       >
-        <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
-        <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
+        <q-tab :ripple="false" name="email" :icon="mdiEmail" :label="$t('Email')" />
+        <q-tab :ripple="false" name="phone" :icon="mdiPhone" :label="$t('Phone')" />
       </q-tabs>
 
       <!--Username-->
@@ -33,7 +33,7 @@
         lazy-rules
         :rules="[$rules.required(), $rules.email()]"
       >
-        <template v-slot:prepend><q-icon name="mail" /></template>
+        <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
       </q-input>
 
       <!--Phone-->
@@ -47,7 +47,7 @@
           @click="onSubmit"
           type="button"
           color="primary"
-          icon="login"
+          :icon="mdiLockReset"
         />
         <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
@@ -59,9 +59,11 @@
 import { defineComponent } from 'vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import { createMetaMixin } from 'quasar';
+import { mdiLockReset, mdiEmail, mdiPhone } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'ResetRequest',
+  setup: () => ({ mdiLockReset, mdiEmail, mdiPhone }),
   components: { PhoneInput },
   mixins: [
     createMetaMixin(function () {

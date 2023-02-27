@@ -26,7 +26,7 @@
       </div>
 
       <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
-        <DarkModeChanger size='md' :only-white="true"></DarkModeChanger>
+        <DarkModeChanger size="md" :only-white="true"></DarkModeChanger>
         <span class="divider"></span>
         <LanguageChanger></LanguageChanger>
       </div>

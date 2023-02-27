@@ -4,7 +4,7 @@
     <PageHeader borderless liquid></PageHeader>
 
     <!--Page Content-->
-    <PageContent borderless liquid >
+    <PageContent borderless liquid>
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
         <q-input
@@ -16,7 +16,7 @@
           :error-message="$rules.ssrException('email')"
           :rules="[$rules.email()]"
         >
-          <template v-slot:prepend><q-icon name="email" /></template>
+          <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
         </q-input>
 
         <!--Phone-->
@@ -36,7 +36,7 @@
           lazy-rules
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
-          <template v-slot:prepend><q-icon name="person" /></template>
+          <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
         </q-input>
 
         <!--LastName-->
@@ -48,11 +48,11 @@
           key="222"
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
-          <template v-slot:prepend><q-icon name="person" /></template>
+          <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
         </q-input>
 
         <!-- Language -->
-        <LanguageInput v-model='data.language'></LanguageInput>
+        <LanguageInput v-model="data.language"></LanguageInput>
 
         <!--Current Password-->
         <q-input
@@ -65,9 +65,9 @@
           lazy-rules
           :rules="[$rules.minLength(8)]"
         >
-          <template v-slot:prepend><q-icon name="key" /></template>
+          <template v-slot:prepend><q-icon :name="mdiKey" /></template>
           <template v-slot:append>
-            <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+            <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
         </q-input>
 
@@ -80,9 +80,9 @@
           lazy-rules
           :rules="[$rules.minLength(8)]"
         >
-          <template v-slot:prepend><q-icon name="key" /></template>
+          <template v-slot:prepend><q-icon :name="mdiKey" /></template>
           <template v-slot:append>
-            <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+            <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
           </template>
         </q-input>
 
@@ -93,7 +93,7 @@
             @click="onSubmit"
             :loading="$appStore.isBusy"
             color="primary"
-            icon="how_to_reg"
+            :icon="mdiAccountPlus"
           />
         </div>
       </q-form>
@@ -108,9 +108,19 @@ import PageContent from '../Components/Layout/PageContent.vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import { createMetaMixin } from 'quasar';
 import LanguageInput from 'components/Language/LanguageInput.vue';
+import { mdiEmail, mdiAccount, mdiWeb, mdiKey, mdiAccountPlus, mdiEye, mdiEyeOff } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'EditProfile',
+  setup: () => ({
+    mdiEmail,
+    mdiAccount,
+    mdiWeb,
+    mdiKey,
+    mdiAccountPlus,
+    mdiEye,
+    mdiEyeOff,
+  }),
   components: { LanguageInput, PageHeader, PageContent, PhoneInput },
   mixins: [
     createMetaMixin(function () {

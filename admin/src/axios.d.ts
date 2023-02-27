@@ -34,6 +34,6 @@ declare module 'axios' {
     transitional?: TransitionalOptions;
     retry?: boolean;
     showMessage?: boolean;
-    uniqId?: string | Number
+    uniqId?: string | number;
   }
 }

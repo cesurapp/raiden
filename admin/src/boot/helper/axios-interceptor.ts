@@ -7,7 +7,7 @@ import { Ref } from 'vue';
  * Configure Request
  */
 function requestConfig(config: AxiosRequestConfig, i18n, authStore, appStore) {
-  config.uniqId = Math.random().toString(36).replace('0.','');
+  config.uniqId = Math.random().toString(36).replace('0.', '');
   appStore.busyProcess(config.uniqId);
 
   // Language
@@ -65,9 +65,7 @@ async function responseError(
         persistent: true,
         ok: i18n.global.t('Refresh Page'),
         color: 'green',
-      }).onOk(() => {
-        window.location.reload();
-      });
+      }).onOk(() => window.location.reload());
     }
 
     return;

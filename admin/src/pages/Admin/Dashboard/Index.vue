@@ -1,7 +1,10 @@
 <template>
   <q-page>
     <PageContent borderless liquid>
-      <q-btn label='Open' @click='test' :loading='$appStore.isBusy'></q-btn>
+      <q-btn label="Open" @click="$appStore.notifyDanger('asdaas11')" :loading="$appStore.isBusy"></q-btn>
+      <q-btn label="Open" @click="$appStore.notifyWarning('asdaas222')" :loading="$appStore.isBusy"></q-btn>
+      <q-btn label="Open" @click="$appStore.notifyInfo('asdaas333', null, 90000)" :loading="$appStore.isBusy"></q-btn>
+      <q-btn label="Open" @click="$appStore.notifySuccess('asdaas444')" :loading="$appStore.isBusy"></q-btn>
 
       <q-dialog v-model="fixed">
         <q-card>
@@ -33,7 +36,6 @@ export default defineComponent({
   }),
   methods: {
     test() {
-      console.log(this.$appStore.isBusy)
       this.$api.accountList();
       // Super
       //this.$authStore.switchUser('asd@sadsa.com');

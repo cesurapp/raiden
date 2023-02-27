@@ -10,19 +10,21 @@
               {{ $t('Enable browser notifications for instant system alerts and file downloads.') }}
             </div>
           </div>
-          <q-btn outline color="white" size="md" icon="done" rounded dense @click="accessNotification(true)">
+          <q-btn outline color="white" size="md" :icon="mdiCheckAll" rounded dense @click="accessNotification(true)">
             <q-tooltip>{{ $t('Activate') }}</q-tooltip>
           </q-btn>
         </q-card-section>
       </q-card>
 
-      <q-list v-ripple='false'>
+      <q-list v-ripple="false">
         <!--Header-->
-        <q-item class='panel-head q-mb-sm'>
-          <q-item-section avatar><q-icon color="white" name="notifications" /></q-item-section>
-          <q-item-section><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section>
+        <q-item class="panel-head q-mb-sm">
+          <q-item-section avatar><q-icon color="white" :name="mdiBell" /></q-item-section>
+          <q-item-section
+            ><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section
+          >
           <q-item-section side top>
-            <q-btn color="white" size="sm" flat round icon="done_all" @click="readAll" v-close-popup>
+            <q-btn color="white" size="sm" flat round :icon="mdiCheckAll" @click="readAll" v-close-popup>
               <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
             </q-btn>
           </q-item-section>
@@ -47,7 +49,7 @@
             <q-item-label caption>{{ item.created_at.date }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
-            <q-btn @click.stop="remove(item)" size="sm" flat round color="red" icon="delete">
+            <q-btn @click.stop="remove(item)" size="sm" flat round color="red" :icon="mdiDeleteOutline">
               <q-tooltip>{{ $t('Remove') }}</q-tooltip>
             </q-btn>
           </q-item-section>
@@ -55,7 +57,14 @@
 
         <!--Items-->
         <div class="full-width flex justify-center q-my-xs">
-          <q-btn v-if="resp.pager?.next" @click="next()" :label="$t('Load More')" size="md" icon="refresh" flat></q-btn>
+          <q-btn
+            v-if="resp.pager?.next"
+            @click="next()"
+            :label="$t('Load More')"
+            size="11px"
+            :icon="mdiRefresh"
+            flat
+          ></q-btn>
         </div>
       </q-list>
     </q-scroll-area>
@@ -66,13 +75,15 @@
     <q-card style="width: 350px">
       <q-card-section class="row items-center no-wrap">
         <div>
-          <div class="text-h6 text-weight-regular q-mb-xs">System Notification</div>
-          <div class="text-grey">Enable browser notifications for instant system alerts and file downloads.</div>
+          <div class="text-h6 text-weight-regular q-mb-xs">{{ $t('System Notification') }}</div>
+          <div class="text-grey">
+            {{ $t('Enable browser notifications for instant system alerts and file downloads.') }}
+          </div>
         </div>
         <q-space />
-        <q-btn flat round icon="close" v-close-popup color="red" @click="accessNotification(false)" />
-        <q-btn flat round icon="done" v-close-popup color="green" @click="accessNotification(true)">
-          <q-tooltip>Activate</q-tooltip>
+        <q-btn flat round :icon="mdiClose" v-close-popup color="red" @click="accessNotification(false)" />
+        <q-btn flat round :icon="mdiCheck" v-close-popup color="green" @click="accessNotification(true)">
+          <q-tooltip>{{ $t('Activate') }}</q-tooltip>
         </q-btn>
       </q-card-section>
     </q-card>
@@ -87,9 +98,11 @@ import { getMessaging, onMessage, getToken } from 'firebase/messaging';
 import { notifyShow } from 'src/helper/NotifyHelper';
 import { LocalStorage } from 'quasar';
 import { dateFormat } from 'src/helper/DateHelper';
+import { mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'NotificationComponent',
+  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
   inheritAttrs: false,
   data: () => ({
     resp: {} as NotificationListResponse,
@@ -298,21 +311,18 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .panel-head {
-  font-weight: bold;
+  font-weight: 500;
   height: 46px;
   background: $primary;
-  color: #FFF;
-
-  .header {
-    font-size: 16px;
-  }
+  color: #fff;
+  font-size: $button-font-size + 2;
 }
 
 .item {
   min-height: 40px;
   padding: 8px 10px;
   margin: 0 6px;
-  border-radius: 6px;
+  border-radius: 4px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);

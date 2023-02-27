@@ -3,7 +3,7 @@
     flat
     rounded
     class="disable-icon"
-    icon="language"
+    :icon="mdiWeb"
     :menu-offset="[0, 8]"
     no-caps
     :label="$t(curentLocale)"
@@ -21,9 +21,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mdiWeb } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'LanguageChanger',
+  setup: () => ({ mdiWeb }),
   computed: {
     curentLocale() {
       return this.$i18n.locale as string;

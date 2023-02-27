@@ -24,7 +24,7 @@
         :label="$t('Code')"
         :rules="[$rules.required(), $rules.minLength(6), $rules.maxLength(6)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiKey" /></template>
       </q-input>
 
       <!--Password-->
@@ -36,9 +36,9 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(8)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiKey" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
 
@@ -51,14 +51,21 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(8), $rules.sameAs(this.password)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiKey" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
 
       <div>
-        <q-btn :label="$t('Change')" no-caps :loading="$appStore.isBusy" type="submit" color="primary" icon="how_to_reg" />
+        <q-btn
+          :label="$t('Change')"
+          no-caps
+          :loading="$appStore.isBusy"
+          type="submit"
+          color="primary"
+          :icon="mdiLockReset"
+        />
         <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
@@ -68,9 +75,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
+import { mdiKey, mdiEye, mdiEyeOff, mdiLockReset } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'ResetPassword',
+  setup: () => ({ mdiKey, mdiEye, mdiEyeOff, mdiLockReset }),
   mixins: [
     createMetaMixin(function () {
       return {
