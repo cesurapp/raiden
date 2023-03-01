@@ -35,5 +35,6 @@ declare module 'axios' {
     retry?: boolean;
     showMessage?: boolean;
     uniqId?: string | number;
+    skipInterceptor?: boolean;
   }
 }

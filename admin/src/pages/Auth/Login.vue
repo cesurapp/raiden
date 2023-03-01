@@ -42,7 +42,9 @@
       <PhoneInput
         v-else
         outlined
-        v-model:phone-number="username"
+        :modelValue="username"
+        v-model:full-number="username"
+        phone-country="TR"
         :class="{ 'q-pb-xs': isOtp }"
         :label="$t('Phone')"
       ></PhoneInput>
@@ -74,7 +76,6 @@
           v-show="!isOtp"
           flat
           dense
-          no-caps
           size="md"
           class="q-px-sm"
           :to="{ name: 'auth.reset.request' }"
@@ -85,7 +86,6 @@
       <!--Submit-->
       <q-btn
         class="q-mt-md"
-        no-caps
         :label="$t('Login')"
         :loading="$appStore.isBusy"
         @click="onSubmit"
@@ -130,15 +130,13 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      type: 'email',
-      isPwd: true,
-      isOtp: false,
-      username: null,
-      password: null,
-    };
-  },
+  data: () => ({
+    type: 'email',
+    isPwd: true,
+    isOtp: false,
+    username: null,
+    password: null,
+  }),
   methods: {
     onSubmit() {
       this.$refs.form.validate().then((success: any) => {

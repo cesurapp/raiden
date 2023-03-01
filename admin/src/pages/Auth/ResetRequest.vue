@@ -37,19 +37,25 @@
       </q-input>
 
       <!--Phone-->
-      <PhoneInput v-else outlined v-model:phone-number="username" :label="$t('Phone')"></PhoneInput>
+      <PhoneInput
+        v-else
+        outlined
+        :modelValue="username"
+        v-model:full-number="username"
+        phone-country="TR"
+        :label="$t('Phone')"
+      ></PhoneInput>
 
       <div>
         <q-btn
           :label="$t('Reset')"
-          no-caps
           :loading="$appStore.isBusy"
           @click="onSubmit"
           type="button"
           color="primary"
           :icon="mdiLockReset"
         />
-        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
+        <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -72,12 +78,10 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      type: 'email',
-      username: null,
-    };
-  },
+  data: () => ({
+    type: 'email',
+    username: null,
+  }),
   methods: {
     onSubmit() {
       this.$refs.form.validate().then((success: boolean) => {

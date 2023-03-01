@@ -58,15 +58,8 @@
       </q-input>
 
       <div>
-        <q-btn
-          :label="$t('Change')"
-          no-caps
-          :loading="$appStore.isBusy"
-          type="submit"
-          color="primary"
-          :icon="mdiLockReset"
-        />
-        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
+        <q-btn :label="$t('Change')" :loading="$appStore.isBusy" type="submit" color="primary" :icon="mdiLockReset" />
+        <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -87,15 +80,13 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      isPwd: true,
-      id: null,
-      otp_key: null,
-      password: null,
-      password_confirm: null,
-    };
-  },
+  data: () => ({
+    isPwd: true,
+    id: null,
+    otp_key: null,
+    password: null,
+    password_confirm: null,
+  }),
   methods: {
     onSubmit() {
       this.$refs.form.validate().then((success) => {

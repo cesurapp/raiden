@@ -122,11 +122,8 @@ export default defineComponent({
 #### Notify
 
 ```js
-import { notifyShow, notifyWarning, notifyInfo, notifyDanger, notifySuccess } from 'src/helper/NotifyHelper';
-
-notifySuccess('message', 'caption');
-notifyDanger('message', 'caption');
-notifyShow('message', 'caption', 'info', {});
+this.$appStore.notifyDanger();
+this.$appStore.notifySuccess();
 ```
 
 #### SFC Globals
@@ -162,18 +159,12 @@ export default defineComponent({
 Using import:
 
 ```js
-import { i18n, client, isBusy, api, apiRaw } from 'boot/app';
+import { i18n, client, api } from 'boot/app';
 import { useAuthStore } from 'stores/AuthStore';
 import { useAppStore } from 'stores/AppStore';
 
 // Api Request
 api;
-
-// Api Request without Axios Interceptors
-apiRaw;
-
-// Axios isBusy (type Ref)
-isBusy;
 
 // Axios Client
 client;
@@ -183,7 +174,17 @@ const authStore = useAuthStore();
 const appStore = useAppStore();
 ```
 
-### Check Permission
+#### Custom Axios Config
+
+```js
+{
+  showMessage: boolean; // Disable Response Notification
+  uniqId: string; // Axios Current Request ID
+  skipInterceptor: boolean; // Skip Interceptors
+}
+```
+
+#### Check Permission
 
 ```vue
 <template>
@@ -210,7 +211,7 @@ export default defineComponent({
 </script>
 ```
 
-### Add Route & BreadCrumbs
+#### Add Route & BreadCrumbs
 
 ```js
 export default [

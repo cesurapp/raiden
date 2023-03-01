@@ -64,7 +64,16 @@
 
     <!--Toogle Button-->
     <teleport to="#head-toolbar" v-if="mounted">
-      <q-btn flat dense round :icon="mdiMenu" size="md" class="q-mr-sm" @click="this.menu = !this.menu" />
+      <q-btn
+        flat
+        dense
+        round
+        :icon="mdiMenu"
+        size="md"
+        class="q-mr-sm"
+        color="blue-2"
+        @click="this.menu = !this.menu"
+      />
     </teleport>
   </q-drawer>
 </template>

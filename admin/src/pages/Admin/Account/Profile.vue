@@ -22,7 +22,8 @@
         <!--Phone-->
         <PhoneInput
           outlined
-          v-model:phone-number="data.phone"
+          :modelValue="data.phone"
+          v-model:full-number="data.phone"
           v-model:phone-country="data.phone_country"
           :required="false"
           :label="$t('Phone')"
@@ -134,7 +135,7 @@ export default defineComponent({
     data: {
       email: null,
       phone: null,
-      phone_country: null,
+      phone_country: 'TR',
       first_name: null,
       last_name: null,
       language: null,

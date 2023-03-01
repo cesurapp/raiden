@@ -29,4 +29,8 @@ const dateFormat = (date: Date | number | string | undefined, format?: string) =
   return qDate.formatDate(date, format || 'DD/MM/YYYY HH:MM', locale);
 };
 
-export { dateFormat };
+const getCurrentLocale = () => {
+  return locales.hasOwnProperty(i18n.global.locale['value']) ? locales[i18n.global.locale['value']] : null;
+};
+
+export { dateFormat, getCurrentLocale };

@@ -28,15 +28,8 @@
       </q-input>
 
       <div>
-        <q-btn
-          :label="$t('Approve')"
-          @click="onSubmit"
-          :loading="$appStore.isBusy"
-          no-caps
-          color="primary"
-          :icon="mdiLogin"
-        />
-        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
+        <q-btn :label="$t('Approve')" @click="onSubmit" :loading="$appStore.isBusy" color="primary" :icon="mdiLogin" />
+        <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -44,7 +37,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { notifyDanger } from 'src/helper/NotifyHelper';
 import { createMetaMixin } from 'quasar';
 import { mdiCellphoneKey, mdiLogin } from '@quasar/extras/mdi-v7';
 
@@ -58,11 +50,9 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      otp_key: null,
-    };
-  },
+  data: () => ({
+    otp_key: null,
+  }),
   methods: {
     onSubmit() {
       this.$rules.clearSSRException();
@@ -74,13 +64,12 @@ export default defineComponent({
               username: atob(this.$route.params.id),
             })
             .then(() => {
-              // Redirect Login
               this.$router.push({ name: 'auth.login' });
             })
             .catch(() => {
               const errors = this.$rules.ssrException('id', false);
               if (errors) {
-                errors.forEach((error) => notifyDanger(error));
+                errors.forEach((error) => this.$appStore.notifyDanger(error));
               }
             });
         }

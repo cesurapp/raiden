@@ -1,9 +1,7 @@
 import * as methods from '@vuelidate/validators';
-import { isValidPhone } from 'components/Phone/PhoneCodeList';
-import { Ref } from 'vue';
 
 class Rules {
-  constructor(public app, public t, public globalExceptions: Ref) {}
+  constructor(public app, public appStore, public t) {}
 
   is(value, message) {
     message = message !== undefined ? message : false;
@@ -167,44 +165,25 @@ class Rules {
       return val === locator || message || this.t('Passwords do not match.');
     };
   }
-  isIdentity(message = false): any {
-    return (val) => {
-      return (
-        (!isNaN(val) && val ? isValidPhone(val.replace('/s/g', ''), '') : methods.email.$validator(val, null, null)) ||
-        message ||
-        this.t('Value is not a valid email or phone')
-      );
-    };
-  }
-  isPhone(phoneCountry, message = false): any {
-    return (val) => {
-      if (val === '') {
-        return true;
-      }
-      return (
-        isValidPhone(val.replace('/s/g', ''), phoneCountry) || message || this.t('Value is not a valid phone number')
-      );
-    };
-  }
 
   /**
    * Only Q-Input ":error" directive
    */
   ssrValid(id) {
-    return this.globalExceptions.value.hasOwnProperty(id);
+    return this.appStore.apiExceptions.hasOwnProperty(id);
   }
   /**
    * Only Q-Input ":error-message" directive
    */
   ssrException(id, merge = true) {
-    const e = this.globalExceptions.value[id] ?? [];
+    const e = this.appStore.apiExceptions[id] ?? [];
     return merge ? e.join('\r\n') : e;
   }
   /**
    * Only Call
    */
   clearSSRException() {
-    this.globalExceptions.value = {};
+    this.appStore.apiExceptions = {};
   }
 }
 
@@ -217,6 +196,6 @@ declare module '@vue/runtime-core' {
 /**
  * Global Form Validation Rules
  */
-export default (app, i18n, globalExceptions: Ref) => {
-  app.config.globalProperties.$rules = new Rules(app, i18n.global.t, globalExceptions);
+export default (app, appStore, i18n) => {
+  app.config.globalProperties.$rules = new Rules(app, appStore, i18n.global.t);
 };

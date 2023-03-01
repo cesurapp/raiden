@@ -5,6 +5,7 @@ namespace App\Admin\Core\Resource;
 use App\Admin\Core\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Package\ApiBundle\Response\ApiResourceInterface;
+use Symfony\Component\Uid\Ulid;
 
 class UserResource implements ApiResourceInterface
 {
@@ -37,6 +38,10 @@ class UserResource implements ApiResourceInterface
             'id' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    if (!Ulid::isValid($data)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid ULID: "%s".', $data));
+                    }
+
                     $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'ulid');
                 },
                 'table' => [
@@ -44,7 +49,7 @@ class UserResource implements ApiResourceInterface
                     'sortable' => true,
                     'sortable_default' => true,
                     'sortable_desc' => true,
-                    'filter_input' => 'input'
+                    'filter_input' => 'input',
                 ],
             ],
             'type' => [
@@ -55,29 +60,29 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Type',
                     'sortable' => true,
-                    'filter_input' => 'select'
                 ],
             ],
             'email' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    $builder->andWhere("$alias.email = :email")->setParameter('email', $data);
+                    $builder->andWhere("$alias.email  LIKE :email")->setParameter('email', "%$data%");
                 },
                 'table' => [
                     'label' => 'Email',
                     'sortable' => true,
-                    'filter_input' => 'input'
+                    'filter_input' => 'input',
                 ],
             ],
             'email_approved' => [
                 'type' => 'boolean',
-                'filter' => static function (QueryBuilder $builder, string $alias, bool $data) {
+                'filter' => static function (QueryBuilder $builder, string $alias, $data) {
+                    $data = 'true' === $data;
                     $builder->andWhere("$alias.emailApproved = :emailApproved")->setParameter('emailApproved', $data);
                 },
                 'table' => [
                     'label' => 'Email Approved',
                     'sortable' => true,
-                    'filter_input' => 'checkbox'
+                    'filter_input' => 'checkbox',
                 ],
             ],
             'phone' => [
@@ -88,7 +93,7 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Phone',
                     'sortable' => true,
-                    'filter_input' => 'number'
+                    'filter_input' => 'number',
                 ],
             ],
             'phone_country' => [
@@ -99,28 +104,42 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Phone Country',
                     'sortable' => true,
+                    'filter_input' => 'country',
                 ],
             ],
             'phone_approved' => [
                 'type' => 'boolean',
-                'filter' => static function (QueryBuilder $builder, string $alias, bool $data) {
+                'filter' => static function (QueryBuilder $builder, string $alias, $data) {
+                    $data = 'true' === $data;
                     $builder->andWhere("$alias.phoneApproved = :phoneApproved")->setParameter('phoneApproved', $data);
                 },
                 'table' => [
                     'label' => 'Phone Approved',
                     'sortable' => true,
-                    'filter_input' => 'checkbox'
+                    'filter_input' => 'checkbox',
                 ],
             ],
             'approved' => [
                 'type' => 'boolean',
-                'filter' => static function (QueryBuilder $builder, string $alias, bool $data) {
-                    $builder->andWhere("$alias.approved = :approved")->setParameter('approved', $data);
+                'filter' => static function (QueryBuilder $builder, string $alias, $data) {
+                    $data = 'true' === $data;
+
+                    if (!$data) {
+                        $builder
+                            ->andWhere("$alias.emailApproved = :approved")
+                            ->andWhere("$alias.phoneApproved = :approved")
+                            ->setParameter('approved', false);
+                    } else {
+                        $builder
+                            ->orWhere("$alias.emailApproved = :approved")
+                            ->orWhere("$alias.phoneApproved = :approved")
+                            ->setParameter('approved', $data);
+                    }
                 },
                 'table' => [
                     'label' => 'Approved',
                     'sortable' => true,
-                    'filter_input' => 'checkbox'
+                    'filter_input' => 'checkbox',
                 ],
             ],
             'roles' => [
@@ -138,44 +157,45 @@ class UserResource implements ApiResourceInterface
                 'table' => [
                     'label' => 'Language',
                     'sortable' => true,
+                    'filter_input' => 'language',
                 ],
             ],
             'first_name' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    $builder->andWhere("$alias.firstName LIKE(:firstName)")->setParameter('firstName', "%$data%");
+                    $builder->andWhere("$alias.firstName LIKE :firstName")->setParameter('firstName', "%$data%");
                 },
                 'table' => [
                     'label' => 'First Name',
                     'sortable' => false,
-                    'filter_input' => 'input'
+                    'filter_input' => 'input',
                 ],
             ],
             'last_name' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    $builder->andWhere("$alias.lastName LIKE(:lastName)")->setParameter('lastName', "%$data%");
+                    $builder->andWhere("$alias.lastName LIKE :lastName")->setParameter('lastName', "%$data%");
                 },
                 'table' => [
                     'label' => 'Last Name',
                     'sortable' => false,
-                    'filter_input' => 'input'
+                    'filter_input' => 'input',
                 ],
             ],
             'created_at' => [
                 'type' => 'string',
                 'filter' => [
                     'from' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.createdAt >= :cMin")->setParameter('cMin', $data);
+                        $builder->andWhere("$alias.createdAt >= :cFrom")->setParameter('cFrom', $data);
                     },
                     'to' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.createdAt <= :cMax")->setParameter('cMax', $data);
+                        $builder->andWhere("$alias.createdAt <= :cTo")->setParameter('cTo', $data);
                     },
                 ],
                 'table' => [
                     'label' => 'Created',
                     'sortable' => true,
-                    'filter_input' => 'daterange'
+                    'filter_input' => 'daterange',
                 ],
             ],
             'meta' => ['type' => 'array'],

@@ -19,8 +19,8 @@ export type AccountListQuery = {
     first_name?: any,
     last_name?: any,
     created_at?: {
-      min?: any,
-      max?: any
+      from?: any,
+      to?: any
     }
   }
 }

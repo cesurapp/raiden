@@ -27,7 +27,8 @@
       <!--Phone-->
       <PhoneInput
         outlined
-        v-model:phone-number="data.phone"
+        :modelValue="data.phone"
+        v-model:full-number="data.phone"
         v-model:phone-country="data.phone_country"
         :label="$t('Phone')"
       ></PhoneInput>
@@ -74,11 +75,10 @@
           :label="$t('Register')"
           @click="onSubmit"
           :loading="$appStore.isBusy"
-          no-caps
           color="primary"
           :icon="mdiAccountPlus"
         />
-        <q-btn :label="$t('Login')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
+        <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -106,7 +106,7 @@ export default defineComponent({
     data: {
       email: null,
       phone: null,
-      phone_country: null,
+      phone_country: 'TR',
       password: null,
       first_name: null,
       last_name: null,

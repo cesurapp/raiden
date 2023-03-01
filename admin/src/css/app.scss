@@ -5,11 +5,11 @@
   --animate-duration: 150ms;
 }
 
-.q-notification__caption{
-  opacity: .85;
+.q-notification__caption {
+  opacity: 0.85;
 }
 
-.on-left{
+.on-left {
   margin-right: 10px;
 }
 .q-item__section--side {
@@ -19,6 +19,10 @@
   & > .q-icon {
     font-size: $button-font-size + 10;
   }
+}
+
+.full-w {
+  width: 100%;
 }
 
 .q-pt-smh {
@@ -32,10 +36,10 @@
 /**
  * Q-BTN
  */
-.q-btn{
-  .q-icon + span{
-    line-height: 0;
-    padding-top: 1px;
+.q-btn {
+  .q-icon + span {
+    //line-height: 0;
+    //padding-top: 1px;
   }
 }
 /**
@@ -75,10 +79,11 @@
   min-height: auto;
 }
 
-.q-field--dense .q-field__before, .q-field--dense .q-field__prepend {
+.q-field--dense .q-field__before,
+.q-field--dense .q-field__prepend {
   padding-right: 8px;
 }
-.q-field--outlined.q-field--readonly .q-field__control:before{
+.q-field--outlined.q-field--readonly .q-field__control:before {
   border-style: solid;
 }
 
@@ -102,6 +107,10 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
 .q-item__section--avatar {
   min-width: 34px;
+}
+
+.q-field__focusable-action {
+  font-size: 20px;
 }
 
 /**
@@ -294,7 +303,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 }
 
 .q-menu:not(.q-menu--dark) {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -352,12 +361,13 @@ body.body--dark {
   background: transparent;
   box-shadow: none;
 
-  .q-linear-progress__track--dark{
+  .q-linear-progress__track--dark {
     background: transparent;
   }
 }
 
-.q-table th.sorted .q-table__sort-icon, .q-table__sort-icon--right{
+.q-table th.sorted .q-table__sort-icon,
+.q-table__sort-icon--right {
   vertical-align: text-top;
   margin-top: -1px;
 }
