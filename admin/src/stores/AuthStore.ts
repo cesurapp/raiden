@@ -24,6 +24,9 @@ export const useAuthStore = defineStore('auth', {
         this.user = r.data.data;
         this.appToken = r.data.token;
         this.refreshToken = r.data.refresh_token;
+        if (this.user.language) {
+          localStorage.setItem('user_locale', this.user.language);
+        }
 
         // Redirect
         this.router.push({ path: '/' });
@@ -50,6 +53,9 @@ export const useAuthStore = defineStore('auth', {
         this.user = r.data.data;
         this.appToken = r.data.token;
         this.refreshToken = r.data.refresh_token;
+        if (this.user.language) {
+          localStorage.setItem('user_locale', this.user.language);
+        }
 
         // Redirect
         this.router.push({ path: '/' });
