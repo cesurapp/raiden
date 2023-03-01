@@ -1,4 +1,5 @@
 import { Notify } from 'quasar';
+import { mdiClose } from '@quasar/extras/mdi-v7';
 
 const convertMessageType = function (type) {
   switch (type) {
@@ -23,39 +24,20 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
     progress: true,
     actions: [
       {
-        icon: 'close',
+        icon: mdiClose,
         dense: true,
         color: 'white',
         class: 'notify-close-btn',
-        size: 'md',
       },
     ],
   };
 
+  // Merge Options
   if (options['actions']) {
     options['actions'] = [...opts['actions'], ...options['actions']];
   }
 
-  Notify.create({
-    ...opts,
-    ...options,
-  });
+  Notify.create({ ...opts, ...options });
 }
 
-function notifyWarning(message?: string, caption?: string, options: object = {}) {
-  notifyShow(message, caption, 'warning', options);
-}
-
-function notifyInfo(message?: string, caption?: string, options: object = {}) {
-  notifyShow(message, caption, 'info', options);
-}
-
-function notifyDanger(message?: string, caption?: string, options: object = {}) {
-  notifyShow(message, caption, 'danger', options);
-}
-
-function notifySuccess(message?: string, caption?: string, options: object = {}) {
-  notifyShow(message, caption, 'success', options);
-}
-
-export { notifyShow, notifyWarning, notifyInfo, notifyDanger, notifySuccess };
+export { notifyShow };

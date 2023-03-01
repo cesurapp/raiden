@@ -94,23 +94,24 @@ class UserResource implements ApiResourceInterface {
               'id' => [
                 'type' => 'string', // Typescript Type
                 'filter' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id]=test
-                'filter' => [
-                    'min' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id][min]=test
-                    'max' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id][max]=test
-                ]
                 'table' => [ // Typescript DataTable Types
-                    'label' => 'ID',
-                    'sortable' => true,
-                    // 'exporter' => static fn($v) => $v, // Export Column Template
-                    // 'sortable_field' => 'firstName', // Doctrine Getter Method
-                    // 'sortable_field' => static fn (QueryBuilder $builder, string $direction) => $builder->orderBy('u.firstName', $direction),
+                    'label' => 'ID',                     // DataTable Label
+                    'sortable' => true,                  // DataTable Sortable Column   
+                    'sortable_default' => true,          // DataTable Default Sortable Column
+                    'sortable_desc' => true,             // DataTable Sortable DESC
+                    'filter_input' => 'input',           // DataTable Add Filter Input Type #input #number #date #daterange #checkbox
+                   
+                    // These fields are used in the backend. It doesn't transfer to the frontend. 
+                    'exporter' => static fn($v) => $v,   // Export Column Template
+                    'sortable_field' => 'firstName',     // Doctrine Getter Method
+                    'sortable_field' => static fn (QueryBuilder $builder, string $direction) => $builder->orderBy('u.firstName', $direction),
                 ],
             ],
             'created_at' => [
                 'type' => 'string',
                 'filter' => [
-                    'min' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][min]=test
-                    'max' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][max]=test
+                    'from' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][min]=test
+                    'to' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[created_at][max]=test
                 ]
             ]
         ]   

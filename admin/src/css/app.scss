@@ -5,13 +5,24 @@
   --animate-duration: 150ms;
 }
 
+.q-notification__caption {
+  opacity: 0.85;
+}
+
+.on-left {
+  margin-right: 10px;
+}
 .q-item__section--side {
   padding-right: 12px;
   color: currentColor !important;
 
   & > .q-icon {
-    font-size: 22px;
+    font-size: $button-font-size + 10;
   }
+}
+
+.full-w {
+  width: 100%;
 }
 
 .q-pt-smh {
@@ -23,9 +34,17 @@
 }
 
 /**
+ * Q-BTN
+ */
+.q-btn {
+  .q-icon + span {
+    //line-height: 0;
+    //padding-top: 1px;
+  }
+}
+/**
  * SM Button
  */
-
 
 /**
  * Q-Input
@@ -60,12 +79,20 @@
   min-height: auto;
 }
 
+.q-field--dense .q-field__before,
+.q-field--dense .q-field__prepend {
+  padding-right: 8px;
+}
+.q-field--outlined.q-field--readonly .q-field__control:before {
+  border-style: solid;
+}
+
 /**
  * Q-Item
  */
 .q-item {
   min-height: 40px;
-  padding: 6px 12px;
+  padding: 8px 12px;
 }
 
 .q-tab {
@@ -80,6 +107,10 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
 .q-item__section--avatar {
   min-width: 34px;
+}
+
+.q-field__focusable-action {
+  font-size: 20px;
 }
 
 /**
@@ -125,7 +156,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
     &.q-field--labeled .q-field__native {
       padding-top: 4px;
-      font-size: 14px;
+      font-size: $button-font-size;
     }
   }
 
@@ -272,11 +303,11 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 }
 
 .q-menu:not(.q-menu--dark) {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 1);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
-.transparent-dropdown{
+.transparent-dropdown {
   background: transparent !important;
   backdrop-filter: none;
 }
@@ -312,11 +343,13 @@ body.body--dark {
 /**
  * Table
  */
-.q-table th, .q-table td {
+.q-table th,
+.q-table td {
   padding: 5px 10px;
 }
 
-.q-table thead tr, .q-table tbody td {
+.q-table thead tr,
+.q-table tbody td {
   height: 44px;
 }
 
@@ -327,6 +360,16 @@ body.body--dark {
 .q-table__container {
   background: transparent;
   box-shadow: none;
+
+  .q-linear-progress__track--dark {
+    background: transparent;
+  }
+}
+
+.q-table th.sorted .q-table__sort-icon,
+.q-table__sort-icon--right {
+  vertical-align: text-top;
+  margin-top: -1px;
 }
 
 .q-table__bottom {
@@ -350,14 +393,14 @@ body.body--dark {
   }
 }
 
-.q-table{
+.q-table {
   .q-table__progress .q-linear-progress {
     background: var(--q-primary);
   }
 }
 
 .q-table th {
-  font-size: 13px;
+  font-size: $button-font-size - 1;
   border-top: 1px solid $table-border-color;
 }
 
@@ -506,7 +549,7 @@ body.body--dark {
   position: absolute;
   top: 0;
   margin-left: 12px;
-  font-size: 12px !important;
+  font-size: $button-font-size - 1 !important;
 
   .q-icon {
     font-weight: bold;

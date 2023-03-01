@@ -1,115 +1,56 @@
 <template>
-  <div class="phone-input">
-    <!--Phone-->
-    <q-input
-      type="tel"
-      v-model="proxyPhone"
-      v-bind="$attrs"
-      :mask="phoneCodes[data.phoneCountry].mask"
-      unmasked-value
-      fill-mask
-      :label="label"
-      lazy-rules
-      :rules="dynamicRules(data.phoneCountry)"
-      :error="$rules.ssrValid(serverSideInput)"
-      :error-message="$rules.ssrException(serverSideInput)"
-    >
-      <template v-slot:prepend>
-        <!--Select Country-->
-        <q-select
-          class="country-input"
-          hide-dropdown-icon
-          hide-selected
-          dense
-          borderless
-          v-model="data.phoneCountry"
-          @update:model-value="updateModel"
-          :options="getCountryPhoneList"
-          emit-value
-          map-options
-        >
-          <template v-slot:prepend
-            ><q-icon :name="'img:/images/flags/' + data.phoneCountry.toLowerCase() + '.svg'"
-          /></template>
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps">
-              <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
-              <q-item-section
-                ><q-item-label>{{ scope.opt.description }}</q-item-label></q-item-section
-              >
-            </q-item>
-          </template>
-        </q-select>
-        <!--End Select Country-->
-      </template>
-    </q-input>
-  </div>
+  <q-input
+    type="tel"
+    ref="tel"
+    unmasked-value
+    lazy-rules
+    :mask="`+${code} ############`"
+    :label="$t('Phone')"
+    :rules="required ? [$rules.required(), $rules.minLength(7)] : []"
+    :error="$rules.ssrValid(serverSideInput)"
+    :error-message="$rules.ssrException(serverSideInput)"
+    @update:modelValue="(val) => $emit('update:fullNumber', code + val)"
+  >
+    <template v-slot:prepend>
+      <CountryInput
+        ref="country"
+        class="country-input"
+        hide-dropdown-icon
+        dense
+        borderless
+        :modelValue="phoneCountry"
+        @update:modelValue="(val) => $emit('update:phoneCountry', val)"
+        v-model:phone-code="code"
+        :clearable="false"
+        :bottom-slots="false"
+        @popupHide="onPopupHide"
+      ></CountryInput>
+    </template>
+  </q-input>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { phoneCodes, extractPhone } from './PhoneCodeList';
+import CountryInput from 'components/Country/CountryInput.vue';
 
 export default defineComponent({
   name: 'PhoneInput',
-  inheritAttrs: false,
+  components: { CountryInput },
   props: {
-    phoneNumber: [String, Number],
-    phoneCode: [String],
     phoneCountry: [String],
-
-    label: [String],
+    fullNumber: [String, Number],
     required: { type: Boolean, default: true },
     serverSideInput: { type: String, default: 'phone' },
   },
   data: () => ({
-    data: {
-      phoneNumber: '',
-      phoneCode: '90',
-      phoneCountry: 'TR',
-    },
-    phoneCodes: phoneCodes,
+    code: null,
   }),
-  mounted() {
-    if (this.phoneNumber && this.phoneCountry) {
-      this.data = extractPhone(this.phoneNumber, this.phoneCountry);
-    }
-  },
-  computed: {
-    proxyPhone: {
-      get() {
-        return String(this.data.phoneNumber);
-      },
-      set(val: string) {
-        this.data.phoneNumber = val;
-        this.updateModel();
-      },
-    },
-    getCountryPhoneList() {
-      return Object.entries(this.phoneCodes).map(([phoneCountry, item]: [string, any]) => {
-        return {
-          value: phoneCountry,
-          description: `${String(item.label)} (+${String(item.phoneCode)})`,
-          icon: `img:/images/flags/${String(phoneCountry).toLowerCase()}.svg`,
-        };
-      });
-    },
-  },
   methods: {
-    updateModel() {
-      this.data.phoneCode = this.phoneCodes[this.data.phoneCountry].phoneCode;
-
-      this.$emit(
-        'update:phoneNumber',
-        String(this.data.phoneNumber ? this.data.phoneCode + this.data.phoneNumber : '')
-      );
-      this.$emit('update:phoneCode', String(this.data.phoneCode));
-      this.$emit('update:phoneCountry', String(this.data.phoneCountry));
-    },
-    dynamicRules(phoneCountry) {
-      return this.required
-        ? [this.$rules.required(), this.$rules.isPhone(phoneCountry)]
-        : [this.$rules.isPhone(phoneCountry)];
+    onPopupHide() {
+      this.$refs.tel.focus();
+      setTimeout(() => {
+        this.$refs.tel.$el.querySelector('input[type="tel"]').select();
+      }, 50);
     },
   },
 });
@@ -118,7 +59,7 @@ export default defineComponent({
 <style lang="scss">
 .country-input {
   .q-field__control {
-    padding-left: 3px;
+    padding-left: 2px;
     padding-right: 0;
   }
 
@@ -128,6 +69,10 @@ export default defineComponent({
 
   .q-field__control:after {
     border: none;
+  }
+
+  .q-field__label {
+    display: none;
   }
 
   .q-field__control-container {
@@ -140,6 +85,18 @@ export default defineComponent({
 
   .q-field__prepend {
     padding-right: 0;
+  }
+
+  .q-field__input {
+    padding-left: 12px;
+    min-width: 25px !important;
+    width: auto;
+  }
+
+  &.q-field--highlighted {
+    .q-field__control-container {
+      display: inline-flex;
+    }
   }
 }
 </style>

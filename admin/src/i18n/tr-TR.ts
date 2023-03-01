@@ -29,9 +29,11 @@ export default {
   // Global
   'Access denied!': 'Erişim engellendi!',
   'Access denied! Unauthorized operation.': 'Erişim engellendi! Yetkisiz işlem.',
-  'Network Error': 'Ağ hatası',
   'Could not connect to the server, refresh the page.': 'Sunucuya bağlanılamadı, sayfayı yenileyin.',
   'Refresh Page': 'Sayfayı Yenile',
+  OK: 'Tamam',
+  Close: 'Kapat',
+  Country: 'Ülke',
 
   // 404 Page
   'Oops. Nothing here...': 'Hata. Hiçbir şey bulamadık...',
@@ -99,19 +101,39 @@ export default {
   // Edit Profile
   'Edit Profile': 'Profilim',
   'Current Password': 'Mevcut Şifre',
-  'Language': 'Dil',
+  Language: 'Dil',
 
-  // Table
-  "There were no results!": "Sonuç bulunamadı!",
-  "count record selected": "count kayıt seçildi",
-  'Edit': 'Düzenle',
-  'Delete': 'Sil',
-  'Refresh':'Yenile',
-  'Export': 'Dışarı Aktar',
-  'Yes': 'Evet',
-  'No': 'Hayır',
-  'Cancel': 'İptal',
+  // Data Table
+  'There were no results!': 'Sonuç bulunamadı!',
+  'count record selected': 'count kayıt seçildi',
+  Edit: 'Düzenle',
+  Delete: 'Sil',
   'Delete All': 'Tümünü Sil',
+  'Select All': 'Tümünü Seç',
+  Refresh: 'Yenile',
+  Export: 'Dışarı Aktar',
+  Yes: 'Evet',
+  No: 'Hayır',
+  Cancel: 'İptal',
   'Are you sure you want to delete?': 'Silmek istediğinizden emin misiniz?',
   'Are you sure you want to delete the selected items?': 'Seçilen öğeleri silmek istediğinizden emin misiniz?',
+  New: 'Yeni',
+  'Click to remove': 'Kaldırmak için tıklayın',
+
+  // Account Table
+  account: {
+    ID: 'ID',
+    Type: 'Tür',
+    Email: 'E-posta',
+    'Email Approved': 'E-posta Doğrulama',
+    Phone: 'Telefon',
+    'Phone Country': 'Telefon Ülke',
+    'Phone Approved': 'Telefon Doğrulama',
+    Approved: 'Doğrulanmış',
+    Roles: 'Yetkiler',
+    Language: 'Dil',
+    'First Name': 'İsim',
+    'Last Name': 'Soyisim',
+    Created: 'Oluşturulma',
+  },
 };

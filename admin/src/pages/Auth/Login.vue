@@ -20,8 +20,8 @@
         active-bg-color="dark-transparent-1"
         class="text-primary q-mb-md"
       >
-        <q-tab :ripple="false" name="email" icon="mail" :label="$t('Email')" />
-        <q-tab :ripple="false" name="phone" icon="phone" :label="$t('Phone')" />
+        <q-tab :ripple="false" name="email" :icon="mdiEmail" :label="$t('Email')" />
+        <q-tab :ripple="false" name="phone" :icon="mdiPhone" :label="$t('Phone')" />
       </q-tabs>
 
       <!--Username-->
@@ -35,14 +35,16 @@
         lazy-rules
         :rules="[$rules.required(), $rules.email()]"
       >
-        <template v-slot:prepend><q-icon name="mail" /></template>
+        <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
       </q-input>
 
       <!--Phone-->
       <PhoneInput
         v-else
         outlined
-        v-model:phone-number="username"
+        :modelValue="username"
+        v-model:full-number="username"
+        phone-country="TR"
         :class="{ 'q-pb-xs': isOtp }"
         :label="$t('Phone')"
       ></PhoneInput>
@@ -59,9 +61,9 @@
         lazy-rules
         :rules="[$rules.required(), $rules.minLength(8)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiKey" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer" @click="isPwd = !isPwd" />
+          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
         </template>
       </q-input>
 
@@ -74,7 +76,6 @@
           v-show="!isOtp"
           flat
           dense
-          no-caps
           size="md"
           class="q-px-sm"
           :to="{ name: 'auth.reset.request' }"
@@ -85,12 +86,11 @@
       <!--Submit-->
       <q-btn
         class="q-mt-md"
-        no-caps
         :label="$t('Login')"
         :loading="$appStore.isBusy"
         @click="onSubmit"
         color="primary"
-        icon="login"
+        :icon="mdiLogin"
       />
     </q-form>
 
@@ -105,7 +105,7 @@
           :label="$t('Register')"
           type="button"
           color="primary"
-          icon="email"
+          :icon="mdiEmail"
           class="full-width"
         />
       </div>
@@ -117,9 +117,11 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
+import { mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AuthLogin',
+  setup: () => ({ mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff }),
   components: { PhoneInput },
   mixins: [
     createMetaMixin(function () {
@@ -128,15 +130,13 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      type: 'email',
-      isPwd: true,
-      isOtp: false,
-      username: null,
-      password: null,
-    };
-  },
+  data: () => ({
+    type: 'email',
+    isPwd: true,
+    isOtp: false,
+    username: null,
+    password: null,
+  }),
   methods: {
     onSubmit() {
       this.$refs.form.validate().then((success: any) => {

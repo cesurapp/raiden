@@ -9,7 +9,7 @@
     emit-value
     map-options
   >
-    <template v-slot:prepend><q-icon name="language" /></template>
+    <template v-slot:prepend><q-icon :name="mdiWeb" /></template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
         <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
@@ -23,9 +23,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mdiWeb } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'LanguageInput',
+  setup: () => ({ mdiWeb }),
   data: () => ({
     locale: null,
   }),

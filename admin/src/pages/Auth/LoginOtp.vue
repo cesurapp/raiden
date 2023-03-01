@@ -24,19 +24,12 @@
         :label="$t('Code')"
         :rules="[$rules.required(), $rules.minLength(6), $rules.maxLength(6)]"
       >
-        <template v-slot:prepend><q-icon name="key" /></template>
+        <template v-slot:prepend><q-icon :name="mdiCellphoneKey" /></template>
       </q-input>
 
       <div>
-        <q-btn
-          :label="$t('Login')"
-          @click="onSubmit"
-          :loading="$appStore.isBusy"
-          no-caps
-          color="primary"
-          icon="task_alt"
-        />
-        <q-btn :label="$t('Back')" no-caps color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
+        <q-btn :label="$t('Login')" @click="onSubmit" :loading="$appStore.isBusy" color="primary" :icon="mdiLogin" />
+        <q-btn :label="$t('Back')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -45,9 +38,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
+import { mdiCellphoneKey, mdiLogin } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
-  name: 'AuthConfirm',
+  name: 'AuthLoginOtp',
+  setup: () => ({ mdiCellphoneKey, mdiLogin }),
   mixins: [
     createMetaMixin(function () {
       return {
@@ -55,11 +50,9 @@ export default defineComponent({
       };
     }),
   ],
-  data() {
-    return {
-      otp_key: null,
-    };
-  },
+  data: () => ({
+    otp_key: null,
+  }),
   methods: {
     onSubmit() {
       this.$rules.clearSSRException();

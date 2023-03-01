@@ -4,17 +4,22 @@
     :class="{
       bordered: !borderless,
       'bg-dark': $q.dark.isActive && !borderless,
-      'tabbed': $slots.tabs
+      tabbed: $slots.tabs,
     }"
   >
     <div :class="{ 'content-fixed q-mx-md q-mx-lg-lg': !liquid, 'content-liquid': liquid }">
-      <div class="q-pt-smh flex items-center justify-between full-height" :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-smh': !borderless && !$slots.tabs }">
+      <div
+        class="q-pt-smh flex items-center justify-between full-height"
+        :class="{ 'q-px-md q-px-lg-lg': liquid, 'q-pb-smh': !borderless && !$slots.tabs }"
+      >
         <!--Title-->
-        <div class='title text-h4'><slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot></div>
+        <div class="title text-h4">
+          <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
+        </div>
 
         <!--Header Actions-->
         <div class="header-actions" v-if="$slots.headerActions">
-          <q-btn-group unelevated class="xs-hide" v-if='!$q.screen.xs'><slot name="headerActions"></slot></q-btn-group>
+          <q-btn-group unelevated class="xs-hide" v-if="!$q.screen.xs"><slot name="headerActions"></slot></q-btn-group>
           <q-btn-dropdown
             v-else
             dropdown-icon="more_vert"
@@ -23,7 +28,7 @@
             outline
             rounded
             color="primary"
-            :menu-offset='[0,12]'
+            :menu-offset="[0, 12]"
           >
             <div class="column q-gutter-sm"><slot name="headerActions"></slot></div>
           </q-btn-dropdown>

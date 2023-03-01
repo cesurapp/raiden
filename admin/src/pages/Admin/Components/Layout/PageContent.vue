@@ -8,7 +8,7 @@
         'content-fixed': !liquid,
         'content-liquid': liquid,
         'q-mx-md q-mx-lg-lg q-my-md': !clear,
-        'cleared': clear,
+        cleared: clear,
         borderless: borderless,
       }"
     >
@@ -55,7 +55,7 @@ export default defineComponent({
   }
 
   .cleared {
-    .q-table__card{
+    .q-table__card {
       border-radius: 0;
     }
 
@@ -66,7 +66,7 @@ export default defineComponent({
     }
     .q-table th:last-of-type,
     .q-table td:last-of-type,
-    .q-table__bottom{
+    .q-table__bottom {
       padding-right: 24px;
     }
   }
@@ -83,7 +83,7 @@ export default defineComponent({
     }
     .q-table th:last-of-type,
     .q-table td:last-of-type,
-    .q-table__bottom{
+    .q-table__bottom {
       padding-right: 16px;
     }
   }

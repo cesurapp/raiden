@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
-import { api, apiRaw } from 'boot/app';
+import { api } from 'boot/app';
 import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
 import { watch } from 'vue';
@@ -64,11 +64,9 @@ export const useAuthStore = defineStore('auth', {
         return this.isRefreshingState;
       }
 
-      return (this.isRefreshingState = apiRaw
-        .securityRefreshToken({ refresh_token: this.refreshToken })
-        .then((r) => {
-          this.appToken = r.data.data.token;
-        })
+      return (this.isRefreshingState = api
+        .securityRefreshToken({ refresh_token: this.refreshToken }, { skipInterceptor: true })
+        .then((r) => (this.appToken = r.data.data.token))
         .finally(() => (this.isRefreshingState = false)));
     },
 
@@ -77,7 +75,9 @@ export const useAuthStore = defineStore('auth', {
      */
     async reloadUser() {
       if (this.isLoggedIn()) {
-        await api.accountShowProfile().then((r) => this.updateUser(r.data.data));
+        await api.accountShowProfile().then((r) => {
+          this.updateUser(r.data.data);
+        });
       }
     },
 

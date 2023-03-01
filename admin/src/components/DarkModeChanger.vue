@@ -7,7 +7,7 @@
       :ripple="false"
       flat
       @click="$q.dark.set(!$q.dark.isActive)"
-      :icon="!isDarkMode ? 'dark_mode' : 'mode_night'"
+      :icon="!isDarkMode ? mdiWeatherNight : mdiWeatherSunny"
     >
       <q-tooltip>{{ $t('Dark Mode') }}</q-tooltip>
     </q-btn>
@@ -16,9 +16,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mdiWeatherNight, mdiWeatherSunny } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'DarkModeChanger',
+  setup: () => ({
+    mdiWeatherNight,
+    mdiWeatherSunny,
+  }),
   props: {
     onlyWhite: {
       type: Boolean,

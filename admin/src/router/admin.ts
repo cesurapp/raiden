@@ -25,10 +25,7 @@ export default [
       {
         path: '/account',
         component: () => import('pages/Admin/Account/Accounts.vue'),
-        meta: {
-          breadcrumb: 'Accounts',
-          permission: [Permission.AdminAccount.LIST],
-        },
+        meta: { breadcrumb: 'Accounts', permission: [Permission.AdminAccount.LIST] },
       },
     ],
   },
