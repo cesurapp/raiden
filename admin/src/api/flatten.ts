@@ -4,7 +4,7 @@ const { toString, hasOwnProperty } = Object.prototype;
 const OBJECT_TYPE = '[object Object]';
 const ARRAY_TYPE = '[object Array]';
 
-function flatten(obj: any, path?: string, result?: any) {
+export function flatten(obj: any, path?: string, result?: any) {
     const type = toString.call(obj);
 
     if (result === undefined) {
@@ -39,6 +39,29 @@ function flatten(obj: any, path?: string, result?: any) {
     }
 
     return result;
+}
+
+const set = (obj, path, val) => {
+  const keys = path.split('.');
+  const lastKey = keys.pop();
+  const lastObj = keys.reduce((obj, key) => obj[key] = obj[key] || {}, obj);
+  lastObj[lastKey] = val;
+};
+
+export function deFlatten(qs: string): any {
+  const query = Object.fromEntries(new URLSearchParams(qs));
+  let data = {};
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (key.indexOf('[') === -1) {
+      data[key] = value;
+      return;
+    }
+
+    set(data, key.replaceAll(']', '').split('[').join('.'), value);
+  });
+
+  return data;
 }
 
 function join(path: string | void, key: string) {
