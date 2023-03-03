@@ -9,6 +9,7 @@ use Package\ApiBundle\Response\ApiResourceInterface;
 use Package\ApiBundle\Response\ApiResourceLocator;
 use Package\ApiBundle\Thor\Attribute\Thor;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
+use Package\ApiBundle\Thor\Generator\TypeScriptHelper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Route;
@@ -42,6 +43,15 @@ class ThorExtractor
         if (!$data) {
             $data = $this->extractData(true);
         }
+
+        // Replace Data
+        array_walk_recursive($data, static function (&$val) use($data) {
+            if (is_string($val) && class_exists($val) && in_array(ApiResourceInterface::class, class_implements($val), true)) {
+                $val = $data['_resource'][TypeScriptHelper::baseClass($val)];
+            }
+        });
+
+        // Global Variable
         $projectDir = $this->bag->get('kernel.project_dir');
         $statusText = Response::$statusTexts;
         $baseUrl = $this->bag->get('thor.base_url');
