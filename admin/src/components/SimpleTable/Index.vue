@@ -331,6 +331,7 @@ import {
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
+import { deFlatten, flatten } from 'src/api/flatten';
 
 export default defineComponent({
   name: 'SimpleTable',
@@ -387,6 +388,10 @@ export default defineComponent({
     updateHistory: {
       type: Boolean,
       default: false,
+    },
+    updateHash: {
+      type: Boolean,
+      default: true,
     },
   },
   data: () => ({
@@ -458,6 +463,7 @@ export default defineComponent({
     this.pagination.sortBy = this.getDefaultSortBy;
     this.isMounted = true;
 
+    this.loadQueryString(false);
     this.refresh();
   },
   methods: {
@@ -469,6 +475,7 @@ export default defineComponent({
       this.pagination = props.pagination;
 
       // Init Request
+      this.loadQueryString(true);
       return this.requestProp(this.getQuery()).then((r) => this.setResponse(r));
     },
 
@@ -629,6 +636,29 @@ export default defineComponent({
      */
     getTranslatePrefix() {
       return this.$i18n.locale === 'en-US' ? '' : this.transKey + '.';
+    },
+
+    /**
+     * Request Params to URL String
+     */
+    loadQueryString(updateHash) {
+      if (this.updateHash) {
+        if (updateHash) {
+          this.$router.push({ query: flatten(this.getQuery()) });
+        } else {
+          const params = deFlatten(location.search);
+          this.pagination = {
+            ...this.pagination,
+            ...{
+              descending: params.sort ? params.sort.toUpperCase() === 'ASC' : this.pagination.descending,
+              page: params.page || this.pagination.page,
+              sortBy: params.sort_by || this.pagination.sortBy,
+            },
+          };
+
+          this.filterValues = { ...this.filterValues, ...(params.filter || {}) };
+        }
+      }
     },
 
     /**

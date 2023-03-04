@@ -104,7 +104,7 @@ module.exports = configure(function (ctx) {
               {
                 // Copying firebase-messaging-sw.js to SPA/PWA/SSR dest build folder
                 src: 'src/components/Notification/firebase-messaging-sw.js',
-                dest: ['dist/spa', 'public'], // example when building SPA
+                dest: ['dist', 'public'], // example when building SPA
                 transform: (contents) =>
                   contents
                     .toString()

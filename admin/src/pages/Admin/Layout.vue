@@ -76,6 +76,20 @@ export default defineComponent({
   },
   created() {
     this.$authStore.reloadUser();
+    this.loadUserDefinedLocale();
+  },
+  methods: {
+    loadUserDefinedLocale() {
+      const ul = localStorage.getItem('user_locale');
+      if (ul) {
+        const lang = this.$i18n.availableLocales.find((l) => l.indexOf(ul) !== -1);
+        if (lang) {
+          localStorage.removeItem('user_locale');
+          localStorage.setItem('locale', lang);
+          this.$i18n.locale = lang;
+        }
+      }
+    },
   },
 });
 </script>

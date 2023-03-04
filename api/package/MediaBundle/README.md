@@ -1,5 +1,4 @@
 # Media Bundle
-It is used to keep track of files.
 It is used to keep track of files. When media is deleted, it is also automatically removed from storage.
 You can use the same media with multiple tables. You must create a new trait for each column.
 Imagick compression, resizing, conversion support is available for image files.

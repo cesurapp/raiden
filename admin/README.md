@@ -58,7 +58,7 @@ Build Configuration:
 ```env
 Framework = None
 Build Command = yarn quasar build
-Build output directory = dist/spa
+Build output directory = dist
 Root directory path = admin
 ```
 

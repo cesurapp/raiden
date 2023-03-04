@@ -12,6 +12,7 @@
         outlined
         dense
         @clear="$emit('onSearch')"
+        ref="input"
       ></q-input>
 
       <!--Q-Number-->
@@ -26,6 +27,7 @@
         outlined
         dense
         @clear="$emit('onSearch')"
+        ref="input"
       ></q-input>
 
       <!--Country Select-->
@@ -168,6 +170,11 @@ export default defineComponent({
         this.$emit('update:modelValue', val);
       },
     },
+  },
+  mounted() {
+    if (this.$refs.input) {
+      setTimeout(() => this.$refs.input.focus(), 1);
+    }
   },
 });
 </script>
