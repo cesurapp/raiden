@@ -23,6 +23,7 @@ class UserResource implements ApiResourceInterface
             'phone_country' => $item->getPhoneCountry(),
             'phone_approved' => $item->isPhoneApproved(),
             'approved' => $item->isApproved(),
+            'frozen' => $item->isFrozen(),
             'roles' => $item->getRoles(),
             'language' => $item->getLanguage(),
             'first_name' => $item->getFirstName(),
@@ -49,6 +50,28 @@ class UserResource implements ApiResourceInterface
                     'sortable' => true,
                     'sortable_default' => true,
                     'sortable_desc' => true,
+                    'filter_input' => 'input',
+                ],
+            ],
+            'first_name' => [
+                'type' => 'string',
+                'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    $builder->andWhere("$alias.firstName LIKE :firstName")->setParameter('firstName', "%$data%");
+                },
+                'table' => [
+                    'label' => 'First Name',
+                    'sortable' => false,
+                    'filter_input' => 'input',
+                ],
+            ],
+            'last_name' => [
+                'type' => 'string',
+                'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
+                    $builder->andWhere("$alias.lastName LIKE :lastName")->setParameter('lastName', "%$data%");
+                },
+                'table' => [
+                    'label' => 'Last Name',
+                    'sortable' => false,
                     'filter_input' => 'input',
                 ],
             ],
@@ -133,11 +156,23 @@ class UserResource implements ApiResourceInterface
                         $builder
                             ->orWhere("$alias.emailApproved = :approved")
                             ->orWhere("$alias.phoneApproved = :approved")
-                            ->setParameter('approved', $data);
+                            ->setParameter('approved', false);
                     }
                 },
                 'table' => [
                     'label' => 'Approved',
+                    'sortable' => true,
+                    'filter_input' => 'checkbox',
+                ],
+            ],
+            'frozen' => [
+                'type' => 'boolean',
+                'filter' => static function (QueryBuilder $builder, string $alias, $data) {
+                    $data = 'true' === $data;
+                    $builder->andWhere("$alias.frozen = :frozen")->setParameter('frozen', $data);
+                },
+                'table' => [
+                    'label' => 'Frozen',
                     'sortable' => true,
                     'filter_input' => 'checkbox',
                 ],
@@ -158,28 +193,6 @@ class UserResource implements ApiResourceInterface
                     'label' => 'Language',
                     'sortable' => true,
                     'filter_input' => 'language',
-                ],
-            ],
-            'first_name' => [
-                'type' => 'string',
-                'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    $builder->andWhere("$alias.firstName LIKE :firstName")->setParameter('firstName', "%$data%");
-                },
-                'table' => [
-                    'label' => 'First Name',
-                    'sortable' => false,
-                    'filter_input' => 'input',
-                ],
-            ],
-            'last_name' => [
-                'type' => 'string',
-                'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    $builder->andWhere("$alias.lastName LIKE :lastName")->setParameter('lastName', "%$data%");
-                },
-                'table' => [
-                    'label' => 'Last Name',
-                    'sortable' => false,
-                    'filter_input' => 'input',
                 ],
             ],
             'created_at' => [

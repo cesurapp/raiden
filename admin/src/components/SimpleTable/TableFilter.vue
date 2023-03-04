@@ -12,7 +12,7 @@
         outlined
         dense
         @clear="$emit('onSearch')"
-        ref='input'
+        ref="input"
       ></q-input>
 
       <!--Q-Number-->
@@ -27,7 +27,7 @@
         outlined
         dense
         @clear="$emit('onSearch')"
-        ref='input'
+        ref="input"
       ></q-input>
 
       <!--Country Select-->
@@ -175,7 +175,7 @@ export default defineComponent({
     if (this.$refs.input) {
       setTimeout(() => this.$refs.input.focus(), 1);
     }
-  }
+  },
 });
 </script>
 

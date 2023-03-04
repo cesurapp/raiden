@@ -644,19 +644,19 @@ export default defineComponent({
     loadQueryString(updateHash) {
       if (this.updateHash) {
         if (updateHash) {
-          this.$router.push({query: flatten(this.getQuery())});
+          this.$router.push({ query: flatten(this.getQuery()) });
         } else {
           const params = deFlatten(location.search);
           this.pagination = {
             ...this.pagination,
             ...{
-              descending: params.sort ? (params.sort.toUpperCase() === 'ASC') : this.pagination.descending,
+              descending: params.sort ? params.sort.toUpperCase() === 'ASC' : this.pagination.descending,
               page: params.page || this.pagination.page,
-              sortBy: params.sort_by || this.pagination.sortBy
-            }
+              sortBy: params.sort_by || this.pagination.sortBy,
+            },
           };
 
-          this.filterValues = {...this.filterValues, ...params.filter || {}}
+          this.filterValues = { ...this.filterValues, ...(params.filter || {}) };
         }
       }
     },

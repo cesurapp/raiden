@@ -45,7 +45,7 @@ class ThorExtractor
         }
 
         // Replace Data
-        array_walk_recursive($data, static function (&$val) use($data) {
+        array_walk_recursive($data, static function (&$val) use ($data) {
             if (is_string($val) && class_exists($val) && in_array(ApiResourceInterface::class, class_implements($val), true)) {
                 $val = $data['_resource'][TypeScriptHelper::baseClass($val)];
             }

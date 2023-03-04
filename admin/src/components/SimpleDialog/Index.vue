@@ -24,9 +24,7 @@ import { mdiClose } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'SimpleDialog',
-  setup: () => ({
-    mdiClose,
-  }),
+  setup: () => ({ mdiClose }),
   props: {
     width: {
       type: String,

@@ -74,7 +74,7 @@ class AccountTest extends AbstractWebTestCase
         ]);
         $this->isOk();
         $this->assertEquals('text/csv; charset=UTF-8', $this->client()->getInternalResponse()->getHeader('content-type'));
-        $this->assertStringContainsString('ID,Type', $this->client()->getInternalResponse()->getContent());
+        $this->assertStringContainsString('ID,"First Name"', $this->client()->getInternalResponse()->getContent());
 
         // Export CSV Custom Field
         $this->client($user)->jsonRequest('GET', '/v1/admin/account/manager', [

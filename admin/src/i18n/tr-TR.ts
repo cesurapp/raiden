@@ -135,5 +135,13 @@ export default {
     'First Name': 'İsim',
     'Last Name': 'Soyisim',
     Created: 'Oluşturulma',
+    Frozen: 'Dondurulmuş',
   },
+
+  // User Editor
+  'New User': 'Yeni Kullanıcı',
+  'Edit User': 'Kullanıcıyı Düzenle',
+  'Email Approved': 'E-posta Doğrulama',
+  'Phone Approved': 'Telefon Doğrulama',
+  Frozen: 'Dondurulmuş',
 };

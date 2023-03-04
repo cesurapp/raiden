@@ -32,9 +32,9 @@
         <!--FirstName-->
         <q-input
           outlined
+          lazy-rules
           v-model="data.first_name"
           :label="$t('First Name')"
-          lazy-rules
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
           <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
@@ -43,10 +43,9 @@
         <!--LastName-->
         <q-input
           outlined
+          lazy-rules
           v-model="data.last_name"
           :label="$t('Last Name')"
-          lazy-rules
-          key="222"
           :rules="[$rules.required(), $rules.minLength(2)]"
         >
           <template v-slot:prepend><q-icon :name="mdiAccount" /></template>

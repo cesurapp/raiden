@@ -21,13 +21,14 @@
             color="green"
             :icon="mdiPlus"
             v-if="$authStore.hasPermission($permission.AdminAccount.CREATE)"
+            @click="$refs.editor.init()"
             ><q-tooltip>{{ $t('New') }}</q-tooltip></q-btn
           >
         </template>
 
         <!--Row Actions-->
         <template #rowActions="{ props }">
-          <q-item clickable v-close-popup @click="editItem(props)">
+          <q-item clickable v-close-popup @click="$refs.editor.init(props.row)">
             <q-item-section side><q-icon :name="mdiPencil" /></q-item-section>
             <q-item-section>{{ $t('Edit') }}</q-item-section>
           </q-item>
@@ -52,11 +53,23 @@
         <template #column_email_approved="{ props }">
           <q-badge :color="props.value ? 'primary' : 'secondary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
         </template>
+        <template #column_phone_approved="{ props }">
+          <q-badge :color="props.value ? 'primary' : 'secondary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
+        </template>
+        <template #column_approved="{ props }">
+          <q-badge :color="props.value ? 'primary' : 'secondary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
+        </template>
+        <template #column_frozen="{ props }">
+          <q-badge :color="props.value ? 'negative' : 'primary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
+        </template>
         <template #column_roles="{ props }">
           <q-badge v-for="role in props.value" :key="role">{{ role }}</q-badge>
         </template>
       </SimpleTable>
     </PageContent>
+
+    <!--User Editor-->
+    <UserEditor ref="editor"></UserEditor>
   </q-page>
 </template>
 
@@ -66,13 +79,14 @@ import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import AccountListTable from 'src/api/Table/AccountListTable';
 import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
-import { mdiDeleteOutline, mdiPencil, mdiPlus, mdiCancel } from '@quasar/extras/mdi-v7';
+import { mdiPencil, mdiPlus, mdiCancel } from '@quasar/extras/mdi-v7';
 import { UserType } from 'src/api/Enum/UserType';
+import UserEditor from 'pages/Admin/Account/UserEditor.vue';
 
 export default defineComponent({
   name: 'AccountListing',
-  components: { PageContent, SimpleTable },
-  setup: () => ({ AccountListTable, mdiDeleteOutline, mdiPencil, mdiPlus, mdiCancel, UserType }),
+  components: { UserEditor, PageContent, SimpleTable },
+  setup: () => ({ AccountListTable, UserType, mdiPencil, mdiPlus, mdiCancel }),
   mixins: [
     createMetaMixin(function () {
       return {
