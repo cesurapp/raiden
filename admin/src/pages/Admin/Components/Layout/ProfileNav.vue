@@ -24,7 +24,7 @@
         v-show="$authStore.isSwitchedUser()"
         @click="$authStore.switchUserLogout(true)"
       >
-        <q-item-section side><q-icon color="amber-7" :name="mdiAccountSwitch" /></q-item-section>
+        <q-item-section side><q-icon color="amber-7" :name="mdiAccountMultipleOutline" /></q-item-section>
         <q-item-section
           ><q-item-label>{{ $t('Return Admin') }}</q-item-label></q-item-section
         >
@@ -41,10 +41,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mdiAccount, mdiLogout, mdiAccountSwitch } from '@quasar/extras/mdi-v7';
+import { mdiAccount, mdiLogout, mdiAccountMultipleOutline } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AdminProfileDropdown',
-  setup: () => ({ mdiAccount, mdiLogout, mdiAccountSwitch }),
+  setup: () => ({ mdiAccount, mdiLogout, mdiAccountMultipleOutline }),
 });
 </script>

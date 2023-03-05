@@ -9,7 +9,7 @@
     :rules="required ? [$rules.required(), $rules.minLength(7)] : []"
     :error="$rules.ssrValid(serverSideInput)"
     :error-message="$rules.ssrException(serverSideInput)"
-    @update:modelValue="(val) => $emit('update:fullNumber', code + val)"
+    @update:modelValue="(val) => $emit('update:fullNumber', val ? code + val : null)"
   >
     <template v-slot:prepend>
       <CountryInput
@@ -45,6 +45,11 @@ export default defineComponent({
   data: () => ({
     code: null,
   }),
+  mounted() {
+    if (!this.phoneCountry) {
+      this.$emit('update:phoneCountry', 'TR');
+    }
+  },
   methods: {
     onPopupHide() {
       this.$refs.tel.focus();

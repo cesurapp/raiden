@@ -464,7 +464,7 @@ export default defineComponent({
     this.isMounted = true;
 
     this.loadQueryString(false);
-    this.refresh();
+    this.refresh(false);
   },
   methods: {
     /**
@@ -538,7 +538,11 @@ export default defineComponent({
     /**
      * Refresh Current Request
      */
-    refresh() {
+    refresh(mounted = true) {
+      if (mounted && this.rows.length === 0 && this.pagination.page > 1) {
+        this.pagination.page--;
+      }
+
       this.$refs.table.requestServerInteraction();
     },
 
@@ -552,7 +556,7 @@ export default defineComponent({
     /**
      * Append Row to First Line
      */
-    addFirst(...items) {
+    addFirst(items) {
       this.rows.unshift(items);
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialog" :persistent="persistent">
+  <q-dialog ref="dialog" :no-backdrop-dismiss="persistent">
     <q-card class="q-dialog-plugin">
       <!-- Header ICONS -->
       <q-card-section class="row items-center no-wrap" v-if="icon">
