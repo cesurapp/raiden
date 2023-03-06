@@ -3,6 +3,23 @@ export default {
   'tr-TR': 'Türkçe',
   'en-US': 'English',
 
+  // UserType | Roles | Permissions
+  'ROLE_USER': 'Kullanıcı',
+  'ROLE_ADMIN': 'Yönetici',
+  'ROLE_SUPER_ADMIN': 'Super Yönetici',
+  'perm_group': {
+    'AdminCore': 'Temel İzinler',
+    'AdminAccount': 'Hesap İzinleri'
+  },
+  'perm': {
+    'CREATE': 'Oluştur',
+    'LIST': 'Listele',
+    'EDIT': 'Düzenle',
+    'DELETE': 'Sil',
+    'PERMISSION': 'Yetkilendirme',
+    'ALLOWED_TO_SWITCH': 'Hesap Değiştirme'
+  },
+
   // Validations Rules
   'Value is required': 'Bu alan gereklidir',
   'The value is required': 'Bu alan gereklidir',
@@ -147,4 +164,6 @@ export default {
   'Email Approved': 'E-posta Doğrulama',
   'Phone Approved': 'Telefon Doğrulama',
   Frozen: 'Dondurulmuş',
+  'Details': 'Detaylar',
+  'Permission': 'Yetkilendirme'
 };

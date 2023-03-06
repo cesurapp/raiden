@@ -9,20 +9,14 @@
     title-update="Edit User"
   >
     <template #tabsVertical>
-      <q-tab name="profile" label="Profile" class="text-info" :icon="mdiAccount" />
-      <q-tab
-        name="permission"
-        label="Permission"
-        class="text-red"
-        :disable="!isUpdating || form.type === UserType.SUPERADMIN"
-        :icon="mdiSecurity"
-      />
+      <q-tab name="profile" :label="$t('Details')" class="text-primary" :icon="mdiAccount" />
+      <q-tab name="permission" :label="$t('Permission')" class="text-red" :disable="!isUpdating || form.type === UserType.SUPERADMIN" :icon="mdiSecurity" />
     </template>
 
     <template #tabsContent>
       <!--Profile-->
       <q-tab-panel name="profile">
-        <div class="text-h5 q-mb-lg">Profile</div>
+        <div class="text-h5 q-mb-lg">{{ $t('Details') }}</div>
         <q-form @keydown.enter.prevent="save" class="q-gutter-xs" ref="form">
           <!--FirstName-->
           <q-input
@@ -83,15 +77,14 @@
           </q-input>
 
           <!--UserType-->
-          <q-select
+          <UserTypeInput
             outlined
             lazy-rules
             label="Tür"
             v-model="form.type"
-            :options="Object.values(UserType)"
             :error="$rules.ssrValid('type')"
             :error-message="$rules.ssrException('type')"
-          ></q-select>
+          ></UserTypeInput>
 
           <!--Email Approved-->
           <q-checkbox :label="$t('Email Approved')" v-model="form.email_approved" />
@@ -106,12 +99,12 @@
 
       <!--Permission-->
       <q-tab-panel name="permission">
-        <div class="text-h5 q-mb-md">Permission</div>
+        <div class="text-h5 q-mb-md">{{ $t('Permission') }}</div>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
-            :disable="!checkPermGroup(key)"
             expand-separator
-            :label="key"
+            :disable="!checkPermGroup(key)"
+            :label="$t('perm_group.' + key)"
             :key="key"
             v-for="(perms, key) in $permission"
           >
@@ -122,7 +115,7 @@
                     v-model="form.roles"
                     dense
                     :val="permVal"
-                    :label="permName"
+                    :label="$t('perm.' + permName)"
                     :key="permName"
                     v-for="(permVal, permName) in perms"
                   />
@@ -155,10 +148,11 @@ import PhoneInput from 'components/Phone/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
+import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 
 export default defineComponent({
   name: 'UserEditor',
-  components: { LanguageInput, PhoneInput, SimpleEditor },
+  components: { UserTypeInput, LanguageInput, PhoneInput, SimpleEditor },
   setup: () => ({ UserType, mdiAccount, mdiContentSave, mdiEyeOff, mdiEye, mdiSecurity }),
   data: () => ({
     isPwd: true,
@@ -174,7 +168,6 @@ export default defineComponent({
   },
   methods: {
     checkPermGroup(groupId) {
-      console.log(groupId.toUpperCase().startsWith(this.form.type.split('_')[1]));
       return groupId.toUpperCase().startsWith(this.form.type.split('_')[1]);
     },
 
@@ -182,6 +175,7 @@ export default defineComponent({
      * Create or Edit Current Proxy Object
      */
     init(user: AccountEditRequest | null = null) {
+      this.tab = 'profile';
       this.proxy = user;
       this.form = user
         ? { ...user, ...this.user }
@@ -198,6 +192,8 @@ export default defineComponent({
      * Load and Show Editor
      */
     load(id: string) {
+      this.tab = 'profile';
+
       this.$api.accountShow(id).then((r) => {
         this.form = r.data.data;
         this.$refs.editor.toggle();

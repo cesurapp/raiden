@@ -22,7 +22,6 @@
           <q-tab-panels
             v-model="getTab"
             animated
-            swipeable
             vertical
             transition-prev="jump-up"
             transition-next="jump-up"
@@ -36,22 +35,24 @@
         <q-splitter
           v-if="$slots.tabsVertical"
           v-model="splitterModel"
-          :class="{ 'q-dark': $q.dark.isActive }"
+          :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
+          :limits="[18, 100]"
           class="full-height"
+          separator-style='background: transparent; width: 0px'
         >
-          <template v-slot:before
-            ><q-tabs v-model="getTab" vertical class="q-py-sm" :class="{ 'q-dark': $q.dark.isActive }"
-              ><slot name="tabsVertical"></slot></q-tabs
-          ></template>
+          <template v-slot:before>
+            <q-tabs v-model="getTab" vertical class="q-py-sm">
+              <slot name="tabsVertical"></slot>
+            </q-tabs>
+          </template>
           <template v-slot:after>
             <q-tab-panels
               v-model="getTab"
               animated
-              swipeable
               vertical
               transition-prev="jump-up"
               transition-next="jump-up"
-              class="borderless"
+              class="borderless full-height"
             >
               <slot name="tabsContent"></slot>
             </q-tab-panels>
@@ -98,7 +99,7 @@ export default defineComponent({
   },
   data: () => ({
     active: false,
-    splitterModel: 20,
+    splitterModel: 18,
   }),
   computed: {
     getTab: {
@@ -167,10 +168,6 @@ export default defineComponent({
     position: sticky;
     top: 0;
     z-index: 3;
-  }
-
-  .q-tab-panels {
-    height: 100%;
   }
   .q-tab-panels.q-dark {
     background: var(--q-dark-page);

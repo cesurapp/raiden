@@ -8,6 +8,7 @@
         :label="filter.label || column.label || ''"
         :debounce="75"
         clearable
+        autofocus
         class="q-mb-sm"
         outlined
         dense
@@ -22,6 +23,7 @@
         :label="filter.label || column.label || ''"
         :debounce="75"
         clearable
+        autofocus
         type="number"
         class="q-mb-sm"
         outlined
