@@ -28,9 +28,24 @@
 
         <!--Row Actions-->
         <template #rowActions="{ props }">
-          <q-item clickable v-close-popup @click="$refs.editor.init(props.row)">
+          <q-item
+            clickable
+            v-close-popup
+            @click="$refs.editor.init(props.row)"
+            v-if="$authStore.hasPermission($permission.AdminAccount.EDIT)"
+          >
             <q-item-section side><q-icon :name="mdiPencil" /></q-item-section>
             <q-item-section>{{ $t('Edit') }}</q-item-section>
+          </q-item>
+          <q-item
+            clickable
+            v-close-popup
+            :disable="props.row.type === UserType.USER"
+            @click="switchUser(props.row)"
+            v-if="$authStore.hasPermission($permission.AdminCore.ALLOWED_TO_SWITCH)"
+          >
+            <q-item-section side><q-icon :name="mdiAccountMultipleOutline" /></q-item-section>
+            <q-item-section>{{ $t('Switch User') }}</q-item-section>
           </q-item>
         </template>
 
@@ -69,7 +84,7 @@
     </PageContent>
 
     <!--User Editor-->
-    <UserEditor ref="editor"></UserEditor>
+    <UserEditor ref="editor" @created="(item) => $refs.table.addFirst(item)"></UserEditor>
   </q-page>
 </template>
 
@@ -79,14 +94,15 @@ import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import AccountListTable from 'src/api/Table/AccountListTable';
 import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
-import { mdiPencil, mdiPlus, mdiCancel } from '@quasar/extras/mdi-v7';
+import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline } from '@quasar/extras/mdi-v7';
 import { UserType } from 'src/api/Enum/UserType';
 import UserEditor from 'pages/Admin/Account/UserEditor.vue';
+import { UserResource } from 'src/api/Resource/UserResource';
 
 export default defineComponent({
   name: 'AccountListing',
   components: { UserEditor, PageContent, SimpleTable },
-  setup: () => ({ AccountListTable, UserType, mdiPencil, mdiPlus, mdiCancel }),
+  setup: () => ({ AccountListTable, UserType, mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline }),
   mixins: [
     createMetaMixin(function () {
       return {
@@ -94,5 +110,16 @@ export default defineComponent({
       };
     }),
   ],
+  methods: {
+    switchUser(user: UserResource) {
+      if (user.id === this.$authStore.user.id) {
+        return this.$appStore.notifyDanger(this.$t('You cannot switch to your own account!'));
+      }
+
+      this.$appStore
+        .confirmInfo('Do you want to switch to the user')
+        .then(() => this.$authStore.switchUser(user.email));
+    },
+  },
 });
 </script>

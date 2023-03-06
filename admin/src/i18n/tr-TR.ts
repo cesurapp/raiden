@@ -121,6 +121,9 @@ export default {
   'Click to remove': 'Kaldırmak için tıklayın',
 
   // Account Table
+  'Switch User': 'Kullanıcıya Geç',
+  'Do you want to switch to the user': 'Kullanıcıya geçiş yapmak istiyor musunuz?',
+  'You cannot switch to your own account!': 'Kendi hesabınıza geçiş yapamazsınız!',
   account: {
     ID: 'ID',
     Type: 'Tür',

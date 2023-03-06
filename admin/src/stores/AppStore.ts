@@ -55,6 +55,9 @@ export const useAppStore = defineStore('app', {
           .onCancel(() => reject(false));
       });
     },
+    confirmInfo(message) {
+      return this.confirmPromise('mdiInformationVariant', 'info', message);
+    },
     confirmDelete() {
       return this.confirmPromise('mdiDeleteOutline', 'negative', 'Are you sure you want to delete?');
     },
@@ -104,7 +107,7 @@ export const useAppStore = defineStore('app', {
       const fileName = response.headers['content-disposition'].split('=');
       const status = exportFile(fileName[1], response.data, { mimeType: response.headers['content-type'] });
       if (status !== true) {
-        this.dialogError(status);
+        this.dialogDanger(String(status));
       }
     },
   },

@@ -1,15 +1,19 @@
 <template>
   <q-select
+    ref="lang"
     bottom-slots
     outlined
     clearable
     v-model="locale"
-    :options="localeOptions"
+    :options="getLocales"
     :label="$t('Language')"
     emit-value
     map-options
   >
-    <template v-slot:prepend><q-icon :name="mdiWeb" /></template>
+    <template v-slot:prepend>
+      <q-icon v-if="!locale" :name="mdiWeb" />
+      <q-icon v-else :name="getSelectedIcon" />
+    </template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
         <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
@@ -31,8 +35,13 @@ export default defineComponent({
   data: () => ({
     locale: null,
   }),
+  mounted() {
+    if (this.$attrs.modelValue) {
+      this.locale = this.$attrs.modelValue;
+    }
+  },
   computed: {
-    localeOptions() {
+    getLocales() {
       let locales: Record<any, string>[] = [];
       this.$i18n.availableLocales.forEach((locale) => {
         let country = locale.split('-')[1].toLowerCase();
@@ -44,6 +53,9 @@ export default defineComponent({
         });
       });
       return locales;
+    },
+    getSelectedIcon() {
+      return this.getLocales.find((l) => l.value === (this.locale ?? this.$attrs.modelValue)).icon;
     },
   },
 });
