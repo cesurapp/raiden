@@ -10,7 +10,7 @@
   >
     <template #tabsVertical>
       <q-tab name="profile" :label="$t('Details')" class="text-primary" :icon="mdiAccount" />
-      <q-tab name="permission" :label="$t('Permission')" class="text-red" :disable="!isUpdating || form.type === UserType.SUPERADMIN" :icon="mdiSecurity" />
+      <q-tab name="permission" :label="$t('Permission')" class="text-red" :disable="!isUpdating || [UserType.SUPERADMIN, UserType.USER].includes(form.type) || !$authStore.hasPermission($permission.AdminAccount.PERMISSION)" :icon="mdiSecurity" />
     </template>
 
     <template #tabsContent>

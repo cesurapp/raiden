@@ -40,7 +40,7 @@
           color="red"
           size="12px"
           v-close-popup
-          v-if="deleteProp"
+          v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
           :icon="mdiDeleteOutline"
           @click="onActionRemoveAll(this.selectedRows)"
         >
@@ -63,7 +63,7 @@
             color="red"
             size="12px"
             v-close-popup
-            v-if="deleteProp"
+            v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
             :icon="mdiDeleteOutline"
             @click="onActionRemoveAll(this.selectedRows)"
             ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
@@ -135,7 +135,7 @@
         >
           <q-list style="min-width: 130px">
             <slot name="rowActions" :props="props"></slot>
-            <q-item clickable v-close-popup class="text-red-5" v-if="deleteProp" @click="onActionRemoveItem(props)">
+            <q-item clickable v-close-popup class="text-red-5" v-if="deleteProp && $authStore.hasPermission(this.deletePermission)" @click="onActionRemoveItem(props)">
               <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
               <q-item-section>{{ $t('Delete') }}</q-item-section>
             </q-item>
@@ -180,7 +180,7 @@
       <q-menu touch-position context-menu v-if="contextActions && $slots.rowActions">
         <q-list dense style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
-          <q-item clickable v-close-popup class="text-red-5" v-if="deleteProp" @click="onActionRemoveItem(props)">
+          <q-item clickable v-close-popup class="text-red-5" v-if="deleteProp && $authStore.hasPermission(this.deletePermission)" @click="onActionRemoveItem(props)">
             <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
             <q-item-section>{{ $t('Delete') }}</q-item-section>
           </q-item>
@@ -385,6 +385,7 @@ export default defineComponent({
     },
     requestProp: Function,
     deleteProp: Function,
+    deletePermission: String,
     updateHistory: {
       type: Boolean,
       default: false,

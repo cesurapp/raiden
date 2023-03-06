@@ -7,6 +7,7 @@
         :columns="AccountListTable"
         :request-prop="(req, config) => $api.accountList(req, config)"
         :delete-prop="(row) => $api.accountDelete(row.id)"
+        :delete-permission='$permission.AdminAccount.DELETE'
       >
         <!--Selected Actions-->
         <!--<template #selectedActions="{ props }">
