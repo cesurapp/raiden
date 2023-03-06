@@ -14,9 +14,9 @@
     @filter="filterFn"
     @update:modelValue="updateCountry"
     ref="country"
-    transition-duration='0'
-    virtual-scroll-slice-ratio-before='12'
-    virtual-scroll-slice-ratio-after='12'
+    transition-duration="0"
+    virtual-scroll-slice-ratio-before="12"
+    virtual-scroll-slice-ratio-after="12"
   >
     <template v-slot:prepend>
       <q-icon v-if="!selectedCountry" :name="mdiWeb" />

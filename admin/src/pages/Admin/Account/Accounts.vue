@@ -7,7 +7,7 @@
         :columns="AccountListTable"
         :request-prop="(req, config) => $api.accountList(req, config)"
         :delete-prop="(row) => $api.accountDelete(row.id)"
-        :delete-permission='$permission.AdminAccount.DELETE'
+        :delete-permission="$permission.AdminAccount.DELETE"
       >
         <!--Selected Actions-->
         <!--<template #selectedActions="{ props }">
@@ -114,7 +114,16 @@ import CountryHelper from 'src/helper/CountryHelper';
 export default defineComponent({
   name: 'AccountListing',
   components: { UserTypeInput, UserEditor, PageContent, SimpleTable },
-  setup: () => ({ AccountListTable, UserType, mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, CountryHelper, LanguageHelper }),
+  setup: () => ({
+    AccountListTable,
+    UserType,
+    mdiPencil,
+    mdiPlus,
+    mdiCancel,
+    mdiAccountMultipleOutline,
+    CountryHelper,
+    LanguageHelper,
+  }),
   mixins: [
     createMetaMixin(function () {
       return {

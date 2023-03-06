@@ -38,7 +38,7 @@
           :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
           :limits="[18, 100]"
           class="full-height"
-          separator-style='background: transparent; width: 0px'
+          separator-style="background: transparent; width: 0px"
         >
           <template v-slot:before>
             <q-tabs v-model="getTab" vertical class="q-py-sm">

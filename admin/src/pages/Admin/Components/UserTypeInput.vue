@@ -1,8 +1,8 @@
 <template>
-  <q-select :options='getOptions' emit-value map-options></q-select>
+  <q-select :options="getOptions" emit-value map-options></q-select>
 </template>
 
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import { UserType } from 'src/api/Enum/UserType';
 
@@ -13,9 +13,9 @@ export default defineComponent({
     getOptions() {
       return Object.values(UserType).map((item) => ({
         label: this.$t(item),
-        value: item
+        value: item,
       }));
-    }
-  }
+    },
+  },
 });
 </script>

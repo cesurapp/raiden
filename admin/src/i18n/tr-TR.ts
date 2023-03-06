@@ -4,20 +4,20 @@ export default {
   'en-US': 'English',
 
   // UserType | Roles | Permissions
-  'ROLE_USER': 'Kullanıcı',
-  'ROLE_ADMIN': 'Yönetici',
-  'ROLE_SUPER_ADMIN': 'Super Yönetici',
-  'perm_group': {
-    'AdminCore': 'Temel İzinler',
-    'AdminAccount': 'Hesap İzinleri'
+  ROLE_USER: 'Kullanıcı',
+  ROLE_ADMIN: 'Yönetici',
+  ROLE_SUPER_ADMIN: 'Super Yönetici',
+  perm_group: {
+    AdminCore: 'Temel İzinler',
+    AdminAccount: 'Hesap İzinleri',
   },
-  'perm': {
-    'CREATE': 'Oluştur',
-    'LIST': 'Listele',
-    'EDIT': 'Düzenle',
-    'DELETE': 'Sil',
-    'PERMISSION': 'Yetkilendirme',
-    'ALLOWED_TO_SWITCH': 'Hesap Değiştirme'
+  perm: {
+    CREATE: 'Oluştur',
+    LIST: 'Listele',
+    EDIT: 'Düzenle',
+    DELETE: 'Sil',
+    PERMISSION: 'Yetkilendirme',
+    ALLOWED_TO_SWITCH: 'Hesap Değiştirme',
   },
 
   // Validations Rules
@@ -164,6 +164,6 @@ export default {
   'Email Approved': 'E-posta Doğrulama',
   'Phone Approved': 'Telefon Doğrulama',
   Frozen: 'Dondurulmuş',
-  'Details': 'Detaylar',
-  'Permission': 'Yetkilendirme'
+  Details: 'Detaylar',
+  Permission: 'Yetkilendirme',
 };

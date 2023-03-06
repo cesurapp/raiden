@@ -1,6 +1,6 @@
 <template>
-  <q-dialog v-model="active" :maximized='$q.screen.lt.sm'>
-    <q-card :style="{ minWidth: width }" class='simple-dialog'>
+  <q-dialog v-model="active" :maximized="$q.screen.lt.sm">
+    <q-card :style="{ minWidth: width }" class="simple-dialog">
       <q-card-section v-if="$slots.header" class="flex items-center header">
         <slot name="header" />
         <q-space />
@@ -11,7 +11,7 @@
         <slot name="content" />
       </q-card-section>
 
-      <q-card-actions align="right" v-if="$slots.actions" :class='[$q.dark.isActive ? "bg-dark" : "bg-white"]'>
+      <q-card-actions align="right" v-if="$slots.actions" :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']">
         <slot name="actions" />
       </q-card-actions>
     </q-card>
@@ -42,13 +42,13 @@ export default defineComponent({
 });
 </script>
 
-<style lang='scss'>
-.simple-dialog{
+<style lang="scss">
+.simple-dialog {
   /*.header {
     position: sticky;
     top: 0;
   }*/
-  .q-card__actions{
+  .q-card__actions {
     position: sticky;
     bottom: 0;
   }
