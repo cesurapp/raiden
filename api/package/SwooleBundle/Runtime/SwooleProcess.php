@@ -123,7 +123,7 @@ class SwooleProcess
 
         try {
             @$tcpClient->connect($tcpHost ?? $this->options['tcp']['host'], $tcpPort ?? (int) $this->options['tcp']['port'], 1);
-            if (! $tcpClient->isConnected()) {
+            if (!$tcpClient->isConnected()) {
                 return null;
             }
         } catch (\Exception $exception) {
