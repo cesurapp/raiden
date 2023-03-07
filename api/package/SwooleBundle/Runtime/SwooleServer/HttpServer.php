@@ -2,10 +2,10 @@
 
 namespace Package\SwooleBundle\Runtime\SwooleServer;
 
-use Swoole\Http\Request;
-use Swoole\Http\Response;
-use Swoole\Http\Server;
-use Swoole\Table;
+use OpenSwoole\Http\Request;
+use OpenSwoole\Http\Response;
+use OpenSwoole\Http\Server;
+use OpenSwoole\Table;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;

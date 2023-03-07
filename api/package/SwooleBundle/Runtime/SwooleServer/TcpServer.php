@@ -2,8 +2,7 @@
 
 namespace Package\SwooleBundle\Runtime\SwooleServer;
 
-use Swoole\Constant;
-use Swoole\Process;
+use OpenSwoole\Process;
 
 readonly class TcpServer
 {
@@ -15,7 +14,7 @@ readonly class TcpServer
                 $this->options['tcp']['port'],
                 $this->options['tcp']['sock_type']
             );
-            $tcpServer->set([Constant::OPTION_WORKER_NUM => 1]);
+            $tcpServer->set(['worker_num' => 1]);
             $tcpServer->on('receive', [$this, 'onReceive']);
         }
     }

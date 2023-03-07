@@ -3,7 +3,7 @@
 namespace Package\SwooleBundle\Test;
 
 use Package\SwooleBundle\Runtime\SwooleProcess;
-use Swoole\Constant;
+use OpenSwoole\Constant;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\NullOutput;
@@ -23,16 +23,16 @@ class ServerTest extends KernelTestCase
                 'host' => '0.0.0.0',
                 'port' => 9599,
                 'settings' => [
-                    Constant::OPTION_WORKER_NUM => 1,
-                    Constant::OPTION_TASK_WORKER_NUM => 1,
-                    Constant::OPTION_PID_FILE => sprintf('%s/var/test_server.pid', $kernel->getProjectDir()),
-                    Constant::OPTION_LOG_FILE => sprintf('%s/var/log/%s_server.log', $kernel->getProjectDir(), $kernel->getEnvironment()),
+                    'worker_num' => 1,
+                    'task_worker_num' => 1,
+                    'pid_file' => sprintf('%s/var/test_server.pid', $kernel->getProjectDir()),
+                    'log_file' => sprintf('%s/var/log/%s_server.log', $kernel->getProjectDir(), $kernel->getEnvironment()),
                 ],
             ],
             'tcp' => [
                 'host' => '127.0.0.1',
                 'port' => 9550,
-                'sock_type' => SWOOLE_SOCK_TCP,
+                'sock_type' => Constant::SOCK_TCP,
             ],
             'app' => [
                 'watch' => 0,

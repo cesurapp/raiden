@@ -2,8 +2,8 @@
 <?php
 
 use PHPUnit\TextUI\Command;
-use Swoole\Coroutine\Scheduler;
-use Swoole\Timer;
+use OpenSwoole\Coroutine\Scheduler;
+use OpenSwoole\Timer;
 
 if (!ini_get('date.timezone')) {
     ini_set('date.timezone', 'UTC');

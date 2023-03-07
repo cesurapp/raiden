@@ -2,7 +2,7 @@
 
 namespace Package\SwooleBundle\Adapter;
 
-use Swoole\Table;
+use OpenSwoole\Table;
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Cache\PruneableInterface;
 

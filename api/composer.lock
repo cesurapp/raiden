@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca4a29511c3042034ed228d469f69bb4",
+    "content-hash": "29754fd5720d0cfddc01d1221cdfab98",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -462,16 +462,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.6.0",
+            "version": "3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "85b98cb23c8af471a67abfe14485da696bcabc2e"
+                "reference": "57815c7bbcda3cd18871d253c1dd8cbe56f8526e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/85b98cb23c8af471a67abfe14485da696bcabc2e",
-                "reference": "85b98cb23c8af471a67abfe14485da696bcabc2e",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/57815c7bbcda3cd18871d253c1dd8cbe56f8526e",
+                "reference": "57815c7bbcda3cd18871d253c1dd8cbe56f8526e",
                 "shasum": ""
             },
             "require": {
@@ -487,11 +487,11 @@
                 "doctrine/coding-standard": "11.1.0",
                 "fig/log-test": "^1",
                 "jetbrains/phpstorm-stubs": "2022.3",
-                "phpstan/phpstan": "1.9.14",
-                "phpstan/phpstan-strict-rules": "^1.4",
-                "phpunit/phpunit": "9.6.3",
+                "phpstan/phpstan": "1.10.3",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "phpunit/phpunit": "9.6.4",
                 "psalm/plugin-phpunit": "0.18.4",
-                "squizlabs/php_codesniffer": "3.7.1",
+                "squizlabs/php_codesniffer": "3.7.2",
                 "symfony/cache": "^5.4|^6.0",
                 "symfony/console": "^4.4|^5.4|^6.0",
                 "vimeo/psalm": "4.30.0"
@@ -554,7 +554,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.6.0"
+                "source": "https://github.com/doctrine/dbal/tree/3.6.1"
             },
             "funding": [
                 {
@@ -570,7 +570,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-07T22:52:03+00:00"
+            "time": "2023-03-02T19:26:24+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -1441,16 +1441,16 @@
         },
         {
             "name": "giggsey/libphonenumber-for-php",
-            "version": "8.13.6",
+            "version": "8.13.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/giggsey/libphonenumber-for-php.git",
-                "reference": "5631645d2ca28e4f62daea7baddcba8c90f4bcbf"
+                "reference": "281b12d9091fcd04e9379a67f723179c44b13ec8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/5631645d2ca28e4f62daea7baddcba8c90f4bcbf",
-                "reference": "5631645d2ca28e4f62daea7baddcba8c90f4bcbf",
+                "url": "https://api.github.com/repos/giggsey/libphonenumber-for-php/zipball/281b12d9091fcd04e9379a67f723179c44b13ec8",
+                "reference": "281b12d9091fcd04e9379a67f723179c44b13ec8",
                 "shasum": ""
             },
             "require": {
@@ -1509,7 +1509,7 @@
                 "issues": "https://github.com/giggsey/libphonenumber-for-php/issues",
                 "source": "https://github.com/giggsey/libphonenumber-for-php"
             },
-            "time": "2023-02-10T10:33:16+00:00"
+            "time": "2023-03-03T14:16:43+00:00"
         },
         {
             "name": "giggsey/locale",
@@ -6076,16 +6076,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.15.3",
+            "version": "v4.15.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "570e980a201d8ed0236b0a62ddf2c9cbb2034039"
+                "reference": "6bb5176bc4af8bcb7d926f88718db9b96a2d4290"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/570e980a201d8ed0236b0a62ddf2c9cbb2034039",
-                "reference": "570e980a201d8ed0236b0a62ddf2c9cbb2034039",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/6bb5176bc4af8bcb7d926f88718db9b96a2d4290",
+                "reference": "6bb5176bc4af8bcb7d926f88718db9b96a2d4290",
                 "shasum": ""
             },
             "require": {
@@ -6126,29 +6126,30 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.3"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.4"
             },
-            "time": "2023-01-16T22:05:37+00:00"
+            "time": "2023-03-05T19:49:14+00:00"
         },
         {
             "name": "openswoole/ide-helper",
-            "version": "4.11.6",
+            "version": "22.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openswoole/ide-helper.git",
-                "reference": "6e8831af6dd34e24456cb98272373b030bce94df"
+                "reference": "43fc13f3cc3212784822103efeec82829f6f22f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openswoole/ide-helper/zipball/6e8831af6dd34e24456cb98272373b030bce94df",
-                "reference": "6e8831af6dd34e24456cb98272373b030bce94df",
+                "url": "https://api.github.com/repos/openswoole/ide-helper/zipball/43fc13f3cc3212784822103efeec82829f6f22f5",
+                "reference": "43fc13f3cc3212784822103efeec82829f6f22f5",
                 "shasum": ""
             },
             "require": {
+                "ext-openswoole": ">=22.0",
                 "php": ">=7.4"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.3"
+                "friendsofphp/php-cs-fixer": "^3.6"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -6157,16 +6158,16 @@
             ],
             "authors": [
                 {
-                    "name": "Open Swoole Group",
+                    "name": "OpenSwoole Group",
                     "email": "hello@openswoole.com"
                 }
             ],
-            "description": "IDE help files for Open Swoole.",
+            "description": "IDE helper for OpenSwoole.",
             "support": {
                 "issues": "https://github.com/openswoole/ide-helper/issues",
-                "source": "https://github.com/openswoole/ide-helper/tree/4.11.6"
+                "source": "https://github.com/openswoole/ide-helper/tree/22.0.1"
             },
-            "time": "2022-08-03T13:28:52+00:00"
+            "time": "2023-02-05T22:27:37+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6281,16 +6282,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.25",
+            "version": "9.2.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "0e2b40518197a8c0d4b08bc34dfff1c99c508954"
+                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0e2b40518197a8c0d4b08bc34dfff1c99c508954",
-                "reference": "0e2b40518197a8c0d4b08bc34dfff1c99c508954",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
+                "reference": "443bc6912c9bd5b409254a40f4b0f4ced7c80ea1",
                 "shasum": ""
             },
             "require": {
@@ -6312,8 +6313,8 @@
                 "phpunit/phpunit": "^9.3"
             },
             "suggest": {
-                "ext-pcov": "*",
-                "ext-xdebug": "*"
+                "ext-pcov": "PHP extension that provides line coverage",
+                "ext-xdebug": "PHP extension that provides line coverage as well as branch and path coverage"
             },
             "type": "library",
             "extra": {
@@ -6346,7 +6347,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.25"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.26"
             },
             "funding": [
                 {
@@ -6354,7 +6355,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-25T05:32:00+00:00"
+            "time": "2023-03-06T12:58:08+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",

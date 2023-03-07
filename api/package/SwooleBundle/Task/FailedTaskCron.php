@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Package\SwooleBundle\Cron\AbstractCronJob;
 use Package\SwooleBundle\Entity\FailedTask;
 use Psr\Log\NullLogger;
-use Swoole\Server;
+use OpenSwoole\Server;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 class FailedTaskCron extends AbstractCronJob

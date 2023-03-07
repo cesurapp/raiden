@@ -3,7 +3,7 @@
 namespace Package\SwooleBundle\Runtime\SwooleServer;
 
 use Package\SwooleBundle\Task\TaskWorker;
-use Swoole\Server\Task;
+use OpenSwoole\Server\Task;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class TaskServer
