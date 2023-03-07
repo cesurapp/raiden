@@ -7,6 +7,7 @@
         :columns="AccountListTable"
         :request-prop="(req, config) => $api.accountList(req, config)"
         :delete-prop="(row) => $api.accountDelete(row.id)"
+        :delete-permission="$permission.AdminAccount.DELETE"
       >
         <!--Selected Actions-->
         <!--<template #selectedActions="{ props }">
@@ -51,20 +52,28 @@
 
         <!--Custom Column Filter-->
         <template #filter_type="{ column, values, refresh }">
-          <q-select
+          <UserTypeInput
             v-model="values[column.name]"
             :label="column.label || ''"
-            :options="Object.values(UserType)"
             @update:modelValue="refresh"
             clearable
             class="q-mb-sm"
             outlined
             dense
             style="min-width: 200px"
-          ></q-select>
+          ></UserTypeInput>
         </template>
 
         <!--Custom Column Template-->
+        <template #column_phone_country="{ props }">
+          {{ props.value && CountryHelper.hasOwnProperty(props.value) ? CountryHelper[props.value].name : '' }}
+        </template>
+        <template #column_language="{ props }">
+          {{ props.value && LanguageHelper.hasOwnProperty(props.value) ? LanguageHelper[props.value] : '' }}
+        </template>
+        <template #column_type="{ props }">
+          {{ $t(props.value) }}
+        </template>
         <template #column_email_approved="{ props }">
           <q-badge :color="props.value ? 'primary' : 'secondary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
         </template>
@@ -98,11 +107,23 @@ import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline } from '@quasa
 import { UserType } from 'src/api/Enum/UserType';
 import UserEditor from 'pages/Admin/Account/UserEditor.vue';
 import { UserResource } from 'src/api/Resource/UserResource';
+import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
+import LanguageHelper from 'src/helper/LanguageHelper';
+import CountryHelper from 'src/helper/CountryHelper';
 
 export default defineComponent({
   name: 'AccountListing',
-  components: { UserEditor, PageContent, SimpleTable },
-  setup: () => ({ AccountListTable, UserType, mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline }),
+  components: { UserTypeInput, UserEditor, PageContent, SimpleTable },
+  setup: () => ({
+    AccountListTable,
+    UserType,
+    mdiPencil,
+    mdiPlus,
+    mdiCancel,
+    mdiAccountMultipleOutline,
+    CountryHelper,
+    LanguageHelper,
+  }),
   mixins: [
     createMetaMixin(function () {
       return {
