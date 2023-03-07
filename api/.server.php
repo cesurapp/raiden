@@ -1,6 +1,7 @@
 <?php
 
 use OpenSwoole\Constant;
+use OpenSwoole\Server;
 
 /**
  * Swoole Server Configuration.
@@ -13,7 +14,7 @@ return static function (array $opt) {
         'http' => [
             'host' => '0.0.0.0',
             'port' => 80,
-            'mode' => 1,
+            'mode' => Server::POOL_MODE,
             'sock_type' => Constant::SOCK_TCP,
             'settings' => [
                 'worker_num' => 8,

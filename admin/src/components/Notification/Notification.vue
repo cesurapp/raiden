@@ -227,7 +227,7 @@ export default defineComponent({
       notifyShow(item.message, item.title, item.type, { actions: actions });
     },
     initNotification() {
-      if (this.$q.platform.is.ios || !Notification) {
+      if (!("Notification" in window)) {
         return;
       }
 
