@@ -12,7 +12,6 @@
         <server name="APP_ENV" value="test" force="true"/>
         <server name="APP_SECRET" value="f3ca4e95684cbae9f79891651296816e" force="true"/>
         <server name="APP_LOG_LEVEL" value="error" force="true"/>
-        <server name="APP_LOG_STDIN" value="1" force="true"/>
         <server name="APP_STORAGE" value="local" force="true"/>
         <server name="APP_JWT_SECRET" value="JH12G3JH21312J3G1H2312J3G" force="true"/>
         <server name="APP_JWT_TOKEN_EXP" value="3600" force="true"/>

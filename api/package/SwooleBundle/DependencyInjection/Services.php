@@ -4,11 +4,13 @@ namespace Package\SwooleBundle\DependencyInjection;
 
 use Package\SwooleBundle\Adapter\SwooleCacheAdapter;
 use Package\SwooleBundle\Adapter\SwooleCacheFactory;
-use Package\SwooleBundle\Log\Logger;
 use Package\SwooleBundle\Task\FailedTaskCron;
 use Package\SwooleBundle\Task\TaskHandler;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Log\Logger;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
@@ -35,12 +37,7 @@ return static function (ContainerConfigurator $container) {
     // Logger
     $container->services()
         ->set('logger', Logger::class)
-        ->args([
-            '$formatter' => null,
-            '$minLevel' => '%env(APP_LOG_LEVEL)%',
-            '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
-            '$stdin' => '%env(APP_LOG_STDIN)%',
-        ]);
+        ->args(['%env(APP_LOG_LEVEL)%', '%kernel.logs_dir%/%env(APP_ENV)%.log', null, new Reference(RequestStack::class)]);
 
     // Task Handler
     $taskHandler = $services->set(TaskHandler::class, TaskHandler::class);

@@ -23,6 +23,7 @@ return static function (array $opt) {
                 'log_level' => Constant::LOG_WARNING,
                 'max_wait_time' => 60,
                 'task_enable_coroutine' => true,
+                'task_max_request' => 0,
                 'pid_file' => $opt['project_dir'].'/var/server.pid',
                 'log_file' => $opt['project_dir'].'/var/log/prod_server.log',
             ],
