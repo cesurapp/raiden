@@ -2,7 +2,8 @@
 
 namespace Package\SwooleBundle\Runtime;
 
-use Swoole\Client;
+use OpenSwoole\Client;
+use OpenSwoole\Constant;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -118,9 +119,13 @@ class SwooleProcess
      */
     public function getServer(?string $tcpHost = null, ?int $tcpPort = null): ?Client
     {
-        $tcpClient = new Client(SWOOLE_SOCK_TCP);
+        $tcpClient = new Client(Constant::SOCK_TCP);
+
         try {
-            $tcpClient->connect($tcpHost ?? $this->options['tcp']['host'], $tcpPort ?? (int) $this->options['tcp']['port'], 1);
+            @$tcpClient->connect($tcpHost ?? $this->options['tcp']['host'], $tcpPort ?? (int) $this->options['tcp']['port'], 1);
+            if (!$tcpClient->isConnected()) {
+                return null;
+            }
         } catch (\Exception $exception) {
             return null;
         }

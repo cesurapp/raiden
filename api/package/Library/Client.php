@@ -2,8 +2,8 @@
 
 namespace Package\Library;
 
-use Swoole\Coroutine\Http\Client as SwooleClient;
-use Swoole\Coroutine\Http\Client\Exception;
+use OpenSwoole\Coroutine\Http\Client as SwooleClient;
+use OpenSwoole\Coroutine\Http\Client\Exception;
 
 /**
  * Swoole Coroutine Based Http Client.

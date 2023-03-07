@@ -3,7 +3,7 @@
 namespace Package\SwooleBundle\Runtime\SwooleServer;
 
 use Package\SwooleBundle\Cron\CronWorker;
-use Swoole\Timer;
+use OpenSwoole\Timer;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class CronServer

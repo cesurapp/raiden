@@ -34,14 +34,15 @@
         <!--Vertical Tabs-->
         <q-splitter
           v-if="$slots.tabsVertical"
-          v-model="splitterModel"
+          :model-value="$q.screen.lt.sm ? 65 : 150"
           :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
-          :limits="[18, 100]"
+          unit="px"
+          :limits="[$q.screen.lt.sm ? 65 : 150, Infinity]"
           class="full-height"
           separator-style="background: transparent; width: 0px"
         >
           <template v-slot:before>
-            <q-tabs v-model="getTab" vertical class="q-py-sm">
+            <q-tabs v-model="getTab" vertical class="q-py-sm vertical-tabs">
               <slot name="tabsVertical"></slot>
             </q-tabs>
           </template>
@@ -99,7 +100,7 @@ export default defineComponent({
   },
   data: () => ({
     active: false,
-    splitterModel: 18,
+    splitterModel: 65,
   }),
   computed: {
     getTab: {
@@ -177,6 +178,15 @@ export default defineComponent({
   }
 }
 
+.screen--xs {
+  .simple-editor {
+    .vertical-tabs {
+      .q-tab__label {
+        display: none;
+      }
+    }
+  }
+}
 .screen--md,
 .screen--lg,
 .screen--xl {

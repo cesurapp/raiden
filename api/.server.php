@@ -1,5 +1,8 @@
 <?php
 
+use OpenSwoole\Constant;
+use OpenSwoole\Server;
+
 /**
  * Swoole Server Configuration.
  *
@@ -11,23 +14,24 @@ return static function (array $opt) {
         'http' => [
             'host' => '0.0.0.0',
             'port' => 80,
-            'mode' => SWOOLE_PROCESS,
-            'sock_type' => SWOOLE_SOCK_TCP,
+            'mode' => Server::POOL_MODE,
+            'sock_type' => Constant::SOCK_TCP,
             'settings' => [
-                Swoole\Constant::OPTION_WORKER_NUM => 8,
-                Swoole\Constant::OPTION_TASK_WORKER_NUM => 4,
-                Swoole\Constant::OPTION_ENABLE_STATIC_HANDLER => false,
-                Swoole\Constant::OPTION_LOG_LEVEL => SWOOLE_LOG_WARNING,
-                Swoole\Constant::OPTION_MAX_WAIT_TIME => 60,
-                Swoole\Constant::OPTION_TASK_ENABLE_COROUTINE => true,
-                Swoole\Constant::OPTION_PID_FILE => $opt['project_dir'].'/var/server.pid',
-                Swoole\Constant::OPTION_LOG_FILE => $opt['project_dir'].'/var/log/prod_server.log',
+                'worker_num' => 8,
+                'task_worker_num' => 4,
+                'enable_static_handler' => false,
+                'log_level' => Constant::LOG_WARNING,
+                'max_wait_time' => 60,
+                'task_enable_coroutine' => true,
+                'task_max_request' => 0,
+                'pid_file' => $opt['project_dir'].'/var/server.pid',
+                'log_file' => $opt['project_dir'].'/var/log/prod_server.log',
             ],
         ],
         'tcp' => [
             'host' => '127.0.0.1',
             'port' => 9502,
-            'sock_type' => SWOOLE_SOCK_TCP,
+            'sock_type' => Constant::SOCK_TCP,
         ],
         'cache_table' => [
             'size' => 700,

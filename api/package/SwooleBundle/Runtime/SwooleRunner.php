@@ -89,13 +89,13 @@ class SwooleRunner implements RunnerInterface
                 ['Debug' => $this->options['debug'] ? 'True' : 'False'],
                 [
                     'Log Level' => match ($this->options['http']['settings']['log_level']) {
-                        0 => 'SWOOLE_LOG_DEBUG',
-                        1 => 'SWOOLE_LOG_TRACE',
-                        2 => 'SWOOLE_LOG_INFO',
-                        3 => 'SWOOLE_LOG_NOTICE',
-                        4 => 'SWOOLE_LOG_WARNING',
-                        5 => 'SWOOLE_LOG_ERROR',
-                        6 => 'SWOOLE_LOG_NONE',
+                        0 => 'LOG_DEBUG',
+                        1 => 'LOG_TRACE',
+                        2 => 'LOG_INFO',
+                        3 => 'LOG_NOTICE',
+                        4 => 'LOG_WARNING',
+                        5 => 'LOG_ERROR',
+                        6 => 'LOG_NONE',
                         default => '-'
                     },
                 ],

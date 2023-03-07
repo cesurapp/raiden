@@ -5,13 +5,13 @@ namespace Package\SwooleBundle\Test;
 use App\Kernel;
 use Doctrine\ORM\Tools\SchemaTool;
 use Package\SwooleBundle\Entity\FailedTask;
-use Package\SwooleBundle\Log\Logger;
 use Package\SwooleBundle\Task\TaskWorker;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpKernel\Log\Logger;
 
 class TaskTest extends KernelTestCase
 {
@@ -120,7 +120,6 @@ class CustomKernel extends Kernel
                 '$formatter' => null,
                 '$minLevel' => 'debug',
                 '$output' => '%kernel.logs_dir%/%env(APP_ENV)%.log',
-                '$stdin' => 0,
             ]);
     }
 }

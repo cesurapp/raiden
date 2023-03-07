@@ -4,9 +4,10 @@ namespace Package\SwooleBundle\Command;
 
 use Doctrine\DBAL\Logging\Middleware;
 use Doctrine\ORM\EntityManagerInterface;
+use OpenSwoole\Constant;
 use Package\SwooleBundle\Entity\FailedTask;
 use Psr\Log\NullLogger;
-use Swoole\Client;
+use OpenSwoole\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ class TaskFailedRetryCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $client = new Client(SWOOLE_SOCK_TCP);
+        $client = new Client(Constant::SOCK_TCP);
 
         // Connect Swoole TCP Server
         try {

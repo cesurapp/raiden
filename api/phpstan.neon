@@ -11,6 +11,7 @@ parameters:
         - '#While loop condition is always true.#'
     excludePaths:
         - 'package/ApiBundle/Thor/Template/*'
+        - 'package/SwooleBundle/Runtime/SwooleServer/TcpServer'
 
 includes:
     - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon

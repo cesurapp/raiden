@@ -2,7 +2,8 @@
 
 namespace Package\SwooleBundle\Command;
 
-use Swoole\Client;
+use OpenSwoole\Constant;
+use OpenSwoole\Client;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,7 +19,7 @@ class ServerStatusCommand extends Command
         /** @var ConsoleSectionOutput $section */
         $section = $output->section(); // @phpstan-ignore-line
         $output = new SymfonyStyle($input, $section);
-        $client = new Client(SWOOLE_SOCK_TCP);
+        $client = new Client(Constant::SOCK_TCP);
 
         // Load Configuration
         $rootDir = $this->getApplication()->getKernel()->getProjectDir(); // @phpstan-ignore-line
@@ -31,7 +32,7 @@ class ServerStatusCommand extends Command
         while (true) {
             try {
                 if (!$client->isConnected()) {
-                    $client->connect($options['tcp']['host'], $options['tcp']['port'], 1.5);
+                    @$client->connect($options['tcp']['host'], $options['tcp']['port'], 1.5);
                 } else {
                     $client->send('getMetrics');
                     $data = json_decode($client->recv(), true, 512, JSON_THROW_ON_ERROR);
@@ -85,7 +86,7 @@ class ServerStatusCommand extends Command
             } catch (\Exception $exception) {
                 $section->clear();
                 $output->error("Could not connect to server!\n".$exception->getMessage());
-                $client = new Client(SWOOLE_SOCK_TCP);
+                $client = new Client(Constant::SOCK_TCP);
             }
 
             usleep(1500000);
