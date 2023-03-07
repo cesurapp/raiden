@@ -2,7 +2,7 @@
   <q-drawer side="right" :width="320" :breakpoint="1440" v-model="drawer" elevated @before-show="onShowPanel">
     <q-scroll-area class="fit">
       <!--System Notification Alert-->
-      <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true">
+      <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true && this.support">
         <q-card-section class="flex no-wrap items-center q-py-md q-px-md">
           <div class="q-mr-md">
             <div class="text-subtitle1">{{ $t('System Notification') }}</div>
@@ -116,6 +116,7 @@ export default defineComponent({
       modal: false,
       permission: LocalStorage.getItem('fbPermission'),
     },
+    support: 'Notification' in window,
   }),
   mounted() {
     this.loadUnreadCount();
@@ -227,7 +228,7 @@ export default defineComponent({
       notifyShow(item.message, item.title, item.type, { actions: actions });
     },
     initNotification() {
-      if (!("Notification" in window)) {
+      if (!this.support) {
         return;
       }
 
