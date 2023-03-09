@@ -33,6 +33,7 @@
             clickable
             v-close-popup
             @click="$refs.editor.init(props.row)"
+            :disable='!isEditable(props.row)'
             v-if="$authStore.hasPermission($permission.AdminAccount.EDIT)"
           >
             <q-item-section side><q-icon :name="mdiPencil" /></q-item-section>
@@ -41,7 +42,7 @@
           <q-item
             clickable
             v-close-popup
-            :disable="props.row.type === UserType.USER"
+            :disable="!isSwitchable(props.row)"
             @click="switchUser(props.row)"
             v-if="$authStore.hasPermission($permission.AdminCore.ALLOWED_TO_SWITCH)"
           >
@@ -87,13 +88,30 @@
           <q-badge :color="props.value ? 'negative' : 'primary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
         </template>
         <template #column_roles="{ props }">
-          <q-badge v-for="role in props.value" :key="role">{{ role }}</q-badge>
+          <q-btn  flat dense rounded size='sm' v-if='props.row.type !== UserType.USER' :icon='mdiMagnify' @click='selectedPerm = props.row; $refs.permViewer.toggle()'></q-btn>
         </template>
       </SimpleTable>
     </PageContent>
 
     <!--User Editor-->
     <UserEditor ref="editor" @created="(item) => $refs.table.addFirst(item)"></UserEditor>
+
+    <!--Permission Viewer-->
+    <SimpleDialog ref='permViewer'>
+      <template #content>
+        <div class="text-h5 q-mb-md">{{ $t('Permissions') }}</div>
+        <q-list bordered class="rounded-borders">
+          <q-expansion-item :model-value='true' expand-separator :label="$t('perm_group.' + key)" :key="key" v-for="(perms, key) in $authStore.getReadablePermission($permission, selectedPerm)">
+            <q-card><q-card-section><div class="q-gutter-md">
+              <q-checkbox dense :model-value='true' :label="$t('perm.' + permName)" :key="permName" v-for="(permVal, permName) in perms" />
+            </div></q-card-section></q-card>
+          </q-expansion-item>
+        </q-list>
+      </template>
+      <template #actions>
+        <q-btn flat :label="$t('Close')" color="primary" v-close-popup/>
+      </template>
+    </SimpleDialog>
   </q-page>
 </template>
 
@@ -103,17 +121,18 @@ import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import AccountListTable from 'src/api/Table/AccountListTable';
 import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
-import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline } from '@quasar/extras/mdi-v7';
+import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
 import { UserType } from 'src/api/Enum/UserType';
 import UserEditor from 'pages/Admin/Account/UserEditor.vue';
 import { UserResource } from 'src/api/Resource/UserResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageHelper from 'src/helper/LanguageHelper';
 import CountryHelper from 'src/helper/CountryHelper';
+import SimpleDialog from 'components/SimpleDialog/Index.vue';
 
 export default defineComponent({
   name: 'AccountListing',
-  components: { UserTypeInput, UserEditor, PageContent, SimpleTable },
+  components: { SimpleDialog, UserTypeInput, UserEditor, PageContent, SimpleTable },
   setup: () => ({
     AccountListTable,
     UserType,
@@ -121,6 +140,7 @@ export default defineComponent({
     mdiPlus,
     mdiCancel,
     mdiAccountMultipleOutline,
+    mdiMagnify,
     CountryHelper,
     LanguageHelper,
   }),
@@ -131,12 +151,29 @@ export default defineComponent({
       };
     }),
   ],
+  data: () => ({
+    selectedPerm: null
+  }),
   methods: {
-    switchUser(user: UserResource) {
-      if (user.id === this.$authStore.user.id) {
-        return this.$appStore.notifyDanger(this.$t('You cannot switch to your own account!'));
+    isEditable(user: UserResource) {
+      if (user.type === UserType.SUPERADMIN) {
+        return this.$authStore.user.type === UserType.SUPERADMIN;
       }
 
+      return true;
+    },
+    isSwitchable(user: UserResource) {
+      if (user.type === UserType.SUPERADMIN) {
+        return this.$authStore.user.type === UserType.SUPERADMIN;
+      }
+
+      if (user.id === this.$authStore.user.id) {
+        return false;
+      }
+
+      return user.type !== UserType.USER
+    },
+    switchUser(user: UserResource) {
       this.$appStore
         .confirmInfo('Do you want to switch to the user')
         .then(() => this.$authStore.switchUser(user.email));

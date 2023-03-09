@@ -33,7 +33,7 @@ class UserDto extends AbstractApiDto
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: [UserType::class, 'values'])]
-    public ?string $type = 'user';
+    public ?string $type = 'ROLE_USER';
 
     #[Assert\Length(min: 8)]
     public ?string $password = null;

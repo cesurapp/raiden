@@ -115,7 +115,7 @@ class AccountController extends AbstractApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_EDIT->value)]
     public function edit(User $user, UserDto $dto): ApiResponse
     {
-        if ($user->hasRoles(UserType::SUPERADMIN)) {
+        if ($user->hasType(UserType::SUPERADMIN)) {
             $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
 
@@ -154,7 +154,7 @@ class AccountController extends AbstractApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_DELETE->value)]
     public function delete(User $user, UserRepository $userRepo): ApiResponse
     {
-        if ($user->hasRoles(UserType::SUPERADMIN)) {
+        if ($user->hasType(UserType::SUPERADMIN)) {
             $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
 
@@ -162,27 +162,6 @@ class AccountController extends AbstractApiController
         $userRepo->remove($user);
 
         return ApiResponse::create()->addMessage('User deleted');
-    }
-
-    #[Thor(
-        group: 'Account Management',
-        desc: 'View Permission',
-        response: [
-            200 => ['data' => [
-                'current' => 'array',
-                'permissions' => 'array',
-            ]],
-        ],
-        order: 9
-    )]
-    #[Route(path: '/v1/admin/account/permission/{id}', methods: ['GET'])]
-    #[IsGranted(AccountPermission::ROLE_ACCOUNT_PERMISSION->value)]
-    public function showPermission(User $user, PermissionManager $permissionManager): ApiResponse
-    {
-        return ApiResponse::create()->setData(['data' => [
-            'current' => $user->getRoles(),
-            'permissions' => $permissionManager->getPermissionsValues($user->getType()),
-        ]]);
     }
 
     #[Thor(
@@ -197,6 +176,19 @@ class AccountController extends AbstractApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_PERMISSION->value)]
     public function editPermission(User $user, Request $request, PermissionManager $permissionManager): ApiResponse
     {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        // Forbid User
+        if ($user->hasType(UserType::USER)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // Forbid SuperUser
+        if ($user->hasType(UserType::SUPERADMIN)) {
+            $this->isGrantedDeny(UserType::SUPERADMIN->value);
+        }
+
         if (!$request->request->has('permissions')) {
             throw $this->createNotFoundException('Permissions not found!');
         }
@@ -206,6 +198,9 @@ class AccountController extends AbstractApiController
             $permissionManager->getPermissionsFlatten($user->getType()),
             $request->get('permissions')
         );
+        if (!$currentUser->hasType(UserType::SUPERADMIN)) {
+            $permissions = array_intersect($currentUser->getRoles(), $permissions);
+        }
 
         // Init Permissions
         $user->setRoles($permissionManager->getPermissionToEnum($permissions));

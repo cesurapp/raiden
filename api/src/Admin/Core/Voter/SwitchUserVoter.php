@@ -21,15 +21,19 @@ class SwitchUserVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-        /** @var User $user */
         $user = $token->getUser();
-        if (!$user instanceof UserInterface || !$subject instanceof UserInterface) {
+        if (!$user instanceof User || !$subject instanceof User) {
             return false;
         }
 
         // Super Admin
-        if (UserType::SUPERADMIN === $user->getType()) {
+        if ($user->hasType(UserType::SUPERADMIN)) {
             return true;
+        }
+
+        // Disable Super Admin to Admin
+        if ($subject->hasType(UserType::SUPERADMIN)) {
+            return false;
         }
 
         // Check Account Switcher
