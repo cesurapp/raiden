@@ -33,7 +33,7 @@
             clickable
             v-close-popup
             @click="$refs.editor.init(props.row)"
-            :disable='!isEditable(props.row)'
+            :disable="!isEditable(props.row)"
             v-if="$authStore.hasPermission($permission.AdminAccount.EDIT)"
           >
             <q-item-section side><q-icon :name="mdiPencil" /></q-item-section>
@@ -88,7 +88,18 @@
           <q-badge :color="props.value ? 'negative' : 'primary'">{{ props.value ? $t('Yes') : $t('No') }}</q-badge>
         </template>
         <template #column_roles="{ props }">
-          <q-btn  flat dense rounded size='sm' v-if='props.row.type !== UserType.USER' :icon='mdiMagnify' @click='selectedPerm = props.row; $refs.permViewer.toggle()'></q-btn>
+          <q-btn
+            flat
+            dense
+            rounded
+            size="sm"
+            v-if="props.row.type !== UserType.USER"
+            :icon="mdiMagnify"
+            @click="
+              selectedPerm = props.row;
+              $refs.permViewer.toggle();
+            "
+          ></q-btn>
         </template>
       </SimpleTable>
     </PageContent>
@@ -97,19 +108,33 @@
     <UserEditor ref="editor" @created="(item) => $refs.table.addFirst(item)"></UserEditor>
 
     <!--Permission Viewer-->
-    <SimpleDialog ref='permViewer'>
+    <SimpleDialog ref="permViewer">
       <template #content>
         <div class="text-h5 q-mb-md">{{ $t('Permissions') }}</div>
         <q-list bordered class="rounded-borders">
-          <q-expansion-item :model-value='true' expand-separator :label="$t('perm_group.' + key)" :key="key" v-for="(perms, key) in $authStore.getReadablePermission($permission, selectedPerm)">
-            <q-card><q-card-section><div class="q-gutter-md">
-              <q-checkbox dense :model-value='true' :label="$t('perm.' + permName)" :key="permName" v-for="(permVal, permName) in perms" />
-            </div></q-card-section></q-card>
+          <q-expansion-item
+            :model-value="true"
+            expand-separator
+            :label="$t('perm_group.' + key)"
+            :key="key"
+            v-for="(perms, key) in $authStore.getReadablePermission($permission, selectedPerm)"
+          >
+            <q-card
+              ><q-card-section
+                ><div class="q-gutter-md">
+                  <q-checkbox
+                    dense
+                    :model-value="true"
+                    :label="$t('perm.' + permName)"
+                    :key="permName"
+                    v-for="(permVal, permName) in perms"
+                  /></div></q-card-section
+            ></q-card>
           </q-expansion-item>
         </q-list>
       </template>
       <template #actions>
-        <q-btn flat :label="$t('Close')" color="primary" v-close-popup/>
+        <q-btn flat :label="$t('Close')" color="primary" v-close-popup />
       </template>
     </SimpleDialog>
   </q-page>
@@ -152,7 +177,7 @@ export default defineComponent({
     }),
   ],
   data: () => ({
-    selectedPerm: null
+    selectedPerm: null,
   }),
   methods: {
     isEditable(user: UserResource) {
@@ -171,7 +196,7 @@ export default defineComponent({
         return false;
       }
 
-      return user.type !== UserType.USER
+      return user.type !== UserType.USER;
     },
     switchUser(user: UserResource) {
       this.$appStore

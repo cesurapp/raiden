@@ -10,7 +10,13 @@
   >
     <template #tabsVertical>
       <q-tab name="profile" :label="$t('Details')" class="text-primary" :icon="mdiAccount" />
-      <q-tab name="permission" :label="$t('Permission')" class="text-red" :disable="!isPermissionEditor" :icon="mdiSecurity" />
+      <q-tab
+        name="permission"
+        :label="$t('Permission')"
+        class="text-red"
+        :disable="!isPermissionEditor"
+        :icon="mdiSecurity"
+      />
     </template>
 
     <template #tabsContent>
@@ -82,7 +88,7 @@
             lazy-rules
             label="Tür"
             v-model="form.type"
-            :excluded='getTypeExcluded'
+            :excluded="getTypeExcluded"
             :error="$rules.ssrValid('type')"
             :error-message="$rules.ssrException('type')"
           ></UserTypeInput>
@@ -99,7 +105,7 @@
       </q-tab-panel>
 
       <!--Permission-->
-      <q-tab-panel name="permission" v-if='isPermissionEditor'>
+      <q-tab-panel name="permission" v-if="isPermissionEditor">
         <div class="text-h5 q-mb-md">{{ $t('Permission') }}</div>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
@@ -166,16 +172,18 @@ export default defineComponent({
       return this.form.id !== undefined;
     },
     isPermissionEditor() {
-      return this.isUpdating
-        && ![UserType.USER, UserType.SUPERADMIN].includes(this.form.type ?? '')
-        && this.$authStore.hasPermission(this.$permission.AdminAccount.PERMISSION);
+      return (
+        this.isUpdating &&
+        ![UserType.USER, UserType.SUPERADMIN].includes(this.form.type ?? '') &&
+        this.$authStore.hasPermission(this.$permission.AdminAccount.PERMISSION)
+      );
     },
     getTypeExcluded() {
       return !this.$authStore.hasUserType(UserType.SUPERADMIN) ? [UserType.SUPERADMIN] : [];
     },
     getAccessPermission() {
       return this.$authStore.getReadablePermission(this.$permission);
-    }
+    },
   },
   methods: {
     checkPermGroup(groupId) {

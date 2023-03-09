@@ -195,9 +195,9 @@ export const useAuthStore = defineStore('auth', {
         perms[type] = {};
         Object.entries(permList).forEach(([key, perm]: [string, any]) => {
           if (this.hasPermission(perm, user || this.user)) {
-            perms[type][key] = perm
+            perms[type][key] = perm;
           }
-        })
+        });
 
         // Clear Empty Group
         if (Object.values(perms[type]).length === 0) {
@@ -206,7 +206,7 @@ export const useAuthStore = defineStore('auth', {
       });
 
       return perms;
-    }
+    },
   },
 });
 

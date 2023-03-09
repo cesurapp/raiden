@@ -7,7 +7,7 @@
         <q-btn :icon="mdiClose" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="scroll content" :class='[clean ? "q-pt-none" : ""]'>
+      <q-card-section class="scroll content" :class="[clean ? 'q-pt-none' : '']">
         <slot name="content" />
       </q-card-section>
 
