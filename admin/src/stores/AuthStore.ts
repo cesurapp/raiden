@@ -4,6 +4,7 @@ import { api } from 'boot/app';
 import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
 import { watch } from 'vue';
+import { Permission } from 'src/api/Enum/Permission';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -171,17 +172,40 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Check User Permission
      */
-    hasPermission(permission: string | Array<string>): boolean {
+    hasPermission(permission: string | Array<string>, user?: UserResource): boolean {
       // Super Admin
-      if (this.user.type === UserType.SUPERADMIN) {
+      if ((user || this.user).type === UserType.SUPERADMIN) {
         return true;
       }
 
       if (Array.isArray(permission)) {
-        return permission.every((r) => this.user.roles.indexOf(r) !== -1);
+        return permission.every((r) => (user || this.user).roles.indexOf(r) !== -1);
       }
 
-      return this.user.roles.includes(permission);
+      return (user || this.user).roles.includes(permission);
+    },
+
+    /**
+     * Get Readable Permissions
+     */
+    getReadablePermission(permissions: typeof Permission, user?: UserResource) {
+      const perms = {};
+
+      Object.entries(permissions).forEach(([type, permList]: [string, any]) => {
+        perms[type] = {};
+        Object.entries(permList).forEach(([key, perm]: [string, any]) => {
+          if (this.hasPermission(perm, user || this.user)) {
+            perms[type][key] = perm;
+          }
+        });
+
+        // Clear Empty Group
+        if (Object.values(perms[type]).length === 0) {
+          delete perms[type];
+        }
+      });
+
+      return perms;
     },
   },
 });

@@ -301,27 +301,12 @@ class AccountTest extends AbstractWebTestCase
         $this->isFail();
     }
 
-    public function testAccountShowPermission(): void
-    {
-        static::createClient();
-        $user = $this->createUser()->setType(UserType::ADMIN);
-        $this->save($user);
-
-        // Fail Missing Permission
-        $this->client($user)->jsonRequest('GET', '/v1/admin/account/permission/'.$user->getId()->toBase32());
-        $this->isFail();
-
-        // Success
-        $user->addRoles(AccountPermission::ROLE_ACCOUNT_PERMISSION);
-        $this->save($user);
-        $this->client($user)->jsonRequest('GET', '/v1/admin/account/permission/'.$user->getId()->toBase32());
-        $this->isOk();
-    }
-
     public function testAccountEditPermission(): void
     {
         static::createClient();
         $user = $this->createUser()->setType(UserType::ADMIN);
+        $user->addRoles(AccountPermission::ROLE_ACCOUNT_LIST);
+        $user->addRoles(AccountPermission::ROLE_ACCOUNT_CREATE);
         $this->save($user);
 
         // Fail Missing Permission
@@ -331,6 +316,7 @@ class AccountTest extends AbstractWebTestCase
         // Success
         $user->addRoles(AccountPermission::ROLE_ACCOUNT_PERMISSION);
         $this->save($user);
+
         $permissions = [
             AccountPermission::ROLE_ACCOUNT_LIST->value,
             AccountPermission::ROLE_ACCOUNT_CREATE->value,

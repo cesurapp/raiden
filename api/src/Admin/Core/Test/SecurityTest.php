@@ -426,6 +426,16 @@ class SecurityTest extends AbstractWebTestCase
             ]);
         $this->assertEquals($user2->getId()->toBase32(), $this->json(null, 'data')['id']);
 
+        // Disable SuperAdmin
+        $userSuper = $this->createUser()->setType(UserType::SUPERADMIN);
+        $this->save($userSuper);
+        $this
+            ->client($user)
+            ->request('GET', '/v1/admin/account/profile', server: [
+                'HTTP_SWITCH_USER' => $userSuper->getEmail(),
+            ]);
+        $this->isForbidden();
+
         // Disable Login Endpoint
         $this
             ->client($user)

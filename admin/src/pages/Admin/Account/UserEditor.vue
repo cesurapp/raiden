@@ -14,11 +14,7 @@
         name="permission"
         :label="$t('Permission')"
         class="text-red"
-        :disable="
-          !isUpdating ||
-          [UserType.SUPERADMIN, UserType.USER].includes(form.type) ||
-          !$authStore.hasPermission($permission.AdminAccount.PERMISSION)
-        "
+        :disable="!isPermissionEditor"
         :icon="mdiSecurity"
       />
     </template>
@@ -92,6 +88,7 @@
             lazy-rules
             label="Tür"
             v-model="form.type"
+            :excluded="getTypeExcluded"
             :error="$rules.ssrValid('type')"
             :error-message="$rules.ssrException('type')"
           ></UserTypeInput>
@@ -108,7 +105,7 @@
       </q-tab-panel>
 
       <!--Permission-->
-      <q-tab-panel name="permission">
+      <q-tab-panel name="permission" v-if="isPermissionEditor">
         <div class="text-h5 q-mb-md">{{ $t('Permission') }}</div>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
@@ -116,7 +113,7 @@
             :disable="!checkPermGroup(key)"
             :label="$t('perm_group.' + key)"
             :key="key"
-            v-for="(perms, key) in $permission"
+            v-for="(perms, key) in getAccessPermission"
           >
             <q-card
               ><q-card-section>
@@ -153,11 +150,10 @@
 import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { AccountEditRequest } from 'src/api/Request/AccountEditRequest';
-import { mdiAccount, mdiContentSave, mdiEyeOff, mdiEye, mdiSecurity } from '@quasar/extras/mdi-v7';
+import { mdiAccount, mdiContentSave, mdiEye, mdiEyeOff, mdiSecurity } from '@quasar/extras/mdi-v7';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import { UserType } from 'src/api/Enum/UserType';
-import { UserResource } from 'src/api/Resource/UserResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 
 export default defineComponent({
@@ -166,7 +162,7 @@ export default defineComponent({
   setup: () => ({ UserType, mdiAccount, mdiContentSave, mdiEyeOff, mdiEye, mdiSecurity }),
   data: () => ({
     isPwd: true,
-    form: {} as UserResource,
+    form: {} as AccountEditRequest,
     permissions: [],
     proxy: null,
     tab: 'profile',
@@ -174,6 +170,19 @@ export default defineComponent({
   computed: {
     isUpdating() {
       return this.form.id !== undefined;
+    },
+    isPermissionEditor() {
+      return (
+        this.isUpdating &&
+        ![UserType.USER, UserType.SUPERADMIN].includes(this.form.type ?? '') &&
+        this.$authStore.hasPermission(this.$permission.AdminAccount.PERMISSION)
+      );
+    },
+    getTypeExcluded() {
+      return !this.$authStore.hasUserType(UserType.SUPERADMIN) ? [UserType.SUPERADMIN] : [];
+    },
+    getAccessPermission() {
+      return this.$authStore.getReadablePermission(this.$permission);
     },
   },
   methods: {
@@ -220,7 +229,6 @@ export default defineComponent({
           if (this.form.id) {
             return this.$api.accountEdit(this.form.id, this.form).then((r) => {
               this.proxy = Object.assign(this.proxy || {}, r.data.data);
-              this.$appStore.notifySuccess('İşlem tamamlandı.');
               this.$refs.editor.toggle();
             });
           }

@@ -40,7 +40,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: ${{ env.app_image }}
-          labels: org.opencontainers.image.source="${{ github.event.repository.clone_url }}"
+          labels: |
+            org.opencontainers.image.title=StagingImage
+            org.opencontainers.image.source="${{ github.event.repository.html_url }}"
 
   deploy:
     # Configuration

@@ -298,7 +298,7 @@
   </q-table>
 
   <!--Exporter Dialog-->
-  <SimpleDialog ref="exporter" v-if="exportButton">
+  <SimpleDialog ref="exporter" v-if="exportButton" clean>
     <template #header>
       <q-avatar :icon="mdiFileExportOutline" color="primary" text-color="white" />
       <h6 class="q-ml-sm q-ma-none">{{ $t('Export') }}</h6>
