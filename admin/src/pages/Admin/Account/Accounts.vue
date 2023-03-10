@@ -188,12 +188,12 @@ export default defineComponent({
       return true;
     },
     isSwitchable(user: UserResource) {
-      if (user.type === UserType.SUPERADMIN) {
-        return this.$authStore.user.type === UserType.SUPERADMIN;
-      }
-
       if (user.id === this.$authStore.user.id) {
         return false;
+      }
+
+      if (user.type === UserType.SUPERADMIN) {
+        return this.$authStore.user.type === UserType.SUPERADMIN;
       }
 
       return user.type !== UserType.USER;
