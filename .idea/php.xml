@@ -142,6 +142,25 @@
       <path value="$PROJECT_DIR$/api/vendor/symfony/lock" />
       <path value="$PROJECT_DIR$/api/vendor/symfony/polyfill-uuid" />
       <path value="$PROJECT_DIR$/api/vendor/sonata-project/exporter" />
+      <path value="$PROJECT_DIR$/api/vendor/google/gax" />
+      <path value="$PROJECT_DIR$/api/vendor/google/longrunning" />
+      <path value="$PROJECT_DIR$/api/vendor/google/auth" />
+      <path value="$PROJECT_DIR$/api/vendor/google/common-protos" />
+      <path value="$PROJECT_DIR$/api/vendor/google/cloud-logging" />
+      <path value="$PROJECT_DIR$/api/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/api/vendor/rize/uri-template" />
+      <path value="$PROJECT_DIR$/api/vendor/firebase/php-jwt" />
+      <path value="$PROJECT_DIR$/api/vendor/google/grpc-gcp" />
+      <path value="$PROJECT_DIR$/api/vendor/google/protobuf" />
+      <path value="$PROJECT_DIR$/api/vendor/google/cloud-core" />
+      <path value="$PROJECT_DIR$/api/vendor/grpc/grpc" />
+      <path value="$PROJECT_DIR$/api/vendor/monolog/monolog" />
+      <path value="$PROJECT_DIR$/api/vendor/guzzlehttp/guzzle" />
+      <path value="$PROJECT_DIR$/api/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/api/vendor/guzzlehttp/promises" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-client" />
+      <path value="$PROJECT_DIR$/api/vendor/psr/http-factory" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

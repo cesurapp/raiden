@@ -15,6 +15,7 @@
     "doctrine/doctrine-bundle": "^2.5",
     "doctrine/orm": "^2.10",
     "dragonmantank/cron-expression": "^3.3",
+    "google/cloud-logging": "^1.22",
     "odolbeau/phone-number-bundle": "^3.7",
     "sonata-project/exporter": "^3.1",
     "symfony/console": "6.2.*",
