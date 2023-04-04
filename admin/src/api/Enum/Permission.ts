@@ -11,4 +11,9 @@ export namespace Permission {
     DELETE = 'ROLE_ACCOUNT_DELETE',
     PERMISSION = 'ROLE_ACCOUNT_PERMISSION',
   }
+  export enum AdminDevice {
+    LIST = 'ROLE_DEVICE_LIST',
+    DELETE = 'ROLE_DEVICE_DELETE',
+    SEND = 'ROLE_DEVICE_SEND',
+  }
 }

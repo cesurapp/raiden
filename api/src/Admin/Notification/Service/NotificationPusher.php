@@ -2,11 +2,12 @@
 
 namespace App\Admin\Notification\Service;
 
-use App\Admin\Core\Entity\User;
 use App\Admin\Core\Service\CurrentUser;
+use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;
-use App\Admin\Notification\Enum\NotificationType;
 use App\Admin\Notification\Repository\NotificationRepository;
+use App\Admin\Notification\Task\NotificationTask;
+use Package\SwooleBundle\Task\TaskHandler;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -16,40 +17,39 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Autoconfigure(public: true)]
 class NotificationPusher
 {
-    private Notification $notification;
-
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly NotificationRepository $repo,
-        private readonly CurrentUser $currentUser
+        private readonly CurrentUser $currentUser,
+        private readonly TaskHandler $taskHandler
     ) {
     }
 
+    public function send(Notification $notification): void
+    {
+        if (!$notification->hasOwner()) {
+            $notification->setOwner($this->currentUser->get());
+        }
+
+        if (!$notification->getTitle()) {
+            $notification->setTitle($this->translator->trans($notification->getTitle()));
+        }
+
+        if (!$notification->getMessage()) {
+            $notification->setMessage($this->translator->trans($notification->getMessage()));
+        }
+
+        $this->repo->add($notification);
+    }
+
     /**
-     * Create Notification.
+     * Only sended to Firebase. It is not saved in system notifications.
      */
-    public function create(
-        string $message,
-        ?string $title = null,
-        NotificationType $type = NotificationType::SUCCESS,
-        User $user = null
-    ): self {
-        $this->notification = (new Notification())
-            ->setOwner($user ?? $this->currentUser->get())
-            ->setType($type)
-            ->setTitle($title ? $this->translator->trans($title) : null)
-            ->setMessage($this->translator->trans($message));
-
-        return $this;
-    }
-
-    public function get(): Notification
+    public function onlySend(Device $device, Notification $notification): void
     {
-        return $this->notification;
-    }
-
-    public function send(): void
-    {
-        $this->repo->add($this->notification);
+        $this->taskHandler->dispatch(NotificationTask::class, [
+            'notification' => $notification,
+            'device' => $device,
+        ]);
     }
 }

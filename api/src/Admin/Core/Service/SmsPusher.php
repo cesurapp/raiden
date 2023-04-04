@@ -42,9 +42,9 @@ class SmsPusher
     public function send(): void
     {
         $this->taskHandler->dispatch(SendSmsTask::class, [
-            'phone' => $this->phone,
-            'country' => $this->countryCode,
             'subject' => $this->subject,
+            'phone' => $this->phone,
+            'countryCode' => $this->countryCode,
         ]);
     }
 }

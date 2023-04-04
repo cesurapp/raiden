@@ -16,6 +16,11 @@ import type { <?php echo ucfirst($route['shortName']); ?>Request } from './Reque
 <?php if ($route['query']) { ?>
 import type { <?php echo ucfirst($route['shortName']); ?>Query } from './Query/<?php echo ucfirst($route['shortName']); ?>Query';
 <?php } ?>
+<?php if (isset($route['routerAttr'])) { foreach ($route['routerAttr'] as $name => $class) { ?>
+<?php if (enum_exists($class)) { ?>
+import type { <?php echo ucfirst($helper::baseClass($class)); ?> } from './Enum/<?php echo ucfirst($helper::baseClass($class)); ?>';
+<?php } ?>
+<?php }} ?>
 <?php }} ?>
 
 export default class Api {

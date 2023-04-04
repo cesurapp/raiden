@@ -38,7 +38,7 @@ class FailedTaskCron extends AbstractCronJob
 
             $this->entityManager->remove($task);
 
-            usleep(10 * 1000);
+            usleep(5 * 10000);
             if (0 === $index % 10) {
                 $this->entityManager->flush();
                 $this->entityManager->clear();

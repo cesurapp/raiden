@@ -38,8 +38,8 @@ class NotificationRepository extends ApiServiceEntityRepository
     public function getUnreadCount(User $user): int
     {
         return $this->count([
-           'owner' => $user,
-           'readed' => false,
+            'owner' => $user,
+            'readed' => false,
         ]);
     }
 
@@ -71,5 +71,16 @@ class NotificationRepository extends ApiServiceEntityRepository
     public function delete(Notification $notification): void
     {
         $this->remove($notification);
+    }
+
+    /**
+     * Notification Sended to Device.
+     */
+    public function setForwarded(Notification $notification, ?\DateTimeImmutable $forwarded = new \DateTimeImmutable()): void
+    {
+        $this->createQueryBuilder('n')->update()
+            ->where('n.id = :id')->setParameter('id', $notification->getId(), 'ulid')
+            ->set('n.forwardedAt', ':at')->setParameter('at', $forwarded)
+            ->getQuery()->execute();
     }
 }

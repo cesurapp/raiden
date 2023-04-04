@@ -4,6 +4,7 @@ namespace App\Admin\Notification\Test;
 
 use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Device;
+use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Service\NotificationPusher;
 
 class DeviceTest extends AbstractWebTestCase
@@ -73,9 +74,10 @@ class DeviceTest extends AbstractWebTestCase
         $this->assertNotNull($deviceToken);
 
         // Create Notification
+        $notification = (new Notification())->setTitle('Title')->setMessage('Message')->setOwner($user);
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
-        $pusher->create('Title', 'Message', user: $user)->send();
+        $pusher->send($notification);
 
         // Cleared Device
         $transports = (string) self::getContainer()->get('chatter.transport_factory')->fromString(
@@ -84,6 +86,10 @@ class DeviceTest extends AbstractWebTestCase
         if ('null' !== $transports) {
             $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
             $this->assertNull($deviceToken);
+        } else {
+            // Check Forwarded
+            $this->manager()->refresh($notification);
+            $this->assertNotNull($notification->getForwardedAt());
         }
     }
 }

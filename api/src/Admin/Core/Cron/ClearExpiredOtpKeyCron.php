@@ -16,7 +16,7 @@ class ClearExpiredOtpKeyCron extends AbstractCronJob
     {
     }
 
-    public function __invoke(mixed $data = null): void
+    public function __invoke(): void
     {
         $this->repo->clearExpired();
     }

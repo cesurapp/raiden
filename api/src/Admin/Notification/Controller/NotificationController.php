@@ -4,6 +4,7 @@ namespace App\Admin\Notification\Controller;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Notification\Entity\Notification;
+use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Repository\NotificationRepository;
 use App\Admin\Notification\Resource\NotificationResource;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
@@ -20,23 +21,6 @@ class NotificationController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification|2',
-        groupDesc: 'Global Notification',
-        desc: 'List Notification',
-        response: [200 => ['data' => NotificationResource::class]],
-        paginate: true,
-        order: 0
-    )]
-    #[Route(path: '/v1/main/notification', methods: ['GET'])]
-    public function list(#[CurrentUser] User $user): ApiResponse
-    {
-        return ApiResponse::create()
-            ->setResource(NotificationResource::class)
-            ->setQuery($this->repo->list($user))
-            ->setPaginate(10);
-    }
-
-    #[Thor(
         group: 'Notification',
         desc: 'Get Unread Notification Count',
         response: [
@@ -49,8 +33,24 @@ class NotificationController extends AbstractApiController
     #[Route(path: '/v1/main/notification/unread-count', methods: ['GET'])]
     public function unreadCount(#[CurrentUser] User $user): ApiResponse
     {
+        return ApiResponse::create()->setData($this->repo->getUnreadCount($user));
+    }
+
+    #[Thor(
+        group: 'Notification|2',
+        groupDesc: 'Global Notification',
+        desc: 'List Notification',
+        response: [200 => ['data' => NotificationResource::class]],
+        paginate: true,
+        order: 0
+    )]
+    #[Route(path: '/v1/main/notification/{device}', methods: ['GET'])]
+    public function list(#[CurrentUser] User $user, DeviceType $device): ApiResponse
+    {
         return ApiResponse::create()
-            ->setData($this->repo->getUnreadCount($user));
+            ->setResource(NotificationResource::class, $device->value)
+            ->setQuery($this->repo->list($user))
+            ->setPaginate(10);
     }
 
     #[Thor(

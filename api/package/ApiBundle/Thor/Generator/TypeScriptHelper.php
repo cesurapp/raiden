@@ -83,9 +83,14 @@ class TypeScriptHelper
                     $allNull = false;
                 }
 
-                $value = implode(' | ', array_unique(array_map(function ($item) {
-                    return $this->convertTsType(str_replace('?', '', $item));
-                }, explode('|', explode(';', is_bool($value) & !$value ? '0' : $value)[0]))));
+                $value = implode(
+                    ' | ',
+                    array_unique(
+                        array_map(function ($item) {
+                            return $this->convertTsType(str_replace('?', '', $item));
+                        }, explode('|', explode(';', is_bool($value) & !$value ? '0' : $value)[0]))
+                    )
+                );
             }
 
             if (is_array($attributes) && is_int($key)) {
@@ -118,6 +123,9 @@ class TypeScriptHelper
         if (class_exists($type) && in_array(ApiResourceInterface::class, class_implements($type), true)) {
             return self::baseClass($type);
         }
+        if (enum_exists($type)) {
+            return self::baseClass($type);
+        }
         if (class_exists($type)) {
             $type = 'string';
         }
@@ -141,6 +149,23 @@ class TypeScriptHelper
             '0' => 'false',
             default => "'$type'"
         };
+    }
+
+    public function renderEnum(array $data): array
+    {
+        $enums = [];
+
+        foreach ($data as $item) {
+            $items = explode(';', $item);
+
+            foreach ($items as $el) {
+                if (enum_exists($el)) {
+                    $enums[] = self::baseClass($el);
+                }
+            }
+        }
+
+        return $enums;
     }
 
     /**

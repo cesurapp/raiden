@@ -194,9 +194,19 @@ __Send Notification__
 ```php
 public function test(NotificationPusher $pusher)
 {
-    $pusher->create('Message Content', 'Title', NotificationType::SUCCESS)->send();
+    $pusher->create('Message Content', 'Title', NotificationStatus::SUCCESS)->send();
 }
 ```
+
+### Cloud Logging (Google Cloud Logging)
+
+__Configure__
+1. Google Cloud Enable IAM [Enable Logging APU](https://console.cloud.google.com/apis/library/logging.googleapis.com)
+2. Open -> API & Services -> Create Credentials -> Service Account
+3. Role -> Logging Admin
+4. Edit Service Accounts -> Keys -> Add Keys -> JSON
+5. Json Content Convert Base64
+4. Configure .env ``APP_LOG_GOOGLE_KEY=Base64Content``
 
 ### Mail & Sms Pusher
 __Send Mail__

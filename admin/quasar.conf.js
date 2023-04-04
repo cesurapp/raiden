@@ -11,6 +11,7 @@
 const { configure } = require('quasar/wrappers');
 const path = require('path');
 require('dotenv').config();
+require('dotenv').config({ path: `.env.local`, override: true });
 
 module.exports = configure(function (ctx) {
   return {

@@ -176,9 +176,9 @@
     <!--BodyCell-->
     <template #body-cell="props">
       <q-td :props="props">
-        <span v-if="$slots['column_' + props.col.name]"
-          ><slot :name="'column_' + props.col.name" :props="props"></slot
-        ></span>
+        <span v-if="$slots['column_' + props.col.name]">
+          <slot :name="'column_' + props.col.name" :props="props"></slot>
+        </span>
         <span v-else>{{ props.value }}</span>
       </q-td>
 
@@ -213,12 +213,12 @@
           flat
           dense
           rounded
-          :icon="![null, undefined, ''].includes(filterValues[props.col.name]) ? mdiFilter : mdiFilterOutline"
           @click.stop
+          :icon="![null, undefined, ''].includes(filterValues[props.col.name]) ? mdiFilter : mdiFilterOutline"
           :color="![null, undefined, ''].includes(filterValues[props.col.name]) ? 'primary' : 'default'"
           :style="[![null, undefined, ''].includes(filterValues[props.col.name]) ? 'opacity: 1' : 'opacity: .6']"
         >
-          <q-menu>
+          <q-menu no-route-dismiss>
             <div class="q-px-md q-py-sm">
               <TableFilter
                 v-if="$slots['filter_' + props.col.name]"
@@ -344,6 +344,7 @@ import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
 import { deFlatten, flatten } from 'src/api/flatten';
+import { dateFormat } from 'src/helper/DateHelper';
 
 export default defineComponent({
   name: 'SimpleTable',
@@ -400,10 +401,6 @@ export default defineComponent({
     deletePermission: String,
     updateHistory: {
       type: Boolean,
-      default: false,
-    },
-    updateHash: {
-      type: Boolean,
       default: true,
     },
   },
@@ -421,10 +418,16 @@ export default defineComponent({
     isMounted: false,
     exportedColumns: [],
     filterValues: {},
+    backEvent: false,
+    loadEvent: true,
   }),
   computed: {
     getColumns() {
       let all = this.columns.map((c) => {
+        if (c.name.endsWith('_at')) {
+          c.format = (val) => dateFormat(val);
+        }
+
         return {
           ...c,
           ...{ field: c.name, label: this.$t(this.getTranslatePrefix() + c.label) },
@@ -467,17 +470,21 @@ export default defineComponent({
     getDefaultSortDescending() {
       return this.columns.find((c) => c.hasOwnProperty('sortable_desc'))?.sortable_desc || false;
     },
-    isFiltered() {
-      return Object.values(this.filterValues).filter((item) => Boolean(item)).length > 0;
-    },
   },
   mounted() {
     this.pagination.descending = this.getDefaultSortDescending;
     this.pagination.sortBy = this.getDefaultSortBy;
     this.isMounted = true;
 
+    if (this.updateHistory) {
+      window.onpopstate = this.historyPopstate;
+    }
+
     this.loadQueryString(false);
     this.refresh(false);
+  },
+  beforeUnmount() {
+    window.onpopstate = null;
   },
   methods: {
     /**
@@ -488,8 +495,12 @@ export default defineComponent({
       this.pagination = props.pagination;
 
       // Init Request
-      this.loadQueryString(true);
-      return this.requestProp(this.getQuery()).then((r) => this.setResponse(r));
+      if (!this.loadEvent) {
+        this.loadQueryString(true);
+      }
+      this.requestProp(this.getQuery()).then((r) => this.setResponse(r));
+      this.backEvent = false;
+      this.loadEvent = false;
     },
 
     /**
@@ -551,8 +562,8 @@ export default defineComponent({
     /**
      * Refresh Current Request
      */
-    refresh(mounted = true) {
-      if (mounted && this.rows.length === 0 && this.pagination.page > 1) {
+    refresh(checkPagination = true) {
+      if (checkPagination && this.rows.length === 0 && this.pagination.page > 1) {
         this.pagination.page--;
       }
 
@@ -659,23 +670,33 @@ export default defineComponent({
      * Request Params to URL String
      */
     loadQueryString(updateHash) {
-      if (this.updateHash) {
-        if (updateHash) {
-          this.$router.push({ query: flatten(this.getQuery()) });
-        } else {
-          const params = deFlatten(location.search);
-          this.pagination = {
-            ...this.pagination,
-            ...{
-              descending: params.sort ? params.sort.toUpperCase() === 'ASC' : this.pagination.descending,
-              page: params.page || this.pagination.page,
-              sortBy: params.sort_by || this.pagination.sortBy,
-            },
-          };
-
-          this.filterValues = { ...this.filterValues, ...(params.filter || {}) };
-        }
+      if (!this.updateHistory || this.backEvent) {
+        return;
       }
+
+      if (updateHash) {
+        return this.$router.push({ query: flatten(this.getQuery()) });
+      }
+
+      const params = deFlatten(location.search);
+      this.filterValues = params.filter || {};
+      this.pagination = {
+        ...this.pagination,
+        ...{
+          descending: params.sort ? params.sort.toUpperCase() === 'ASC' : this.pagination.descending,
+          page: params.page || this.pagination.page,
+          sortBy: params.sort_by || this.pagination.sortBy,
+        },
+      };
+    },
+
+    /**
+     * History Back Event
+     */
+    historyPopstate() {
+      this.loadQueryString(false);
+      this.backEvent = true;
+      this.refresh(false);
     },
 
     /**

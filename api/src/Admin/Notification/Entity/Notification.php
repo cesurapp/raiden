@@ -3,15 +3,18 @@
 namespace App\Admin\Notification\Entity;
 
 use App\Admin\Core\Entity\OwnerRemovalTrait;
-use App\Admin\Notification\Enum\NotificationType;
+use App\Admin\Notification\Enum\DeviceType;
+use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Repository\NotificationRepository;
+use App\Admin\Notification\Resource\NotificationResource;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
-class Notification implements \JsonSerializable
+class Notification
 {
     use OwnerRemovalTrait;
 
@@ -21,8 +24,8 @@ class Notification implements \JsonSerializable
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id = null;
 
-    #[ORM\Column(type: Types::STRING, enumType: NotificationType::class)]
-    private NotificationType $type = NotificationType::INFO;
+    #[ORM\Column(type: Types::STRING, enumType: NotificationStatus::class)]
+    private NotificationStatus $status = NotificationStatus::INFO;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = null;
@@ -33,6 +36,9 @@ class Notification implements \JsonSerializable
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $readed = false;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $forwardedAt;
+
     #[ORM\Column(type: Types::JSON)]
     private array $data = [];
 
@@ -41,14 +47,14 @@ class Notification implements \JsonSerializable
         return $this->id;
     }
 
-    public function getType(): NotificationType
+    public function getStatus(): NotificationStatus
     {
-        return $this->type;
+        return $this->status;
     }
 
-    public function setType(NotificationType $type): self
+    public function setStatus(NotificationStatus $status): self
     {
-        $this->type = $type;
+        $this->status = $status;
 
         return $this;
     }
@@ -89,25 +95,45 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
-    public function getData(): array
+    public function getForwardedAt(): ?\DateTimeImmutable
     {
-        return $this->data;
+        return $this->forwardedAt;
     }
 
-    public function addData(string $key, string|int|bool $value): self
+    public function setForwardedAt(?\DateTimeImmutable $forwardedAt): self
     {
-        $this->data[$key] = $value;
+        $this->forwardedAt = $forwardedAt;
 
         return $this;
     }
 
-    public function removeData(string $key): self
+    /**
+     * Custom FCM Data.
+     */
+    public function getData(?DeviceType $type = null): array
     {
-        if (array_key_exists($key, $this->data)) {
-            unset($this->data[$key]);
-        }
+        return $type ? $this->data[$type->value] ?? [] : $this->data;
+    }
 
-        return $this;
+    public function getDataFromDevice(string $device): array
+    {
+        return match ($device) {
+            DeviceType::WEB->value => [
+                ...$this->getData(DeviceType::ALL),
+                ...$this->getData(DeviceType::WEB),
+            ],
+            DeviceType::IOS->value => [
+                ...$this->getData(DeviceType::ALL),
+                ...$this->getData(DeviceType::MOBILE),
+                ...$this->getData(DeviceType::IOS),
+            ],
+            DeviceType::ANDROID->value => [
+                ...$this->getData(DeviceType::ALL),
+                ...$this->getData(DeviceType::MOBILE),
+                ...$this->getData(DeviceType::ANDROID),
+            ],
+            default => []
+        };
     }
 
     public function setData(array $data): self
@@ -117,30 +143,74 @@ class Notification implements \JsonSerializable
         return $this;
     }
 
-    public function addClickAction(string $link): self
+    public function addData(string $key, string|int|bool $value, DeviceType $type = DeviceType::ALL): self
     {
-        $this->data['click_action'] = $link;
+        $this->data[$type->value][$key] = $value;
 
         return $this;
     }
 
-    public function addDownloadAction(string $link): self
+    /**
+     * Global Options.
+     *
+     * @see https://firebase.google.com/docs/reference/cpp/struct/firebase/messaging/notification
+     */
+    public function addIcon(string $icon, DeviceType $type = DeviceType::ALL): self
     {
-        $this->data['download_action'] = $link;
+        $this->addData('icon', $icon, $type);
 
         return $this;
     }
 
-    public function jsonSerialize(): array
+    public function addClickAction(string $link, DeviceType $type = DeviceType::ALL): self
     {
-        return [
-            'id' => $this->id->toBase32(),
-            'type' => $this->type->value,
-            'title' => $this->title,
-            'message' => $this->message,
-            'readed' => $this->readed,
-            'data' => $this->data,
-            'created_at' => $this->getId()->getDateTime(),
-        ];
+        $this->addData('click_action', $link, $type);
+
+        return $this;
+    }
+
+    public function addRouteAction(string $link, DeviceType $type = DeviceType::ALL): self
+    {
+        $this->addData('route_action', $link, $type);
+
+        return $this;
+    }
+
+    public function addDownloadAction(string $link, DeviceType $type = DeviceType::ALL): self
+    {
+        $this->addData('download_action', $link, $type);
+
+        return $this;
+    }
+
+    /**
+     * Mobile Options (IOS - Android).
+     *
+     * @see https://firebase.google.com/docs/reference/cpp/struct/firebase/messaging/notification
+     */
+    public function addSound(string $sound, DeviceType $type = DeviceType::MOBILE): self
+    {
+        $this->addData('sound', $sound, $type);
+
+        return $this;
+    }
+
+    public function addColor(string $rgbColor, DeviceType $type = DeviceType::MOBILE): self
+    {
+        $this->addData('color', $rgbColor, $type);
+
+        return $this;
+    }
+
+    /**
+     * Firebase Notification Config.
+     */
+    public function getFCMOptions(Device $device): WebNotification
+    {
+        return new WebNotification(
+            $device->getToken(),
+            ['title' => $this->getTitle() ?? '', 'body' => $this->getMessage() ?? ''],
+            ['item' => json_encode((new NotificationResource())->toArray($this, $device->getType()->value), JSON_THROW_ON_ERROR)]
+        );
     }
 }

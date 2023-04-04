@@ -26,6 +26,7 @@ import type { SecurityResetPasswordResponse } from './Response/SecurityResetPass
 import type { SecurityResetPasswordRequest } from './Request/SecurityResetPasswordRequest';
 import type { NotificationListResponse } from './Response/NotificationListResponse';
 import type { NotificationListQuery } from './Query/NotificationListQuery';
+import type { DeviceType } from './Enum/DeviceType';
 import type { NotificationUnreadCountResponse } from './Response/NotificationUnreadCountResponse';
 import type { NotificationReadAllResponse } from './Response/NotificationReadAllResponse';
 import type { NotificationReadResponse } from './Response/NotificationReadResponse';
@@ -43,9 +44,13 @@ import type { AccountEditResponse } from './Response/AccountEditResponse';
 import type { AccountEditRequest } from './Request/AccountEditRequest';
 import type { AccountShowResponse } from './Response/AccountShowResponse';
 import type { AccountDeleteResponse } from './Response/AccountDeleteResponse';
-import type { AccountShowPermissionResponse } from './Response/AccountShowPermissionResponse';
 import type { AccountEditPermissionResponse } from './Response/AccountEditPermissionResponse';
 import type { AccountEditPermissionRequest } from './Request/AccountEditPermissionRequest';
+import type { DeviceListResponse } from './Response/DeviceListResponse';
+import type { DeviceListQuery } from './Query/DeviceListQuery';
+import type { DeviceSendResponse } from './Response/DeviceSendResponse';
+import type { DeviceSendRequest } from './Request/DeviceSendRequest';
+import type { DeviceDeleteResponse } from './Response/DeviceDeleteResponse';
 
 export default class Api {
   constructor(private client: AxiosInstance) {}
@@ -86,8 +91,8 @@ export default class Api {
     return this.rq('POST', '/v1/auth/reset-password/', config, request)
   }
 
-  async notificationList(query?: NotificationListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationListResponse>> {
-    return this.rq('GET', `/v1/main/notification${toQueryString(query)}`, config, null)
+  async notificationList(device: DeviceType, query?: NotificationListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationListResponse>> {
+    return this.rq('GET', `/v1/main/notification/${device}${toQueryString(query)}`, config, null)
   }
 
   async notificationUnreadCount(config: AxiosRequestConfig = {}): Promise<AxiosResponse<NotificationUnreadCountResponse>> {
@@ -138,12 +143,20 @@ export default class Api {
     return this.rq('DELETE', `/v1/admin/account/manager/${id}`, config, null)
   }
 
-  async accountShowPermission(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountShowPermissionResponse>> {
-    return this.rq('GET', `/v1/admin/account/permission/${id}`, config, null)
-  }
-
   async accountEditPermission(id?: string, request?: AccountEditPermissionRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountEditPermissionResponse>> {
     return this.rq('PUT', `/v1/admin/account/permission/${id}`, config, request)
+  }
+
+  async deviceList(query?: DeviceListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceListResponse>> {
+    return this.rq('GET', `/v1/admin/notification/device${toQueryString(query)}`, config, null)
+  }
+
+  async deviceSend(id?: string, request?: DeviceSendRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceSendResponse>> {
+    return this.rq('POST', `/v1/admin/notification/device/${id}`, config, request)
+  }
+
+  async deviceDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceDeleteResponse>> {
+    return this.rq('DELETE', `/v1/admin/notification/device/${id}`, config, null)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

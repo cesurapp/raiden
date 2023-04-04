@@ -1,5 +1,13 @@
 <template>
-  <q-drawer side="right" :width="320" :breakpoint="1440" v-model="drawer" elevated @before-show="onShowPanel">
+  <q-drawer
+    class="notification-drawer"
+    side="right"
+    :width="320"
+    :breakpoint="1440"
+    v-model="drawer"
+    elevated
+    @before-show="onShowPanel"
+  >
     <q-scroll-area class="fit">
       <!--System Notification Alert-->
       <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true && this.support">
@@ -45,8 +53,8 @@
           active-class="text-blue"
         >
           <q-item-section>
-            <q-item-label lines="1">{{ item.title || item.message }}</q-item-label>
-            <q-item-label caption>{{ item.created_at.date }}</q-item-label>
+            <q-item-label lines="2">{{ item.title || item.message }}</q-item-label>
+            <q-item-label caption>{{ item.created_at }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
             <q-btn @click.stop="remove(item)" size="sm" flat round color="red" :icon="mdiDeleteOutline">
@@ -94,11 +102,11 @@
 import { defineComponent } from 'vue';
 import { NotificationListResponse } from 'src/api/Response/NotificationListResponse';
 import { initializeApp } from 'firebase/app';
-import { getMessaging, onMessage, getToken } from 'firebase/messaging';
-import { notifyShow } from 'src/helper/NotifyHelper';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
 import { dateFormat } from 'src/helper/DateHelper';
-import { mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck } from '@quasar/extras/mdi-v7';
+import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh } from '@quasar/extras/mdi-v7';
+import { DeviceType } from 'src/api/Enum/DeviceType';
 
 export default defineComponent({
   name: 'NotificationComponent',
@@ -134,7 +142,7 @@ export default defineComponent({
     getData() {
       return this.resp.data
         ? this.resp.data.map((item) => {
-            item.created_at.date = dateFormat(item.created_at.date);
+            item.created_at = dateFormat(item.created_at);
             return item;
           })
         : null;
@@ -159,7 +167,7 @@ export default defineComponent({
       });
     },
     load() {
-      this.$api.notificationList({ page: this.resp.pager?.current || 1 }).then((r) => {
+      this.$api.notificationList(DeviceType.WEB, { page: this.resp.pager?.current || 1 }).then((r) => {
         if (!Object.keys(this.resp).length) {
           return (this.resp = r.data);
         }
@@ -225,7 +233,18 @@ export default defineComponent({
         });
       }
 
-      notifyShow(item.message, item.title, item.type, { actions: actions });
+      // Route Action
+      if (item.data.route_action) {
+        actions.push({
+          label: this.$t('Open'),
+          'no-caps': true,
+          color: 'white',
+          size: 'md',
+          handler: () => this.$router.push(item.data.route_action),
+        });
+      }
+
+      this.$appStore.notifyShow(item.message, item.title, item.type, { actions: actions });
     },
     initNotification() {
       if (!this.support) {
@@ -291,20 +310,19 @@ export default defineComponent({
       }
     },
     onFirebaseMessage(payload) {
-      // Parse & Append Data
-      let n = payload.data;
-      n.data = JSON.parse(n.data);
-      n.readed = JSON.parse(n.readed);
-      n.created_at = JSON.parse(n.created_at);
-      if (!this.resp.hasOwnProperty('data')) {
-        this.resp.data = [];
+      const notification = JSON.parse(payload.data.item);
+
+      // Append
+      if (notification.id !== null) {
+        if (!this.resp.hasOwnProperty('data')) {
+          this.resp.data = [];
+        }
+        this.resp.data.unshift(notification);
+        this.unreadCount++;
       }
-      this.resp.data.unshift(n);
 
-      // Increase Count
-      this.unreadCount++;
-
-      this.open(n);
+      // Open
+      this.open(notification);
     },
   },
 });
@@ -332,5 +350,11 @@ export default defineComponent({
 
 .q-pl-none {
   padding-left: 0 !important;
+}
+</style>
+
+<style lang="scss">
+.notification-drawer .q-scrollarea__content {
+  width: 100%;
 }
 </style>

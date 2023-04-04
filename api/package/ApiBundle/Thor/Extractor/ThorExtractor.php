@@ -229,6 +229,11 @@ class ThorExtractor
                         return true;
                     }
 
+                    // Enum Object
+                    if (enum_exists($typeName)) {
+                        return true;
+                    }
+
                     // Vendor Class
                     if (class_exists($typeName) || in_array($typeName, get_declared_interfaces(), true)) {
                         return false;
@@ -277,6 +282,12 @@ class ThorExtractor
                         $ref = new \ReflectionClass($type);
                         if ($ref->hasProperty($key)) {
                             return implode('|', $this->extractTypes($ref->getProperty($key)->getType(), $isNull));
+                        }
+
+                        if ($ref->isEnum()) {
+                            $this->defaults['enums'][$this->baseClass($type)] = $type;
+
+                            return ($isNull ? '?' : '').$type;
                         }
 
                         return ($isNull ? '?' : '').'mixed';
@@ -529,8 +540,15 @@ class ThorExtractor
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
             $values = [];
 
+            $extractedTypes = $this->extractTypes($property->getType());
+            foreach ($extractedTypes as $t) {
+                if (enum_exists($t)) {
+                    $this->defaults['enums'][$this->baseClass($t)] = $t;
+                }
+            }
+
             // Extract Types
-            $types = implode('|', $this->extractTypes($property->getType()));
+            $types = implode('|', $extractedTypes);
             if ($types) {
                 $values['types'] = $types;
             }

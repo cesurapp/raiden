@@ -27,6 +27,13 @@ export default [
         component: () => import('pages/Admin/Account/Accounts.vue'),
         meta: { breadcrumb: 'Accounts', permission: [Permission.AdminAccount.LIST] },
       },
+
+      // FCM Devices
+      {
+        path: '/devices',
+        component: () => import('pages/Admin/Devices/Index.vue'),
+        meta: { breadcrumb: 'Firebase Devices', permission: [Permission.AdminDevice.LIST] },
+      },
     ],
   },
 ];

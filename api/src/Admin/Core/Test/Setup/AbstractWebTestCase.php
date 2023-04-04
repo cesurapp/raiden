@@ -12,7 +12,6 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 abstract class AbstractWebTestCase extends AbstractKernelTestCase
 {
     use WebTestAssertionsTrait;
-    protected static null|KernelBrowser $client = null;
 
     protected function tearDown(): void
     {
@@ -67,16 +66,16 @@ abstract class AbstractWebTestCase extends AbstractKernelTestCase
      */
     public function client(?User $user = null): KernelBrowser
     {
-        if (!static::$client) {
+        if (!self::$client) {
             static::createClient();
         }
 
         if ($user) {
             $token = static::getContainer()->get(JWT::class)->encode(['id' => $user->getId()->toBase32()]);
-            static::$client->setServerParameter('HTTP_AUTHORIZATION', 'Bearer '.$token);
+            self::$client->setServerParameter('HTTP_AUTHORIZATION', 'Bearer '.$token);
         }
 
-        return static::$client;
+        return self::$client;
     }
 
     public function assertStatus(int $code): void

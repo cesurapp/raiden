@@ -30,14 +30,14 @@ readonly class ApiResourceLocator
         return $this->locator->getProvidedServices();
     }
 
-    public function process(object|array $object, ?string $resource = null): ?array
+    public function process(object|array $object, ?string $resource = null, mixed $optionalData = null): ?array
     {
         $res = $this->get($resource);
 
         if (is_array($object)) {
-            return array_map(static fn ($item) => $res->toArray($item), $object);
+            return array_map(static fn ($item) => $res->toArray($item, $optionalData), $object);
         }
 
-        return $res->toArray($object);
+        return $res->toArray($object, $optionalData);
     }
 }

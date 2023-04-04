@@ -82,7 +82,7 @@ Export is automatically enabled for all tables.
 use \Package\ApiBundle\Response\ApiResourceInterface;
 
 class UserResource implements ApiResourceInterface {
-    public function toArray(object $item): array {
+    public function toArray(object $item, mixed $optional = null): array {
         return [
             'id' => $object->getId(),
             'name' => $object->getName()

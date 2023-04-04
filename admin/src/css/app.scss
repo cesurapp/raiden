@@ -552,8 +552,9 @@ body.body--dark {
 .notify-close-btn {
   position: absolute;
   top: 0;
-  margin-left: 12px;
   font-size: $button-font-size - 1 !important;
+  left: calc(100%);
+  transform: translateX(65%);
 
   .q-icon {
     font-weight: bold;

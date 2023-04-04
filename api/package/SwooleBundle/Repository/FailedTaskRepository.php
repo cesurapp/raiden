@@ -55,7 +55,7 @@ class FailedTaskRepository extends ServiceEntityRepository
     {
         $failedTask = (new FailedTask())
             ->setTask($taskRequest['class'])
-            ->setPayload($taskRequest['payload'] ?? [])
+            ->setPayload($taskRequest['payload'] ?? null)
             ->setAttempt($taskRequest['attempt'] ?? 0)
             ->setException($exception->getMessage());
 

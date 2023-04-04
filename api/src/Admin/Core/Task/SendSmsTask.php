@@ -10,12 +10,6 @@ use Symfony\Component\Notifier\Transport\Transports;
 
 /**
  * Send SMS to Task.
- *
- * @param array{
- *  phone: number,
- *  country: string,
- *  subject: string,
- * } $data
  */
 class SendSmsTask implements TaskInterface
 {
@@ -28,10 +22,10 @@ class SendSmsTask implements TaskInterface
         $this->transports = explode(',', trim((string) $transports, '[]'));
     }
 
-    public function __invoke(array $data = []): bool
+    public function __invoke(array|string $data): bool
     {
         $sms = new SmsMessage($data['phone'], $data['subject']);
-        $sms->transport($this->getTransport($data['country']));
+        $sms->transport($this->getTransport($data['countryCode']));
 
         // Send
         $this->texter->send($sms);

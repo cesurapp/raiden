@@ -22,6 +22,7 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
     timeout: 3500,
     position: 'top',
     progress: true,
+    multiLine: false,
     actions: [
       {
         icon: mdiClose,

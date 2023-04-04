@@ -2,7 +2,7 @@
 
 export type NotificationResource = {
   id: string,
-  type: string,
+  status: string,
   title: string,
   message: string,
   readed: boolean,

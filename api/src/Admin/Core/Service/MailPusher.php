@@ -14,10 +14,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Autoconfigure(public: true)]
 readonly class MailPusher
 {
-    public function __construct(
-        private TaskHandler $taskHandler,
-        private TranslatorInterface $translator
-    ) {
+    public function __construct(private TaskHandler $taskHandler, private TranslatorInterface $translator)
+    {
     }
 
     public function send(Email $email, bool $translateSubject = true): void
@@ -27,8 +25,6 @@ readonly class MailPusher
             $email->subject($this->translator->trans($email->getSubject()));
         }
 
-        $this->taskHandler->dispatch(SendMailTask::class, [
-            'email' => serialize($email),
-        ]);
+        $this->taskHandler->dispatch(SendMailTask::class, $email);
     }
 }

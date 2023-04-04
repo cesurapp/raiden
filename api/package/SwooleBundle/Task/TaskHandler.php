@@ -13,7 +13,7 @@ readonly class TaskHandler
         if ('test' === $_SERVER['APP_ENV']) {
             $this->worker->handle([
                 'class' => is_string($task) ? $task : get_class($task),
-                'payload' => $payload,
+                'payload' => serialize($payload),
             ]);
 
             return;
@@ -25,7 +25,7 @@ readonly class TaskHandler
 
         $GLOBALS['httpServer']->task([
             'class' => is_string($task) ? $task : get_class($task),
-            'payload' => $payload,
+            'payload' => serialize($payload),
         ]);
     }
 }
