@@ -11,7 +11,7 @@ use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: OtpKeyRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class OtpKey implements \JsonSerializable
+class OtpKey
 {
     use OwnerRemovalTrait;
 
@@ -96,16 +96,5 @@ class OtpKey implements \JsonSerializable
     {
         // Disable Other OTP Code
         $event->getObjectManager()->getRepository(OtpKey::class)->disableOtherCodes($this);
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id->toBase32(),
-            'type' => $this->type->value,
-            'otpKey' => $this->otpKey,
-            'used' => $this->used,
-            'isExpired' => $this->isExpired(),
-        ];
     }
 }

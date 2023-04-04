@@ -41,10 +41,21 @@ export function flatten(obj: any, path?: string, result?: any) {
     return result;
 }
 
+function isNumber(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 const set = (obj, path, val) => {
   const keys = path.split('.');
   const lastKey = keys.pop();
-  const lastObj = keys.reduce((obj, key) => obj[key] = obj[key] || {}, obj);
+  const lastObj = keys.reduce((obj, key, index, array) => {
+    if ((array.length === index + 1) && isNumber(lastKey)) {
+      return obj[key] = obj[key] || [];
+    }
+
+    return obj[key] = obj[key] || {};
+  }, obj);
+
   lastObj[lastKey] = val;
 };
 

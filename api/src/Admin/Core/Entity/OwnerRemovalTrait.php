@@ -11,14 +11,19 @@ trait OwnerRemovalTrait
 {
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
     #[ORM\JoinColumn(onDelete: 'cascade')]
-    private ?User $owner;
+    private ?User $owner = null;
 
-    public function getOwner(): ?User
+    public function hasOwner(): bool
+    {
+        return null !== $this->owner;
+    }
+
+    public function getOwner(): User
     {
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): self
+    public function setOwner(User $owner): self
     {
         $this->owner = $owner;
 

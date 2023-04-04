@@ -8,10 +8,6 @@ use Symfony\Component\Mime\Email;
 
 /**
  * Send Mail Task.
- *
- * @param array{
- *  email: string,
- * } $data
  */
 class SendMailTask implements TaskInterface
 {
@@ -19,11 +15,9 @@ class SendMailTask implements TaskInterface
     {
     }
 
-    public function __invoke(array $data = []): bool
+    public function __invoke(Email|string $data): bool
     {
-        /** @var Email $email */
-        $email = unserialize($data['email']);
-        $this->mailer->send($email);
+        $this->mailer->send($data);
 
         return true;
     }

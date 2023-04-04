@@ -35,7 +35,12 @@ abstract class AbstractApiDto
         foreach ($fields as $field => $value) {
             if (property_exists($this, $field)) {
                 try {
-                    $this->$field = is_numeric($value) ? (int) $value : $value;
+                    if (isset($this->$field) && is_object($this->$field) && enum_exists(get_class($this->$field))) {
+                        $enum = get_class($this->$field);
+                        $this->$field = $enum::from($value);
+                    } else {
+                        $this->$field = is_numeric($value) ? (int) $value : $value;
+                    }
                 } catch (\TypeError) {
                     $this->constraints->add(new ConstraintViolation(
                         'The type of this value is incorrect.',
@@ -95,7 +100,7 @@ abstract class AbstractApiDto
     /**
      * Get Validated Data.
      */
-    final public function validated(?string $key = null): null|int|string|bool|array
+    final public function validated(?string $key = null): null|int|string|bool|array|\BackedEnum
     {
         if (!$this->validated) {
             $this->validated = array_diff_key(get_object_vars($this), array_flip($this->exclude));

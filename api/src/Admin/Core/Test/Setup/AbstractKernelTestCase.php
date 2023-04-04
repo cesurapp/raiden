@@ -4,10 +4,13 @@ namespace App\Admin\Core\Test\Setup;
 
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\PermissionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Package\SwooleBundle\Task\TaskWorker;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
@@ -18,6 +21,7 @@ use Symfony\Component\Uid\Ulid;
 abstract class AbstractKernelTestCase extends KernelTestCase
 {
     private ?EntityManagerInterface $manager = null;
+    protected static null|KernelBrowser $client = null;
 
     /**
      * Validate & Decoded Array.
@@ -129,6 +133,29 @@ abstract class AbstractKernelTestCase extends KernelTestCase
      */
     public function createUser(bool $createOrganization = false, string $password = '123123123'): User
     {
+        $user = $this->getUser($createOrganization, $password);
+        $this->manager()->persist($user);
+        $this->manager()->flush();
+
+        return $user;
+    }
+
+    public function createAdmin(?PermissionInterface $permission = null, bool $createOrganization = false, string $password = '123123123'): User
+    {
+        $user = $this->getUser($createOrganization, $password);
+        $user->setType(UserType::ADMIN);
+        if ($permission) {
+            $user->addRoles($permission);
+        }
+
+        $this->manager()->persist($user);
+        $this->manager()->flush();
+
+        return $user;
+    }
+
+    public function getUser(bool $createOrganization = false, string $password = '123123123'): User
+    {
         $user = (new User())
             ->setOrganization($createOrganization ? (new Organization())->setName('Test Org') : null)
             ->setLanguage('TR')
@@ -146,9 +173,6 @@ abstract class AbstractKernelTestCase extends KernelTestCase
             PasswordAuthenticatedUserInterface::class => ['algorithm' => 'auto'],
         ]);
         $user->setPassword((new UserPasswordHasher($passwordHasherFactory))->hashPassword($user, $password));
-
-        $this->manager()->persist($user);
-        $this->manager()->flush();
 
         return $user;
     }
@@ -182,8 +206,11 @@ abstract class AbstractKernelTestCase extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $worker->method('handle')
-            ->willReturnCallback($returnCallback);
+        $worker->method('handle')->willReturnCallback($returnCallback);
+
+        if (isset(self::$client)) {
+            self::$client->disableReboot();
+        }
 
         self::getContainer()->set(TaskWorker::class, $worker);
 

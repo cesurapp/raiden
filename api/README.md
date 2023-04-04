@@ -194,7 +194,7 @@ __Send Notification__
 ```php
 public function test(NotificationPusher $pusher)
 {
-    $pusher->create('Message Content', 'Title', NotificationType::SUCCESS)->send();
+    $pusher->create('Message Content', 'Title', NotificationStatus::SUCCESS)->send();
 }
 ```
 

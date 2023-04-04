@@ -23,8 +23,8 @@
             :icon="mdiPlus"
             v-if="$authStore.hasPermission($permission.AdminAccount.CREATE)"
             @click="$refs.editor.init()"
-            ><q-tooltip>{{ $t('New') }}</q-tooltip></q-btn
-          >
+            ><q-tooltip>{{ $t('New') }}</q-tooltip>
+          </q-btn>
         </template>
 
         <!--Row Actions-->

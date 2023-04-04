@@ -28,6 +28,7 @@ class ApiResponse
     private mixed $data = [];
     private array $options = [];
     private ?string $resource = null;
+    private mixed $resourceOptionalData = null;
     private Query|QueryBuilder|null $query = null;
 
     public function getCode(): int
@@ -123,9 +124,10 @@ class ApiResponse
         return $this->resource;
     }
 
-    public function setResource(?string $resourceClass): self
+    public function setResource(?string $resourceClass, mixed $optionalData = null): self
     {
         $this->resource = $resourceClass;
+        $this->resourceOptionalData = $optionalData;
 
         return $this;
     }
@@ -167,6 +169,11 @@ class ApiResponse
         return $this->options[$key];
     }
 
+    /**
+     * Translate route.
+     *
+     * @param $message string #TranslationKey to translate the URL for
+     */
     public function addMessage(string $message, MessageType $messageType = MessageType::SUCCESS): self
     {
         if (!isset($this->data['message'][$messageType->value])) {
@@ -186,19 +193,22 @@ class ApiResponse
     /**
      * Process Object Array Serialize.
      */
-    public function processResponse(Request $request, ApiResourceLocator $resLocator, TranslatorInterface $trans): JsonResponse|StreamedResponse
-    {
+    public function processResponse(
+        Request $request,
+        ApiResourceLocator $resLocator,
+        TranslatorInterface $trans
+    ): JsonResponse|StreamedResponse {
         if ($this->resource) {
             $res = $resLocator->getResource($this->resource);
 
             // Process Query Filter
-            if ($this->query) {
-                $this->filterQueryBuilder($this->query, $request, $res);
+            if ($this->getQuery()) {
+                $this->filterQueryBuilder($this->getQuery(), $request, $res);
             }
 
             // Process Export
             if ($this->isExport($request, $res)) {
-                return $this->exportStream($this->query, $request, $res);
+                return $this->exportStream($this->getQuery(), $request, $res);
             }
         }
 
@@ -208,7 +218,10 @@ class ApiResponse
         }
 
         // Process Resource
-        array_walk_recursive($this->data, fn (&$d) => !is_object($d) ?: $d = $resLocator->process($d, $this->resource));
+        array_walk_recursive(
+            $this->data,
+            fn (&$d) => !is_object($d) ?: $d = $resLocator->process($d, $this->resource, $this->resourceOptionalData)
+        );
 
         // Message Translator
         if (isset($this->data['message'])) {

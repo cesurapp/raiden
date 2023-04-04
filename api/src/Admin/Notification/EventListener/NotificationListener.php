@@ -14,18 +14,18 @@ use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
  *
  * Send Notification to Firebase Channel
  */
-#[Autoconfigure(tags: [[
-    'name' => 'doctrine.orm.entity_listener',
-    'event' => 'postPersist',
-    'entity' => Notification::class,
-    'lazy' => true,
-]])]
+#[Autoconfigure(tags: [
+    [
+        'name' => 'doctrine.orm.entity_listener',
+        'event' => 'postPersist',
+        'entity' => Notification::class,
+        'lazy' => true,
+    ],
+])]
 readonly class NotificationListener
 {
-    public function __construct(
-        private DeviceRepository $deviceRepo,
-        private TaskHandler $taskHandler
-    ) {
+    public function __construct(private DeviceRepository $deviceRepo, private TaskHandler $taskHandler)
+    {
     }
 
     public function postPersist(Notification $notification, LifecycleEventArgs $event): void
@@ -34,8 +34,8 @@ readonly class NotificationListener
         if ($devices) {
             foreach ($devices as $device) {
                 $this->taskHandler->dispatch(NotificationTask::class, [
-                    'notification' => $notification->jsonSerialize(),
-                    'device' => $device->jsonSerialize(),
+                    'notification' => $notification,
+                    'device' => $device,
                 ]);
             }
         }

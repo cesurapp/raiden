@@ -12,7 +12,7 @@ class UserResource implements ApiResourceInterface
     /**
      * @param User $item
      */
-    public function toArray(object $item): array
+    public function toArray(object $item, mixed $optional = null): array
     {
         return [
             'id' => $item->getId()->toBase32(),
@@ -28,7 +28,7 @@ class UserResource implements ApiResourceInterface
             'language' => $item->getLanguage(),
             'first_name' => $item->getFirstName(),
             'last_name' => $item->getLastName(),
-            'created_at' => $item->getCreatedAt()->format('d/m/y H:i'),
+            'created_at' => $item->getCreatedAt()->format(DATE_ATOM),
             'meta' => $item->getMeta(),
         ];
     }

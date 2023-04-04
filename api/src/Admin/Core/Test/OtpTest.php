@@ -70,7 +70,7 @@ class OtpTest extends AbstractKernelTestCase
         $this->mockTaskWorker(function ($object) {
             if (SendMailTask::class === $object['class']) {
                 /** @var Email $mail */
-                $mail = unserialize($object['payload']['email']);
+                $mail = unserialize($object['payload']);
                 $this->assertStringContainsString('Verification code:', $mail->getTextBody());
             }
         });
@@ -92,8 +92,10 @@ class OtpTest extends AbstractKernelTestCase
         // Check Send Mail
         $this->mockTaskWorker(function ($object) use ($user) {
             if (SendSmsTask::class === $object['class']) {
-                $this->assertEquals($user->getPhone(), $object['payload']['phone']);
-                $this->assertEquals($user->getPhoneCountry(), $object['payload']['country']);
+                $payload = unserialize($object['payload']);
+
+                $this->assertEquals($user->getPhone(), $payload['phone']);
+                $this->assertEquals($user->getPhoneCountry(), $payload['countryCode']);
             }
         });
 

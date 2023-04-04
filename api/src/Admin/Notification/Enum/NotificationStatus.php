@@ -2,7 +2,7 @@
 
 namespace App\Admin\Notification\Enum;
 
-enum NotificationType: string
+enum NotificationStatus: string
 {
     case DANGER = 'danger';
     case WARNING = 'warning';

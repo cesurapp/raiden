@@ -16,25 +16,25 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $pusher->create('Test', 'Test Message', user: $user)->send();
-        $pusher->create('Test 2', 'Test Message', user: $user)->send();
-        $pusher->create('Test 3', 'Test Message', user: $user)->send();
-        $pusher->create('Test 4', 'Test Message', user: $user)->send();
-        $pusher->create('Test 5', 'Test Message', user: $user)->send();
-        $pusher->create('Test 6', 'Test Message', user: $user)->send();
-        $pusher->create('Test 7', 'Test Message', user: $user)->send();
-        $pusher->create('Test 8', 'Test Message', user: $user)->send();
-        $pusher->create('Test 9', 'Test Message', user: $user)->send();
-        $pusher->create('Test 10', 'Test Message', user: $user)->send();
-        $pusher->create('Test 11', 'Test Message', user: $user)->send();
-        $pusher->create('Test 12', 'Test Message', user: $user)->send();
+        $pusher->send((new Notification())->setTitle('Test')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 2')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 3')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 4')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 5')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 6')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 7')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 8')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 9')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 10')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 11')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 12')->setMessage('Test Message')->setOwner($user));
 
         // List Notification
-        $this->client($user)->request('GET', '/v1/main/notification');
+        $this->client($user)->request('GET', '/v1/main/notification/web');
         $this->assertJsonCount(10, 'data');
 
         // Next Page
-        $this->client($user)->request('GET', '/v1/main/notification?page=2');
+        $this->client($user)->request('GET', '/v1/main/notification/web?page=2');
         $this->assertJsonCount(2, 'data');
     }
 
@@ -46,9 +46,10 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $notification->send();
-        $this->assertFalse($notification->get()->isReaded());
+        $notification = (new Notification())->setTitle('Test')->setMessage('Test Message')->setOwner($user);
+        $pusher->send($notification);
+
+        $this->assertFalse($notification->isReaded());
 
         // List Notification
         $this->client($user)->request('GET', '/v1/main/notification/unread-count');
@@ -64,14 +65,14 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $notification->send();
-        $this->assertFalse($notification->get()->isReaded());
+        $notification = (new Notification())->setTitle('Test')->setMessage('Test Message')->setOwner($user);
+        $pusher->send($notification);
+        $this->assertFalse($notification->isReaded());
 
         // List Notification
-        $this->client($user)->request('PUT', '/v1/main/notification/'.$notification->get()->getId()->toBase32());
+        $this->client($user)->request('PUT', '/v1/main/notification/'.$notification->getId()->toBase32());
         $this->isOk();
-        $this->assertTrue($notification->get()->isReaded());
+        $this->assertTrue($notification->isReaded());
     }
 
     public function testDelete(): void
@@ -82,14 +83,14 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $notification = $pusher->create('Test', 'Test Message', user: $user);
-        $notification->send();
-        $this->assertFalse($notification->get()->isReaded());
+        $notification = (new Notification())->setTitle('Test')->setMessage('Test Message')->setOwner($user);
+        $pusher->send($notification);
+        $this->assertFalse($notification->isReaded());
 
         // List Notification
-        $this->client($user)->request('DELETE', '/v1/main/notification/'.$notification->get()->getId()->toBase32());
+        $this->client($user)->request('DELETE', '/v1/main/notification/'.$notification->getId()->toBase32());
         $this->isOk();
-        $this->assertNull($notification->get()->getId());
+        $this->assertNull($notification->getId());
     }
 
     public function testReadAll(): void
@@ -100,9 +101,9 @@ class NotificationTest extends AbstractWebTestCase
         /** @var NotificationPusher $pusher */
         $pusher = self::getContainer()->get(NotificationPusher::class);
 
-        $pusher->create('Test 6', 'Test Message', user: $user)->send();
-        $pusher->create('Test 7', 'Test Message', user: $user)->send();
-        $pusher->create('Test 8', 'Test Message', user: $user)->send();
+        $pusher->send((new Notification())->setTitle('Test 6')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 7')->setMessage('Test Message')->setOwner($user));
+        $pusher->send((new Notification())->setTitle('Test 8')->setMessage('Test Message')->setOwner($user));
 
         // List Notification
         $this->client($user)->request('POST', '/v1/main/notification/read-all');

@@ -10,16 +10,16 @@ class NotificationResource implements ApiResourceInterface
     /**
      * @param Notification $item
      */
-    public function toArray(object $item): array
+    public function toArray(object $item, mixed $optional = null): array
     {
         return [
-            'id' => $item->getId()->toBase32(),
-            'type' => $item->getType()->value,
+            'id' => $item->getId()?->toBase32(),
+            'type' => $item->getStatus()->value,
             'title' => $item->getTitle(),
             'message' => $item->getMessage(),
             'readed' => $item->isReaded(),
-            'data' => $item->getData(),
-            'created_at' => $item->getId()->getDateTime(),
+            'data' => $item->getDataFromDevice($optional),
+            'created_at' => $item->getId()?->getDateTime()->format(DATE_ATOM),
         ];
     }
 
@@ -27,7 +27,7 @@ class NotificationResource implements ApiResourceInterface
     {
         return [
             'id' => ['type' => 'string'],
-            'type' => ['type' => 'string'],
+            'status' => ['type' => 'string'],
             'title' => ['type' => 'string'],
             'message' => ['type' => 'string'],
             'readed' => ['type' => 'boolean'],

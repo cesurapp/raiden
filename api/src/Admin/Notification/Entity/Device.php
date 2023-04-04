@@ -8,17 +8,19 @@ use App\Admin\Notification\Repository\DeviceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 #[ORM\UniqueConstraint(fields: ['token', 'type'])]
-class Device implements \JsonSerializable
+#[ORM\HasLifecycleCallbacks]
+class Device
 {
     use OwnerRemovalTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id = null;
 
@@ -55,14 +57,5 @@ class Device implements \JsonSerializable
         $this->type = $type;
 
         return $this;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id->toBase32(),
-            'token' => $this->token,
-            'type' => $this->type->value,
-        ];
     }
 }

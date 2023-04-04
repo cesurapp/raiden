@@ -20,7 +20,7 @@ class FailedTask
     private string $task;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    private array $payload;
+    private ?string $payload;
 
     #[ORM\Column(type: 'text')]
     private string $exception;
@@ -53,12 +53,12 @@ class FailedTask
         return $this;
     }
 
-    public function getPayload(): array
+    public function getPayload(): ?string
     {
         return $this->payload;
     }
 
-    public function setPayload(array $payload): self
+    public function setPayload(?string $payload): self
     {
         $this->payload = $payload;
 

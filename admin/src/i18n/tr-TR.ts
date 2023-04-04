@@ -1,5 +1,4 @@
 export default {
-  // Language,
   'tr-TR': 'Türkçe',
   'en-US': 'English',
 
@@ -10,6 +9,7 @@ export default {
   perm_group: {
     AdminCore: 'Temel İzinler',
     AdminAccount: 'Hesap İzinleri',
+    AdminDevice: 'Firebase Cihazlar',
   },
   perm: {
     CREATE: 'Oluştur',
@@ -18,6 +18,7 @@ export default {
     DELETE: 'Sil',
     PERMISSION: 'Yetkilendirme',
     ALLOWED_TO_SWITCH: 'Hesap Değiştirme',
+    SEND: 'GÖNDER',
   },
 
   // Validations Rules
@@ -166,4 +167,15 @@ export default {
   Details: 'Detaylar',
   Permission: 'Yetkilendirme',
   Permissions: 'Yetkiler',
+
+  // Firebase Devices
+  Tools: 'Araçlar',
+  'Firebase Devices': 'Firebase Cihazlar',
+  devices: {
+    ID: 'ID',
+    Type: 'Tür',
+    'Owner Type': 'Kullanıcı Türü',
+    User: 'Kullanıcı',
+    Created: 'Oluşturulma',
+  },
 };

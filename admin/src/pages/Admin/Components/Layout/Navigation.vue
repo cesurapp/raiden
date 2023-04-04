@@ -8,51 +8,100 @@
     <!--Menu List-->
     <q-list class="menus">
       <div class="item" v-for="(nav, index) in getNavs" :key="index">
-        <!--Header-->
-        <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
-
-        <!--Single-->
-        <q-item
-          exact
-          v-if="!nav.child"
-          :to="nav.to"
-          clickable
-          v-ripple
-          dense
-          class="menu-link"
-          active-class="active-link"
-        >
-          <q-item-section avatar><q-icon :name="nav.icon" /></q-item-section>
-          <q-item-section class="text-weight-medium">{{ $t(nav.text) }}</q-item-section>
-        </q-item>
-
-        <!--Multiple-->
-        <q-expansion-item
-          :icon="nav.icon"
-          :label="nav.text"
-          v-model="nav.active"
-          v-else
-          group="navigation"
-          dense
-          active-class="active-item-grup"
-        >
-          <q-list>
+        <!--With Header-->
+        <template v-if="nav.header && nav.hasOwnProperty('items')">
+          <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
+          <template v-for="(subNav, index) in nav.items" :key="index">
+            <!--Single-->
             <q-item
               exact
-              v-for="(childNav, childIndex) in nav.child"
-              :key="childIndex"
-              :to="childNav.to"
               clickable
               v-ripple
               dense
-              active-class="active-link"
               class="menu-link"
+              active-class="active-link"
+              v-if="!subNav.child"
+              :to="subNav.to"
             >
-              <q-item-section avatar><q-icon :name="childNav.icon" /></q-item-section>
-              <q-item-section class="text-weight-medium">{{ $t(childNav.text) }}</q-item-section>
+              <q-item-section avatar v-if="subNav.icon"><q-icon :name="subNav.icon" /></q-item-section>
+              <q-item-section class="text-weight-medium">{{ $t(subNav.text) }}</q-item-section>
             </q-item>
-          </q-list>
-        </q-expansion-item>
+
+            <!--Dropdown with Childed-->
+            <q-expansion-item
+              v-else
+              dense
+              group="navigation"
+              active-class="active-item-grup"
+              :icon="subNav.icon"
+              :label="$t(subNav.text)"
+              v-model="subNav.active"
+            >
+              <q-list>
+                <q-item
+                  exact
+                  clickable
+                  v-ripple
+                  dense
+                  class="menu-link"
+                  active-class="active-link"
+                  v-for="(childNav, childIndex) in subNav.child"
+                  :key="childIndex"
+                  :to="childNav.to"
+                >
+                  <q-item-section avatar v-if="childNav.icon"><q-icon :name="childNav.icon" /></q-item-section>
+                  <q-item-section class="text-weight-medium">{{ $t(childNav.text) }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-expansion-item>
+          </template>
+        </template>
+
+        <!-- Headerless-->
+        <template v-else-if="!nav.header">
+          <!--Single-->
+          <q-item
+            exact
+            clickable
+            v-ripple
+            dense
+            class="menu-link"
+            active-class="active-link"
+            v-if="!nav.child"
+            :to="nav.to"
+          >
+            <q-item-section avatar v-if="nav.icon"><q-icon :name="nav.icon" /></q-item-section>
+            <q-item-section class="text-weight-medium">{{ $t(nav.text) }}</q-item-section>
+          </q-item>
+
+          <!--Dropdown with Childed-->
+          <q-expansion-item
+            v-else
+            dense
+            group="navigation"
+            active-class="active-item-grup"
+            :icon="nav.icon"
+            :label="$t(subNav.text)"
+            v-model="nav.active"
+          >
+            <q-list>
+              <q-item
+                exact
+                clickable
+                v-ripple
+                dense
+                class="menu-link"
+                active-class="active-link"
+                v-for="(childNav, childIndex) in nav.child"
+                :key="childIndex"
+                :to="childNav.to"
+              >
+                <q-item-section avatar v-if="childNav.icon"><q-icon :name="childNav.icon" /></q-item-section>
+                <q-item-section class="text-weight-medium">{{ $t(childNav.text) }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-expansion-item>
+        </template>
       </div>
     </q-list>
 
@@ -83,7 +132,14 @@ import { defineComponent } from 'vue';
 import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
 import { Permission } from 'src/api/Enum/Permission';
-import { mdiMenu, mdiViewDashboard, mdiAccountMultiple } from '@quasar/extras/mdi-v7';
+import {
+  mdiMenu,
+  mdiViewDashboard,
+  mdiAccountMultiple,
+  mdiFirebase,
+  mdiCalendarClock,
+  mdiTabletCellphone,
+} from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AdminNavigation',
@@ -97,45 +153,120 @@ export default defineComponent({
 
       // Account Management
       {
-        icon: mdiAccountMultiple,
-        text: 'Accounts',
-        to: '/account',
         header: 'Account Management',
-        roles: [Permission.AdminAccount.LIST],
+        items: [
+          {
+            icon: mdiAccountMultiple,
+            text: 'Accounts',
+            to: '/account',
+            roles: [Permission.AdminAccount.LIST],
+          },
+        ],
       },
 
-      /*{icon: 'logout', text: 'Logout', header:'Header Text', to: {name: 'auth.logout'}, roles: [Permission.AdminAccount.LIST'], child: []},*/
+      // Tools
+      {
+        header: 'Tools',
+        items: [
+          {
+            icon: mdiFirebase,
+            text: 'Firebase',
+            child: [
+              {
+                icon: mdiTabletCellphone,
+                text: 'Devices',
+                to: '/devices',
+                roles: [Permission.AdminDevice.LIST],
+              },
+              {
+                icon: mdiCalendarClock,
+                text: 'Scheduled Notifications',
+                to: '/devices/scheduled',
+                roles: [Permission.AdminDevice.LIST],
+              },
+            ],
+          },
+        ],
+      },
+
+      /* With Header
+      {
+        header: 'Tools',
+        items: [
+          {
+            icon: mdiFirebase,
+            text: 'Firebase Devices',
+            to: '/fcm/devices',
+            roles: [Permission.AdminDevice.LIST],
+          }
+        ],
+      }, */
+
+      /* Headerless
+      {
+        icon: mdiFirebase,
+        text: 'Firebase Devices',
+        to: '/fcm/devices',
+        roles: [Permission.AdminDevice.LIST],
+        child: []
+      }, */
     ],
   }),
   computed: {
     getNavs() {
       return this.navs
         .filter((nav) => {
-          if (nav.hasOwnProperty('roles') && !this.$authStore.hasPermission(nav.roles)) {
-            return false;
-          }
-          if (nav.hasOwnProperty('child')) {
-            nav.child = nav.child.filter(
-              (navChild) => !(navChild.hasOwnProperty('roles') && !this.$authStore.hasPermission(navChild.roles))
-            );
-            if (nav.child.length === 0) {
-              return false;
-            }
+          // With Header
+          if (nav.hasOwnProperty('items')) {
+            nav.items = nav.items.filter((c) => {
+              if (c.hasOwnProperty('child')) {
+                c.child = c.child.filter(
+                  (cd) => !(cd.hasOwnProperty('roles') && !this.$authStore.hasPermission(cd.roles))
+                );
+                return c.child.length !== 0;
+              }
+              return !(c.hasOwnProperty('roles') && !this.$authStore.hasPermission(c.roles));
+            });
+
+            return nav.items.length !== 0;
           }
 
-          return true;
+          // Headerless
+          if (nav.hasOwnProperty('child')) {
+            nav.child = nav.child.filter(
+              (c) => !(c.hasOwnProperty('roles') && !this.$authStore.hasPermission(c.roles))
+            );
+
+            return nav.child.length !== 0;
+          }
+
+          return !(nav.hasOwnProperty('roles') && !this.$authStore.hasPermission(nav.roles));
         })
         .map((nav) => {
-          if (nav.hasOwnProperty('child')) {
-            if (
-              nav.child.some((child) => {
-                return typeof child.to === 'string'
-                  ? child.to === this.$route.path
-                  : child.to.path === this.$route.path;
-              })
-            ) {
-              nav.active = true;
-            }
+          // With Header
+          if (nav.hasOwnProperty('items')) {
+            nav.items.map((n) => {
+              if (
+                n.hasOwnProperty('child') &&
+                n.child.some((child) =>
+                  typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path
+                )
+              ) {
+                n.active = true;
+              }
+
+              return n;
+            });
+          }
+
+          // Headerless
+          if (
+            nav.hasOwnProperty('child') &&
+            nav.child.some((child) =>
+              typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path
+            )
+          ) {
+            nav.active = true;
           }
 
           return nav;
@@ -184,6 +315,20 @@ export default defineComponent({
   .q-item {
     color: white;
     border-radius: $button-border-radius;
+  }
+
+  .q-expansion-item--expanded > div > .q-item {
+    border-radius: $button-border-radius $button-border-radius 0 0;
+  }
+
+  .q-expansion-item__content {
+    .q-item {
+      border-radius: 0;
+
+      &:last-of-type {
+        border-radius: 0 0 $button-border-radius $button-border-radius;
+      }
+    }
   }
 
   .q-expansion-item--expanded {

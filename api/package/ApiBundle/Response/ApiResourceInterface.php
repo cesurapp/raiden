@@ -7,7 +7,7 @@ namespace Package\ApiBundle\Response;
  */
 interface ApiResourceInterface
 {
-    public function toArray(object $item): array;
+    public function toArray(object $item, mixed $optional = null): array;
 
     /**
      * Using Request to Doctrine Filter | DataTable Exporter | Typescript DataTable Schema Generator.

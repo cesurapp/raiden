@@ -19,7 +19,7 @@ class TaskWorker
     {
         try {
             $task = $this->getTask($taskRequest);
-            $task($taskRequest['payload']);
+            $task(unserialize($taskRequest['payload']));
 
             $this->logger->info('Success Task: '.$taskRequest['class'], $taskRequest);
         } catch (\Exception $exception) {

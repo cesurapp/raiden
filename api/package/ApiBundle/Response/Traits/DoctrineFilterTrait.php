@@ -4,6 +4,7 @@ namespace Package\ApiBundle\Response\Traits;
 
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Package\ApiBundle\Doctrine\DoctrineHelper;
 use Symfony\Component\HttpFoundation\Request;
 
 trait DoctrineFilterTrait
@@ -39,6 +40,8 @@ trait DoctrineFilterTrait
                 }
             }
         }
+
+        DoctrineHelper::setUniqueJoin($builder);
     }
 
     /**

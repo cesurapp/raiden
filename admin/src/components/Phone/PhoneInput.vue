@@ -90,6 +90,7 @@ export default defineComponent({
 
   .q-field__prepend {
     padding-right: 0;
+    cursor: pointer;
   }
 
   .q-field__input {
