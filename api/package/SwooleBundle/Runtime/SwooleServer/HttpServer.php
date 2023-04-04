@@ -45,7 +45,7 @@ class HttpServer extends Server
         $this->appCache = new Table($this->options['cache_table']['size']);
         $this->appCache->column('value', Table::TYPE_STRING, (int) $this->options['cache_table']['column_length']);
         $this->appCache->column('expr', Table::TYPE_INT);
-        $this->appCache->column('key', Table::TYPE_STRING, 128);
+        $this->appCache->column('key', Table::TYPE_STRING, 350);
         $this->appCache->create();
     }
 
