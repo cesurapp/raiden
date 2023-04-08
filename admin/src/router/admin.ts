@@ -14,7 +14,11 @@ export default [
 
     children: [
       // Global
-      { path: '/', component: () => import('pages/Admin/Dashboard/Index.vue') },
+      {
+        path: '/',
+        component: () => import('pages/Admin/Dashboard/Index.vue'),
+        meta: { breadcrumb: 'Dashboard' },
+      },
       {
         path: '/account/profile',
         component: () => import('pages/Admin/Account/Profile.vue'),

@@ -17,6 +17,9 @@
           </q-breadcrumbs>
         </q-toolbar-title>
 
+        <!--Search Bar-->
+        <SearchBar></SearchBar>
+
         <!--Notification Button-->
         <q-btn @click="$refs.notification.toggle()" dense flat round :icon="mdiBell" size="13px">
           <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
@@ -50,12 +53,13 @@ import { createMetaMixin } from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import Navigation from './Components/Layout/Navigation.vue';
 import Profile from './Components/Layout/ProfileNav.vue';
-import { mdiBell } from '@quasar/extras/mdi-v7';
+import { mdiBell, mdiMagnify } from '@quasar/extras/mdi-v7';
+import SearchBar from 'components/Search/Search.vue';
 
 export default defineComponent({
   name: 'AdminLayout',
-  setup: () => ({ mdiBell }),
-  components: { Notifications, Navigation, Profile },
+  setup: () => ({ mdiBell, mdiMagnify }),
+  components: { SearchBar, Notifications, Navigation, Profile },
   data: () => ({
     menuActived: true,
     unreadCount: 0,

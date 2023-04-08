@@ -18,7 +18,7 @@ export default {
     DELETE: 'Sil',
     PERMISSION: 'Yetkilendirme',
     ALLOWED_TO_SWITCH: 'Hesap Değiştirme',
-    SEND: 'GÖNDER',
+    SEND: 'Gönder',
   },
 
   // Validations Rules
@@ -116,6 +116,12 @@ export default {
   'Return Admin': "Admin'e Dön",
   'Sign out': 'Çıkış',
 
+  // Search Bar
+  Search: 'Arama',
+  no_result: '{msg} için sonuç bulunamadı!',
+  'to Open': 'Aç',
+  'to Close': 'Kapat',
+
   // Edit Profile
   'Edit Profile': 'Profilim',
   'Current Password': 'Mevcut Şifre',
@@ -170,7 +176,10 @@ export default {
 
   // Firebase Devices
   Tools: 'Araçlar',
+  Firebase: 'Firebase',
+  Devices: 'Cihazlar',
   'Firebase Devices': 'Firebase Cihazlar',
+  'Scheduled Notifications': 'Zamanlanmış Bildirimler',
   devices: {
     ID: 'ID',
     Type: 'Tür',
@@ -178,4 +187,11 @@ export default {
     User: 'Kullanıcı',
     Created: 'Oluşturulma',
   },
+  'Send Notification': 'Bildirim Gönder',
+  Title: 'Başlık',
+  Message: 'Mesaj',
+  'New Option': 'Yeni Özellik',
+  Device: 'Cihaz',
+  Action: 'İşlem',
+  Value: 'Değer',
 };

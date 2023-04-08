@@ -3,6 +3,7 @@
 namespace App\Admin\Notification\Resource;
 
 use App\Admin\Notification\Entity\Notification;
+use App\Admin\Notification\Enum\DeviceType;
 use Package\ApiBundle\Response\ApiResourceInterface;
 
 class NotificationResource implements ApiResourceInterface
@@ -18,7 +19,7 @@ class NotificationResource implements ApiResourceInterface
             'title' => $item->getTitle(),
             'message' => $item->getMessage(),
             'readed' => $item->isReaded(),
-            'data' => $item->getDataFromDevice($optional),
+            'data' => $item->getData(DeviceType::from($optional)),
             'created_at' => $item->getId()?->getDateTime()->format(DATE_ATOM),
         ];
     }

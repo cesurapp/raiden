@@ -46,7 +46,7 @@ export default defineComponent({
   mixins: [
     createMetaMixin(function () {
       return {
-        title: this.$t('Security Code'),
+        title: this.$t(String(this.$route.meta.breadcrumb)),
       };
     }),
   ],

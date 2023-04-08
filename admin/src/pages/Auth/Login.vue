@@ -126,7 +126,7 @@ export default defineComponent({
   mixins: [
     createMetaMixin(function () {
       return {
-        title: this.$t('Login'),
+        title: this.$t(String(this.$route.meta.breadcrumb)),
       };
     }),
   ],

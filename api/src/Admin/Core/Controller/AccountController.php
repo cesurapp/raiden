@@ -101,7 +101,8 @@ class AccountController extends AbstractApiController
 
         return ApiResponse::create()
             ->setData($user)
-            ->setResource(UserResource::class);
+            ->setResource(UserResource::class)
+            ->addMessage('Operation successful');
     }
 
     #[Thor(
@@ -127,7 +128,8 @@ class AccountController extends AbstractApiController
 
         return ApiResponse::create()
             ->setData($user)
-            ->setResource(UserResource::class);
+            ->setResource(UserResource::class)
+            ->addMessage('Changes are saved');
     }
 
     #[Thor(
@@ -161,7 +163,7 @@ class AccountController extends AbstractApiController
         // Remove
         $userRepo->remove($user);
 
-        return ApiResponse::create()->addMessage('User deleted');
+        return ApiResponse::create()->addMessage('Successfully deleted');
     }
 
     #[Thor(
@@ -206,6 +208,6 @@ class AccountController extends AbstractApiController
         $user->setRoles($permissionManager->getPermissionToEnum($permissions));
         $this->userRepo->add($user);
 
-        return ApiResponse::create()->addMessage('User permissions updated.');
+        return ApiResponse::create()->addMessage('Operation successful');
     }
 }

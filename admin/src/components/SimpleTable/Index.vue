@@ -19,18 +19,43 @@
   >
     <!--Title-->
     <template #top-left v-if="header">
-      <div class="table-title text-h4">
+      <div v-if="!isFiltered" class="table-title text-h4">
         <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
       </div>
 
       <!--View Filter Parameters-->
-      <!--<template v-else>
-        <q-chip v-for='(val, type) in filterValues' :key='val' clickable @click='unsetFilter(type)' square class='q-pr-sm q-pl-sm q-mr-sm'>
-          <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
-          <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class='full-w q-px-sm'>{{ type }}</q-avatar>
-          {{ val }}
-        </q-chip>
-      </template>-->
+      <template v-else>
+        <q-btn-dropdown
+          size="12px"
+          split
+          color="positive"
+          :label="!$q.screen.xs ? 'Clear Filters' : ''"
+          :icon="mdiFilterRemove"
+          :content-style="{ padding: '6px 12px' }"
+          :menu-offset="[0, 10]"
+          menu-self="top start"
+          menu-anchor="bottom start"
+          @click="clearFilter"
+          no-route-dismiss
+        >
+          <div class="flex column items-start">
+            <q-chip
+              v-for="(val, type) in filterValues"
+              :key="val"
+              clickable
+              @click="unsetFilter(type)"
+              square
+              class="q-pr-sm q-pl-sm q-mr-sm"
+            >
+              <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
+              <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
+                type
+              }}</q-avatar>
+              {{ val }}
+            </q-chip>
+          </div>
+        </q-btn-dropdown>
+      </template>
     </template>
 
     <!--Selected Actions-->
@@ -95,8 +120,9 @@
           v-else
           :dropdown-icon="mdiDotsVertical"
           content-class="shadow-0 transparent-dropdown"
-          dense
+          size="12px"
           outline
+          padding="7px 8px"
           rounded
           color="primary"
           :menu-offset="[0, 10]"
@@ -336,6 +362,7 @@ import {
   mdiFileDelimited,
   mdiFileExcel,
   mdiFilter,
+  mdiFilterRemove,
   mdiFilterOutline,
   mdiCheckAll,
   mdiDeleteOutline,
@@ -362,6 +389,7 @@ export default defineComponent({
     mdiFileDelimited,
     mdiFileExcel,
     mdiFilter,
+    mdiFilterRemove,
     mdiFilterOutline,
     mdiCheckAll,
     mdiDeleteOutline,
@@ -469,6 +497,9 @@ export default defineComponent({
     },
     getDefaultSortDescending() {
       return this.columns.find((c) => c.hasOwnProperty('sortable_desc'))?.sortable_desc || false;
+    },
+    isFiltered() {
+      return Object.values(this.filterValues).filter((item) => Boolean(item)).length > 0;
     },
   },
   mounted() {
@@ -704,6 +735,14 @@ export default defineComponent({
      */
     unsetFilter(type) {
       delete this.filterValues[type];
+      this.refresh();
+    },
+
+    /**
+     * Clear Filters
+     */
+    clearFilter() {
+      this.filterValues = {};
       this.refresh();
     },
   },

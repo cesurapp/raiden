@@ -9,6 +9,7 @@ export default {
   perm_group: {
     AdminCore: 'Essential Permissions',
     AdminAccount: 'Account Permissions',
+    AdminDevice: 'Firebase Devices',
   },
   perm: {
     CREATE: 'Create',
@@ -17,5 +18,9 @@ export default {
     DELETE: 'Delete',
     PERMISSION: 'Delegating',
     ALLOWED_TO_SWITCH: 'Switch User',
+    SEND: 'Send',
   },
+
+  // Search Bar
+  no_result: 'No results for {msg}',
 };

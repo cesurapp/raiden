@@ -341,7 +341,7 @@ export default defineComponent({
   }
 
   .q-item__section--side > .q-icon {
-    font-size: $button-font-size + 10;
+    font-size: $button-font-size + 8;
   }
 
   .active-link {

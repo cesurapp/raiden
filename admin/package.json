@@ -15,6 +15,7 @@
     "@quasar/extras": "^1.15.11",
     "@vuelidate/core": "^2.0.0-alpha.42",
     "@vuelidate/validators": "^2.0.0-alpha.30",
+    "@vueuse/core": "^9.13.0",
     "axios": "^0.21.1",
     "countries-list": "^2.6.1",
     "firebase": "^9.9.1",

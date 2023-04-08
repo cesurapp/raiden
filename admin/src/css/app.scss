@@ -17,7 +17,7 @@
   color: currentColor !important;
 
   & > .q-icon {
-    font-size: $button-font-size + 10;
+    font-size: $button-font-size + 8;
   }
 }
 
@@ -563,4 +563,14 @@ body.body--dark {
 
 .q-notifications__list--top {
   top: 10px;
+}
+
+/**
+ * GAP
+ */
+.gap-x-sm {
+  gap: 0 $flex-gutter-sm;
+}
+.gap-x-md {
+  gap: 0 $flex-gutter-md;
 }

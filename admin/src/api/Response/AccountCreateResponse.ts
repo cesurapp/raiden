@@ -3,5 +3,8 @@
 import { UserResource } from '../Resource/UserResource';
 
 export interface AccountCreateResponse {
-  data: UserResource
+  data: UserResource,
+  message?: {
+    success?: Array<string|number|boolean>
+  }
 }

@@ -156,8 +156,20 @@ class TypeScriptHelper
         $enums = [];
 
         foreach ($data as $item) {
-            $items = explode(';', $item);
+            if (is_array($item)) {
+                array_walk_recursive($item, function ($val) use (&$enums) {
+                    $items = explode(';', $val);
+                    foreach ($items as $el) {
+                        if (enum_exists($el)) {
+                            $enums[] = self::baseClass($el);
+                        }
+                    }
+                });
 
+                continue;
+            }
+
+            $items = explode(';', $item);
             foreach ($items as $el) {
                 if (enum_exists($el)) {
                     $enums[] = self::baseClass($el);

@@ -112,28 +112,7 @@ class Notification
      */
     public function getData(?DeviceType $type = null): array
     {
-        return $type ? $this->data[$type->value] ?? [] : $this->data;
-    }
-
-    public function getDataFromDevice(string $device): array
-    {
-        return match ($device) {
-            DeviceType::WEB->value => [
-                ...$this->getData(DeviceType::ALL),
-                ...$this->getData(DeviceType::WEB),
-            ],
-            DeviceType::IOS->value => [
-                ...$this->getData(DeviceType::ALL),
-                ...$this->getData(DeviceType::MOBILE),
-                ...$this->getData(DeviceType::IOS),
-            ],
-            DeviceType::ANDROID->value => [
-                ...$this->getData(DeviceType::ALL),
-                ...$this->getData(DeviceType::MOBILE),
-                ...$this->getData(DeviceType::ANDROID),
-            ],
-            default => []
-        };
+        return $type ? ($this->data[$type->value] ?? []) : $this->data;
     }
 
     public function setData(array $data): self
@@ -143,61 +122,57 @@ class Notification
         return $this;
     }
 
-    public function addData(string $key, string|int|bool $value, DeviceType $type = DeviceType::ALL): self
+    public function addData(string $key, string|int|bool $value, ?DeviceType $type = null): self
     {
-        $this->data[$type->value][$key] = $value;
+        if (!$type) {
+            foreach (DeviceType::cases() as $deviceType) {
+                $this->data[$deviceType->value][$key] = $value;
+            }
+        } else {
+            $this->data[$type->value][$key] = $value;
+        }
 
         return $this;
     }
 
-    /**
-     * Global Options.
-     *
-     * @see https://firebase.google.com/docs/reference/cpp/struct/firebase/messaging/notification
-     */
-    public function addIcon(string $icon, DeviceType $type = DeviceType::ALL): self
+    public function addIcon(string $icon, ?DeviceType $type = null): self
     {
         $this->addData('icon', $icon, $type);
 
         return $this;
     }
 
-    public function addClickAction(string $link, DeviceType $type = DeviceType::ALL): self
-    {
-        $this->addData('click_action', $link, $type);
-
-        return $this;
-    }
-
-    public function addRouteAction(string $link, DeviceType $type = DeviceType::ALL): self
-    {
-        $this->addData('route_action', $link, $type);
-
-        return $this;
-    }
-
-    public function addDownloadAction(string $link, DeviceType $type = DeviceType::ALL): self
-    {
-        $this->addData('download_action', $link, $type);
-
-        return $this;
-    }
-
-    /**
-     * Mobile Options (IOS - Android).
-     *
-     * @see https://firebase.google.com/docs/reference/cpp/struct/firebase/messaging/notification
-     */
-    public function addSound(string $sound, DeviceType $type = DeviceType::MOBILE): self
+    public function addSound(string $sound, ?DeviceType $type = null): self
     {
         $this->addData('sound', $sound, $type);
 
         return $this;
     }
 
-    public function addColor(string $rgbColor, DeviceType $type = DeviceType::MOBILE): self
+    public function addColor(string $rgbColor, ?DeviceType $type = null): self
     {
         $this->addData('color', $rgbColor, $type);
+
+        return $this;
+    }
+
+    public function addClickAction(string $link, ?DeviceType $type = null): self
+    {
+        $this->addData('click_action', $link, $type);
+
+        return $this;
+    }
+
+    public function addRouteAction(string $link, ?DeviceType $type = null): self
+    {
+        $this->addData('route_action', $link, $type);
+
+        return $this;
+    }
+
+    public function addDownloadAction(string $link, ?DeviceType $type = null): self
+    {
+        $this->addData('download_action', $link, $type);
 
         return $this;
     }
