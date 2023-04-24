@@ -11,12 +11,14 @@
       <q-card style="width: 640px" class="search-card">
         <q-card-section class="input-area q-pb-sm">
           <q-input
-            :debounce="100"
+            :debounce="50"
             autofocus
             outlined
             :placeholder="$t('Search')"
             :loading="$appStore.isBusy"
             v-model="search"
+            ref="self"
+            @focus="$refs.self.select()"
             :style="{ background: $q.dark.isActive ? 'var(--q-dark-page)' : 'white' }"
           >
             <template #prepend>
@@ -118,9 +120,8 @@ export default defineComponent({
   },
   mounted() {
     this.routes = this.$route.matched[0].children
-      .filter((route) => {
-        return !route.path.includes('/:') && route.meta.breadcrumb;
-      })
+      .filter((route) => !route.path.includes('/:') && route?.meta?.breadcrumb)
+      .filter((route) => route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true)
       .map((route) => ({
         label: this.$t(route.meta.breadcrumb ?? ''),
         route: route.path,

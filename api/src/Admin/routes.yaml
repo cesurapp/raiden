@@ -1,9 +1,9 @@
 # Core
-app_core:
+core:
   resource: "Core/Controller"
-  type: annotation
+  type: attribute
 
 # Notification
-app_notification:
+notification:
   resource: "Notification/Controller"
-  type: annotation
+  type: attribute

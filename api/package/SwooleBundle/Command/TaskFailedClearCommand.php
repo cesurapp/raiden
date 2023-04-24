@@ -20,7 +20,7 @@ class TaskFailedClearCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Clear All
-        $this->failedTaskRepo->createQueryBuilder('t')->delete()->getQuery()->execute();
+        $this->failedTaskRepo->createQueryBuilder('q')->delete()->getQuery()->execute();
 
         $io = new SymfonyStyle($input, $output);
         $io->success('All failed task have been deleted.');

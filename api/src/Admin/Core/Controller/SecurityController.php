@@ -64,7 +64,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 0
     )]
-    #[Route(path: '/v1/auth/login', name: 'api_login', methods: ['POST'])]
+    #[Route(path: '/v1/auth/login', methods: ['POST'])]
     public function login(#[CurrentUser] User $user, Request $request): ApiResponse
     {
         // Disable Switch User Generate Token
@@ -97,7 +97,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 1
     )]
-    #[Route(path: '/v1/auth/refresh-token', name: 'api_refresh_token', methods: ['POST'])]
+    #[Route(path: '/v1/auth/refresh-token', methods: ['POST'])]
     public function refreshToken(Request $request, JWT $jwt, RefreshTokenRepository $repo): ApiResponse
     {
         // Disable Switch User Generate Token
@@ -134,7 +134,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 2
     )]
-    #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp_request', methods: ['PUT'])]
+    #[Route(path: '/v1/auth/login-otp', methods: ['PUT'])]
     public function loginOtpRequest(UsernameDto $otpDto, OtpKeyRepository $otpKeyRepo, Request $request): ApiResponse
     {
         // Disable Switch User Generate Token
@@ -166,7 +166,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 3
     )]
-    #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp', methods: ['POST'])]
+    #[Route(path: '/v1/auth/login-otp', methods: ['POST'])]
     public function loginOtp(UsernameOtpDto $otpDto, OtpKeyRepository $otpRepo, Request $request): ApiResponse
     {
         // Disable Switch User Generate Token
@@ -195,7 +195,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 4
     )]
-    #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
+    #[Route(path: '/v1/auth/logout', methods: ['POST'])]
     public function logout(Request $request, RefreshTokenRepository $refreshTokenRepo): ApiResponse
     {
         if ($token = $request->get('refresh_token')) {
@@ -215,7 +215,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 5
     )]
-    #[Route(path: '/v1/auth/register', name: 'api_register', methods: ['POST'])]
+    #[Route(path: '/v1/auth/register', methods: ['POST'])]
     public function register(RegisterDto $register, UserPasswordHasherInterface $hasher): ApiResponse
     {
         // Init & Save
@@ -242,7 +242,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 6
     )]
-    #[Route(path: '/v1/auth/approve', name: 'api_approve_account', methods: ['POST'])]
+    #[Route(path: '/v1/auth/approve', methods: ['POST'])]
     public function approve(UsernameOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
         if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
@@ -267,7 +267,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 7
     )]
-    #[Route(path: '/v1/auth/reset-request', name: 'api_reset_request', methods: ['POST'])]
+    #[Route(path: '/v1/auth/reset-request', methods: ['POST'])]
     public function resetRequest(UsernameDto $usernameDto, OtpKeyRepository $otpRepo): ApiResponse
     {
         if (!$user = $this->userRepo->loadUserByIdentifier($usernameDto->validated('username'))) {
@@ -291,7 +291,7 @@ class SecurityController extends AbstractApiController
         requireAuth: false,
         order: 8
     )]
-    #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]
+    #[Route(path: '/v1/auth/reset-password/', methods: ['POST'])]
     public function resetPassword(ResetPasswordDto $dto, OtpKeyRepository $otpRepo, UserPasswordHasherInterface $hasher): ApiResponse
     {
         if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {

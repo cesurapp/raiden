@@ -11,6 +11,5 @@ export type AccountEditRequest = {
   phone_country?: string,
   type?: string,
   password?: string,
-  language?: string,
-  id?: string
+  language?: string
 }

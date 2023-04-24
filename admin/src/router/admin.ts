@@ -9,7 +9,6 @@ export default [
     meta: {
       requireAuth: true,
       userType: [UserType.ADMIN, UserType.SUPERADMIN],
-      breadcrumb: 'Dashboard',
     },
 
     children: [
@@ -32,11 +31,16 @@ export default [
         meta: { breadcrumb: 'Accounts', permission: [Permission.AdminAccount.LIST] },
       },
 
-      // FCM Devices
+      // Firebase Devices & Scheduled Notifications
       {
-        path: '/devices',
-        component: () => import('pages/Admin/Devices/Index.vue'),
+        path: '/firebase/devices',
+        component: () => import('pages/Admin/Firebase/Devices.vue'),
         meta: { breadcrumb: 'Firebase Devices', permission: [Permission.AdminDevice.LIST] },
+      },
+      {
+        path: '/firebase/scheduler',
+        component: () => import('pages/Admin/Firebase/Scheduler.vue'),
+        meta: { breadcrumb: 'Scheduled Notifications', permission: [Permission.AdminScheduler.LIST] },
       },
     ],
   },

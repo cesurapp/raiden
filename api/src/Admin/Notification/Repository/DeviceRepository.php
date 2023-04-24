@@ -43,8 +43,8 @@ class DeviceRepository extends ApiServiceEntityRepository
      */
     public function getDevices(User $user): ?array
     {
-        return $this->createQueryBuilder('d')
-            ->where('IDENTITY(d.owner) = :owner')
+        return $this->createQueryBuilder('q')
+            ->where('IDENTITY(q.owner) = :owner')
             ->setParameter('owner', $user->getId(), 'ulid')
             ->getQuery()->getResult();
     }
@@ -52,9 +52,9 @@ class DeviceRepository extends ApiServiceEntityRepository
     /**
      * Remove Device DQL.
      */
-    public function removeDevice(string $deviceId): void
+    public function removeDevice(Ulid $deviceId): void
     {
-        $this->remove($this->em()->getReference(Device::class, Ulid::fromString($deviceId)));
+        $this->remove($this->em()->getReference(Device::class, $deviceId));
     }
 
     public function check(string $token, string $device): bool

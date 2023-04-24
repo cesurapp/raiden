@@ -15,7 +15,7 @@ class UserResource implements ApiResourceInterface
     public function toArray(object $item, mixed $optional = null): array
     {
         return [
-            'id' => $item->getId()->toBase32(),
+            'id' => $item->getId()?->toBase32(),
             'type' => $item->getType()->value,
             'email' => $item->getEmail(),
             'email_approved' => $item->isEmailApproved(),
@@ -99,7 +99,7 @@ class UserResource implements ApiResourceInterface
             'email_approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = 'true' === $data;
+                    $data = in_array($data, ['1', 'true', true], false);
                     $builder->andWhere("$alias.emailApproved = :emailApproved")->setParameter('emailApproved', $data);
                 },
                 'table' => [
@@ -133,7 +133,7 @@ class UserResource implements ApiResourceInterface
             'phone_approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = 'true' === $data;
+                    $data = in_array($data, ['1', 'true', true], false);
                     $builder->andWhere("$alias.phoneApproved = :phoneApproved")->setParameter('phoneApproved', $data);
                 },
                 'table' => [
@@ -145,7 +145,7 @@ class UserResource implements ApiResourceInterface
             'approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = 'true' === $data;
+                    $data = in_array($data, ['1', 'true', true], false);
 
                     if (!$data) {
                         $builder
@@ -168,7 +168,7 @@ class UserResource implements ApiResourceInterface
             'frozen' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = 'true' === $data;
+                    $data = in_array($data, ['1', 'true', true], false);
                     $builder->andWhere("$alias.frozen = :frozen")->setParameter('frozen', $data);
                 },
                 'table' => [

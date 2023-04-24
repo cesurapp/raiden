@@ -1,21 +1,21 @@
 <?php
 
-namespace Package\Library\Test;
+namespace Package\ApiBundle\Test;
 
-use Package\Library\Client;
+use Package\ApiBundle\Client\SwooleClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ClientTest extends WebTestCase
 {
     public function testGet(): void
     {
-        $client = Client::create('https://www.google.com')->get();
+        $client = SwooleClient::create('https://www.google.com')->get();
         $this->assertEquals(200, $client->statusCode);
 
-        $client = Client::create('http://www.google.com')->get();
+        $client = SwooleClient::create('http://www.google.com')->get();
         $this->assertEquals(200, $client->statusCode);
 
-        $client = Client::create('https://google.com')->get();
+        $client = SwooleClient::create('https://google.com')->get();
         $this->assertEquals(301, $client->statusCode);
         $this->assertEquals('GET', $client->requestMethod);
     }
@@ -23,27 +23,27 @@ class ClientTest extends WebTestCase
     public function testGetQuery(): void
     {
         // SSL
-        $client = Client::create('https://www.google.com')->setQuery([
+        $client = SwooleClient::create('https://www.google.com')->setQuery([
             'filter' => [
                 'test' => 1,
                 'active' => 'ok',
             ],
         ]);
         $clientArr = (array) $client;
-        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
+        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\ApiBundle\Client\SwooleClient\0requestUri"]);
         $this->assertEquals('www.google.com', $client->client->host);
         $this->assertEquals(true, $client->client->ssl);
         $this->assertEquals(443, $client->client->port);
 
         // HTTP
-        $client = Client::create('http://www.google.com')->setQuery([
+        $client = SwooleClient::create('http://www.google.com')->setQuery([
             'filter' => [
                 'test' => 1,
                 'active' => 'ok',
             ],
         ]);
         $clientArr = (array) $client;
-        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\Library\Client\0requestUri"]);
+        $this->assertEquals('/?filter[test]=1&filter[active]=ok', $clientArr["\0Package\ApiBundle\Client\SwooleClient\0requestUri"]);
         $this->assertEquals('www.google.com', $client->client->host);
         $this->assertEquals(false, $client->client->ssl);
         $this->assertEquals(80, $client->client->port);
@@ -51,7 +51,7 @@ class ClientTest extends WebTestCase
 
     public function testPost(): void
     {
-        $client = Client::create('https://www.google.com')->post([
+        $client = SwooleClient::create('https://www.google.com')->post([
             'data' => 'test',
         ]);
 
@@ -63,7 +63,7 @@ class ClientTest extends WebTestCase
 
     public function testPut(): void
     {
-        $client = Client::create('https://www.google.com')->put([
+        $client = SwooleClient::create('https://www.google.com')->put([
             'data' => 'test',
         ]);
 
@@ -75,7 +75,7 @@ class ClientTest extends WebTestCase
 
     public function testPatch(): void
     {
-        $client = Client::create('https://www.google.com')->patch([
+        $client = SwooleClient::create('https://www.google.com')->patch([
             'data' => 'test',
         ]);
 
@@ -87,7 +87,7 @@ class ClientTest extends WebTestCase
 
     public function testDelete(): void
     {
-        $client = Client::create('https://www.google.com')->delete();
+        $client = SwooleClient::create('https://www.google.com')->delete();
 
         $this->assertEquals(true, $client->ssl);
         $this->assertEquals(405, $client->statusCode);

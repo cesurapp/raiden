@@ -629,6 +629,13 @@ export default defineComponent({
       this.rows.splice(this.findIndex(itemProxy), 1);
     },
 
+    updateItem(item, key) {
+      const index = this.rows.findIndex((row) => row[key] === item[key])
+      if (index !== -1) {
+        this.rows[index] = item
+      }
+    },
+
     /**
      * Find Objects Index
      */

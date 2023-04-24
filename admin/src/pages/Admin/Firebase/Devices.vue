@@ -11,17 +11,7 @@
         :delete-permission="$permission.AdminDevice.DELETE"
       >
         <!--Row Actions-->
-        <template #rowActions="{ props }">
-          <q-item
-            clickable
-            v-close-popup
-            @click="$refs.editor.init(props.row.id)"
-            v-if="$authStore.hasPermission($permission.AdminDevice.SEND)"
-          >
-            <q-item-section side><q-icon :name="mdiSend" /></q-item-section>
-            <q-item-section>{{ $t('Send Notification') }}</q-item-section>
-          </q-item>
-        </template>
+        <template #rowActions></template>
 
         <!--Custom Column Filter-->
         <template #filter_type="{ column, values, refresh }">
@@ -67,8 +57,6 @@
         </template>
       </SimpleTable>
     </PageContent>
-
-    <SendNotificationEditor ref="editor"></SendNotificationEditor>
   </q-page>
 </template>
 
@@ -81,11 +69,10 @@ import { mdiSend } from '@quasar/extras/mdi-v7';
 import DeviceListTable from 'src/api/Table/DeviceListTable';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import { DeviceType } from 'src/api/Enum/DeviceType';
-import SendNotificationEditor from 'pages/Admin/Devices/SendNotificationEditor.vue';
 
 export default defineComponent({
-  name: 'AccountListing',
-  components: { SendNotificationEditor, UserTypeInput, PageContent, SimpleTable },
+  name: 'FirebaseDeviceListing',
+  components: { UserTypeInput, PageContent, SimpleTable },
   setup: () => ({ DeviceListTable, DeviceType, mdiSend }),
   mixins: [
     createMetaMixin(function () {

@@ -17,6 +17,7 @@
     "dragonmantank/cron-expression": "^3.3",
     "google/cloud-logging": "^1.22",
     "odolbeau/phone-number-bundle": "^3.7",
+    "openswoole/core": "*",
     "sonata-project/exporter": "^3.1",
     "symfony/console": "6.2.*",
     "symfony/dotenv": "6.2.*",

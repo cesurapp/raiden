@@ -8,6 +8,5 @@ export type AccountEditProfileRequest = {
   phone_country?: string,
   password?: string,
   current_password?: string,
-  language?: string,
-  id?: string
+  language?: string
 }

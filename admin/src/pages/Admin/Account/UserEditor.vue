@@ -196,13 +196,11 @@ export default defineComponent({
     init(user: AccountEditRequest | null = null) {
       this.tab = 'profile';
       this.proxy = user;
-      this.form = user
-        ? { ...user, ...this.user }
-        : {
-            phone_approved: true,
-            email_approved: true,
-            frozen: false,
-          };
+      this.form = user ? user : {
+        phone_approved: true,
+        email_approved: true,
+        frozen: false,
+      };
 
       this.$refs.editor.toggle();
     },
@@ -229,7 +227,7 @@ export default defineComponent({
       this.$refs.form.validate().then((success: any) => {
         if (success) {
           // Edit
-          if (this.form.id) {
+          if (this.form.hasOwnProperty('id')) {
             return this.$api.accountEdit(this.form.id, this.form).then((r) => {
               this.proxy = Object.assign(this.proxy || {}, r.data.data);
               this.$refs.editor.toggle();

@@ -26,10 +26,10 @@ class NotificationRepository extends ApiServiceEntityRepository
      */
     public function list(User $user): QueryBuilder
     {
-        return $this->createQueryBuilder('n')
-            ->andWhere('IDENTITY(n.owner) = :owner')
+        return $this->createQueryBuilder('q')
+            ->andWhere('IDENTITY(q.owner) = :owner')
             ->setParameter('owner', $user->getId(), 'ulid')
-            ->orderBy('n.id', 'DESC');
+            ->orderBy('q.id', 'DESC');
     }
 
     /**
@@ -57,11 +57,11 @@ class NotificationRepository extends ApiServiceEntityRepository
      */
     public function readAll(User $user): void
     {
-        $this->createQueryBuilder('n')
-            ->andWhere('IDENTITY(n.owner) = :owner')
+        $this->createQueryBuilder('q')
+            ->andWhere('IDENTITY(q.owner) = :owner')
             ->setParameter('owner', $user->getId(), 'ulid')
             ->update()
-            ->set('n.readed', 'true')
+            ->set('q.readed', 'true')
             ->getQuery()->execute();
     }
 
@@ -78,9 +78,9 @@ class NotificationRepository extends ApiServiceEntityRepository
      */
     public function setForwarded(Notification $notification, ?\DateTimeImmutable $forwarded = new \DateTimeImmutable()): void
     {
-        $this->createQueryBuilder('n')->update()
-            ->where('n.id = :id')->setParameter('id', $notification->getId(), 'ulid')
-            ->set('n.forwardedAt', ':at')->setParameter('at', $forwarded)
+        $this->createQueryBuilder('q')->update()
+            ->where('q.id = :id')->setParameter('id', $notification->getId(), 'ulid')
+            ->set('q.forwardedAt', ':at')->setParameter('at', $forwarded)
             ->getQuery()->execute();
     }
 }

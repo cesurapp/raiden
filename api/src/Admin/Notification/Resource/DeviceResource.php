@@ -24,7 +24,7 @@ class DeviceResource implements ApiResourceInterface
                 $item->getOwner()->getFullName(),
                 $item->getOwner()->getEmail() ?? (string) $item->getOwner()->getPhone()
             ),
-            'created_at' => $item->getId()->getDateTime()->format(DATE_ATOM),
+            'created_at' => $item->getId()?->getDateTime()->format(DATE_ATOM),
         ];
     }
 

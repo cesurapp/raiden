@@ -159,7 +159,7 @@ export default defineComponent({
             icon: mdiAccountMultiple,
             text: 'Accounts',
             to: '/account',
-            roles: [Permission.AdminAccount.LIST],
+            permission: [Permission.AdminAccount.LIST],
           },
         ],
       },
@@ -175,14 +175,14 @@ export default defineComponent({
               {
                 icon: mdiTabletCellphone,
                 text: 'Devices',
-                to: '/devices',
-                roles: [Permission.AdminDevice.LIST],
+                to: '/firebase/devices',
+                permission: [Permission.AdminDevice.LIST],
               },
               {
                 icon: mdiCalendarClock,
                 text: 'Scheduled Notifications',
-                to: '/devices/scheduled',
-                roles: [Permission.AdminDevice.LIST],
+                to: '/firebase/scheduler',
+                permission: [Permission.AdminScheduler.LIST],
               },
             ],
           },
@@ -197,7 +197,7 @@ export default defineComponent({
             icon: mdiFirebase,
             text: 'Firebase Devices',
             to: '/fcm/devices',
-            roles: [Permission.AdminDevice.LIST],
+            permission: [Permission.AdminDevice.LIST],
           }
         ],
       }, */
@@ -207,7 +207,7 @@ export default defineComponent({
         icon: mdiFirebase,
         text: 'Firebase Devices',
         to: '/fcm/devices',
-        roles: [Permission.AdminDevice.LIST],
+        permission: [Permission.AdminDevice.LIST],
         child: []
       }, */
     ],
@@ -221,11 +221,11 @@ export default defineComponent({
             nav.items = nav.items.filter((c) => {
               if (c.hasOwnProperty('child')) {
                 c.child = c.child.filter(
-                  (cd) => !(cd.hasOwnProperty('roles') && !this.$authStore.hasPermission(cd.roles))
+                  (cd) => !(cd.hasOwnProperty('permission') && !this.$authStore.hasPermission(cd.permission))
                 );
                 return c.child.length !== 0;
               }
-              return !(c.hasOwnProperty('roles') && !this.$authStore.hasPermission(c.roles));
+              return !(c.hasOwnProperty('permission') && !this.$authStore.hasPermission(c.permission));
             });
 
             return nav.items.length !== 0;
@@ -234,13 +234,13 @@ export default defineComponent({
           // Headerless
           if (nav.hasOwnProperty('child')) {
             nav.child = nav.child.filter(
-              (c) => !(c.hasOwnProperty('roles') && !this.$authStore.hasPermission(c.roles))
+              (c) => !(c.hasOwnProperty('permission') && !this.$authStore.hasPermission(c.permission))
             );
 
             return nav.child.length !== 0;
           }
 
-          return !(nav.hasOwnProperty('roles') && !this.$authStore.hasPermission(nav.roles));
+          return !(nav.hasOwnProperty('permission') && !this.$authStore.hasPermission(nav.permission));
         })
         .map((nav) => {
           // With Header

@@ -44,7 +44,7 @@
             v-close-popup
             :disable="!isSwitchable(props.row)"
             @click="switchUser(props.row)"
-            v-if="$authStore.hasPermission($permission.AdminCore.ALLOWED_TO_SWITCH)"
+            v-if="$authStore.hasPermission($permission.AdminCore.SWITCH)"
           >
             <q-item-section side><q-icon :name="mdiAccountMultipleOutline" /></q-item-section>
             <q-item-section>{{ $t('Switch User') }}</q-item-section>

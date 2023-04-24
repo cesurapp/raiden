@@ -96,6 +96,9 @@ class TypeScriptHelper
             if (is_array($attributes) && is_int($key)) {
                 $attrs[] = str_repeat('  ', $sub).$value;
             } else {
+                if (str_contains($key, '.')) {
+                    $key = "'$key'";
+                }
                 $attrs[] = str_repeat('  ', $sub).$key.($isNull ? '?: ' : ': ').$value;
             }
 
@@ -145,6 +148,7 @@ class TypeScriptHelper
             'null' => 'null',
             'any' => 'any',
             'array' => 'Array<string|number|boolean>',
+            'object' => 'object',
             '1' => 'true',
             '0' => 'false',
             default => "'$type'"

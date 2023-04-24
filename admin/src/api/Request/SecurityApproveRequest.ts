@@ -2,6 +2,5 @@
 
 export type SecurityApproveRequest = {
   username: string | number,
-  otp_key: number,
-  id?: string
+  otp_key: number
 }

@@ -43,12 +43,12 @@ class UserRepository extends ApiServiceEntityRepository implements PasswordUpgra
      */
     public function loadUserByIdentifier(string|int $identifier): ?User
     {
-        $q = $this->createQueryBuilder('u');
+        $q = $this->createQueryBuilder('q');
 
         if (is_numeric($identifier)) {
-            $q->where('u.phone = :identity')->setParameter('identity', (int) $identifier);
+            $q->where('q.phone = :identity')->setParameter('identity', (int) $identifier);
         } else {
-            $q->where('u.email = :identity')->setParameter('identity', $identifier);
+            $q->where('q.email = :identity')->setParameter('identity', $identifier);
         }
 
         return $q->getQuery()->getOneOrNullResult();

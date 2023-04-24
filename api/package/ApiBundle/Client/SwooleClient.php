@@ -1,8 +1,8 @@
 <?php
 
-namespace Package\Library;
+namespace Package\ApiBundle\Client;
 
-use OpenSwoole\Coroutine\Http\Client as SwooleClient;
+use OpenSwoole\Coroutine\Http\Client;
 use OpenSwoole\Coroutine\Http\Client\Exception;
 
 /**
@@ -10,12 +10,12 @@ use OpenSwoole\Coroutine\Http\Client\Exception;
  *
  * @author  Ramazan APAYDIN
  */
-class Client
+class SwooleClient
 {
     /**
      * Coroutine Client.
      */
-    public SwooleClient $client;
+    public Client $client;
 
     /**
      * Parsed URI.
@@ -26,8 +26,8 @@ class Client
      * Global Headers.
      */
     private array $headers = [
-        // 'Host' => '',
-        // 'User-Agent' => 'Chrome/49.0.2587.3',
+        'accept' => '*/*',
+        'accept-encoding' => 'gzip',
     ];
 
     /**
@@ -41,7 +41,7 @@ class Client
         'keep_alive' => false,
         'websocket_mask' => false,
         'websocket_compression' => false,
-        'http_compression' => false,
+        'http_compression' => true,
         'body_decompression' => true,
     ];
 
@@ -53,9 +53,9 @@ class Client
         // Create Client
         $info = parse_url($uri);
         if ('http' === $info['scheme']) {
-            $this->client = new SwooleClient($info['host'], $info['port'] ?? 80, false);
+            $this->client = new Client($info['host'], $info['port'] ?? 80, false);
         } elseif ('https' === $info['scheme']) {
-            $this->client = new SwooleClient($info['host'], $info['port'] ?? 443, true);
+            $this->client = new Client($info['host'], $info['port'] ?? 443, true);
         } else {
             throw new Exception('unknown scheme "'.$info['scheme'].'"');
         }
@@ -71,7 +71,7 @@ class Client
         $this->client->set($this->options);
     }
 
-    public function get(?array $query = null): SwooleClient
+    public function get(?array $query = null): Client
     {
         if ($query) {
             $this->setQuery($query);
@@ -83,7 +83,7 @@ class Client
         return $this->client;
     }
 
-    public function post(string|array $data = []): SwooleClient
+    public function post(string|array $data = []): Client
     {
         $this->client->setMethod('POST');
         $this->setData($data);
@@ -92,7 +92,7 @@ class Client
         return $this->client;
     }
 
-    public function put(string|array $data = []): SwooleClient
+    public function put(string|array $data = []): Client
     {
         $this->client->setMethod('PUT');
         $this->setData($data);
@@ -101,7 +101,7 @@ class Client
         return $this->client;
     }
 
-    public function patch(string|array $data = []): SwooleClient
+    public function patch(string|array $data = []): Client
     {
         $this->client->setMethod('PATCH');
         $this->setData($data);
@@ -110,7 +110,7 @@ class Client
         return $this->client;
     }
 
-    public function delete(?array $query = null): SwooleClient
+    public function delete(?array $query = null): Client
     {
         if ($query) {
             $this->setQuery($query);
@@ -151,6 +151,20 @@ class Client
         return $this;
     }
 
+    public function setJsonData(string|array $reqData): self
+    {
+        $data = is_array($reqData) ? json_encode($reqData, JSON_THROW_ON_ERROR) : $reqData;
+
+        $this
+            ->setHeaders([
+                'content-type' => 'application/json',
+                'content-length' => strlen($data),
+            ])
+            ->setData($data);
+
+        return $this;
+    }
+
     public function setBasicAuth(string $username, string $password): self
     {
         $this->client->setBasicAuth($username, $password);
@@ -160,7 +174,12 @@ class Client
 
     public function setHeaders(array $headers, bool $reset = false): self
     {
-        $this->client->setHeaders($reset ? $headers : array_merge($this->headers, $headers));
+        $this->client->setHeaders(
+            $reset ? $headers : [
+                ...$this->client->requestHeaders,
+                ...$headers,
+            ]
+        );
 
         return $this;
     }
@@ -213,7 +232,7 @@ class Client
     /**
      * Execute Request.
      */
-    public function execute(): SwooleClient
+    public function execute(): Client
     {
         $this->client->execute($this->requestUri);
 

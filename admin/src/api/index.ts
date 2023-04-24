@@ -48,9 +48,14 @@ import type { AccountEditPermissionResponse } from './Response/AccountEditPermis
 import type { AccountEditPermissionRequest } from './Request/AccountEditPermissionRequest';
 import type { DeviceListResponse } from './Response/DeviceListResponse';
 import type { DeviceListQuery } from './Query/DeviceListQuery';
-import type { DeviceSendResponse } from './Response/DeviceSendResponse';
-import type { DeviceSendRequest } from './Request/DeviceSendRequest';
 import type { DeviceDeleteResponse } from './Response/DeviceDeleteResponse';
+import type { SchedulerListResponse } from './Response/SchedulerListResponse';
+import type { SchedulerListQuery } from './Query/SchedulerListQuery';
+import type { SchedulerCreateResponse } from './Response/SchedulerCreateResponse';
+import type { SchedulerCreateRequest } from './Request/SchedulerCreateRequest';
+import type { SchedulerEditResponse } from './Response/SchedulerEditResponse';
+import type { SchedulerEditRequest } from './Request/SchedulerEditRequest';
+import type { SchedulerDeleteResponse } from './Response/SchedulerDeleteResponse';
 
 export default class Api {
   constructor(private client: AxiosInstance) {}
@@ -151,12 +156,24 @@ export default class Api {
     return this.rq('GET', `/v1/admin/notification/device${toQueryString(query)}`, config, null)
   }
 
-  async deviceSend(id?: string, request?: DeviceSendRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceSendResponse>> {
-    return this.rq('POST', `/v1/admin/notification/device/${id}`, config, request)
-  }
-
   async deviceDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceDeleteResponse>> {
     return this.rq('DELETE', `/v1/admin/notification/device/${id}`, config, null)
+  }
+
+  async schedulerList(query?: SchedulerListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerListResponse>> {
+    return this.rq('GET', `/v1/admin/scheduler${toQueryString(query)}`, config, null)
+  }
+
+  async schedulerCreate(request?: SchedulerCreateRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerCreateResponse>> {
+    return this.rq('POST', '/v1/admin/scheduler', config, request)
+  }
+
+  async schedulerEdit(id?: string, request?: SchedulerEditRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerEditResponse>> {
+    return this.rq('PUT', `/v1/admin/scheduler/${id}`, config, request)
+  }
+
+  async schedulerDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerDeleteResponse>> {
+    return this.rq('DELETE', `/v1/admin/scheduler/${id}`, config, null)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

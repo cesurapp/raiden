@@ -6,6 +6,6 @@ export type NotificationResource = {
   title: string,
   message: string,
   readed: boolean,
-  data: Array<string|number|boolean>,
+  data: object,
   created_at: string
 }

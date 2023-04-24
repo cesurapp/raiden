@@ -8,43 +8,18 @@ use Package\SwooleBundle\Task\TaskHandler;
 /**
  * Send SMS to Task Queue.
  */
-class SmsPusher
+readonly class SmsPusher
 {
-    private string|int $phone;
-    private string $countryCode;
-    private string $subject;
-
-    public function __construct(private readonly TaskHandler $taskHandler)
+    public function __construct(private TaskHandler $taskHandler)
     {
     }
 
-    public function setSubject(string $subject): self
-    {
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    public function setCountryCode(string $countryCode): self
-    {
-        $this->countryCode = $countryCode;
-
-        return $this;
-    }
-
-    public function setPhone(int|string $phone): self
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    public function send(): void
+    public function send(int|string $phone, string $countryCode, string $subject): void
     {
         $this->taskHandler->dispatch(SendSmsTask::class, [
-            'subject' => $this->subject,
-            'phone' => $this->phone,
-            'countryCode' => $this->countryCode,
+            'subject' => $subject,
+            'phone' => $phone,
+            'countryCode' => $countryCode,
         ]);
     }
 }

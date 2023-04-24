@@ -2,7 +2,10 @@
 
 import type { NotificationStatus } from './../Enum/NotificationStatus';
 
-export type DeviceSendRequest = {
+export type SchedulerCreateRequest = {
+  campaign_title: string,
+  persist_notification: boolean,
+  send_at: string,
   status: NotificationStatus,
   title?: string,
   message?: string,
@@ -32,5 +35,19 @@ export type DeviceSendRequest = {
       download_action?: string
     }
   },
-  id?: string
+  device_filter?: {
+    'device.type': [
+      'web',
+      'android',
+      'ios'
+    ],
+    'user.createdAt'?: {
+      from?: string,
+      to?: string
+    },
+    'user.type'?: Array<string|number|boolean>,
+    'user.frozen'?: boolean,
+    'user.language'?: string,
+    'user.phoneCountry'?: string
+  }
 }

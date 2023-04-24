@@ -27,12 +27,12 @@ class FailedTaskRepository extends ServiceEntityRepository
      */
     public function getFailedTask(?FailedTask $nextTask = null, int $limit = 10): QueryBuilder
     {
-        $query = $this->createQueryBuilder('t')
-            ->orderBy('t.id', 'DESC')
+        $query = $this->createQueryBuilder('q')
+            ->orderBy('q.id', 'DESC')
             ->setMaxResults($limit);
 
         if ($nextTask) {
-            $query->andWhere('t.id < :next')->setParameter('next', $nextTask->getId(), 'ulid');
+            $query->andWhere('q.id < :next')->setParameter('next', $nextTask->getId(), 'ulid');
         }
 
         return $query;

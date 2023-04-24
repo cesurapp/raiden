@@ -17,7 +17,7 @@ export default {
     EDIT: 'Edit',
     DELETE: 'Delete',
     PERMISSION: 'Delegating',
-    ALLOWED_TO_SWITCH: 'Switch User',
+    SWITCH: 'Switch User',
     SEND: 'Send',
   },
 

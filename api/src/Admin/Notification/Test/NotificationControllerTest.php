@@ -6,7 +6,7 @@ use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Service\NotificationPusher;
 
-class NotificationTest extends AbstractWebTestCase
+class NotificationControllerTest extends AbstractWebTestCase
 {
     public function testList(): void
     {

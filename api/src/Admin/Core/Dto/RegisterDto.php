@@ -62,10 +62,7 @@ class RegisterDto extends AbstractApiDto
         }
     }
 
-    /**
-     * @param User $object
-     */
-    public function initObject(mixed $object): User
+    public function initObject(string|User $object): User
     {
         return $object
             ->setEmail($this->validated('email'))

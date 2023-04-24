@@ -6,9 +6,6 @@ use Package\SwooleBundle\Runtime\SwooleServer\CronServer;
 use Package\SwooleBundle\Runtime\SwooleServer\HttpServer;
 use Package\SwooleBundle\Runtime\SwooleServer\TaskServer;
 use Package\SwooleBundle\Runtime\SwooleServer\TcpServer;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Runtime\RunnerInterface;
 
@@ -79,31 +76,28 @@ class SwooleRunner implements RunnerInterface
         // Server Information
         $watch = $this->options['app']['watch'] ?? 1;
         if ($watch < 2) {
-            $output = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-            $output->definitionList(
-                'Swoole HTTP Server Information',
-                ['Host' => $this->options['http']['host'].':'.$this->options['http']['port']],
-                ['TCP Host' => $this->options['tcp']['host'].':'.$this->options['tcp']['port']],
-                ['Worker' => $this->options['http']['settings']['worker_num']],
-                ['Task Worker' => $this->options['http']['settings']['task_worker_num']],
-                ['Debug' => $this->options['debug'] ? 'True' : 'False'],
-                [
-                    'Log Level' => match ($this->options['http']['settings']['log_level']) {
-                        0 => 'LOG_DEBUG',
-                        1 => 'LOG_TRACE',
-                        2 => 'LOG_INFO',
-                        3 => 'LOG_NOTICE',
-                        4 => 'LOG_WARNING',
-                        5 => 'LOG_ERROR',
-                        6 => 'LOG_NONE',
-                        default => '-'
-                    },
-                ],
-                ['Log File' => $this->options['http']['settings']['log_file'] ?? 'STDOUT'],
-                ['Environment' => $this->options['app']['env']],
-                ['Cron Worker' => $this->options['app']['cron'] ? 'True' : 'False'],
-                ['Task Worker' => $this->options['app']['task'] ? 'True' : 'False']
-            );
+            echo 'Swoole HTTP Server Information'.PHP_EOL;
+            echo '------------------------------'.PHP_EOL;
+            echo 'Host => '.$this->options['http']['host'].':'.$this->options['http']['port'].PHP_EOL;
+            echo 'TCP Host => '.$this->options['tcp']['host'].':'.$this->options['tcp']['port'].PHP_EOL;
+            echo 'Worker => '.$this->options['http']['settings']['worker_num'].PHP_EOL;
+            echo 'Task Worker => '.$this->options['http']['settings']['task_worker_num'].PHP_EOL;
+            echo 'Debug => '.($this->options['debug'] ? 'True' : 'False').PHP_EOL;
+            echo 'Log Level => '.match ($this->options['http']['settings']['log_level']) {
+                0 => 'LOG_DEBUG',
+                1 => 'LOG_TRACE',
+                2 => 'LOG_INFO',
+                3 => 'LOG_NOTICE',
+                4 => 'LOG_WARNING',
+                5 => 'LOG_ERROR',
+                6 => 'LOG_NONE',
+                default => '-'
+            }.PHP_EOL;
+            echo 'Log File => '.($this->options['http']['settings']['log_file'] ?? 'STDOUT').PHP_EOL;
+            echo 'Environment => '.$this->options['app']['env'].PHP_EOL;
+            echo 'Cron Worker => '.($this->options['app']['cron'] ? 'True' : 'False').PHP_EOL;
+            echo 'Task Worker => '.($this->options['app']['task'] ? 'True' : 'False').PHP_EOL;
+            echo '------------------------------'.PHP_EOL.PHP_EOL;
         }
     }
 }
