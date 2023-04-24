@@ -176,7 +176,15 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $cron = $worker->get(SchedulerCron::class);
         $cron();
 
-        $this->assertEquals(0, $this->manager()->getRepository(Device::class)->count([]));
+        // Cleared Device
+        $transports = (string) self::getContainer()->get('chatter.transport_factory')->fromString(
+            $_SERVER['FIREBASE_DSN']
+        );
+        if ('null' !== $transports) {
+            $this->assertEquals(0, $this->manager()->getRepository(Device::class)->count([]));
+        } else {
+            $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count([]));
+        }
     }
 
     public function testDelete(): void
