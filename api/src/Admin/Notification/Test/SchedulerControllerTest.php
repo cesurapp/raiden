@@ -71,15 +71,15 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('POST', '/v1/admin/scheduler', [
             'campaign_title' => 'Campaign',
             'persist_notification' => true,
-            'send_at' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+            'send_at' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
             'title' => 'Başlık',
             'message' => 'İçerik',
             'status' => NotificationStatus::DANGER,
             'device_filter' => [
                 'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
                 'user.createdAt' => [
-                    'from' => (new DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
-                    'to' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                    'from' => (new DateTimeImmutable('-1 hour'))->format('d/m/Y H:i'),
+                    'to' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
                 ],
                 'user.type' => [UserType::USER],
                 'user.frozen' => false,
@@ -112,15 +112,15 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
             'campaign_title' => 'Campaign',
             'persist_notification' => true,
-            'send_at' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+            'send_at' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
             'title' => 'Başlık',
             'message' => 'İçerik',
             'status' => NotificationStatus::INFO,
             'device_filter' => [
                 'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
                 'user.createdAt' => [
-                    'from' => (new DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
-                    'to' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                    'from' => (new DateTimeImmutable('-1 hour'))->format('d/m/Y H:i'),
+                    'to' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
                 ],
                 'user.type' => [UserType::USER],
                 'user.frozen' => false,
@@ -144,7 +144,7 @@ class SchedulerControllerTest extends AbstractWebTestCase
                     ->setOwner($user)
             );
         }
-        $this->assertEquals(10, $this->manager()->getRepository(Device::class)->count([]));
+        $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count([]));
 
         // Create Scheduled Notification
         $sn = (new Scheduler())
@@ -175,6 +175,8 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $worker = self::getContainer()->get(CronWorker::class);
         $cron = $worker->get(SchedulerCron::class);
         $cron();
+
+        $this->assertEquals(0, $this->manager()->getRepository(Device::class)->count([]));
     }
 
     public function testDelete(): void

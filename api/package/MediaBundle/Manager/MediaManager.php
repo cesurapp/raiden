@@ -3,7 +3,7 @@
 namespace Package\MediaBundle\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Package\Library\Client;
+use Package\ApiBundle\Client\SwooleClient;
 use Package\MediaBundle\Compressor\Image;
 use Package\MediaBundle\Entity\Media;
 use Package\StorageBundle\Storage\Storage;
@@ -133,7 +133,7 @@ class MediaManager
         // Convert to Media Entity
         array_walk_recursive($data, function (&$item) {
             try {
-                $file = Client::create($item)->get()->body;
+                $file = SwooleClient::create($item)->get()->body;
                 $mimeType = finfo_buffer(finfo_open(), $file, FILEINFO_MIME_TYPE);
                 $extension = (new MimeTypes())->getExtensions($mimeType);
 

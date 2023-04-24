@@ -8,9 +8,7 @@ use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\Query;
 use OpenSwoole\Core\Coroutine\WaitGroup;
-use OpenSwoole\Coroutine;
 use Package\SwooleBundle\Cron\AbstractCronJob;
 use Symfony\Component\Uid\Ulid;
 
@@ -39,20 +37,17 @@ class SchedulerCron extends AbstractCronJob
         // Disable SQL Logger
         $this->repo->connection()->getConfiguration()->setMiddlewares([]);
 
-        // Change Status from Processing
-        foreach ($scheduler as $scheduled) {
-            $scheduled->setStatus(SchedulerStatus::PROCESSING);
-            $this->repo->add($scheduled);
-        }
-
         // Process
         foreach ($scheduler as $scheduled) {
-            $this->sendNotification($scheduled);
-
-            /*if ($scheduled->isPersistNotification()) {
-                $this->createPersistentNotificaiton($scheduled);
-            }*/
+            try {
+                $this->repo->add($scheduled->setStatus(SchedulerStatus::PROCESSING));
+                $this->sendNotification($scheduled);
+                $this->repo->add($scheduled->setStatus(SchedulerStatus::SENDED));
+            } catch (\Throwable) {
+                $this->repo->add($scheduled->setStatus(SchedulerStatus::ERROR));
+            }
         }
+        $this->repo->em()->clear();
     }
 
     /**
@@ -63,40 +58,48 @@ class SchedulerCron extends AbstractCronJob
         // Send Notification
         $devices = $scheduler
             ->getDeviceQuery($this->deviceRepo->createQueryBuilder('q'))
-            ->getQuery()
-            ->setHint(Query::HINT_INCLUDE_META_COLUMNS, true);
+            ->getQuery();
 
         $counter = 0;
-        $success = 0;
         $waitGroup = new WaitGroup();
         foreach ($devices->toIterable([], AbstractQuery::HYDRATE_SIMPLEOBJECT) as $device) {
             ++$counter;
-            go(function () use ($waitGroup, &$success, $device, $scheduler) {
+            go(function () use ($waitGroup, $device, $scheduler) {
                 $waitGroup->add();
+                usleep(1000);
 
                 // Send
-                Coroutine::usleep(2);
-                $result = call_user_func(
-                    $this->notificationTask,
-                    ['notification' => $scheduler->getNotification(), 'device' => $device]
-                );
+                try {
+                    $result = call_user_func($this->notificationTask, [
+                        'notification' => $scheduler->getNotification(),
+                        'device' => $device,
+                    ]);
+                } catch (\Throwable) {
+                    $result = false;
+                }
+
+                // Result Counter
                 if (false !== $result) {
-                    ++$success;
+                    $scheduler->incDeliveredCount();
+                } else {
+                    $scheduler->incFailedCount();
                 }
 
                 $waitGroup->done();
             });
+
+            // Wait 250 Item and Update Scheduler
+            if (($counter % 250) === 0) {
+                $counter -= 250;
+                $waitGroup->wait($counter);
+                $this->repo->add($scheduler);
+            }
         }
 
-        // Wait All Coroutine
-        $waitGroup->wait($counter);
-
-        // Update Scheduler
-        $scheduler
-            ->setStatus(SchedulerStatus::SENDED)
-            ->setDeliveredCount($success)
-            ->setFailedCount($counter - $success);
-        $this->repo->add($scheduler);
+        // Finish & Update Scheduler
+        if ($counter > 0) {
+            $waitGroup->wait($counter);
+        }
     }
 
     /**

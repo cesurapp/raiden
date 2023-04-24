@@ -1,8 +1,9 @@
 <?php
 
 use App\Kernel;
+use OpenSwoole\Coroutine;
 
-co::set(
+Coroutine::set(
     ['hook_flags' => OpenSwoole\Runtime::HOOK_TCP | OpenSwoole\Runtime::HOOK_PROC | OpenSwoole\Runtime::HOOK_NATIVE_CURL | OpenSwoole\Runtime::HOOK_SLEEP]
 );
 

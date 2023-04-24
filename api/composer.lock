@@ -1063,16 +1063,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.14.2",
+            "version": "2.14.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "e5fb1a4a8f5aa4e37612f66a22aac10291bcbb52"
+                "reference": "a64f315dfeae5e50b17f132626fd9e9b4ec8985d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/e5fb1a4a8f5aa4e37612f66a22aac10291bcbb52",
-                "reference": "e5fb1a4a8f5aa4e37612f66a22aac10291bcbb52",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/a64f315dfeae5e50b17f132626fd9e9b4ec8985d",
+                "reference": "a64f315dfeae5e50b17f132626fd9e9b4ec8985d",
                 "shasum": ""
             },
             "require": {
@@ -1158,9 +1158,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.14.2"
+                "source": "https://github.com/doctrine/orm/tree/2.14.3"
             },
-            "time": "2023-03-30T15:18:54+00:00"
+            "time": "2023-04-20T09:46:32+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -1689,16 +1689,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.49.4",
+            "version": "v1.50.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "6723a3fde6cc7a307a21ddbf7fce9cf6fab61833"
+                "reference": "2cb01dbf61e5818cc4a19f1289839223d074018e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/6723a3fde6cc7a307a21ddbf7fce9cf6fab61833",
-                "reference": "6723a3fde6cc7a307a21ddbf7fce9cf6fab61833",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/2cb01dbf61e5818cc4a19f1289839223d074018e",
+                "reference": "2cb01dbf61e5818cc4a19f1289839223d074018e",
                 "shasum": ""
             },
             "require": {
@@ -1707,20 +1707,19 @@
                 "guzzlehttp/promises": "^1.3",
                 "guzzlehttp/psr7": "^1.7|^2.0",
                 "monolog/monolog": "^1.1|^2.0|^3.0",
-                "php": ">=5.6",
+                "php": ">=7.4",
                 "psr/http-message": "^1.0",
                 "rize/uri-template": "~0.3"
             },
             "require-dev": {
                 "erusev/parsedown": "^1.6",
-                "google/cloud-common-protos": "^0.3",
+                "google/cloud-common-protos": "^0.4",
                 "google/gax": "^1.9",
                 "opis/closure": "^3",
-                "phpdocumentor/reflection": "^3.0||^4.0||^5.3",
-                "phpspec/prophecy": "^1.10.3",
-                "phpunit/phpunit": "^4.8|^5.0|^8.0",
-                "squizlabs/php_codesniffer": "2.*",
-                "yoast/phpunit-polyfills": "^1.0"
+                "phpdocumentor/reflection": "^5.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.0",
+                "squizlabs/php_codesniffer": "2.*"
             },
             "suggest": {
                 "opis/closure": "May be used to serialize closures to process jobs in the batch daemon. Please require version ^3.",
@@ -1749,27 +1748,28 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.49.4"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.50.0"
             },
-            "time": "2023-04-07T21:48:59+00:00"
+            "time": "2023-04-21T22:21:40+00:00"
         },
         {
             "name": "google/cloud-logging",
-            "version": "v1.25.3",
+            "version": "v1.25.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-logging.git",
-                "reference": "713d38cbf6ed13ad9f6e8a608ae694f89fba448b"
+                "reference": "a9b38c7b0ce698afa2deca5e4a9db50f87a5fc5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/713d38cbf6ed13ad9f6e8a608ae694f89fba448b",
-                "reference": "713d38cbf6ed13ad9f6e8a608ae694f89fba448b",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/a9b38c7b0ce698afa2deca5e4a9db50f87a5fc5e",
+                "reference": "a9b38c7b0ce698afa2deca5e4a9db50f87a5fc5e",
                 "shasum": ""
             },
             "require": {
                 "google/cloud-core": "^1.39",
-                "google/gax": "^1.1"
+                "google/gax": "^1.1",
+                "php": ">=7.4"
             },
             "conflict": {
                 "psr/log": ">=3"
@@ -1784,11 +1784,10 @@
                 "google/cloud-pubsub": "^1.0",
                 "google/cloud-storage": "^1.3",
                 "opis/closure": "^3",
-                "phpdocumentor/reflection": "^3.0||^4.0||^5.3",
-                "phpspec/prophecy": "^1.10.3",
-                "phpunit/phpunit": "^4.8|^5.0|^8.0",
-                "squizlabs/php_codesniffer": "2.*",
-                "yoast/phpunit-polyfills": "^1.0"
+                "phpdocumentor/reflection": "^5.0",
+                "phpspec/prophecy-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.0",
+                "squizlabs/php_codesniffer": "2.*"
             },
             "suggest": {
                 "ext-grpc": "The gRPC extension enables use of the performant gRPC transport",
@@ -1816,9 +1815,9 @@
             ],
             "description": "Stackdriver Logging Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.25.3"
+                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.25.4"
             },
-            "time": "2023-04-07T21:48:59+00:00"
+            "time": "2023-04-21T14:12:59+00:00"
         },
         {
             "name": "google/common-protos",
@@ -1975,21 +1974,21 @@
         },
         {
             "name": "google/longrunning",
-            "version": "v0.2.5",
+            "version": "v0.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/php-longrunning.git",
-                "reference": "557817921225911100ea04ed8c59a4f8205b62f6"
+                "reference": "9689b4db54cf4cf8186118d9d59aa9ba35bb5842"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/php-longrunning/zipball/557817921225911100ea04ed8c59a4f8205b62f6",
-                "reference": "557817921225911100ea04ed8c59a4f8205b62f6",
+                "url": "https://api.github.com/repos/googleapis/php-longrunning/zipball/9689b4db54cf4cf8186118d9d59aa9ba35bb5842",
+                "reference": "9689b4db54cf4cf8186118d9d59aa9ba35bb5842",
                 "shasum": ""
             },
             "require-dev": {
                 "google/gax": "^1.13.0",
-                "phpunit/phpunit": "^4.8|^5.0|^8.0"
+                "phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "extra": {
@@ -2013,9 +2012,9 @@
             ],
             "description": "Google LongRunning Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/php-longrunning/tree/v0.2.5"
+                "source": "https://github.com/googleapis/php-longrunning/tree/v0.2.6"
             },
-            "time": "2023-03-25T14:54:11+00:00"
+            "time": "2023-04-21T14:12:59+00:00"
         },
         {
             "name": "google/protobuf",

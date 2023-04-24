@@ -100,8 +100,8 @@ class SchedulerDto extends AbstractApiDto
                 new Assert\Choice(callback: [DeviceType::class, 'values']),
             ]),
             'user.createdAt' => new Assert\Collection([
-                'from' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
-                'to' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
+                'from' => new Assert\Optional(new Assert\DateTime('d/m/Y H:i')),
+                'to' => new Assert\Optional(new Assert\DateTime('d/m/Y H:i')),
             ]),
             'user.type' => new Assert\All([
                 new Assert\Choice(callback: [UserType::class, 'values']),

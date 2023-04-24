@@ -88,6 +88,13 @@ class Scheduler
         return $this;
     }
 
+    public function incDeliveredCount(): self
+    {
+        ++$this->deliveredCount;
+
+        return $this;
+    }
+
     public function getFailedCount(): int
     {
         return $this->failedCount;
@@ -96,6 +103,13 @@ class Scheduler
     public function setFailedCount(int $count): self
     {
         $this->failedCount = $count;
+
+        return $this;
+    }
+
+    public function incFailedCount(): self
+    {
+        ++$this->failedCount;
 
         return $this;
     }

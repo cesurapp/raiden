@@ -3,12 +3,16 @@
 namespace Package\ApiBundle\DependencyInjection;
 
 use Package\ApiBundle\ArgumentResolver\DtoResolver;
+use Package\ApiBundle\Client\SwooleBridge;
 use Package\ApiBundle\Thor\Controller\ThorController;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $container) {
     // Set Autoconfigure
     $services = $container->services()->defaults()->autowire()->autoconfigure();
+
+    // Init Swoole HTTP Client
+    $services->set(SwooleBridge::class)->decorate('http_client');
 
     // Event Listener
     $services->load('Package\\ApiBundle\\EventListener\\', '../EventListener/');
