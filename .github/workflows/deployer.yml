@@ -42,7 +42,6 @@ jobs:
           cache-to: type=gha,mode=max
           tags: ${{ env.app_image }}
           labels: |
-            labels: |
             org.opencontainers.image.title=ProdImage
             org.opencontainers.image.source="${{ github.event.repository.html_url }}"
 
@@ -65,7 +64,7 @@ jobs:
           sync: true
           script: |
             echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
-            docker stop -t 120 $(docker ps -aq) || true && docker rm $(docker ps -aq) || true
+            docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
             echo -e "${{ env.app_envs }}" > .env
       - name: Run App Commands
@@ -83,5 +82,5 @@ jobs:
           key: ${{ env.ssh_privatekey }}
           sync: true
           script: |
-            docker run -d -p 80:80 --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
+            docker run -d -p 80:80 --name mainapp --restart always --env-file .env --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true

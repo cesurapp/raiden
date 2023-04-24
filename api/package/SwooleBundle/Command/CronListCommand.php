@@ -27,7 +27,7 @@ class CronListCommand extends Command
                 get_class($cron),
                 $cron->ENABLE ? 'True' : 'False',
                 $cron->TIME,
-                $cron->next->format('Y-m-d H:i:s'),
+                $cron->next->setTimezone(new \DateTimeZone('Europe/Istanbul'))->format('d/m/Y H:i:s'),
             ], [...$this->cronWorker->getAll()]));
         } else {
             $output->warning('Cron job not found!');

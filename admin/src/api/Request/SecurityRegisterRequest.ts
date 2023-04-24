@@ -7,6 +7,5 @@ export type SecurityRegisterRequest = {
   email?: string,
   phone_country?: string,
   phone?: string | number | null,
-  type?: string,
-  id?: string
+  type?: string
 }

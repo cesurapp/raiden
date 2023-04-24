@@ -39,8 +39,8 @@ class UniqueEntityConstraintValidator extends ConstraintValidator
         }
 
         // Edit Mode Exclude ID
-        if ($this->context->getObject()->id) {
-            $criteria->andWhere(Criteria::expr()->neq('id', $this->context->getObject()->id));
+        if ($this->context->getObject()->getId()) {
+            $criteria->andWhere(Criteria::expr()->neq('id', $this->context->getObject()->getId()));
         }
 
         /** @var ApiServiceEntityRepository $repo */

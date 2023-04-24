@@ -15,13 +15,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Create Notification Current User or Specific User.
  */
 #[Autoconfigure(public: true)]
-class NotificationPusher
+readonly class NotificationPusher
 {
     public function __construct(
-        private readonly TranslatorInterface $translator,
-        private readonly NotificationRepository $repo,
-        private readonly CurrentUser $currentUser,
-        private readonly TaskHandler $taskHandler
+        private TranslatorInterface $translator,
+        private NotificationRepository $repo,
+        private CurrentUser $currentUser,
+        private TaskHandler $taskHandler
     ) {
     }
 

@@ -23,7 +23,7 @@ class UserDto extends AbstractApiDto
 
     #[PhoneNumber(regionPath: 'phone_country')]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
-    public null|int|string $phone = null;
+    public int|string|null $phone = null;
 
     #[Assert\Country]
     public ?string $phone_country = null;
@@ -83,10 +83,7 @@ class UserDto extends AbstractApiDto
         }
     }
 
-    /**
-     * @param User $object
-     */
-    public function initObject(mixed $object): User
+    public function initObject(string|User $object): User
     {
         return $object
             ->setEmail($this->validated('email'))

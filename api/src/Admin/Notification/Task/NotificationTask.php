@@ -36,12 +36,16 @@ class NotificationTask implements TaskInterface
             );
 
             // Successful Send
-            $this->deviceRepo->em()->getRepository(Notification::class)->setForwarded($notification);
+            if ($notification->getId()) {
+                $this->deviceRepo->em()->getRepository(Notification::class)->setForwarded($notification);
+            }
 
             return $result;
         } catch (\Throwable $exception) {
             if (preg_match('/(InvalidRegistration|NotRegistered)/i', $exception->getMessage())) {
-                $this->deviceRepo->removeDevice($device->getId()?->toBase32());
+                if ($device->getId()) {
+                    $this->deviceRepo->removeDevice($device->getId());
+                }
             } else {
                 throw $exception;
             }

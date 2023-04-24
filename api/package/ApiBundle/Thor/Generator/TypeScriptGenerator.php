@@ -225,10 +225,18 @@ class TypeScriptGenerator
     private function generateResources(array $resourceGroup): void
     {
         foreach ($resourceGroup as $namespace => $data) {
+            $resources = [];
+            array_walk_recursive($data, static function ($val) use (&$resources) {
+                if (is_string($val) && class_exists($val) && in_array(ApiResourceInterface::class, class_implements($val), true)) {
+                    $resources[] = TypeScriptHelper::baseClass($val);
+                }
+            });
+
             $name = sprintf('%s.ts', ucfirst($namespace));
             file_put_contents($this->pathResource."/{$name}", $this->renderTemplate('resource.ts.php', [
                 'namespace' => $namespace,
                 'data' => $data,
+                'resources' => $resources,
             ]));
         }
     }

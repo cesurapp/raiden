@@ -15,11 +15,11 @@ class NotificationResource implements ApiResourceInterface
     {
         return [
             'id' => $item->getId()?->toBase32(),
-            'type' => $item->getStatus()->value,
+            'status' => $item->getStatus()->value,
             'title' => $item->getTitle(),
             'message' => $item->getMessage(),
             'readed' => $item->isReaded(),
-            'data' => $item->getData(DeviceType::from($optional)),
+            'data' => $item->getData(DeviceType::tryFrom($optional ?? '')),
             'created_at' => $item->getId()?->getDateTime()->format(DATE_ATOM),
         ];
     }
@@ -32,8 +32,8 @@ class NotificationResource implements ApiResourceInterface
             'title' => ['type' => 'string'],
             'message' => ['type' => 'string'],
             'readed' => ['type' => 'boolean'],
-            'data' => ['type' => 'array'],
-            'created_at' => ['type' => 'datetime'],
+            'data' => ['type' => 'object'],
+            'created_at' => ['type' => 'string'],
         ];
     }
 }

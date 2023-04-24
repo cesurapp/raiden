@@ -63,7 +63,7 @@ class TestController extends AbstractApiController {
     )]
     #[Route(name: 'GetExample', path: '/get', methods: ['GET'])]
     public function postMethod(): ApiResponse {
-        $query = $userRepo->createQueryBuilder('u');
+        $query = $userRepo->createQueryBuilder('q');
         
         return ApiResponse::create()
             ->setQuery($query)

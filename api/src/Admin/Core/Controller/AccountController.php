@@ -72,7 +72,7 @@ class AccountController extends AbstractApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_LIST->value)]
     public function list(UserRepository $userRepo): ApiResponse
     {
-        $query = $userRepo->createQueryBuilder('u');
+        $query = $userRepo->createQueryBuilder('q');
 
         return ApiResponse::create()
             ->setQuery($query)

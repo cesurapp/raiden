@@ -27,7 +27,7 @@ class ServerStatusCommand extends Command
         if (!file_exists($config)) {
             $config = $rootDir.'/.server.php';
         }
-        $options = (require $config)();
+        $options = (require $config)(['project_dir' => $rootDir]);
 
         while (true) {
             try {

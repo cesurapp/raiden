@@ -174,11 +174,30 @@ class ThorExtractor
             $data = $newDoc;
         }
 
+        // Group Route First & Second Path
+        $ordered = [];
+        foreach ($data as $group => $items) {
+            foreach ($items as $index => $item) {
+                $paths = explode('/', trim($item['path'], '/'));
+                $this->setArray($ordered, "$paths[1].$group.$index", $item);
+            }
+        }
+
         // Append Enums
         $data['_enums'] = $this->extractEnums();
         $data['_resource'] = $this->extractResources();
+        $data['_ordered'] = $ordered;
 
         return $data;
+    }
+
+    private function setArray(array &$array, string $keys, mixed $value): void
+    {
+        $current = &$array;
+        foreach (explode('.', $keys) as $key) {
+            $current = &$current[$key];
+        }
+        $current = $value;
     }
 
     private function extractEnums(): array

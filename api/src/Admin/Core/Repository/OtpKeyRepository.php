@@ -43,12 +43,12 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     public function check(User $user, OtpType|array $type, int $key): ?OtpKey
     {
         /** @var OtpKey|null $otp */
-        $otp = $this->createQueryBuilder('o')
-            ->andWhere('o.otpKey = :key')
-            ->andWhere('o.owner = :owner')
-            ->andWhere('o.type IN(:type)')
-            ->andWhere('o.expiredAt >= :expired')
-            ->andWhere('o.used = :used')
+        $otp = $this->createQueryBuilder('q')
+            ->andWhere('q.otpKey = :key')
+            ->andWhere('q.owner = :owner')
+            ->andWhere('q.type IN(:type)')
+            ->andWhere('q.expiredAt >= :expired')
+            ->andWhere('q.used = :used')
             ->setParameters([
                 'key' => $key,
                 'type' => is_array($type) ? $type : [$type],
@@ -74,12 +74,12 @@ class OtpKeyRepository extends ApiServiceEntityRepository
      */
     public function disableOtherCodes(OtpKey $otpKey): void
     {
-        $this->createQueryBuilder('o')
-            ->andWhere('o.owner = :owner')
-            ->andWhere('o.type = :type')
+        $this->createQueryBuilder('q')
+            ->andWhere('q.owner = :owner')
+            ->andWhere('q.type = :type')
             ->setParameter('type', $otpKey->getType())
             ->setParameter('owner', $otpKey->getOwner()->getId(), 'ulid')
-            ->set('o.used', 'true')
+            ->set('q.used', 'true')
             ->update()->getQuery()->execute();
     }
 
@@ -88,8 +88,8 @@ class OtpKeyRepository extends ApiServiceEntityRepository
      */
     public function clearExpired(): void
     {
-        $this->createQueryBuilder('o')
-            ->where('o.expiredAt <= :expire')
+        $this->createQueryBuilder('q')
+            ->where('q.expiredAt <= :expire')
             ->setParameter('expire', new \DateTimeImmutable('-120 minute'))
             ->delete()->getQuery()->execute();
     }
@@ -99,11 +99,11 @@ class OtpKeyRepository extends ApiServiceEntityRepository
      */
     public function getActiveKey(User $user, OtpType $type): OtpKey
     {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.type = :type')
-            ->andWhere('o.used = :used')
-            ->andWhere('o.owner = :owner')
-            ->andWhere('o.expiredAt >= :expired')
+        return $this->createQueryBuilder('q')
+            ->andWhere('q.type = :type')
+            ->andWhere('q.used = :used')
+            ->andWhere('q.owner = :owner')
+            ->andWhere('q.expiredAt >= :expired')
             ->setParameter('type', $type)
             ->setParameter('used', false)
             ->setParameter('owner', $user->getId(), 'ulid')

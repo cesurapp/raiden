@@ -54,7 +54,7 @@
         >
           <q-item-section>
             <q-item-label lines="2">{{ item.title || item.message }}</q-item-label>
-            <q-item-label caption>{{ item.created_at }}</q-item-label>
+            <q-item-label caption>{{ dateFormat(item.created_at) }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
             <q-btn @click.stop="remove(item)" size="sm" flat round color="red" :icon="mdiDeleteOutline">
@@ -110,7 +110,7 @@ import { DeviceType } from 'src/api/Enum/DeviceType';
 
 export default defineComponent({
   name: 'NotificationComponent',
-  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
+  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck, dateFormat }),
   inheritAttrs: false,
   data: () => ({
     resp: {} as NotificationListResponse,
@@ -140,12 +140,7 @@ export default defineComponent({
   },
   computed: {
     getData() {
-      return this.resp.data
-        ? this.resp.data.map((item) => {
-            item.created_at = dateFormat(item.created_at);
-            return item;
-          })
-        : null;
+      return this.resp.data ? this.resp.data : null;
     },
   },
   methods: {

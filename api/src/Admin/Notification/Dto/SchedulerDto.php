@@ -2,14 +2,30 @@
 
 namespace App\Admin\Notification\Dto;
 
+use App\Admin\Core\Enum\UserType;
 use App\Admin\Notification\Entity\Notification;
+use App\Admin\Notification\Entity\Scheduler;
+use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\NotificationStatus;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class NotificationDto extends AbstractApiDto
+class SchedulerDto extends AbstractApiDto
 {
+    // Scheduler
+    #[Assert\NotNull]
+    public string $campaign_title;
+
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'bool')]
+    public bool $persist_notification = false;
+
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(new \DateTimeImmutable())]
+    public \DateTimeImmutable $send_at;
+
+    // Notification
     #[Assert\NotNull]
     public NotificationStatus $status = NotificationStatus::INFO;
 
@@ -77,12 +93,52 @@ class NotificationDto extends AbstractApiDto
     ])]
     public ?array $data = null;
 
-    public function initObject(mixed $object = null): Notification
+    #[Assert\Type('array')]
+    #[Assert\Collection(
+        fields: [
+            'device.type' => new Assert\All([
+                new Assert\Choice(callback: [DeviceType::class, 'values']),
+            ]),
+            'user.createdAt' => new Assert\Collection([
+                'from' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
+                'to' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
+            ]),
+            'user.type' => new Assert\All([
+                new Assert\Choice(callback: [UserType::class, 'values']),
+            ]),
+            'user.frozen' => new Assert\Type('bool'),
+            'user.language' => new Assert\Language(),
+            'user.phoneCountry' => new Assert\Country(),
+        ],
+        allowExtraFields: false,
+        allowMissingFields: true,
+    )]
+    #[ThorResource(data: [
+        'device.type' => ['web', 'android', 'ios'],
+        'user.createdAt' => [
+            'from' => '?string',
+            'to' => '?string',
+        ],
+        'user.type' => '?array',
+        'user.frozen' => '?bool',
+        'user.language' => '?string',
+        'user.phoneCountry' => '?string',
+    ])]
+    public ?array $device_filter = null;
+
+    public function initObject(Scheduler|string $object = null): Scheduler
     {
-        return (new Notification())
-            ->setTitle($this->validated('title'))
-            ->setMessage($this->validated('message') ?? '')
-            ->setStatus($this->status)
-            ->setData($this->validated('data') ?? []);
+        return $object
+            ->setCampaignTitle($this->validated('campaign_title'))
+            ->setPersistNotification($this->validated('persist_notification'))
+            ->setSendAt($this->validated('send_at'))
+            ->setDeviceFilter($this->validated('device_filter'))
+            ->setNotification(
+                (new Notification())
+                    ->setTitle($this->validated('title'))
+                    ->setMessage($this->validated('message') ?? '')
+                    ->setStatus($this->status)
+                    ->setData($this->validated('data') ?? [])
+            );
     }
 }

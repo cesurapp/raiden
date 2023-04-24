@@ -27,8 +27,8 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
      */
     public function clearExpiredToken(): void
     {
-        $this->createQueryBuilder('t')
-            ->where('t.expiredAt <= :expire')
+        $this->createQueryBuilder('q')
+            ->where('q.expiredAt <= :expire')
             ->setParameter('expire', new \DateTimeImmutable())
             ->delete()->getQuery()->execute();
     }
@@ -48,8 +48,8 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
      */
     public function clearAllToken(User $user): void
     {
-        $this->createQueryBuilder('t')
-            ->andWhere('IDENTITY(t.owner) = :ulid')
+        $this->createQueryBuilder('q')
+            ->andWhere('IDENTITY(q.owner) = :ulid')
             ->setParameter('ulid', $user->getId(), 'ulid')
             ->delete()->getQuery()->execute();
     }
@@ -84,9 +84,9 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
      */
     public function checkToken(string $token, int $expiredTimeStamp): bool
     {
-        return (bool) $this->createQueryBuilder('t')
-            ->where('t.token = :token')
-            ->andWhere('t.expiredAt <= :expiredAt')
+        return (bool) $this->createQueryBuilder('q')
+            ->where('q.token = :token')
+            ->andWhere('q.expiredAt <= :expiredAt')
             ->setParameter('token', $token)
             ->setParameter('expiredAt', \DateTimeImmutable::createFromFormat('U', (string) $expiredTimeStamp))
             ->getQuery()->getOneOrNullResult();

@@ -46,7 +46,7 @@ class TaskFailedViewCommand extends Command
                     $task->getTask(),
                     $task->getException(),
                     json_encode($task->getPayload(), JSON_THROW_ON_ERROR),
-                    $task->getCreatedAt()->format('Y-m-d H:i:s'),
+                    $task->getCreatedAt()->format('d/m/Y H:i:s'),
                 ], $tasks))
                 ->setFooterTitle("Page: {$offset}/{$total}")
                 ->render();

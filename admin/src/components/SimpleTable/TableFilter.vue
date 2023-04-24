@@ -32,6 +32,38 @@
         ref="input"
       ></q-input>
 
+      <!--Q-Number-Range-->
+      <div v-if="filter.filter_input === 'range'" ref='input'>
+        <q-input
+          :model-value="getValue ? getValue.min : null"
+          @update:modelValue="$emit('update:modelValue', {min: $event, max: getValue?.max})"
+          :label="$t('Minimum')"
+          :debounce="75"
+          clearable
+          autofocus
+          type="number"
+          class="q-mb-sm"
+          outlined
+          dense
+          @clear="$emit('onSearch')"
+          ref="inputMin"
+        ></q-input>
+        <q-input
+          :model-value="getValue ? getValue.max : null"
+          @update:modelValue="$emit('update:modelValue', {max: $event, min: getValue?.min})"
+          :label="$t('Maximum')"
+          :debounce="75"
+          clearable
+          autofocus
+          type="number"
+          class="q-mb-sm"
+          outlined
+          dense
+          @clear="$emit('onSearch')"
+          ref="inputMax"
+        ></q-input>
+      </div>
+
       <!--Country Select-->
       <CountryInput
         v-model="getValue"
@@ -86,10 +118,7 @@
               <q-date
                 v-model="getValue"
                 minimal
-                @update:modelValue="
-                  $refs.dateProxy.hide();
-                  $emit('onSearch');
-                "
+                @update:modelValue="$refs.dateProxy.hide(); $emit('onSearch');"
                 :locale="getCurrentLocale()"
               ></q-date>
             </q-popup-proxy>
@@ -177,7 +206,7 @@ export default defineComponent({
     if (this.$refs.input) {
       setTimeout(() => this.$refs.input.focus(), 1);
     }
-  },
+  }
 });
 </script>
 

@@ -158,7 +158,7 @@ abstract class AbstractKernelTestCase extends KernelTestCase
     {
         $user = (new User())
             ->setOrganization($createOrganization ? (new Organization())->setName('Test Org') : null)
-            ->setLanguage('TR')
+            ->setLanguage('tr')
             ->setEmailApproved(true)
             ->setFirstName('John')
             ->setLastName('Doe')

@@ -117,8 +117,10 @@ export const useAuthStore = defineStore('auth', {
       await api.accountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
         if (r.data.data.type !== UserType.USER) {
           this.switchedUser = username;
-          this.reloadUser();
-          this.router.push({ path: '/' });
+          this.updateUser(r.data.data);
+          this.router.push({ path: '/' }).then(() => {
+            window.location.reload()
+          })
         }
       });
     },
@@ -126,11 +128,13 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Logout Switch User
      */
-    switchUserLogout(redirect: boolean) {
+    async switchUserLogout(redirect: boolean) {
       this.switchedUser = null;
-      this.reloadUser();
+      await this.reloadUser();
       if (redirect) {
-        this.router.push({ path: '/' });
+        this.router.push({ path: '/' }).then(() => {
+          window.location.reload()
+        })
       }
     },
 

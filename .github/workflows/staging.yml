@@ -67,7 +67,7 @@ jobs:
             echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
-            docker run --name postgres -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres:14-alpine || docker restart postgres
+            docker run --name postgres --restart always -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres:14-alpine || docker restart postgres
             docker run --link=postgres:postgres --env-file .env --rm ${{ env.app_image }} sh -c "bin/console doctrine:schema:update --force --complete" || true
             docker run --link=postgres:postgres --env-file .env -d -p 80:80 --name mainapp --restart always --log-opt max-size=1g ${{ env.app_image }}
             docker rmi $(docker images -q -f 'dangling=true') || true

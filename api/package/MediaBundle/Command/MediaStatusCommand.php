@@ -19,12 +19,12 @@ class MediaStatusCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $totalFile = $this->repository->createQueryBuilder('m')
-            ->select('COUNT(m.id)')->getQuery()->getSingleScalarResult();
-        $totalSize = $this->repository->createQueryBuilder('m')
-            ->select('SUM(m.size)')->getQuery()->getSingleScalarResult();
-        $totalUsedMedia = $this->repository->createQueryBuilder('m')
-            ->select('SUM(m.counter)')->getQuery()->getSingleScalarResult();
+        $totalFile = $this->repository->createQueryBuilder('q')
+            ->select('COUNT(q.id)')->getQuery()->getSingleScalarResult();
+        $totalSize = $this->repository->createQueryBuilder('q')
+            ->select('SUM(q.size)')->getQuery()->getSingleScalarResult();
+        $totalUsedMedia = $this->repository->createQueryBuilder('q')
+            ->select('SUM(q.counter)')->getQuery()->getSingleScalarResult();
 
         (new Table($output))
             ->setHeaders(['Total File', 'Total Size', 'Total Used Media'])

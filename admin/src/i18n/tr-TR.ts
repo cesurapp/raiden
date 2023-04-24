@@ -17,7 +17,7 @@ export default {
     EDIT: 'Düzenle',
     DELETE: 'Sil',
     PERMISSION: 'Yetkilendirme',
-    ALLOWED_TO_SWITCH: 'Hesap Değiştirme',
+    SWITCH: 'Hesap Değiştirme',
     SEND: 'Gönder',
   },
 
@@ -187,7 +187,24 @@ export default {
     User: 'Kullanıcı',
     Created: 'Oluşturulma',
   },
-  'Send Notification': 'Bildirim Gönder',
+
+  // Scheduled Notifications
+  scheduler: {
+    ID: 'ID',
+    'Campaign Title': 'Kampanya Başlık',
+    'Persistent Notification': 'Kalıcı Bildirim',
+    'Delivered Count': 'Teslim Edilen',
+    'Failed Count': 'Başarısız',
+    Status: 'Durum',
+    'Sending Date': 'Gönderilme',
+    'Created': 'Oluşturulma'
+  },
+  'Scheduled Notification': 'Zamanlanmış Bildirim',
+  'Scheduler': 'Zamanlayıcı',
+  'Campaign Title': 'Kampanya Adı',
+  'Send Date': 'Gönderim Tarihi',
+  'Persist Notification': 'Kalıcı Bildirim',
+  Notification: 'Bildirim',
   Title: 'Başlık',
   Message: 'Mesaj',
   'New Option': 'Yeni Özellik',

@@ -1,6 +1,11 @@
-import { date as qDate } from 'quasar';
 import { DateLocale } from 'quasar/dist/types/utils/date';
 import { i18n } from 'boot/app';
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
 
 const locales: Record<string, DateLocale> = {
   'tr-TR': {
@@ -24,13 +29,16 @@ const locales: Record<string, DateLocale> = {
   },
 };
 
-const dateFormat = (date: Date | number | string | undefined, format?: string) => {
-  const locale = locales.hasOwnProperty(i18n.global.locale['value']) ? locales[i18n.global.locale['value']] : undefined;
-  return qDate.formatDate(date, format || 'DD/MM/YYYY HH:MM', locale);
+const dateFormat = (date: string, format = 'DD/MM/YYYY HH:mm') => {
+  return dayjs(date).format(format);
 };
+
+const dateInput = (date: string, format = 'DD/MM/YYYY HH:mm') => {
+  return dayjs(date, format).utc().format(format)
+}
 
 const getCurrentLocale = () => {
   return locales.hasOwnProperty(i18n.global.locale['value']) ? locales[i18n.global.locale['value']] : null;
 };
 
-export { dateFormat, getCurrentLocale };
+export { dateFormat, dateInput, getCurrentLocale };

@@ -2,6 +2,7 @@
 
 namespace Package\ApiBundle\AbstractClass;
 
+use Monolog\DateTimeImmutable;
 use Package\ApiBundle\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -14,7 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 abstract class AbstractApiDto
 {
-    public ?string $id = null;
+    protected ?string $id = null;
 
     protected bool $auto = true;
 
@@ -24,7 +25,16 @@ abstract class AbstractApiDto
 
     protected ConstraintViolationListInterface $constraints;
 
-    protected array $exclude = ['request', 'validator', 'auto', 'validationGroup', 'validated', 'exclude', 'constraints', 'id'];
+    protected array $exclude = [
+        'request',
+        'validator',
+        'auto',
+        'validationGroup',
+        'validated',
+        'exclude',
+        'constraints',
+        'id',
+    ];
 
     public function __construct(protected Request $request, protected ValidatorInterface $validator)
     {
@@ -32,27 +42,7 @@ abstract class AbstractApiDto
 
         // Set Parameters
         $fields = [...$this->request->query->all(), ...$this->request->request->all(), ...$this->request->files->all()];
-        foreach ($fields as $field => $value) {
-            if (property_exists($this, $field)) {
-                try {
-                    if (isset($this->$field) && is_object($this->$field) && enum_exists(get_class($this->$field))) {
-                        $enum = get_class($this->$field);
-                        $this->$field = $enum::from($value);
-                    } else {
-                        $this->$field = is_numeric($value) ? (int) $value : $value;
-                    }
-                } catch (\TypeError) {
-                    $this->constraints->add(new ConstraintViolation(
-                        'The type of this value is incorrect.',
-                        'The type of this value is incorrect.',
-                        [],
-                        $this,
-                        $field,
-                        $value,
-                    ));
-                }
-            }
-        }
+        $this->initProperties($fields);
 
         // Run Validate
         if ($this->auto) {
@@ -100,7 +90,7 @@ abstract class AbstractApiDto
     /**
      * Get Validated Data.
      */
-    final public function validated(?string $key = null): null|int|string|bool|array|\BackedEnum
+    final public function validated(?string $key = null): mixed
     {
         if (!$this->validated) {
             $this->validated = array_diff_key(get_object_vars($this), array_flip($this->exclude));
@@ -138,8 +128,53 @@ abstract class AbstractApiDto
     /**
      * Validated Data to Object Setter.
      */
-    public function initObject(mixed $object): mixed
+    public function initObject(string $object): mixed
     {
         return $object;
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    private function initProperties(array $fields): void
+    {
+        $refClass = new \ReflectionClass(static::class);
+
+        foreach ($fields as $field => $value) {
+            if ($refClass->hasProperty($field)) {
+                $propType = $refClass->getProperty($field)->getType();
+                $name = $propType instanceof \ReflectionUnionType ?
+                    $propType->getTypes()[0]->getName() :
+                    $propType->getName(); // @phpstan-ignore-line
+
+                try {
+                    $data = match ($name) {
+                        'DateTime' => \DateTime::createFromFormat('d/m/Y H:i', $value),
+                        'DateTimeImmutable' => DateTimeImmutable::createFromFormat('d/m/Y H:i', $value),
+                        'bool' => (bool) $value,
+                        'int' => (int) $value,
+                        'string' => (string) $value,
+                        default => $value
+                    };
+
+                    if (enum_exists($name)) {
+                        $this->$field = $name::from($value);
+                    } else {
+                        $this->$field = $data;
+                    }
+                } catch (\Throwable) {
+                    $this->constraints->add(new ConstraintViolation(
+                        'The type of this value is incorrect.',
+                        'The type of this value is incorrect.',
+                        [],
+                        $this,
+                        $field,
+                        $value,
+                    ));
+                }
+            }
+        }
     }
 }

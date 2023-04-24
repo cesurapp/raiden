@@ -227,10 +227,6 @@ __Send SMS__
 ```php
 public function sendSms(\App\Admin\Core\Service\SmsPusher $pusher)
 {
-    $pusher
-        ->setPhone(5111111111)
-        ->setCountryCode(90)
-        ->setSubject('Subject, Content')
-        ->send();;
+    $pusher->send(5111111111, 90, 'Subject, Content');
 }
 ```
