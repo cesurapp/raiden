@@ -46,7 +46,7 @@
 
         <!--Approve Mode-->
         <template v-else>
-          <q-banner rounded class="q-mb-lg" :class='$q.dark.isActive ? "bg-green-9" : "bg-green-2"'>
+          <q-banner rounded class="q-mb-lg" :class="$q.dark.isActive ? 'bg-green-9' : 'bg-green-2'">
             <span v-html="$t('send_verify_code', { msg: `<b>&quot;${form[credential]}&quot;</b>` })"></span>
           </q-banner>
           <q-input

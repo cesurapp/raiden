@@ -43,14 +43,16 @@ export const useAppStore = defineStore('app', {
      * Date ATOM to Custom Format
      */
     formatDate(date: string, time = true) {
-      return dayjs(date).format(time ? this.dateTimeFormat : this.dateFormat)
+      return dayjs(date).format(time ? this.dateTimeFormat : this.dateFormat);
     },
 
     /**
      * Date Convert from UTC-ATOM
      */
     inputDate(date: string, time = true) {
-      return dayjs(date, time ? this.dateTimeFormat : this.dateFormat).utc().format()
+      return dayjs(date, time ? this.dateTimeFormat : this.dateFormat)
+        .utc()
+        .format();
     },
 
     /**
