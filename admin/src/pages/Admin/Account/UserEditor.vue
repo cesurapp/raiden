@@ -196,11 +196,13 @@ export default defineComponent({
     init(user: AccountEditRequest | null = null) {
       this.tab = 'profile';
       this.proxy = user;
-      this.form = user ? user : {
-        phone_approved: true,
-        email_approved: true,
-        frozen: false,
-      };
+      this.form = user
+        ? user
+        : {
+            phone_approved: true,
+            email_approved: true,
+            frozen: false,
+          };
 
       this.$refs.editor.toggle();
     },

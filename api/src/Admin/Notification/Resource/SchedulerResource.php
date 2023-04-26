@@ -118,10 +118,10 @@ class SchedulerResource implements ApiResourceInterface
                 'type' => 'string',
                 'filter' => [
                     'from' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.sendAt >= :cFrom")->setParameter('cFrom', $data);
+                        $builder->andWhere("$alias.sendAt >= :sFrom")->setParameter('sFrom', $data);
                     },
                     'to' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.sendAt <= :cTo")->setParameter('cTo', $data);
+                        $builder->andWhere("$alias.sendAt <= :sTo")->setParameter('sTo', $data);
                     },
                 ],
                 'table' => [

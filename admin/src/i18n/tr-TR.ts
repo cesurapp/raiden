@@ -10,6 +10,7 @@ export default {
     AdminCore: 'Temel İzinler',
     AdminAccount: 'Hesap İzinleri',
     AdminDevice: 'Firebase Cihazlar',
+    AdminScheduler: 'Zamanlanmış Bildirimler',
   },
   perm: {
     CREATE: 'Oluştur',
@@ -126,6 +127,14 @@ export default {
   'Edit Profile': 'Profilim',
   'Current Password': 'Mevcut Şifre',
   Language: 'Dil',
+  Update: 'Güncelle',
+  approve_message: 'Doğrulama kodu Adrese veya Telefona gönderilecektir. Devam etmek istiyor musun?',
+  send_verify_code: 'Doğrulama kodu {msg} adresine gönderildi.',
+  'Verify Email': 'E-postayı Doğrulayın',
+  'Verify Phone': 'Telefonu Doğrulayın',
+  'Update Email': 'E-postayı Güncelle',
+  'Update Phone': 'Telefonu Güncelle',
+  Verify: 'Doğrula',
 
   // Data Table
   'There were no results!': 'Sonuç bulunamadı!',
@@ -143,6 +152,9 @@ export default {
   'Are you sure you want to delete the selected items?': 'Seçilen öğeleri silmek istediğinizden emin misiniz?',
   New: 'Yeni',
   'Click to remove': 'Kaldırmak için tıklayın',
+  Date: 'Tarih',
+  Minimum: 'En az',
+  Maximum: 'En fazla',
 
   // Account Table
   'Switch User': 'Kullanıcıya Geç',
@@ -197,10 +209,10 @@ export default {
     'Failed Count': 'Başarısız',
     Status: 'Durum',
     'Sending Date': 'Gönderilme',
-    'Created': 'Oluşturulma'
+    Created: 'Oluşturulma',
   },
   'Scheduled Notification': 'Zamanlanmış Bildirim',
-  'Scheduler': 'Zamanlayıcı',
+  Scheduler: 'Zamanlayıcı',
   'Campaign Title': 'Kampanya Adı',
   'Send Date': 'Gönderim Tarihi',
   'Persist Notification': 'Kalıcı Bildirim',
@@ -211,4 +223,10 @@ export default {
   Device: 'Cihaz',
   Action: 'İşlem',
   Value: 'Değer',
+  'Device Filter': 'Cihaz Filtreleme',
+  'User Type': 'Kullanıcı Türü',
+  'User Language': 'Kullanıcı Dili',
+  'User Created': 'Kullanıcı Oluşturulma',
+  'Phone Country': 'Telefon Ülkesi',
+  'Refresh Campaign': 'Kampanyayı Sıfırla',
 };

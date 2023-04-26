@@ -54,7 +54,7 @@
         >
           <q-item-section>
             <q-item-label lines="2">{{ item.title || item.message }}</q-item-label>
-            <q-item-label caption>{{ dateFormat(item.created_at) }}</q-item-label>
+            <q-item-label caption>{{ $appStore.formatDate(item.created_at) }}</q-item-label>
           </q-item-section>
           <q-item-section side class="q-pl-none">
             <q-btn @click.stop="remove(item)" size="sm" flat round color="red" :icon="mdiDeleteOutline">
@@ -104,13 +104,12 @@ import { NotificationListResponse } from 'src/api/Response/NotificationListRespo
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
-import { dateFormat } from 'src/helper/DateHelper';
 import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh } from '@quasar/extras/mdi-v7';
 import { DeviceType } from 'src/api/Enum/DeviceType';
 
 export default defineComponent({
   name: 'NotificationComponent',
-  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck, dateFormat }),
+  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
   inheritAttrs: false,
   data: () => ({
     resp: {} as NotificationListResponse,

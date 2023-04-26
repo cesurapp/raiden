@@ -145,14 +145,18 @@ abstract class AbstractApiDto
         foreach ($fields as $field => $value) {
             if ($refClass->hasProperty($field)) {
                 $propType = $refClass->getProperty($field)->getType();
-                $name = $propType instanceof \ReflectionUnionType ?
-                    $propType->getTypes()[0]->getName() :
-                    $propType->getName(); // @phpstan-ignore-line
+                if (!$propType) {
+                    $name = null;
+                } else {
+                    $name = $propType instanceof \ReflectionUnionType ?
+                        $propType->getTypes()[0]->getName() :
+                        $propType->getName(); // @phpstan-ignore-line
+                }
 
                 try {
                     $data = match ($name) {
-                        'DateTime' => \DateTime::createFromFormat('d/m/Y H:i', $value),
-                        'DateTimeImmutable' => DateTimeImmutable::createFromFormat('d/m/Y H:i', $value),
+                        'DateTime' => \DateTime::createFromFormat(DATE_ATOM, $value),
+                        'DateTimeImmutable' => DateTimeImmutable::createFromFormat(DATE_ATOM, $value),
                         'bool' => (bool) $value,
                         'int' => (int) $value,
                         'string' => (string) $value,

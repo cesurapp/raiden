@@ -2,44 +2,99 @@
   <SimpleEditor ref="editor" :icon="mdiBell" title-create="Scheduled Notification" class="borderless">
     <template #content>
       <q-form @keydown.enter.prevent="send" class="q-gutter-xs" ref="form">
+        <!--Device Filter-->
+        <div class="fit row wrap justify-start items-start content-start gap-x-md">
+          <div class="text-h5 q-mb-md col-12">{{ $t('Device Filter') }}</div>
+          <div class="col-grow">
+            <q-select
+              emit-value
+              map-options
+              outlined
+              bottom-slots
+              style="width: 28%"
+              multiple
+              class="full-width"
+              :label="$t('Device')"
+              v-model="form.device_filter['device.type']"
+              :error="$rules.ssrValid('device_filter[device.type]')"
+              :error-message="$rules.ssrException('device_filter[device.type]')"
+              :options="[
+                { label: 'Web', value: DeviceType.WEB },
+                { label: 'Android', value: DeviceType.ANDROID },
+                { label: 'Ios', value: DeviceType.IOS },
+              ]"
+            ></q-select>
+            <LanguageInput
+              outlined
+              bottom-slots
+              :label="$t('User Language')"
+              v-model="form.device_filter['user.language']"
+              :error="$rules.ssrValid('device_filter[user.language]')"
+              :error-message="$rules.ssrException('device_filter[user.language]')"
+            ></LanguageInput>
+            <CountryInput
+              outlined
+              bottom-slots
+              :label="$t('Phone Country')"
+              v-model="form.device_filter['user.phoneCountry']"
+              :error="$rules.ssrValid('device_filter[user.phoneCountry]')"
+              :error-message="$rules.ssrException('device_filter[user.phoneCountry]')"
+            ></CountryInput>
+          </div>
+          <div class="col-grow">
+            <UserTypeInput
+              outlined
+              multiple
+              bottom-slots
+              :label="$t('User Type')"
+              v-model="form.device_filter['user.type']"
+              :error="$rules.ssrValid('device_filter[user.type]')"
+              :error-message="$rules.ssrException('device_filter[user.type]')"
+            ></UserTypeInput>
+            <DateRangeInput
+              outlined
+              bottom-slots
+              v-model="form.device_filter['user.createdAt']"
+              :error="$rules.ssrValid('device_filter[user.createdAt][to]')"
+              :error-message="$rules.ssrException('device_filter[user.createdAt][to]')"
+            ></DateRangeInput>
+            <q-checkbox outlined v-model="form.device_filter['user.frozen']" :label="$t('Frozen')"></q-checkbox>
+          </div>
+        </div>
+
         <!--Scheduler-->
-        <div class='q-mb-md'>
+        <div class="q-mb-md">
           <div class="text-h5 q-mb-md">{{ $t('Scheduler') }}</div>
           <!--Campaign Title-->
-          <q-input outlined lazy-rules
-                   v-model='form.campaign_title'
-                   :label="$t('Campaign Title')"
-                   :rules='[$rules.required()]'
-                   :error="$rules.ssrValid('campaign_title')"
-                   :error-message="$rules.ssrException('campaign_title')"
+          <q-input
+            outlined
+            lazy-rules
+            v-model="form.campaign_title"
+            :label="$t('Campaign Title')"
+            :rules="[$rules.required()]"
+            :error="$rules.ssrValid('campaign_title')"
+            :error-message="$rules.ssrException('campaign_title')"
           ></q-input>
-
           <!--Send At-->
-          <q-input outlined lazy-rules
-                   v-model="form.send_at"
-                   :label="$t('Send Date')"
-                   :rules="[$rules.required()]"
-                   :error="$rules.ssrValid('send_at')"
-                   :error-message="$rules.ssrException('send_at')"
-          >
-            <template v-slot:prepend>
-              <q-icon :name="mdiCalendar" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" class="datepopup">
-                  <q-date minimal :options='dateRules' v-model="form.send_at" mask="DD/MM/YYYY HH:mm" :locale="getCurrentLocale()"></q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-            <template v-slot:append>
-              <q-icon :name="mdiClockOutline" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" class='datepopup'>
-                  <q-time v-model="form.send_at" mask="DD/MM/YYYY HH:mm" format24h></q-time>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-
+          <DateInput
+            outlined
+            timer
+            v-model="form.send_at"
+            :label="$t('Send Date')"
+            :rules="[$rules.required()]"
+            :error="$rules.ssrValid('send_at')"
+            :error-message="$rules.ssrException('send_at')"
+            :date-rules="dateRules"
+          ></DateInput>
           <!--Persist Notification-->
-          <q-checkbox outlined v-model='form.persist_notification' :label="$t('Persist Notification')"></q-checkbox>
+          <q-checkbox
+            outlined
+            v-model="form.persist_notification"
+            class="q-mr-md"
+            :label="$t('Persist Notification')"
+          ></q-checkbox>
+          <!--Refresh Campaign-->
+          <q-checkbox outlined v-model="form.refresh_campaign" :label="$t('Refresh Campaign')"></q-checkbox>
         </div>
 
         <!--Notification-->
@@ -58,10 +113,16 @@
             :rules="[$rules.required()]"
           >
           </q-select>
-
           <!--Title-->
-          <q-input outlined lazy-rules v-model="form.title" :label="$t('Title')" :rules="[$rules.minLength(2)]"></q-input>
-
+          <q-input
+            outlined
+            lazy-rules
+            v-model="form.title"
+            :label="$t('Title')"
+            :rules="[$rules.minLength(2)]"
+            :error="$rules.ssrValid('title')"
+            :error-message="$rules.ssrException('title')"
+          ></q-input>
           <!--Message-->
           <q-input
             outlined
@@ -70,8 +131,9 @@
             :label="$t('Message')"
             :rules="[$rules.minLength(2)]"
             hide-bottom-space
+            :error="$rules.ssrValid('message')"
+            :error-message="$rules.ssrException('message')"
           ></q-input>
-
           <!--Custom Data-->
           <div class="flex justify-between gap-x-md q-mt-lg" v-for="(item, index) in data" :key="index">
             <q-select
@@ -83,10 +145,10 @@
               :label="$t('Device')"
               v-model="item.type"
               :options="[
-              { label: 'Web', value: DeviceType.WEB },
-              { label: 'Android', value: DeviceType.ANDROID },
-              { label: 'Ios', value: DeviceType.IOS },
-            ]"
+                { label: 'Web', value: DeviceType.WEB },
+                { label: 'Android', value: DeviceType.ANDROID },
+                { label: 'Ios', value: DeviceType.IOS },
+              ]"
             ></q-select>
             <q-select
               emit-value
@@ -121,13 +183,17 @@ import { mdiBell, mdiPlus, mdiSend, mdiClose, mdiCalendar, mdiClockOutline } fro
 import { NotificationStatus } from 'src/api/Enum/NotificationStatus';
 import { DeviceType } from 'src/api/Enum/DeviceType';
 import { SchedulerCreateRequest } from 'src/api/Request/SchedulerCreateRequest';
-import { getCurrentLocale, dateInput } from 'src/helper/DateHelper';
 import { SchedulerResource } from 'src/api/Resource/SchedulerResource';
+import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
+import LanguageInput from 'components/Language/LanguageInput.vue';
+import CountryInput from 'components/Country/CountryInput.vue';
+import DateRangeInput from 'components/Date/DateRangeInput.vue';
+import DateInput from 'components/Date/DateInput.vue';
 
 export default defineComponent({
   name: 'SendNotificationEditor',
-  components: { SimpleEditor },
-  setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType, mdiCalendar, mdiClockOutline, getCurrentLocale }),
+  components: { DateInput, DateRangeInput, CountryInput, LanguageInput, UserTypeInput, SimpleEditor },
+  setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType, mdiCalendar, mdiClockOutline }),
   data: () => ({
     tab: 'notification',
     form: {} as SchedulerCreateRequest,
@@ -145,24 +211,32 @@ export default defineComponent({
     init(scheduled: SchedulerResource | null) {
       if (scheduled) {
         this.data = [];
-        this.form = { ...scheduled, data: {} };
-        this.form.title = scheduled.notification.title
-        this.form.message = scheduled.notification.message
-        this.form.status = scheduled.notification.status
+        this.form = {
+          ...scheduled,
+          title: scheduled.notification.title,
+          message: scheduled.notification.message,
+          status: scheduled.notification.status,
+          device_filter: scheduled.device_filter ?? {},
+          data: {},
+        };
 
         Object.entries(scheduled.notification.data).forEach(([device, data]) => {
           Object.entries(data).forEach(([action, value]) => {
             let index = this.data.findIndex((item) => item.action === action && item.value === value);
             if (index === -1) {
-              this.data.push({ type: [device], action: action, value: value })
+              this.data.push({ type: [device], action: action, value: value });
             } else {
-              this.data[index].type.push(device)
+              this.data[index].type.push(device);
             }
-          })
-        })
+          });
+        });
       } else {
-        this.form = { status: NotificationStatus.INFO, data: {} };
         this.data = [];
+        this.form = {
+          status: NotificationStatus.INFO,
+          data: {},
+          device_filter: {},
+        };
       }
 
       this.$refs.editor.toggle();
@@ -194,7 +268,7 @@ export default defineComponent({
           }
 
           // Create
-          this.$api.schedulerCreate({...this.form, ...{send_at: dateInput(this.form.send_at)}}).then((r) => {
+          this.$api.schedulerCreate(this.form).then((r) => {
             this.$emit('created', r.data.data);
             this.$refs.editor.toggle();
           });
@@ -208,8 +282,8 @@ export default defineComponent({
       this.data.splice(index, 1);
     },
     dateRules(date) {
-      return new Date(date).getDate() >= new Date().getDate()
-    }
+      return new Date(date).getDate() >= new Date().getDate();
+    },
   },
 });
 </script>

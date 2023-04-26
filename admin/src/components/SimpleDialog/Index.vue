@@ -1,13 +1,13 @@
 <template>
   <q-dialog v-model="active" :maximized="$q.screen.lt.sm">
     <q-card :style="{ minWidth: width }" class="simple-dialog">
-      <q-card-section v-if="$slots.header" class="flex items-center header">
+      <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm">
         <slot name="header" />
         <q-space />
         <q-btn :icon="mdiClose" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="scroll content" :class="[clean ? 'q-pt-none' : '']">
+      <q-card-section class="scroll content q-py-sm" :class="[clean ? 'q-pt-none' : '']">
         <slot name="content" />
       </q-card-section>
 

@@ -13,6 +13,7 @@
   >
     <template v-slot:prepend>
       <CountryInput
+        :readonly="$attrs.readonly"
         ref="country"
         class="country-input"
         hide-dropdown-icon
@@ -25,6 +26,9 @@
         :bottom-slots="false"
         @popupHide="onPopupHide"
       ></CountryInput>
+    </template>
+    <template #append v-if="$slots.append">
+      <slot name="append"></slot>
     </template>
   </q-input>
 </template>
@@ -69,6 +73,9 @@ export default defineComponent({
   }
 
   .q-field__control:before {
+    border: none;
+  }
+  &.q-field--readonly .q-field__control:before {
     border: none;
   }
 

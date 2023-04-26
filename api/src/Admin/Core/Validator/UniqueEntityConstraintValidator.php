@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Validator;
 
+use App\Admin\Core\Service\CurrentUser;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Package\ApiBundle\Repository\ApiServiceEntityRepository;
@@ -14,7 +15,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  */
 class UniqueEntityConstraintValidator extends ConstraintValidator
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly CurrentUser $currentUser)
     {
     }
 
@@ -39,8 +40,13 @@ class UniqueEntityConstraintValidator extends ConstraintValidator
         }
 
         // Edit Mode Exclude ID
-        if ($this->context->getObject()->getId()) {
-            $criteria->andWhere(Criteria::expr()->neq('id', $this->context->getObject()->getId()));
+        $id = $this->context->getObject()?->getId();
+        if ($id) {
+            if ('currentUser' === $id) {
+                $id = $this->currentUser->get()->getId();
+            }
+
+            $criteria->andWhere(Criteria::expr()->neq('id', $id));
         }
 
         /** @var ApiServiceEntityRepository $repo */

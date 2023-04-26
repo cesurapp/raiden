@@ -24,11 +24,12 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Create OTP Key.
      */
-    public function create(User $user, OtpType $type, int $expiredMinute = 3): OtpKey
+    public function create(User $user, OtpType $type, int $expiredMinute = 3, ?string $address = null): OtpKey
     {
         $otp = (new OtpKey())
             ->setOwner($user)
             ->setType($type)
+            ->setAddress($address)
             ->setExpiredAt(new \DateTimeImmutable("+$expiredMinute minute"))
             ->setOtpKey(random_int(100000, 999999));
 
@@ -40,10 +41,9 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Check OTP Key is Valid.
      */
-    public function check(User $user, OtpType|array $type, int $key): ?OtpKey
+    public function check(User $user, OtpType|array $type, int $key, ?string $address = null): ?OtpKey
     {
-        /** @var OtpKey|null $otp */
-        $otp = $this->createQueryBuilder('q')
+        $qb = $this->createQueryBuilder('q')
             ->andWhere('q.otpKey = :key')
             ->andWhere('q.owner = :owner')
             ->andWhere('q.type IN(:type)')
@@ -55,18 +55,21 @@ class OtpKeyRepository extends ApiServiceEntityRepository
                 'expired' => new \DateTimeImmutable(),
                 'used' => false,
             ])
-            ->setParameter('owner', $user->getId(), 'ulid')
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setParameter('owner', $user->getId(), 'ulid');
 
-        if ($otp) {
-            $otp->setUsed(true);
-            $this->add($otp);
-
-            return $otp;
+        if ($address) {
+            $qb->andWhere('q.address = :address')->setParameter('address', $address);
         }
 
-        return null;
+        /** @var OtpKey|null $otp */
+        $otp = $qb->getQuery()->getOneOrNullResult();
+        if (!$otp) {
+            return null;
+        }
+
+        $this->add($otp->setUsed(true));
+
+        return $otp;
     }
 
     /**

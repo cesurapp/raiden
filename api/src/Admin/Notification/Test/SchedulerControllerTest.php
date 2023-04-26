@@ -71,15 +71,15 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('POST', '/v1/admin/scheduler', [
             'campaign_title' => 'Campaign',
             'persist_notification' => true,
-            'send_at' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
+            'send_at' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
             'title' => 'Başlık',
             'message' => 'İçerik',
             'status' => NotificationStatus::DANGER,
             'device_filter' => [
                 'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
                 'user.createdAt' => [
-                    'from' => (new DateTimeImmutable('-1 hour'))->format('d/m/Y H:i'),
-                    'to' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
+                    'from' => (new DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
+                    'to' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
                 ],
                 'user.type' => [UserType::USER],
                 'user.frozen' => false,
@@ -112,15 +112,15 @@ class SchedulerControllerTest extends AbstractWebTestCase
         $this->client($user)->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
             'campaign_title' => 'Campaign',
             'persist_notification' => true,
-            'send_at' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
+            'send_at' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
             'title' => 'Başlık',
             'message' => 'İçerik',
             'status' => NotificationStatus::INFO,
             'device_filter' => [
                 'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
                 'user.createdAt' => [
-                    'from' => (new DateTimeImmutable('-1 hour'))->format('d/m/Y H:i'),
-                    'to' => (new DateTimeImmutable('+1 hour'))->format('d/m/Y H:i'),
+                    'from' => (new DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
+                    'to' => (new DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
                 ],
                 'user.type' => [UserType::USER],
                 'user.frozen' => false,

@@ -144,7 +144,7 @@
     </style>
 </head>
 <body class="bg-light">
-<main class="container">
+<main class="container-fluid">
     <!--
         Header
     -->

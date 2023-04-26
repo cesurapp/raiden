@@ -17,15 +17,16 @@
     transition-duration="0"
     virtual-scroll-slice-ratio-before="12"
     virtual-scroll-slice-ratio-after="12"
+    class="country-inputs"
   >
     <template v-slot:prepend>
       <q-icon v-if="!selectedCountry" :name="mdiWeb" />
-      <q-icon v-else :name="selectedCountry.icon" />
+      <q-icon v-else :name="selectedCountry.icon" class="country-emoji" />
     </template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
         <q-item-section avatar>
-          <q-icon :name="scope.opt.icon" />
+          <q-icon :name="scope.opt.icon" class="country-emoji" />
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -53,13 +54,13 @@ export default defineComponent({
   }),
   async created() {
     // Load Countries
-    await import('countries-list/dist/countries.min.json').then((list: any) => {
+    await import('countries-list/dist/countries.emoji.min.json').then((list: any) => {
       Object.entries(list).forEach(([code, country]: [string, any]) => {
         if (code !== 'default') {
           this.countries.push({
             value: code,
             label: country.name,
-            icon: `img:/images/flags/${code.toLowerCase()}.svg`,
+            icon: country.emoji,
             code: country.phone,
           });
         }
@@ -85,3 +86,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.country-emoji {
+  transform: skew(14deg, 1deg) translate(-2px, 1px);
+  color: red;
+}
+</style>

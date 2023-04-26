@@ -33,10 +33,10 @@
       ></q-input>
 
       <!--Q-Number-Range-->
-      <div v-if="filter.filter_input === 'range'" ref='input'>
+      <div v-if="filter.filter_input === 'range'" ref="input">
         <q-input
           :model-value="getValue ? getValue.min : null"
-          @update:modelValue="$emit('update:modelValue', {min: $event, max: getValue?.max})"
+          @update:modelValue="$emit('update:modelValue', { min: $event, max: getValue?.max })"
           :label="$t('Minimum')"
           :debounce="75"
           clearable
@@ -50,7 +50,7 @@
         ></q-input>
         <q-input
           :model-value="getValue ? getValue.max : null"
-          @update:modelValue="$emit('update:modelValue', {max: $event, min: getValue?.min})"
+          @update:modelValue="$emit('update:modelValue', { max: $event, min: getValue?.min })"
           :label="$t('Maximum')"
           :debounce="75"
           clearable
@@ -118,7 +118,10 @@
               <q-date
                 v-model="getValue"
                 minimal
-                @update:modelValue="$refs.dateProxy.hide(); $emit('onSearch');"
+                @update:modelValue="
+                  $refs.dateProxy.hide();
+                  $emit('onSearch');
+                "
                 :locale="getCurrentLocale()"
               ></q-date>
             </q-popup-proxy>
@@ -127,34 +130,16 @@
       </q-input>
 
       <!--Q-DateRange-->
-      <q-input
-        :model-value="getValue ? `${this.getValue.from} - ${this.getValue.to}` : ''"
+      <DateRangeInput
+        v-model="getValue"
         v-if="filter.filter_input === 'daterange'"
         :label="filter.label || column.label || ''"
         @clear="$emit('update:modelValue', null)"
-        clearable
-        :debounce="75"
-        :style="['min-width: 250px']"
+        :style="['min-width: 265px']"
         class="q-mb-sm"
         outlined
-        dense
         @update:modelValue="$emit('onSearch')"
-      >
-        <template v-slot:prepend>
-          <q-icon :name="mdiCalendar" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale" ref="dateProxy" class="datepopup">
-              <q-date
-                @update:modelValue="$emit('onSearch')"
-                v-model="getValue"
-                range
-                minimal
-                @rangeEnd="$refs.dateProxy.hide()"
-                :locale="getCurrentLocale()"
-              ></q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
+      ></DateRangeInput>
     </slot>
 
     <!--Submit-->
@@ -175,10 +160,11 @@ import { mdiMagnify, mdiCalendar } from '@quasar/extras/mdi-v7';
 import { getCurrentLocale } from 'src/helper/DateHelper';
 import CountryInput from 'components/Country/CountryInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
+import DateRangeInput from 'components/Date/DateRangeInput.vue';
 
 export default defineComponent({
   name: 'SimpleTableFilter',
-  components: { LanguageInput, CountryInput },
+  components: { DateRangeInput, LanguageInput, CountryInput },
   setup: () => ({ mdiMagnify, mdiCalendar, getCurrentLocale }),
   emits: ['update:modelValue', 'onSearch'],
   props: {
@@ -206,7 +192,7 @@ export default defineComponent({
     if (this.$refs.input) {
       setTimeout(() => this.$refs.input.focus(), 1);
     }
-  }
+  },
 });
 </script>
 

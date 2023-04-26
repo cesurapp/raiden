@@ -3,7 +3,9 @@ Changes are saved: Değişiklikler kaydedildi
 Your account has been approved: Hesabınız onaylandı.
 Verification Code: Doğrulama Kodu
 "Verification code: %otpkey%": "Doğrulama kodu: %otpkey%"
-One-time login code has been sent: Tek kullanımlık giriş şifreniz gönderildi
+One-time login code has been sent: Tek kullanımlık giriş kodunuz gönderildi
+One-time approve code has been sent: Tek kullanımlık doğrulama kodunuz gönderildi
+Verification completed: Doğrulama tamamlandı
 You are logged out: Oturumunuz kapatıldı
 Your account is created: Hesabınız oluşturuldu
 Your password reset code has been sent: Şifre sıfırlama kodunuz gönderildi

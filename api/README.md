@@ -9,6 +9,8 @@ __Features__
 * Github actions auto deployment
 * Horizontally scalable
 * Firebase integration for notifications
+* Firebase bulk notification sender
+* Email/Phone verify system
 * Cloudflare, Backblaze, Local drives for storage integration
 * Role based authentication
 * Enum permission system
@@ -18,7 +20,7 @@ __Requirement__
 * Postgres 14+
 * Composer 2+
 * PHP 8.2+
-  * Swoole 4.11+ (`pecl install openswoole`)
+  * OpenSwoole 4.11+ (`pecl install openswoole`)
   * Imagick (`pecl install imagick`)
   * Intl (`pecl install intl`)
   * Php.ini
@@ -90,7 +92,7 @@ bin/console doctrine:schema:update
 
    ```shell
    docker exec raiden-container "bin/console doctrine:database:create"
-   docker exec raiden-container "bin/console doctrine:schema:update --force"
+   docker exec raiden-container "bin/console doctrine:schema:update --force --complete"
    ```
 #### Github Actions Deployment
 
@@ -164,11 +166,11 @@ cp .phpunit.xml.dist .phpunit.xml
 __Commands__
 
 ```shell
-composer qa:phpstan    # PHPStan Analysis
-composer qa:lint       # PHPCsFixer Linter
-composer qa:fix        # PHPCsFixer Fix
-composer test          # PHPUnit Test
-composer test:stop     # PHPUnit Test stop First Error
+composer qa:phpstan    # PhpStan Analysis
+composer qa:lint       # PhpCsFixer Linter
+composer qa:fix        # PhpCsFixer Fix
+composer test          # PhpUnit Test
+composer test:stop     # PhpUnit Test stop first error
 composer fix           # Run All QA & Test
 ```
 
@@ -180,7 +182,6 @@ Documentation
 * [Storage Bundle](package/StorageBundle/README.md)
 * [Media Bundle](package/MediaBundle/README.md)
 * [Api Bundle](package/ApiBundle/README.md)
-* [Library (Coroutine HTTP Client)](package/Library/README.md)
 
 ### Realtime Notification (Firebase)
 
@@ -194,7 +195,25 @@ __Send Notification__
 ```php
 public function test(NotificationPusher $pusher)
 {
-    $pusher->create('Message Content', 'Title', NotificationStatus::SUCCESS)->send();
+    $pusher->send(
+        (new Notification())
+            ->setTitle('Test')
+            ->setMessage('Test Message')
+            ->setOwner($user) // Not Required
+    )
+    
+    /*
+     * Only Firebase sends it. It is not added to system notifications. 
+     */
+    $pusher->onlySend(
+        (new \App\Admin\Notification\Entity\Device())
+            ->setToken('Device Token')
+            ->setType(\App\Admin\Notification\Enum\DeviceType::IOS),
+        (new Notification())
+            ->setTitle('Test')
+            ->setMessage('Test Message')
+            ->setOwner($user) // Not Required
+    )
 }
 ```
 
@@ -206,7 +225,7 @@ __Configure__
 3. Role -> Logging Admin
 4. Edit Service Accounts -> Keys -> Add Keys -> JSON
 5. Json Content Convert Base64
-4. Configure .env ``APP_LOG_GOOGLE_KEY=Base64Content``
+6. Configure .env ``APP_LOG_GOOGLE_KEY=Base64Content``
 
 ### Mail & Sms Pusher
 __Send Mail__

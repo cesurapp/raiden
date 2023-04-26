@@ -4,12 +4,21 @@ import CustomDialog from 'components/CustomDialog/Index.vue';
 import { notifyShow } from '../helper/NotifyHelper';
 import { AxiosResponse } from 'axios';
 
+// DayJS Install
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(utc);
+dayjs.extend(customParseFormat);
+
 export const useAppStore = defineStore('app', {
   state: () => ({
     title: 'Raiden Admin',
     apiExceptions: {},
     networkError: false,
     busy: [],
+    dateFormat: 'DD/MM/YYYY',
+    dateTimeFormat: 'DD/MM/YYYY HH:mm',
   }),
   getters: {
     isBusy() {
@@ -28,6 +37,20 @@ export const useAppStore = defineStore('app', {
         this.busy.findIndex((i) => i === id),
         1
       );
+    },
+
+    /**
+     * Date ATOM to Custom Format
+     */
+    formatDate(date: string, time = true) {
+      return dayjs(date).format(time ? this.dateTimeFormat : this.dateFormat)
+    },
+
+    /**
+     * Date Convert from UTC-ATOM
+     */
+    inputDate(date: string, time = true) {
+      return dayjs(date, time ? this.dateTimeFormat : this.dateFormat).utc().format()
     },
 
     /**

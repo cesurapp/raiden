@@ -27,6 +27,9 @@ class OtpKey
     #[ORM\Column(type: 'string', enumType: OtpType::class)]
     private OtpType $type;
 
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $address = null;
+
     #[ORM\Column(type: 'boolean')]
     private bool $used = false;
 
@@ -58,6 +61,18 @@ class OtpKey
     public function setType(OtpType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

@@ -7,27 +7,54 @@
     <PageContent borderless liquid>
       <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
         <!--Email-->
-        <q-input
-          outlined
-          lazy-rules
-          v-model="data.email"
-          :label="$t('Email')"
-          :error="$rules.ssrValid('email')"
-          :error-message="$rules.ssrException('email')"
-          :rules="[$rules.email()]"
-        >
+        <q-input outlined lazy-rules readonly v-model="$authStore.user.email" :label="$t('Email')" bottom-slots>
           <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
+          <template #append>
+            <q-btn
+              flat
+              size="12px"
+              color="negative"
+              v-if="!$authStore.user.email_approved"
+              :icon="mdiCheckDecagram"
+              @click="$refs.approveEditor.init('approve', 'email')"
+            >
+              <q-tooltip>{{ $t('Verify') }}</q-tooltip>
+            </q-btn>
+            <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            <q-btn flat size="12px" :icon="mdiPencil" @click="$refs.approveEditor.init('change', 'email')">
+              <q-tooltip>{{ $t('Update') }}</q-tooltip>
+            </q-btn>
+          </template>
         </q-input>
 
         <!--Phone-->
         <PhoneInput
           outlined
-          :modelValue="data.phone"
-          v-model:full-number="data.phone"
-          v-model:phone-country="data.phone_country"
+          readonly
+          :modelValue="$authStore.user.phone"
+          v-model:full-number="$authStore.user.phone"
+          v-model:phone-country="$authStore.user.phone_country"
           :required="false"
           :label="$t('Phone')"
-        ></PhoneInput>
+          :error="false"
+        >
+          <template #append>
+            <q-btn
+              flat
+              size="12px"
+              color="negative"
+              v-if="!$authStore.user.phone_approved"
+              :icon="mdiCheckDecagram"
+              @click="$refs.approveEditor.init('approve', 'phone')"
+            >
+              <q-tooltip>{{ $t('Verify') }}</q-tooltip>
+            </q-btn>
+            <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            <q-btn flat size="12px" :icon="mdiPencil" @click="$refs.approveEditor.init('change', 'phone')">
+              <q-tooltip>{{ $t('Update') }}</q-tooltip>
+            </q-btn>
+          </template>
+        </PhoneInput>
 
         <!--FirstName-->
         <q-input
@@ -98,6 +125,8 @@
         </div>
       </q-form>
     </PageContent>
+
+    <CredentialApproveEditor ref="approveEditor"></CredentialApproveEditor>
   </q-page>
 </template>
 
@@ -108,7 +137,18 @@ import PageContent from '../Components/Layout/PageContent.vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import { createMetaMixin } from 'quasar';
 import LanguageInput from 'components/Language/LanguageInput.vue';
-import { mdiEmail, mdiAccount, mdiWeb, mdiKey, mdiAccountPlus, mdiEye, mdiEyeOff } from '@quasar/extras/mdi-v7';
+import {
+  mdiEmail,
+  mdiAccount,
+  mdiWeb,
+  mdiKey,
+  mdiAccountPlus,
+  mdiEye,
+  mdiEyeOff,
+  mdiCheckDecagram,
+  mdiPencil,
+} from '@quasar/extras/mdi-v7';
+import CredentialApproveEditor from 'pages/Admin/Account/CredentialApproveEditor.vue';
 
 export default defineComponent({
   name: 'EditProfile',
@@ -120,8 +160,10 @@ export default defineComponent({
     mdiAccountPlus,
     mdiEye,
     mdiEyeOff,
+    mdiCheckDecagram,
+    mdiPencil,
   }),
-  components: { LanguageInput, PageHeader, PageContent, PhoneInput },
+  components: { CredentialApproveEditor, LanguageInput, PageHeader, PageContent, PhoneInput },
   mixins: [
     createMetaMixin(function () {
       return {
@@ -132,9 +174,6 @@ export default defineComponent({
   data: () => ({
     isPwd: true,
     data: {
-      email: null,
-      phone: null,
-      phone_country: 'TR',
       first_name: null,
       last_name: null,
       language: null,

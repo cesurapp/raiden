@@ -36,7 +36,6 @@
           menu-self="top start"
           menu-anchor="bottom start"
           @click="clearFilter"
-          no-route-dismiss
         >
           <div class="flex column items-start">
             <q-chip
@@ -371,7 +370,6 @@ import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
 import { deFlatten, flatten } from 'src/api/flatten';
-import { dateFormat } from 'src/helper/DateHelper';
 
 export default defineComponent({
   name: 'SimpleTable',
@@ -453,7 +451,7 @@ export default defineComponent({
     getColumns() {
       let all = this.columns.map((c) => {
         if (c.name.endsWith('_at')) {
-          c.format = (val) => dateFormat(val);
+          c.format = (val) => this.$appStore.formatDate(val);
         }
 
         return {
@@ -630,9 +628,9 @@ export default defineComponent({
     },
 
     updateItem(item, key) {
-      const index = this.rows.findIndex((row) => row[key] === item[key])
+      const index = this.rows.findIndex((row) => row[key] === item[key]);
       if (index !== -1) {
-        this.rows[index] = item
+        this.rows[index] = item;
       }
     },
 

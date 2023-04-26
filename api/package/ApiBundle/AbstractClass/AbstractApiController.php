@@ -119,7 +119,9 @@ abstract class AbstractApiController implements ServiceSubscriberInterface
      *
      * This will result in a 404 response code. Usage example:
      *
-     *     throw $this->createNotFoundException('Page not found!');
+     * throw $this->createNotFoundException('Page not found!');
+     *
+     * @param $message string #TranslationKey to translate the URL for
      */
     protected function createNotFoundException(string $message = 'Not Found', \Throwable $previous = null): NotFoundHttpException
     {
@@ -131,7 +133,9 @@ abstract class AbstractApiController implements ServiceSubscriberInterface
      *
      * This will result in a 403 response code. Usage example:
      *
-     *     throw $this->createAccessDeniedException('Unable to access this page!');
+     * throw $this->createAccessDeniedException('Unable to access this page!');
+     *
+     * @param $message string #TranslationKey to translate the URL for
      *
      * @throws \LogicException If the Security component is not available
      */

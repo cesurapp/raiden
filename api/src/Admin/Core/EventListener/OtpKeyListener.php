@@ -45,7 +45,7 @@ readonly class OtpKeyListener
     {
         $this->mailPusher->send(
             (new Email())
-                ->to($otpKey->getOwner()->getEmail())
+                ->to($otpKey->getAddress() ?? $otpKey->getOwner()->getEmail())
                 ->subject('Verification Code')
                 ->text($this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]))
         );
@@ -53,8 +53,10 @@ readonly class OtpKeyListener
 
     private function sendPhone(OtpKey $otpKey): void
     {
+        $phone = $otpKey->getAddress() ? (int) $otpKey->getAddress() : $otpKey->getOwner()->getPhone();
+
         $this->smsPusher->send(
-            $otpKey->getOwner()->getPhone(),
+            $phone,
             $otpKey->getOwner()->getPhoneCountry(),
             $this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()])
         );

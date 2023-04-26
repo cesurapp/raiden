@@ -251,7 +251,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->isFail();
     }
 
-    public function testConfirmPhone(): void
+    public function testLoginRedirectOtp(): void
     {
         static::createClient();
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
@@ -267,16 +267,55 @@ class SecurityTest extends AbstractWebTestCase
         $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '905414053421']);
         $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
 
+        // Password Login Failed
+        $this->client()->jsonRequest('POST', '/v1/auth/login', [
+            'username' => (string) $user->getPhone(),
+            'password' => '123123123',
+        ]);
+        $this->assertSame('AccountNotActivatedException', $this->json(key: 'type'));
+
+        // Otp Login Success
+        $this->client()->request('POST', '/v1/auth/login-otp', [
+            'username' => $user->getPhone(),
+            'otp_key' => $key->getOtpKey(),
+        ]);
+        $this->isOk();
+
+        // OTP is USED
+        $key = $this->manager()->find(OtpKey::class, $key->getId());
+        $this->assertTrue($key->isUsed());
+
+        // Confirmed User
+        $user = $this->manager()->find(User::class, $user->getId());
+        $this->assertTrue($user->isPhoneApproved());
+    }
+
+    public function testConfirmPhone(): void
+    {
+        static::createClient();
+        $this->client()->jsonRequest('POST', '/v1/auth/register', [
+            'phone' => '905414053491',
+            'phone_country' => 'TR',
+            'password' => '123123123',
+            'first_name' => 'Ramazan',
+            'last_name' => 'APAYDIN',
+        ]);
+        $this->isOk();
+
+        // OTP Key.
+        $user = $this->manager()->getRepository(User::class)->findOneBy(['phone' => '905414053491']);
+        $key = $this->manager()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+
         // Failed
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'username' => '905414053421',
+            'username' => '905414053491',
             'otp_key' => 123123,
         ]);
         $this->isForbidden();
 
         // Success
         $this->client()->jsonRequest('POST', '/v1/auth/approve', [
-            'username' => '905414053421',
+            'username' => '905414053491',
             'otp_key' => $key->getOtpKey(),
         ]);
         $this->isOk();

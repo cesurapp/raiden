@@ -5,6 +5,7 @@ import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
 import { watch } from 'vue';
 import { Permission } from 'src/api/Enum/Permission';
+import { AxiosError } from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -21,17 +22,26 @@ export const useAuthStore = defineStore('auth', {
      * Login with Username & Password
      */
     async loginUsername(username: string, password: string) {
-      await api.securityLogin({ username: username, password: password }).then((r) => {
-        this.user = r.data.data;
-        this.appToken = r.data.token;
-        this.refreshToken = r.data.refresh_token;
-        if (this.user.language) {
-          localStorage.setItem('user_locale', this.user.language);
-        }
+      this.clearToken();
 
-        // Redirect
-        this.router.push({ path: '/' });
-      });
+      await api
+        .securityLogin({ username: username, password: password })
+        .then((r) => {
+          this.user = r.data.data;
+          this.appToken = r.data.token;
+          this.refreshToken = r.data.refresh_token;
+          if (this.user.language) {
+            localStorage.setItem('user_locale', this.user.language);
+          }
+
+          // Redirect
+          this.router.push({ path: '/' });
+        })
+        .catch((r: AxiosError) => {
+          if (r.response?.data?.type === 'AccountNotActivatedException') {
+            this.loginOtpRequest(username);
+          }
+        });
     },
 
     /**
@@ -50,6 +60,8 @@ export const useAuthStore = defineStore('auth', {
      * Login with Passwordless
      */
     async loginOtp(username: string, otpKey: number) {
+      this.clearToken();
+
       await api.securityLoginOtp({ username: username, otp_key: otpKey }).then((r) => {
         this.user = r.data.data;
         this.appToken = r.data.token;
@@ -119,8 +131,8 @@ export const useAuthStore = defineStore('auth', {
           this.switchedUser = username;
           this.updateUser(r.data.data);
           this.router.push({ path: '/' }).then(() => {
-            window.location.reload()
-          })
+            window.location.reload();
+          });
         }
       });
     },
@@ -133,8 +145,8 @@ export const useAuthStore = defineStore('auth', {
       await this.reloadUser();
       if (redirect) {
         this.router.push({ path: '/' }).then(() => {
-          window.location.reload()
-        })
+          window.location.reload();
+        });
       }
     },
 

@@ -75,8 +75,11 @@ Data passed to jobs must be of type string, int, bool, array, objects cannot be 
 Create: 
 ```php
 class ExampleTask implements \Package\SwooleBundle\Task\TaskInterface {
-    public function __invoke(mixed $data = null): void {
-        
+    public function __invoke(object|string $data = null): void {
+        var_dump(
+            $data['name'],
+            $data['invoke']
+        );
     }
 }
 ```

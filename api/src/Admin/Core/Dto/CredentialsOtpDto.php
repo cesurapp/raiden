@@ -3,48 +3,29 @@
 namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Validator\UniqueEntityConstraint;
 use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class RegisterDto extends AbstractApiDto
+class CredentialsOtpDto extends AbstractApiDto
 {
     #[Assert\Length(max: 180)]
     #[Assert\Email]
     #[UniqueEntityConstraint(entityClass: User::class, fields: ['email'])]
     public ?string $email = null;
 
+    #[PhoneNumber(regionPath: 'phone_country')]
+    #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
+    public int|string|null $phone = null;
+
     #[Assert\Country]
     public ?string $phone_country = null;
 
-    #[PhoneNumber(regionPath: 'phone_country')]
-    #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
-    public null|int|string $phone = null;
-
+    #[Assert\Length(min: 6, max: 6)]
     #[Assert\NotNull]
-    #[Assert\Choice(callback: 'getTypes')]
-    public ?string $type = UserType::USER->value;
-
-    #[Assert\Length(min: 8)]
-    #[Assert\NotNull]
-    public string $password;
-
-    #[Assert\Length(min: 2, max: 50)]
-    #[Assert\NotNull]
-    public string $first_name;
-
-    #[Assert\Length(min: 2, max: 50)]
-    #[Assert\NotNull]
-    public string $last_name;
-
-    public static function getTypes(): array
-    {
-        return [UserType::USER->value];
-    }
+    public int $otp_key;
 
     #[Assert\Callback]
     public function callbackValidator(ExecutionContextInterface $context): void
@@ -60,19 +41,12 @@ class RegisterDto extends AbstractApiDto
             $context->getValidator()
                 ->inContext($context)
                 ->atPath('email')
-                ->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
+                ->validate($this->email, [new Assert\NotNull(), new Assert\NotBlank()]);
         }
     }
 
-    public function initObject(string|User $object): User
+    protected function beforeValidated(): void
     {
-        return $object
-            ->setEmail($this->validated('email'))
-            ->setPhone($this->validated('phone'))
-            ->setPhoneCountry($this->validated('phone_country'))
-            ->setType(UserType::from($this->validated('type')))
-            ->setFirstName($this->validated('first_name'))
-            ->setLastName($this->validated('last_name'))
-            ->setLanguage($this->getRequest()->getLocale());
+        $this->id = 'currentUser';
     }
 }

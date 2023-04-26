@@ -57,22 +57,24 @@ class UserDto extends AbstractApiDto
     public function callbackValidator(ExecutionContextInterface $context): void
     {
         if (!$this->email) {
-            $err = $context->getValidator()->validate($this->phone, [new NotNull(), new Assert\NotBlank()]);
-            if ($err->count() > 0) {
-                $context->buildViolation($err->get(0)->getMessage())->atPath('phone')->addViolation();
-            }
+            $context->getValidator()
+                ->inContext($context)
+                ->atPath('phone')
+                ->validate($this->phone, [new Assert\NotNull(), new Assert\NotBlank()])
+                ->atPath('phone_country')
+                ->validate($this->phone_country, [new Assert\NotNull()]);
         } elseif (!$this->phone) {
-            $err = $context->getValidator()->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
-            if ($err->count() > 0) {
-                $context->buildViolation($err->get(0)->getMessage())->atPath('email')->addViolation();
-            }
+            $context->getValidator()
+                ->inContext($context)
+                ->atPath('email')
+                ->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
         }
 
         if (!$this->id) {
-            $err = $context->getValidator()->validate($this->password, new NotNull());
-            if ($err->count() > 0) {
-                $context->buildViolation($err->get(0)->getMessage())->atPath('password')->addViolation();
-            }
+            $context->getValidator()
+                ->inContext($context)
+                ->atPath('password')
+                ->validate($this->password, new NotNull());
         }
     }
 

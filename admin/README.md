@@ -71,16 +71,6 @@ NODE_VERSION=16
 
 ## Documentation
 
-#### Date Helper
-
-Localized Formatter.
-
-```vue
-import { dateFormat } from 'src/helper/DateHelper'; dateFormat(date, 'format')
-```
-
-Quasar Date Helper [Documentation](https://quasar.dev/quasar-utils/date-utils)
-
 #### Translate
 
 ```vue

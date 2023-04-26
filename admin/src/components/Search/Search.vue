@@ -121,7 +121,9 @@ export default defineComponent({
   mounted() {
     this.routes = this.$route.matched[0].children
       .filter((route) => !route.path.includes('/:') && route?.meta?.breadcrumb)
-      .filter((route) => route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true)
+      .filter((route) =>
+        route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true
+      )
       .map((route) => ({
         label: this.$t(route.meta.breadcrumb ?? ''),
         route: route.path,

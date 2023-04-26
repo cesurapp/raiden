@@ -40,8 +40,8 @@ class AccountTest extends AbstractWebTestCase
 
         // Success
         $this->client($user)->jsonRequest('PUT', '/v1/admin/account/profile', [
-            'email' => $user->getEmail(),
-            'phone' => $user->getPhone(),
+            'email' => 'a'.$user->getEmail(),
+            'phone' => $user->getPhone() + 1,
             'phone_country' => 'TR',
             'current_password' => '123123123',
             'password' => '123123123',
@@ -49,6 +49,8 @@ class AccountTest extends AbstractWebTestCase
             'last_name' => 'Doe',
         ]);
         $this->isOk();
+        $this->assertSame($user->getEmail(), $this->json(key: 'data')['email']);
+        $this->assertSame($user->getPhone(), $this->json(key: 'data')['phone']);
     }
 
     public function testAccountListing(): void

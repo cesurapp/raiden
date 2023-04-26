@@ -56,6 +56,10 @@ import type { SchedulerCreateRequest } from './Request/SchedulerCreateRequest';
 import type { SchedulerEditResponse } from './Response/SchedulerEditResponse';
 import type { SchedulerEditRequest } from './Request/SchedulerEditRequest';
 import type { SchedulerDeleteResponse } from './Response/SchedulerDeleteResponse';
+import type { CredentialsRequestResponse } from './Response/CredentialsRequestResponse';
+import type { CredentialsRequestRequest } from './Request/CredentialsRequestRequest';
+import type { CredentialsApproveResponse } from './Response/CredentialsApproveResponse';
+import type { CredentialsApproveRequest } from './Request/CredentialsApproveRequest';
 
 export default class Api {
   constructor(private client: AxiosInstance) {}
@@ -174,6 +178,14 @@ export default class Api {
 
   async schedulerDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerDeleteResponse>> {
     return this.rq('DELETE', `/v1/admin/scheduler/${id}`, config, null)
+  }
+
+  async credentialsRequest(request?: CredentialsRequestRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<CredentialsRequestResponse>> {
+    return this.rq('PUT', '/v1/main/credentials', config, request)
+  }
+
+  async credentialsApprove(request?: CredentialsApproveRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<CredentialsApproveResponse>> {
+    return this.rq('POST', '/v1/main/credentials', config, request)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

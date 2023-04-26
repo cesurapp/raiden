@@ -11,6 +11,9 @@ use App\Admin\Core\Dto\UsernameDto;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Event\SecurityEvent;
+use App\Admin\Core\Exception\AccountNotActivatedException;
+use App\Admin\Core\Exception\AccountSuspendedException;
+use App\Admin\Core\Exception\OrganizationSuspendedException;
 use App\Admin\Core\Exception\RefreshTokenExpiredException;
 use App\Admin\Core\Exception\TokenExpiredException;
 use App\Admin\Core\Repository\OtpKeyRepository;
@@ -60,6 +63,9 @@ class SecurityController extends AbstractApiController
             BadCredentialsException::class,
             TokenExpiredException::class,
             AccessDeniedException::class,
+            AccountNotActivatedException::class,
+            AccountSuspendedException::class,
+            OrganizationSuspendedException::class,
         ],
         requireAuth: false,
         order: 0
@@ -181,6 +187,16 @@ class SecurityController extends AbstractApiController
         $type = is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
         if (!$otpRepo->check($user, $type, $otpDto->validated('otp_key'))) {
             throw new BadCredentialsException('Wrong OTP key!', 403);
+        }
+
+        // Approve
+        if (OtpType::PHONE === $type && !$user->isPhoneApproved()) {
+            $user->setPhoneApproved(true);
+            $this->userRepo->add($user);
+        }
+        if (OtpType::EMAIL === $type && !$user->isEmailApproved()) {
+            $user->setEmailApproved(true);
+            $this->userRepo->add($user);
         }
 
         return $this->login($user, $request);

@@ -7,6 +7,7 @@ use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\NotificationStatus;
+use App\Admin\Notification\Enum\SchedulerStatus;
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -24,6 +25,10 @@ class SchedulerDto extends AbstractApiDto
     #[Assert\NotNull]
     #[Assert\GreaterThan(new \DateTimeImmutable())]
     public \DateTimeImmutable $send_at;
+
+    #[Assert\NotNull]
+    #[Assert\Type(type: 'bool')]
+    public bool $refresh_campaign = false;
 
     // Notification
     #[Assert\NotNull]
@@ -100,8 +105,8 @@ class SchedulerDto extends AbstractApiDto
                 new Assert\Choice(callback: [DeviceType::class, 'values']),
             ]),
             'user.createdAt' => new Assert\Collection([
-                'from' => new Assert\Optional(new Assert\DateTime('d/m/Y H:i')),
-                'to' => new Assert\Optional(new Assert\DateTime('d/m/Y H:i')),
+                'from' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
+                'to' => new Assert\Optional(new Assert\DateTime(DATE_ATOM)),
             ]),
             'user.type' => new Assert\All([
                 new Assert\Choice(callback: [UserType::class, 'values']),
@@ -128,7 +133,7 @@ class SchedulerDto extends AbstractApiDto
 
     public function initObject(Scheduler|string $object = null): Scheduler
     {
-        return $object
+        $object
             ->setCampaignTitle($this->validated('campaign_title'))
             ->setPersistNotification($this->validated('persist_notification'))
             ->setSendAt($this->validated('send_at'))
@@ -140,5 +145,14 @@ class SchedulerDto extends AbstractApiDto
                     ->setStatus($this->status)
                     ->setData($this->validated('data') ?? [])
             );
+
+        if ($this->validated('refresh_campaign')) {
+            $object
+                ->setStatus(SchedulerStatus::INIT)
+                ->setDeliveredCount(0)
+                ->setFailedCount(0);
+        }
+
+        return $object;
     }
 }

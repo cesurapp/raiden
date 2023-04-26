@@ -92,14 +92,14 @@ class UserResource implements ApiResourceInterface {
     public function toResource(): array {
         return [
               'id' => [
-                'type' => 'string', // Typescript Type
+                'type' => 'string', // Typescript Type -> ?string|?int|?boolean|?array|?object|NotificationResource::class|
                 'filter' => static function (QueryBuilder $builder, string $alias, mixed $data) {}, // app.test?filter[id]=test
                 'table' => [ // Typescript DataTable Types
                     'label' => 'ID',                     // DataTable Label
                     'sortable' => true,                  // DataTable Sortable Column   
                     'sortable_default' => true,          // DataTable Default Sortable Column
                     'sortable_desc' => true,             // DataTable Sortable DESC
-                    'filter_input' => 'input',           // DataTable Add Filter Input Type #input #number #date #daterange #checkbox
+                    'filter_input' => 'input',           // DataTable Add Filter Input Type -> input|number|date|daterange|checkbox|country|language
                    
                     // These fields are used in the backend. It doesn't transfer to the frontend. 
                     'exporter' => static fn($v) => $v,   // Export Column Template
@@ -127,6 +127,9 @@ Filters are set according to the query parameter. Only matching records are filt
 Sample request `http://example.test/v1/userlist?filter[id]=1&filter[createdAt][min]=10.10.2023`
 
 ### Create Form Validation
+Backend dates are stored in UTC ATOM format. In GET requests you get dates in ATOM format. 
+In POST|PUT requests, send dates in ATOM format, converted to UTC.
+
 ```php
 use Package\ApiBundle\AbstractClass\AbstractApiDto;
 use Package\ApiBundle\Thor\Attribute\ThorResource;
@@ -151,6 +154,10 @@ class LoginDto extends AbstractApiDto {
     #[Assert\NotNull]
     public int $phone;
 
+    #[Assert\NotNull]
+    #[Assert\GreaterThan(new \DateTimeImmutable())]
+    public \DateTimeImmutable $send_at;
+    
     #[Assert\Optional([
         new Assert\Type('array'),
         new Assert\Count(['min' => 1]),
@@ -175,6 +182,17 @@ class LoginDto extends AbstractApiDto {
 ```
 
 ### Swoole Coroutine HTTP Client
+Replaced Symfony HttpClientInteface with Swoole. It provides high performance.
+
+Example:
+
+```php
+public function homeControllerAction(\Symfony\Contracts\HttpClient\HttpClientInterface $client){
+    $client->request('POST', 'https://google.com') // Swoole Coroute HTTP Client
+}
+```
+
+Without Dependency Injection:
 
 GET | DELETE Request:
 

@@ -6,6 +6,7 @@ export type SchedulerCreateRequest = {
   campaign_title: string,
   persist_notification: boolean,
   send_at: string,
+  refresh_campaign: boolean,
   status: NotificationStatus,
   title?: string,
   message?: string,
