@@ -18,7 +18,7 @@ return static function (array $opt) {
             'sock_type' => Constant::SOCK_TCP,
             'settings' => [
                 'worker_num' => 8,
-                'task_worker_num' => 4,
+                'task_worker_num' => 8,
                 'enable_static_handler' => false,
                 'log_level' => Constant::LOG_WARNING,
                 'max_wait_time' => 60,
