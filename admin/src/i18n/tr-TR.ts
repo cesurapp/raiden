@@ -119,7 +119,7 @@ export default {
 
   // Search Bar
   Search: 'Arama',
-  no_result: '{msg} için sonuç bulunamadı!',
+  no_result: 'msg için sonuç bulunamadı!',
   'to Open': 'Aç',
   'to Close': 'Kapat',
 
@@ -129,7 +129,7 @@ export default {
   Language: 'Dil',
   Update: 'Güncelle',
   approve_message: 'Doğrulama kodu Adrese veya Telefona gönderilecektir. Devam etmek istiyor musun?',
-  send_verify_code: 'Doğrulama kodu {msg} adresine gönderildi.',
+  send_verify_code: 'Doğrulama kodu msg adresine gönderildi.',
   'Verify Email': 'E-postayı Doğrulayın',
   'Verify Phone': 'Telefonu Doğrulayın',
   'Update Email': 'E-postayı Güncelle',

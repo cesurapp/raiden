@@ -63,7 +63,7 @@
         <q-card-section v-else>
           <div class="not-found flex column items-center justify-center">
             <q-icon :name="mdiMagnify" size="48px" color="grey-7"></q-icon>
-            <p class="q-mt-sm" v-html="$t('no_result', { msg: `<b>&quot;${search}&quot;</b>` })"></p>
+            <p class="q-mt-sm" v-html="$t('no_result').replace('msg', `<b>&quot;${search}&quot;</b>`)"></p>
           </div>
         </q-card-section>
 

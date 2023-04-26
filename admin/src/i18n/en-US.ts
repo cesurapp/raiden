@@ -22,7 +22,7 @@ export default {
   },
 
   // Search Bar
-  no_result: 'No results for {msg}',
+  no_result: 'No results for msg',
   approve_message: 'Verification code will be sent to the Address or Phone. Do you want to continue?',
-  send_verify_code: 'Verification code sent to {msg} address.',
+  send_verify_code: 'Verification code sent to msg address.',
 };
