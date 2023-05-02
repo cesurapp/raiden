@@ -1,9 +1,9 @@
-import { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosError, AxiosHeaderValue, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
 /**
  * Configure Request
  */
-function requestConfig(config: AxiosRequestConfig, authStore, appStore, i18n) {
+function requestConfig(config: InternalAxiosRequestConfig, authStore, appStore, i18n) {
   if (config.skipInterceptor === true) {
     return config;
   }
@@ -12,16 +12,16 @@ function requestConfig(config: AxiosRequestConfig, authStore, appStore, i18n) {
   appStore.busyProcess((config.uniqId = Math.random().toString(36).replace('0.', '')));
 
   // Set Language
-  config.headers.common['Accept-Language'] = i18n.global.locale['value'];
+  config.headers['Accept-Language'] = i18n.global.locale['value'];
 
   // Set Auth Header
   if (authStore.isLoggedIn()) {
-    config.headers.common['Authorization'] = `Bearer ${authStore.appToken}`;
+    config.headers.Authorization = `Bearer ${authStore.appToken}` as AxiosHeaderValue
   }
 
   // Set Switch User
   if (authStore.isSwitchedUser() && !config.url?.startsWith('/v1/auth')) {
-    config.headers.common['SWITCH_USER'] = authStore.switchedUser;
+    config.headers['SWITCH_USER'] = authStore.switchedUser;
   }
 
   return config;
@@ -35,8 +35,8 @@ function responseSuccess(response: AxiosResponse, appStore) {
     return response;
   }
 
+  // Render Error Message
   const msg = response.config.showMessage;
-
   if ((typeof msg === 'undefined' || msg) && response.data.hasOwnProperty('message')) {
     Object.keys(response.data.message).forEach((type) => {
       Object.values(response.data.message[type]).forEach((message: any) => {
@@ -45,15 +45,17 @@ function responseSuccess(response: AxiosResponse, appStore) {
     });
   }
 
+  // Busy Complete
   appStore.busyComplete(response.config.uniqId);
 
   return response;
 }
 
 async function responseError(error: AxiosError, client: AxiosInstance, authStore, appStore) {
-  if (error.config.skipInterceptor === true) {
+  if (error.config?.skipInterceptor === true) {
     return Promise.reject(error);
   }
+  appStore.busyComplete(error.response?.config);
 
   // Network Error
   if (error.message === 'Network Error') {
@@ -68,47 +70,45 @@ async function responseError(error: AxiosError, client: AxiosInstance, authStore
   }
 
   // Render Response Error
-  if (error.response) {
-    appStore.busyComplete(error.response.config);
-    const type = error.response.data?.type;
+  if (error.response && error.config) {
+    const data = error.response.data as any;
 
     // Token Refresh and Continue Current Request
-    if (['TokenExpiredException'].includes(type) && !error.config.retry) {
+    if (['TokenExpiredException'].includes(data.type) && !error.config.retry) {
       error.config.retry = true;
-      delete error.config.headers['Authorization'];
-
+      delete error.config.headers.Authorization;
       return authStore
         .reloadTokenWithRefreshToken()
+        // @ts-ignore
         .then(() => client(error.config))
         .catch(() => authStore.logout(false));
     }
 
     // Logout for JWTException
-    if (['JWTException'].includes(type)) {
+    if (['JWTException'].includes(data.type)) {
       await authStore.logout(false);
-
       return Promise.reject(error);
     }
 
     // Global Exception Handling
-    if (['ValidationException'].includes(type)) {
-      if (Object.keys(error.response.data.errors).length > 0) {
-        appStore.apiExceptions = error.response.data.errors;
+    if (['ValidationException'].includes(data.type)) {
+      if (Object.keys(data.errors).length > 0) {
+        appStore.apiExceptions = data.errors;
       }
     }
 
     // Show Error Message
-    if (error.response.data.message) {
-      appStore.notifyDanger(error.response.data.message);
+    if (data.message) {
+      appStore.notifyDanger(data.message);
     }
   }
 
   return Promise.reject(error);
 }
 
-export default (client, authStore, appStore, i18n) => {
+export default (client: AxiosInstance, authStore, appStore, i18n) => {
   client.interceptors.request.use(
-    async (config: AxiosRequestConfig) => requestConfig(config, authStore, appStore, i18n),
+    async (config) => requestConfig(config, authStore, appStore, i18n),
     async (error: AxiosError) => () => {
       if (error.config?.uniqId) {
         appStore.busyComplete(error.config.uniqId);

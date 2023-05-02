@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Admin App</string>
+    <string name="title_activity_main">Admin App</string>
+    <string name="package_name">raiden.app</string>
+    <string name="custom_url_scheme">raiden.app</string>
+</resources>

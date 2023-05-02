@@ -2,7 +2,7 @@
  * Animate CSS
  */
 :root {
-  --animate-duration: 100ms;
+  --animate-duration: .1s;
 }
 
 .q-notification__caption {
@@ -34,7 +34,8 @@
 }
 
 .q-toolbar__title {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 /**
@@ -345,6 +346,17 @@ body.body--dark {
 }
 
 /**
+ * Q-Card
+ */
+.q-card__actions{
+  padding: 6.5px 8px;
+  & > .q-btn ,
+  & > div > .q-btn {
+    font-size: 13px;
+  }
+}
+
+/**
  * Table
  */
 .q-table th,
@@ -378,8 +390,8 @@ body.body--dark {
 
 .q-table__bottom {
   min-height: 44px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 4px;
+  padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 4px);
   border-bottom: 1px solid $table-border-color;
 
   &.q-table__bottom--nodata {
@@ -444,7 +456,7 @@ body.body--dark {
 
 // Sticky Header
 .table-sticky {
-  height: calc(100vh - 46px);
+  height: calc(100vh - 46px - env(safe-area-inset-top));
 
   thead tr th {
     position: sticky;
@@ -454,6 +466,10 @@ body.body--dark {
   thead tr:first-child th {
     top: 0;
   }
+}
+
+.tabbed + .page-content .table-sticky {
+  height: calc(100vh - 46px - 36px);
 }
 
 // Sticky Column
@@ -478,6 +494,27 @@ body.body--dark {
   }
 }
 
+.sticky-first {
+  max-width: 100%;
+
+  th:first-of-type {
+    position: sticky;
+    left: 0;
+    z-index: 3 !important;
+  }
+  td:first-of-type {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  &:not(.q-table--dark) {
+    td:first-of-type {
+      background-color: $body-color;
+    }
+  }
+}
+
 .custom-bottom {
   position: sticky;
   bottom: 0;
@@ -486,10 +523,6 @@ body.body--dark {
   td {
     border-top: 1px solid $table-border-color;
   }
-}
-
-.tabbed + .page-content .table-sticky {
-  height: calc(100vh - 46px - 36px);
 }
 
 /**
@@ -553,7 +586,7 @@ body.body--dark {
   position: absolute;
   top: 0;
   font-size: $button-font-size - 1 !important;
-  left: calc(100%);
+  left: 100%;
   transform: translateX(65%);
 
   .q-icon {
@@ -569,8 +602,39 @@ body.body--dark {
  * GAP
  */
 .gap-x-sm {
-  gap: 0 $flex-gutter-sm;
+  column-gap: map-get($space-sm, 'x');
+}
+.gap-y-sm {
+  row-gap: map-get($space-sm, 'y');
 }
 .gap-x-md {
-  gap: 0 $flex-gutter-md;
+  column-gap: map-get($space-md, 'x');
+}
+.gap-y-md {
+  row-gap: map-get($space-md, 'y');
+}
+
+/**
+ * Popup Dropdown
+ */
+.popup-dropdown {
+  .q-dialog__inner {
+    & > div {
+      background: #FFF;
+      padding: map_get($space-sm, 'y') map_get($space-sm, 'x');
+    }
+    .q-item{
+      border-radius: $button-border-radius;
+    }
+  }
+}
+
+.body--dark {
+  .popup-dropdown {
+    .q-dialog__inner {
+      & > div {
+        background: $dark;
+      }
+    }
+  }
 }

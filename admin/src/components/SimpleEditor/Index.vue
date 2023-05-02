@@ -1,9 +1,9 @@
 <template>
-  <q-dialog v-model="active" :maximized="$q.screen.lt.md" :no-backdrop-dismiss="persistent">
+  <q-dialog v-model="active" :maximized="$q.screen.lt.md" :no-backdrop-dismiss="persistent" class='dialog-main'>
     <q-card class="simple-editor">
       <!--Header-->
       <q-toolbar class="bg-primary text-white">
-        <q-btn flat dense disable v-if="icon" :icon="icon" size="15px" style="opacity: 1 !important" />
+        <q-btn flat dense class='q-mr-xs' disable v-if="icon" :icon="icon" style="opacity: 1 !important" />
         <q-toolbar-title class="title">{{ updating ? $t(titleUpdate || '') : $t(titleCreate || '') }}</q-toolbar-title>
         <q-btn flat round dense :icon="mdiClose" @click="active = !active" />
       </q-toolbar>
@@ -132,6 +132,8 @@ export default defineComponent({
   }
 
   .q-toolbar {
+    padding: 6.5px 12px;
+    padding-top: max(6.5px, calc(env(safe-area-inset-top) + 6.5px));
     position: sticky;
     top: 0;
     z-index: 3;
@@ -141,6 +143,7 @@ export default defineComponent({
     position: sticky;
     bottom: 0;
     z-index: 3;
+    padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 6.5px);
   }
 
   .content {
@@ -202,6 +205,18 @@ export default defineComponent({
 
   .content {
     flex: 1;
+  }
+}
+
+body.q-android-padding .dialog-main,
+body.q-ios-padding .dialog-main, {
+  .q-dialog__inner {
+    padding-top: 0 !important;
+
+    & > div {
+      height: 100vh !important;
+      max-height: 100vh !important;
+    }
   }
 }
 </style>

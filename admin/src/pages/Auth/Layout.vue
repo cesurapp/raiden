@@ -66,4 +66,17 @@ export default defineComponent({
     min-height: 610px;
   }
 }
+.login-tab {
+  .q-tabs__content{
+    gap: 10px;
+  }
+  .q-tab {
+    border-radius: 4px;
+    overflow: hidden;
+
+    .q-tab__indicator {
+      display: none !important;
+    }
+  }
+}
 </style>

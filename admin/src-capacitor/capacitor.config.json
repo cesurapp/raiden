@@ -1,0 +1,7 @@
+{
+  "appId": "raiden.app",
+  "appName": "Admin App",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "www"
+}

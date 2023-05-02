@@ -11,142 +11,155 @@
     :selected-rows-label="(v) => $t('count record selected').replace('count', v)"
     :no-data-label="$t('There were no results!')"
     class="table-sticky"
-    :class="{ 'sticky-action': rowActions }"
+    :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable }"
     @request="onRequest"
     @rowContextmenu="(event, row, index) => $emit('rowRightClick', event, row, index)"
     @rowClick="(event, row, index) => $emit('rowClick', event, row, index)"
     binary-state-sort
   >
-    <!--Title-->
-    <template #top-left v-if="header">
-      <div v-if="!isFiltered" class="table-title text-h4">
-        <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
-      </div>
-
-      <!--View Filter Parameters-->
-      <template v-else>
-        <q-btn-dropdown
-          size="12px"
-          split
-          color="positive"
-          :label="!$q.screen.xs ? 'Clear Filters' : ''"
-          :icon="mdiFilterRemove"
-          :content-style="{ padding: '6px 12px' }"
-          :menu-offset="[0, 10]"
-          menu-self="top start"
-          menu-anchor="bottom start"
-          @click="clearFilter"
-        >
-          <div class="flex column items-start">
-            <q-chip
-              v-for="(val, type) in filterValues"
-              :key="val"
-              clickable
-              @click="unsetFilter(type)"
-              square
-              class="q-pr-sm q-pl-sm q-mr-sm"
-            >
-              <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
-              <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
-                type
-              }}</q-avatar>
-              {{ val }}
-            </q-chip>
-          </div>
-        </q-btn-dropdown>
-      </template>
-    </template>
-
-    <!--Selected Actions-->
-    <template #top-selection v-if="header && selectedRows.length > 0">
-      <q-btn-group v-if="!$q.screen.xs">
-        <q-btn
-          color="red"
-          size="12px"
-          v-close-popup
-          v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
-          :icon="mdiDeleteOutline"
-          @click="onActionRemoveAll(this.selectedRows)"
-        >
-          <q-tooltip>{{ $t('Delete All') }}</q-tooltip>
-        </q-btn>
-        <slot name="selectedActions" :props="selectedRows"></slot>
-      </q-btn-group>
-      <q-btn-dropdown
-        v-else
-        :dropdown-icon="mdiDotsVertical"
-        content-class="shadow-0 transparent-dropdown"
-        dense
-        outline
-        rounded
-        color="primary"
-        :menu-offset="[0, 10]"
-      >
-        <div class="column q-gutter-sm">
-          <q-btn
-            color="red"
-            size="12px"
-            v-close-popup
-            v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
-            :icon="mdiDeleteOutline"
-            @click="onActionRemoveAll(this.selectedRows)"
-            ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
-          >
-          <slot name="selectedActions" :props="selectedRows"></slot>
-        </div>
-      </q-btn-dropdown>
-    </template>
-
-    <!--Table Actions-->
-    <template #top-right v-if="header">
-      <div class="row q-gutter-sm">
-        <q-btn-group v-if="!$q.screen.xs">
-          <q-btn v-if="refreshButton" color="primary" v-close-popup :icon="mdiRefresh" size="12px" @click="refresh"
-            ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
-          >
-          <q-btn
-            v-if="exportButton && getExportedColumns.length > 0"
-            color="primary"
-            v-close-popup
-            :icon="mdiFileExportOutline"
-            size="12px"
-            @click="$refs.exporter.toggle()"
-            ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
-          >
-          <slot name="tableActions"></slot>
-        </q-btn-group>
-        <q-btn-dropdown
-          v-else
-          :dropdown-icon="mdiDotsVertical"
-          content-class="shadow-0 transparent-dropdown"
-          size="12px"
-          outline
-          padding="7px 8px"
-          rounded
-          color="primary"
-          :menu-offset="[0, 10]"
-        >
-          <div class="column q-gutter-sm">
-            <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh"
-              ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
-            >
-            <q-btn
-              v-if="exportButton && getExportedColumns.length > 0"
-              color="primary"
-              v-close-popup
-              :icon="mdiFileExportOutline"
+    <!--Top Area-->
+    <template #top v-if='header'>
+      <q-pull-to-refresh class='full-width' @refresh='refresh(false, $event)'>
+        <div class='relative-position row items-center full-width'>
+          <!--Selected Actions-->
+          <div class='q-table__control' v-if="selectedRows.length > 0">
+            <q-btn-group v-if="!$q.screen.xs">
+              <q-btn
+                color="red"
+                size="12px"
+                v-close-popup
+                v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+                :icon="mdiDeleteOutline"
+                @click="onActionRemoveAll(this.selectedRows)"
+              >
+                <q-tooltip>{{ $t('Delete All') }}</q-tooltip>
+              </q-btn>
+              <slot name="selectedActions" :props="selectedRows"></slot>
+            </q-btn-group>
+            <q-btn-dropdown
+              v-else
               size="12px"
-              @click="$refs.exporter.toggle()"
-              ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
+              padding="7px 8px"
+              :dropdown-icon="mdiDotsVertical"
+              content-class="shadow-0 transparent-dropdown"
+              dense
+              outline
+              rounded
+              color="primary"
+              :menu-offset="[0, 10]"
             >
-            <slot name="tableActions"></slot>
+              <div class="column q-gutter-sm">
+                <q-btn
+                  color="red"
+                  size="12px"
+                  v-close-popup
+                  v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+                  :icon="mdiDeleteOutline"
+                  @click="onActionRemoveAll(this.selectedRows)"
+                ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
+                >
+                <slot name="selectedActions" :props="selectedRows"></slot>
+              </div>
+            </q-btn-dropdown>
           </div>
-        </q-btn-dropdown>
-      </div>
+
+          <!--Title-->
+          <div class='q-table__control' v-else>
+            <div v-if="!isFiltered" class="table-title text-h5">
+              <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
+            </div>
+
+            <!--View Filter Parameters-->
+            <template v-else>
+              <q-btn-dropdown
+                size="12px"
+                split
+                color="positive"
+                :label="!$q.screen.xs ? 'Clear Filters' : ''"
+                :icon="mdiFilterRemove"
+                :content-style="{ padding: '6px 12px' }"
+                :menu-offset="[0, 10]"
+                menu-self="top start"
+                menu-anchor="bottom start"
+                @click="clearFilter"
+              >
+                <div class="flex column items-start">
+                  <q-chip
+                    v-for="(val, type) in filterValues"
+                    :key="val"
+                    clickable
+                    @click="unsetFilter(type)"
+                    square
+                    class="q-pr-sm q-pl-sm q-mr-sm"
+                  >
+                    <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
+                    <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
+                        type
+                      }}</q-avatar>
+                    {{ val }}
+                  </q-chip>
+                </div>
+              </q-btn-dropdown>
+            </template>
+          </div>
+
+          <div class='q-table__separator col'></div>
+
+          <!--Table Actions-->
+          <div class='q-table__control'>
+            <template v-if="header">
+              <div class="row q-gutter-sm">
+                <q-btn-group v-if="!$q.screen.xs">
+                  <q-btn v-if="refreshButton" color="primary" v-close-popup :icon="mdiRefresh" size="12px" @click="refresh"
+                  ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
+                  >
+                  <q-btn
+                    v-if="exportButton && getExportedColumns.length > 0"
+                    color="primary"
+                    v-close-popup
+                    :icon="mdiFileExportOutline"
+                    size="12px"
+                    @click="$refs.exporter.toggle()"
+                  ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
+                  >
+                  <slot name="tableActions"></slot>
+                </q-btn-group>
+                <q-btn-dropdown
+                  v-else
+                  :dropdown-icon="mdiDotsVertical"
+                  content-class="shadow-0 transparent-dropdown"
+                  size="12px"
+                  outline
+                  padding="7px 8px"
+                  rounded
+                  color="primary"
+                  :menu-offset="[0, 10]"
+                >
+                  <div class="column q-gutter-sm">
+                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh"
+                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
+                    >
+                    <q-btn
+                      v-if="exportButton && getExportedColumns.length > 0"
+                      color="primary"
+                      v-close-popup
+                      :icon="mdiFileExportOutline"
+                      size="12px"
+                      @click="$refs.exporter.toggle()"
+                    ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
+                    >
+                    <slot name="tableActions"></slot>
+                  </div>
+                </q-btn-dropdown>
+              </div>
+            </template>
+          </div>
+        </div>
+      </q-pull-to-refresh>
     </template>
 
     <!--Row Actions-->
-    <template v-if="rowActions" #body-cell-actions="props">
+    <template v-if="getRowActions" #body-cell-actions="props">
       <q-td :props="props" class="actions-column">
         <q-btn-dropdown
           color="primary"
@@ -208,7 +221,7 @@
       </q-td>
 
       <!--Context Actions-->
-      <q-menu touch-position context-menu v-if="contextActions && $slots.rowActions">
+      <q-menu touch-position context-menu v-if="contextActions || $slots.getRowActions">
         <q-list dense style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
           <q-item
@@ -243,33 +256,31 @@
           :color="![null, undefined, ''].includes(filterValues[props.col.name]) ? 'primary' : 'default'"
           :style="[![null, undefined, ''].includes(filterValues[props.col.name]) ? 'opacity: 1' : 'opacity: .6']"
         >
-          <q-menu no-route-dismiss>
-            <div class="q-px-md q-py-sm">
-              <TableFilter
-                v-if="$slots['filter_' + props.col.name]"
-                :filter="getColumnFilter[props.col.name]"
+          <q-popup-proxy :breakpoint='600' style='padding: 0 !important;'>
+            <TableFilter
+              v-if="$slots['filter_' + props.col.name]"
+              :filter="getColumnFilter[props.col.name]"
+              :column="props.col"
+              v-model="filterValues[props.col.name]"
+              @onSearch="refresh"
+            >
+              <slot
+                :name="'filter_' + props.col.name"
                 :column="props.col"
-                v-model="filterValues[props.col.name]"
-                @onSearch="refresh"
-              >
-                <slot
-                  :name="'filter_' + props.col.name"
-                  :column="props.col"
-                  :values="filterValues"
-                  :refresh="refresh"
-                ></slot>
-              </TableFilter>
+                :values="filterValues"
+                :refresh="refresh"
+              ></slot>
+            </TableFilter>
 
-              <TableFilter
-                v-else
-                :filter="getColumnFilter[props.col.name]"
-                :column="props.col"
-                v-model="filterValues[props.col.name]"
-                @onSearch="refresh"
-                @keydown.enter="refresh"
-              ></TableFilter>
-            </div>
-          </q-menu>
+            <TableFilter
+              v-else
+              :filter="getColumnFilter[props.col.name]"
+              :column="props.col"
+              v-model="filterValues[props.col.name]"
+              @onSearch="refresh"
+              @keydown.enter="refresh"
+            ></TableFilter>
+          </q-popup-proxy>
         </q-btn>
       </q-th>
     </template>
@@ -448,6 +459,13 @@ export default defineComponent({
     loadEvent: true,
   }),
   computed: {
+    getRowActions() {
+      if (!this.rowActions) {
+        return false;
+      }
+
+      return !this.$q.screen.lt.md;
+    },
     getColumns() {
       let all = this.columns.map((c) => {
         if (c.name.endsWith('_at')) {
@@ -460,7 +478,7 @@ export default defineComponent({
         };
       });
 
-      if (this.rowActions) {
+      if (this.getRowActions) {
         all.unshift({
           name: 'actions',
           label: '',
@@ -497,7 +515,7 @@ export default defineComponent({
       return this.columns.find((c) => c.hasOwnProperty('sortable_desc'))?.sortable_desc || false;
     },
     isFiltered() {
-      return Object.values(this.filterValues).filter((item) => Boolean(item)).length > 0;
+      return Object.values(this.filterValues).filter((item: any) => ! [undefined, null, ''].includes(item)).length > 0;
     },
   },
   mounted() {
@@ -527,7 +545,14 @@ export default defineComponent({
       if (!this.loadEvent) {
         this.loadQueryString(true);
       }
-      this.requestProp(this.getQuery()).then((r) => this.setResponse(r));
+
+      this.requestProp(this.getQuery())
+        .then((r) => this.setResponse(r))
+        .finally(() => {
+          if (props.pullRefresh) {
+            props.pullRefresh();
+          }
+        });
       this.backEvent = false;
       this.loadEvent = false;
     },
@@ -591,12 +616,12 @@ export default defineComponent({
     /**
      * Refresh Current Request
      */
-    refresh(checkPagination = true) {
+    refresh(checkPagination = true, pullRefresh) {
       if (checkPagination && this.rows.length === 0 && this.pagination.page > 1) {
         this.pagination.page--;
       }
 
-      this.$refs.table.requestServerInteraction();
+      this.onRequest({ pagination: this.pagination, pullRefresh })
     },
 
     /**
@@ -756,12 +781,21 @@ export default defineComponent({
 
 <style lang="scss">
 .table-title {
-  font-size: 1.8rem;
-  line-height: 1.8rem;
+  // font-size: 1.8rem;
+  // line-height: 1.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .q-table__top {
   min-height: 60px;
+  flex-wrap: nowrap;
+
+  .q-table__control{
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+  }
 }
 
 .screen--xl,

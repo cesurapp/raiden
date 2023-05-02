@@ -33,10 +33,9 @@ export const useAppStore = defineStore('app', {
       this.busy.push(id);
     },
     busyComplete(id) {
-      this.busy.splice(
-        this.busy.findIndex((i) => i === id),
-        1
-      );
+      if (id) {
+        this.busy.splice(this.busy.findIndex((i) => i === id), 1);
+      }
     },
 
     /**

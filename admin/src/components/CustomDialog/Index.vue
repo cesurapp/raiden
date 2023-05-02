@@ -8,9 +8,7 @@
       </q-card-section>
 
       <template v-else>
-        <q-card-section v-if="title"
-          ><div class="text-h6">{{ $t(title) }}</div></q-card-section
-        >
+        <q-card-section v-if="title"><div class="text-h6">{{ $t(title) }}</div></q-card-section>
         <q-card-section v-if="message" class="q-pt-none">{{ $t(message) }}</q-card-section>
       </template>
 

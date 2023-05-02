@@ -1,5 +1,5 @@
 <template>
-  <div class="column items-end">
+  <div class="column items-end table-filter" :class='[$q.dark.isActive ? "bg-dark" : "bg-white"]'>
     <slot>
       <!--Q-Input-->
       <q-input
@@ -200,5 +200,8 @@ export default defineComponent({
 .datepopup {
   padding: 0;
   backdrop-filter: none;
+}
+.table-filter {
+  padding: calc(#{map-get($space-sm, 'x')} + 3px) map-get($space-sm, 'x');
 }
 </style>

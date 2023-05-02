@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="active" :maximized="$q.screen.lt.sm">
+  <q-dialog v-model="active">
     <q-card :style="{ minWidth: width }" class="simple-dialog">
       <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm">
         <slot name="header" />

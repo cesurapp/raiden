@@ -93,6 +93,6 @@ export default defineComponent({
         title: this.$t(String(this.$route.meta.breadcrumb)),
       };
     }),
-  ],
+  ]
 });
 </script>

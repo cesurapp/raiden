@@ -1,14 +1,14 @@
 <template>
-  <div>
+  <div class='search-bar' :class='{"mobile": $q.screen.lt.sm}'>
     <!--Search Bar-->
-    <div id="searchBar" class="q-mx-md" @click="dialog = true">
+    <div class="search-input q-mx-sm-md q-mx-sm" @click="dialog = true">
       <q-icon :name="mdiMagnify"></q-icon>
       <span class="text">{{ $t('Search') }}</span>
     </div>
 
     <!--Search Dialog-->
     <q-dialog v-model="dialog" position="top" class="search-dialog" no-route-dismiss>
-      <q-card style="width: 640px" class="search-card">
+      <q-card style="width: 640px" class="search-card q-mx-md">
         <q-card-section class="input-area q-pb-sm">
           <q-input
             :debounce="50"
@@ -265,7 +265,7 @@ export default defineComponent({
   }
 }
 
-#searchBar {
+.search-input {
   padding: 5px 18px 5px 15px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 25px;
@@ -288,6 +288,20 @@ export default defineComponent({
 
   &:hover {
     background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.search-bar.mobile{
+  .search-input {
+    padding: 5px 6px 5px 6px;
+
+    .text{
+      display: none;
+    }
+    .q-icon {
+      margin-right: 0;
+    }
+
   }
 }
 </style>

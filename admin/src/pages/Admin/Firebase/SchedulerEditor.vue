@@ -135,32 +135,36 @@
             :error-message="$rules.ssrException('message')"
           ></q-input>
           <!--Custom Data-->
-          <div class="flex justify-between gap-x-md q-mt-lg" v-for="(item, index) in data" :key="index">
-            <q-select
-              emit-value
-              map-options
-              outlined
-              style="width: 28%"
-              multiple
-              :label="$t('Device')"
-              v-model="item.type"
-              :options="[
+          <div class="flex justify-between no-wrap q-mt-lg" v-for="(item, index) in data" :key="index">
+            <div class='flex full-width justify-between gap-x-md gap-y-md q-pr-md'>
+              <q-select
+                emit-value
+                map-options
+                outlined
+                style="width: 28%"
+                multiple
+                :label="$t('Device')"
+                v-model="item.type"
+                class='col-grow'
+                :options="[
                 { label: 'Web', value: DeviceType.WEB },
                 { label: 'Android', value: DeviceType.ANDROID },
                 { label: 'Ios', value: DeviceType.IOS },
               ]"
-            ></q-select>
-            <q-select
-              emit-value
-              map-options
-              outlined
-              style="width: 25%"
-              v-model="item.action"
-              :label="$t('Action')"
-              :options="['icon', 'sound', 'color', 'click_action', 'route_action', 'download_action']"
-            ></q-select>
-            <q-input outlined :label="$t('Value')" class="col-grow" v-model="item.value"></q-input>
-            <q-btn flat dense color="negative" :icon="mdiClose" @click="removeOptions(index)"></q-btn>
+              ></q-select>
+              <q-select
+                emit-value
+                map-options
+                outlined
+                class='col-grow'
+                style="width: 25%"
+                v-model="item.action"
+                :label="$t('Action')"
+                :options="['icon', 'sound', 'color', 'click_action', 'route_action', 'download_action']"
+              ></q-select>
+              <q-input outlined :label="$t('Value')" class="col-grow" v-model="item.value"></q-input>
+            </div>
+            <q-btn outline dense size='sm' color="negative" :icon="mdiClose" @click="removeOptions(index)"></q-btn>
           </div>
         </div>
       </q-form>

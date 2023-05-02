@@ -99,7 +99,7 @@ class UserResource implements ApiResourceInterface
             'email_approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = in_array($data, ['1', 'true', true], false);
+                    $data = filter_var($data, FILTER_VALIDATE_BOOL);
                     $builder->andWhere("$alias.emailApproved = :emailApproved")->setParameter('emailApproved', $data);
                 },
                 'table' => [
@@ -133,7 +133,7 @@ class UserResource implements ApiResourceInterface
             'phone_approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = in_array($data, ['1', 'true', true], false);
+                    $data = filter_var($data, FILTER_VALIDATE_BOOL);
                     $builder->andWhere("$alias.phoneApproved = :phoneApproved")->setParameter('phoneApproved', $data);
                 },
                 'table' => [
@@ -145,7 +145,7 @@ class UserResource implements ApiResourceInterface
             'approved' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = in_array($data, ['1', 'true', true], false);
+                    $data = filter_var($data, FILTER_VALIDATE_BOOL);
 
                     if (!$data) {
                         $builder
@@ -168,7 +168,7 @@ class UserResource implements ApiResourceInterface
             'frozen' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = in_array($data, ['1', 'true', true], false);
+                    $data = filter_var($data, FILTER_VALIDATE_BOOL);
                     $builder->andWhere("$alias.frozen = :frozen")->setParameter('frozen', $data);
                 },
                 'table' => [

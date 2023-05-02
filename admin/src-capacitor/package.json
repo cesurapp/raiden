@@ -1,0 +1,13 @@
+{
+  "name": "admin",
+  "version": "0.0.1",
+  "description": "Admin Application UI",
+  "author": "Ramazan APAYDIN",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^4.0.0-beta.0",
+    "@capacitor/cli": "^4.8.0",
+    "@capacitor/core": "^4.8.0",
+    "@capacitor/ios": "^4.0.0-beta.0"
+  }
+}

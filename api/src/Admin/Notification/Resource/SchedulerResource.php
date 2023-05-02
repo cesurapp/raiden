@@ -73,7 +73,7 @@ class SchedulerResource implements ApiResourceInterface
             'persist_notification' => [
                 'type' => 'boolean',
                 'filter' => static function (QueryBuilder $builder, string $alias, $data) {
-                    $data = in_array($data, ['1', 'true', true], false);
+                    $data = filter_var($data, FILTER_VALIDATE_BOOL);
                     $builder->andWhere("$alias.persistNotification = :persistNotification")->setParameter('persistNotification', $data);
                 },
                 'table' => [

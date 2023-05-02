@@ -292,6 +292,8 @@ export default defineComponent({
   flex-direction: column;
   box-shadow: 0 0 5px 2px rgb(0 0 0 / 10%);
 
+  padding-bottom: calc(env(safe-area-inset-bottom) / 2) !important;
+
   .menus {
     flex: 1;
     overflow: auto;

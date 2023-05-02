@@ -324,8 +324,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .panel-head {
+  padding-top: max(#{map-get($space-sm, "y")}, calc(#{map-get($space-sm, "y")} + env(safe-area-inset-top)));
   font-weight: 500;
-  height: 46px;
+  // height: 46px;
   background: $primary;
   color: #fff;
   font-size: $button-font-size + 2;
@@ -348,7 +349,10 @@ export default defineComponent({
 </style>
 
 <style lang="scss">
-.notification-drawer .q-scrollarea__content {
-  width: 100%;
+.notification-drawer {
+  padding-top: 0 !important;
+  .q-scrollarea__content {
+    width: 100%;
+  }
 }
 </style>
