@@ -192,6 +192,7 @@ export default {
   Devices: 'Cihazlar',
   'Firebase Devices': 'Firebase Cihazlar',
   'Scheduled Notifications': 'Zamanlanmış Bildirimler',
+  'Send Notification': 'Bildirim Gönder',
   devices: {
     ID: 'ID',
     Type: 'Tür',

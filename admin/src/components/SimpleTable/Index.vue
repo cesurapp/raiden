@@ -13,7 +13,6 @@
     class="table-sticky"
     :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable }"
     @request="onRequest"
-    @rowContextmenu="(event, row, index) => $emit('rowRightClick', event, row, index)"
     @rowClick="(event, row, index) => $emit('rowClick', event, row, index)"
     binary-state-sort
   >
@@ -221,7 +220,7 @@
       </q-td>
 
       <!--Context Actions-->
-      <q-menu touch-position context-menu v-if="contextActions || $slots.getRowActions">
+      <q-popup-proxy :breakpoint='600' context-menu v-if="contextActions || $slots.getRowActions">
         <q-list dense style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
           <q-item
@@ -235,7 +234,7 @@
             <q-item-section>{{ $t('Delete') }}</q-item-section>
           </q-item>
         </q-list>
-      </q-menu>
+      </q-popup-proxy>
     </template>
 
     <!--Header Cell -->

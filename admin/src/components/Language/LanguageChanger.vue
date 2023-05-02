@@ -5,7 +5,7 @@
     :label="$t(curentLocale)"
     no-caps
   >
-    <q-popup-proxy class='popup-dropdown'>
+    <q-popup-proxy :breakpoint='600' class='popup-dropdown'>
       <q-list style="min-width: 140px" v-close-popup>
         <q-item v-for="locale in localeOptions" :key="locale" @click="$i18n.locale = locale.value" clickable>
           <q-item-section side><q-icon :name="locale.icon" /></q-item-section>

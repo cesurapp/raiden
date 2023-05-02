@@ -14,6 +14,7 @@ export namespace Permission {
   export enum AdminDevice {
     LIST = 'ROLE_DEVICE_LIST',
     DELETE = 'ROLE_DEVICE_DELETE',
+    SEND = 'ROLE_DEVICE_SEND',
   }
   export enum AdminScheduler {
     LIST = 'ROLE_SCHEDULER_LIST',

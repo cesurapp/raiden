@@ -106,6 +106,7 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
 import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh } from '@quasar/extras/mdi-v7';
 import { DeviceType } from 'src/api/Enum/DeviceType';
+import { NotificationResource } from 'src/api/Resource/NotificationResource';
 
 export default defineComponent({
   name: 'NotificationComponent',
@@ -202,43 +203,43 @@ export default defineComponent({
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       });
     },
-    open(item) {
+    open(item: NotificationResource) {
       const actions: Array<object> = [];
 
       // Open Action
-      if (item.data.click_action) {
+      if (item.data['click_action']) {
         actions.push({
           label: this.$t('Open'),
           color: 'white',
           'no-caps': true,
           size: 'md',
-          handler: () => window.open(item.data.click_action, '_blank'),
+          handler: () => window.open(item.data['click_action'], '_blank'),
         });
       }
 
       // Download Action
-      if (item.data.download_action) {
+      if (item.data['download_action']) {
         actions.push({
           label: this.$t('Download'),
           'no-caps': true,
           color: 'white',
           size: 'md',
-          handler: () => window.open(item.data.download_action, '_blank'),
+          handler: () => window.open(item.data['download_action'], '_blank'),
         });
       }
 
       // Route Action
-      if (item.data.route_action) {
+      if (item.data['route_action']) {
         actions.push({
           label: this.$t('Open'),
           'no-caps': true,
           color: 'white',
           size: 'md',
-          handler: () => this.$router.push(item.data.route_action),
+          handler: () => this.$router.push(item.data['route_action']),
         });
       }
 
-      this.$appStore.notifyShow(item.message, item.title, item.type, { actions: actions });
+      this.$appStore.notifyShow(item.message, item.title, item.status, { actions: actions });
     },
     initNotification() {
       if (!this.support) {

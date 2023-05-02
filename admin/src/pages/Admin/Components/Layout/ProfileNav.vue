@@ -2,6 +2,7 @@
   <q-btn-dropdown
     rounded
     dense
+    no-route-dismiss
     size="15px"
     :flat="!$authStore.isSwitchedUser()"
     :outline="$authStore.isSwitchedUser()"

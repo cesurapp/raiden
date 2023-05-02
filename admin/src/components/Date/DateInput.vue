@@ -10,7 +10,7 @@
   >
     <template v-slot:append>
       <q-icon :name="mdiCalendar" class="cursor-pointer q-mr-sm">
-        <q-popup-proxy cover ref="dateProxy" transition-show="scale" transition-hide="scale" class="datepopup">
+        <q-popup-proxy :breakpoint='600' cover ref="dateProxy" transition-show="scale" transition-hide="scale" class="datepopup">
           <q-date
             minimal
             :options="dateRules ? dateRules : undefined"
@@ -22,7 +22,7 @@
         </q-popup-proxy>
       </q-icon>
       <q-icon v-if="timer" :name="mdiClockOutline" class="cursor-pointer">
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale" class="datepopup">
+        <q-popup-proxy :breakpoint='600' cover transition-show="scale" transition-hide="scale" class="datepopup">
           <q-time v-model="getDate" :mask="timer ? $appStore.dateTimeFormat : $appStore.dateFormat" format24h></q-time>
         </q-popup-proxy>
       </q-icon>

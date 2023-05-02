@@ -132,8 +132,7 @@ export default defineComponent({
   }
 
   .q-toolbar {
-    padding: 6.5px 12px;
-    padding-top: max(6.5px, calc(env(safe-area-inset-top) + 6.5px));
+    padding: max(6.5px, calc(env(safe-area-inset-top) + 6.5px)) 12px 6.5px;
     position: sticky;
     top: 0;
     z-index: 3;

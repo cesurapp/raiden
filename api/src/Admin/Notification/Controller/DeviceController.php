@@ -4,10 +4,12 @@ namespace App\Admin\Notification\Controller;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Notification\Dto\FcmRegisterDto;
+use App\Admin\Notification\Dto\NotificationDto;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Enum\DevicePermission;
 use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Resource\DeviceResource;
+use App\Admin\Notification\Service\NotificationPusher;
 use Package\ApiBundle\AbstractClass\AbstractApiController;
 use Package\ApiBundle\Response\ApiResponse;
 use Package\ApiBundle\Thor\Attribute\Thor;
@@ -59,13 +61,29 @@ class DeviceController extends AbstractApiController
     #[Thor(
         group: 'Notification Devices',
         desc: 'Delete Device',
-        order: 3
+        order: 2
     )]
     #[Route(path: '/v1/admin/notification/device/{id}', methods: ['DELETE'])]
     #[IsGranted(DevicePermission::ROLE_DEVICE_DELETE->value)]
     public function delete(Device $device, DeviceRepository $repo): ApiResponse
     {
         $repo->remove($device);
+
+        return ApiResponse::create()->addMessage('Operation successful');
+    }
+
+    #[Thor(
+        group: 'Notification Devices',
+        desc: 'Send Notification to Device',
+        dto: NotificationDto::class,
+        order: 3
+    )]
+    #[Route(path: '/v1/admin/notification/device/{id}', methods: ['POST'])]
+    #[IsGranted(DevicePermission::ROLE_DEVICE_SEND->value)]
+    public function send(Device $device, NotificationDto $dto, NotificationPusher $pusher): ApiResponse
+    {
+        // Send
+        $pusher->onlySend($device, $dto->initObject());
 
         return ApiResponse::create()->addMessage('Operation successful');
     }

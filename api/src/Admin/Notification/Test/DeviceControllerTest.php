@@ -6,6 +6,7 @@ use App\Admin\Core\Test\Setup\AbstractWebTestCase;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Enum\DevicePermission;
+use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Service\NotificationPusher;
 
 class DeviceControllerTest extends AbstractWebTestCase
@@ -148,5 +149,31 @@ class DeviceControllerTest extends AbstractWebTestCase
             'token' => $token,
         ]);
         $this->assertNull($deviceToken);
+    }
+
+    public function testSendNotification(): void
+    {
+        static::createClient();
+        $user = $this->createAdmin(DevicePermission::ROLE_DEVICE_SEND);
+
+        // Register Token
+        $token = 'crj8S08jxbSkog3Xwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
+        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+            'token' => $token,
+            'device' => 'web',
+        ]);
+        $this->isOk();
+
+        // Check
+        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
+        $this->assertNotNull($deviceToken);
+
+        // Send
+        $this->client($user)->jsonRequest('POST', '/v1/admin/notification/device/'.$deviceToken->getId()->toRfc4122(), [
+            'title' => 'Başlık',
+            'message' => 'İçerik',
+            'status' => NotificationStatus::DANGER,
+        ]);
+        $this->isOk();
     }
 }

@@ -49,6 +49,8 @@ import type { AccountEditPermissionRequest } from './Request/AccountEditPermissi
 import type { DeviceListResponse } from './Response/DeviceListResponse';
 import type { DeviceListQuery } from './Query/DeviceListQuery';
 import type { DeviceDeleteResponse } from './Response/DeviceDeleteResponse';
+import type { DeviceSendResponse } from './Response/DeviceSendResponse';
+import type { DeviceSendRequest } from './Request/DeviceSendRequest';
 import type { SchedulerListResponse } from './Response/SchedulerListResponse';
 import type { SchedulerListQuery } from './Query/SchedulerListQuery';
 import type { SchedulerCreateResponse } from './Response/SchedulerCreateResponse';
@@ -162,6 +164,10 @@ export default class Api {
 
   async deviceDelete(id?: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceDeleteResponse>> {
     return this.rq('DELETE', `/v1/admin/notification/device/${id}`, config, null)
+  }
+
+  async deviceSend(id?: string, request?: DeviceSendRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<DeviceSendResponse>> {
+    return this.rq('POST', `/v1/admin/notification/device/${id}`, config, request)
   }
 
   async schedulerList(query?: SchedulerListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<SchedulerListResponse>> {

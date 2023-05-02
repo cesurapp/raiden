@@ -1,9 +1,10 @@
 <template>
   <SimpleEditor ref="editor" :icon="mdiBell" title-create="Scheduled Notification" class="borderless">
+    <!--Form-->
     <template #content>
       <q-form @keydown.enter.prevent="send" class="q-gutter-xs" ref="form">
         <!--Device Filter-->
-        <div class="fit row wrap justify-start items-start content-start gap-x-md">
+        <div class="fit row wrap justify-start items-start content-start gap-x-md q-mb-md">
           <div class="text-h5 q-mb-md col-12">{{ $t('Device Filter') }}</div>
           <div class="col-grow">
             <q-select
@@ -199,7 +200,6 @@ export default defineComponent({
   components: { DateInput, DateRangeInput, CountryInput, LanguageInput, UserTypeInput, SimpleEditor },
   setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType, mdiCalendar, mdiClockOutline }),
   data: () => ({
-    tab: 'notification',
     form: {} as SchedulerCreateRequest,
     data: [],
   }),

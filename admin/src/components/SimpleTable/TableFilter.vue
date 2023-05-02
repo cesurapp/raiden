@@ -100,34 +100,13 @@
       ></q-checkbox>
 
       <!--Q-Date-->
-      <q-input
-        :model-value="getValue"
+      <DateInput outlined class="q-mb-sm"
+        v-model='getValue'
         v-if="filter.filter_input === 'date'"
         :label="filter.label || column.label || ''"
         @clear="$emit('update:modelValue', null)"
-        clearable
-        :debounce="75"
-        class="q-mb-sm"
-        outlined
-        dense
         @update:modelValue="$emit('onSearch')"
-      >
-        <template v-slot:prepend>
-          <q-icon :name="mdiCalendar" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale" ref="dateProxy">
-              <q-date
-                v-model="getValue"
-                minimal
-                @update:modelValue="
-                  $refs.dateProxy.hide();
-                  $emit('onSearch');
-                "
-                :locale="getCurrentLocale()"
-              ></q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
+      ></DateInput>
 
       <!--Q-DateRange-->
       <DateRangeInput
@@ -161,10 +140,11 @@ import { getCurrentLocale } from 'src/helper/DateHelper';
 import CountryInput from 'components/Country/CountryInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import DateRangeInput from 'components/Date/DateRangeInput.vue';
+import DateInput from 'components/Date/DateInput.vue';
 
 export default defineComponent({
   name: 'SimpleTableFilter',
-  components: { DateRangeInput, LanguageInput, CountryInput },
+  components: { DateInput, DateRangeInput, LanguageInput, CountryInput },
   setup: () => ({ mdiMagnify, mdiCalendar, getCurrentLocale }),
   emits: ['update:modelValue', 'onSearch'],
   props: {
