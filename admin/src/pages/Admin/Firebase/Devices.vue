@@ -11,9 +11,13 @@
         :delete-permission="$permission.AdminDevice.DELETE"
       >
         <!--Row Actions-->
-        <template #rowActions='{ props }'>
-          <q-item clickable v-close-popup @click="$refs.editor.init(props.row.id)"
-            v-if="$authStore.hasPermission($permission.AdminDevice.SEND)">
+        <template #rowActions="{ props }">
+          <q-item
+            clickable
+            v-close-popup
+            @click="$refs.editor.init(props.row.id)"
+            v-if="$authStore.hasPermission($permission.AdminDevice.SEND)"
+          >
             <q-item-section side><q-icon :name="mdiSend" /></q-item-section>
             <q-item-section>{{ $t('Send') }}</q-item-section>
           </q-item>
@@ -64,7 +68,7 @@
       </SimpleTable>
     </PageContent>
 
-    <DeviceSendEditor ref='editor'></DeviceSendEditor>
+    <DeviceSendEditor ref="editor"></DeviceSendEditor>
   </q-page>
 </template>
 

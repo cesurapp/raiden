@@ -52,8 +52,12 @@ class DeviceRepository extends ApiServiceEntityRepository
     /**
      * Remove Device DQL.
      */
-    public function removeDevice(Ulid $deviceId): void
+    public function removeDevice(Ulid|string $deviceId): void
     {
+        if (is_string($deviceId)) {
+            $deviceId = Ulid::fromString($deviceId);
+        }
+
         $this->remove($this->em()->getReference(Device::class, $deviceId));
     }
 

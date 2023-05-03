@@ -1,5 +1,5 @@
 <template>
-  <div class="column items-end table-filter" :class='[$q.dark.isActive ? "bg-dark" : "bg-white"]'>
+  <div class="column items-end table-filter" :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']">
     <slot>
       <!--Q-Input-->
       <q-input
@@ -100,8 +100,10 @@
       ></q-checkbox>
 
       <!--Q-Date-->
-      <DateInput outlined class="q-mb-sm"
-        v-model='getValue'
+      <DateInput
+        outlined
+        class="q-mb-sm"
+        v-model="getValue"
         v-if="filter.filter_input === 'date'"
         :label="filter.label || column.label || ''"
         @clear="$emit('update:modelValue', null)"

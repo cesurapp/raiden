@@ -12,7 +12,14 @@
   >
     <template #append>
       <q-icon :name="mdiCalendar" class="cursor-pointer">
-        <q-popup-proxy :breakpoint='600' cover transition-show="scale" transition-hide="scale" ref="dateProxy" class="datepopup">
+        <q-popup-proxy
+          :breakpoint="600"
+          cover
+          transition-show="scale"
+          transition-hide="scale"
+          ref="dateProxy"
+          class="datepopup"
+        >
           <q-date
             v-model="getDate"
             range

@@ -1,18 +1,26 @@
 import {
   AxiosAdapter,
-  AxiosBasicCredentials, AxiosHeaders,
-  AxiosProgressEvent, AxiosProxyConfig,
+  AxiosBasicCredentials,
+  AxiosHeaders,
+  AxiosProgressEvent,
+  AxiosProxyConfig,
   AxiosRequestTransformer,
   AxiosResponseTransformer,
-  CancelToken, CustomParamsSerializer, FormSerializerOptions, GenericAbortSignal,
-  Method, ParamsSerializerOptions,
+  CancelToken,
+  CustomParamsSerializer,
+  FormSerializerOptions,
+  GenericAbortSignal,
+  Method,
+  ParamsSerializerOptions,
   ResponseType,
-  TransitionalOptions
+  TransitionalOptions,
 } from 'axios';
 
-type MethodsHeaders = Partial<{
-  [Key in Method as Lowercase<Key>]: AxiosHeaders;
-} & { common: AxiosHeaders }>;
+type MethodsHeaders = Partial<
+  {
+    [Key in Method as Lowercase<Key>]: AxiosHeaders;
+  } & { common: AxiosHeaders }
+>;
 type Milliseconds = number;
 type MaxUploadRate = number;
 type MaxDownloadRate = number;
@@ -62,8 +70,9 @@ declare module 'axios' {
     };
     formSerializer?: FormSerializerOptions;
     family?: 4 | 6 | undefined;
-    lookup?: ((hostname: string, options: object, cb: (err: Error | null, address: string, family: number) => void) => void) |
-      ((hostname: string, options: object) => Promise<[address: string, family: number] | string>);
+    lookup?:
+      | ((hostname: string, options: object, cb: (err: Error | null, address: string, family: number) => void) => void)
+      | ((hostname: string, options: object) => Promise<[address: string, family: number] | string>);
 
     // Custom
     retry?: boolean;

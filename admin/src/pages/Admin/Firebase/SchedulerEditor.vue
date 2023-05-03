@@ -137,7 +137,7 @@
           ></q-input>
           <!--Custom Data-->
           <div class="flex justify-between no-wrap q-mt-lg" v-for="(item, index) in data" :key="index">
-            <div class='flex full-width justify-between gap-x-md gap-y-md q-pr-md'>
+            <div class="flex full-width justify-between gap-x-md gap-y-md q-pr-md">
               <q-select
                 emit-value
                 map-options
@@ -146,18 +146,18 @@
                 multiple
                 :label="$t('Device')"
                 v-model="item.type"
-                class='col-grow'
+                class="col-grow"
                 :options="[
-                { label: 'Web', value: DeviceType.WEB },
-                { label: 'Android', value: DeviceType.ANDROID },
-                { label: 'Ios', value: DeviceType.IOS },
-              ]"
+                  { label: 'Web', value: DeviceType.WEB },
+                  { label: 'Android', value: DeviceType.ANDROID },
+                  { label: 'Ios', value: DeviceType.IOS },
+                ]"
               ></q-select>
               <q-select
                 emit-value
                 map-options
                 outlined
-                class='col-grow'
+                class="col-grow"
                 style="width: 25%"
                 v-model="item.action"
                 :label="$t('Action')"
@@ -165,7 +165,7 @@
               ></q-select>
               <q-input outlined :label="$t('Value')" class="col-grow" v-model="item.value"></q-input>
             </div>
-            <q-btn outline dense size='sm' color="negative" :icon="mdiClose" @click="removeOptions(index)"></q-btn>
+            <q-btn outline dense size="sm" color="negative" :icon="mdiClose" @click="removeOptions(index)"></q-btn>
           </div>
         </div>
       </q-form>

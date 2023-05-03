@@ -35,11 +35,6 @@ class NotificationTask implements TaskInterface
                 new ChatMessage($notification->getTitle() ?? '', $notification->getFCMOptions($device))
             );
 
-            // Successful Send
-            if ($notification->getId()) {
-                $this->deviceRepo->em()->getRepository(Notification::class)->setForwarded($notification);
-            }
-
             return $result;
         } catch (\Throwable $exception) {
             if (preg_match('/(InvalidRegistration|NotRegistered)/i', $exception->getMessage())) {

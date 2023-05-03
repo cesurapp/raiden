@@ -85,13 +85,12 @@ class DeviceControllerTest extends AbstractWebTestCase
         $transports = (string) self::getContainer()->get('chatter.transport_factory')->fromString(
             $_SERVER['FIREBASE_DSN']
         );
+
+        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
         if ('null' !== $transports) {
-            $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
             $this->assertNull($deviceToken);
         } else {
-            // Check Forwarded
-            $this->manager()->refresh($notification);
-            $this->assertNotNull($notification->getForwardedAt());
+            $this->assertNotNull($deviceToken);
         }
     }
 

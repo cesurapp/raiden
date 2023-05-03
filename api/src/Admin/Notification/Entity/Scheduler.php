@@ -88,9 +88,13 @@ class Scheduler
         return $this;
     }
 
-    public function incDeliveredCount(): self
+    public function incDeliveredCount(?int $count = null): self
     {
-        ++$this->deliveredCount;
+        if (null !== $count) {
+            $this->deliveredCount += $count;
+        } else {
+            ++$this->deliveredCount;
+        }
 
         return $this;
     }
@@ -107,9 +111,13 @@ class Scheduler
         return $this;
     }
 
-    public function incFailedCount(): self
+    public function incFailedCount(?int $count = null): self
     {
-        ++$this->failedCount;
+        if (null !== $count) {
+            $this->failedCount += $count;
+        } else {
+            ++$this->failedCount;
+        }
 
         return $this;
     }
@@ -164,10 +172,10 @@ class Scheduler
 
     public function getDeviceQuery(QueryBuilder $builder): QueryBuilder
     {
-        if ($this->getDeviceFilter()) {
-            $rootAlias = $builder->getRootAliases()[0];
-            $builder->join("$rootAlias.owner", 'u');
+        $rootAlias = $builder->getRootAliases()[0];
+        $builder->join("$rootAlias.owner", 'u');
 
+        if ($this->getDeviceFilter()) {
             foreach ($this->getDeviceFilter() as $key => $value) {
                 [$entity, $column] = explode('.', $key);
                 $entity = match ($entity) {

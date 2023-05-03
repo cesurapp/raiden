@@ -133,7 +133,7 @@ class SchedulerControllerTest extends AbstractWebTestCase
 
     public function testCronProcess(): void
     {
-        $user = $this->createAdmin(SchedulerPermission::ROLE_SCHEDULER_DELETE);
+        $user = $this->createAdmin();
 
         // Create Device
         for ($i = 0; $i < 10; ++$i) {
@@ -144,13 +144,13 @@ class SchedulerControllerTest extends AbstractWebTestCase
                     ->setOwner($user)
             );
         }
-        $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count([]));
+        $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count(['owner' => $user]));
 
         // Create Scheduled Notification
         $sn = (new Scheduler())
             ->setCampaignTitle('Test')
             ->setStatus(SchedulerStatus::INIT)
-            ->setPersistNotification(false)
+            ->setPersistNotification(true)
             ->setSendAt(new DateTimeImmutable('-1 minute'))
             ->setNotification(
                 (new Notification())
@@ -183,6 +183,9 @@ class SchedulerControllerTest extends AbstractWebTestCase
         if ('null' !== $transports) {
             $this->assertEquals(0, $this->manager()->getRepository(Device::class)->count([]));
         } else {
+            // Check Persistent
+            $this->assertEquals(1, $this->manager()->getRepository(Notification::class)->count(['owner' => $user]));
+
             $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count([]));
         }
     }

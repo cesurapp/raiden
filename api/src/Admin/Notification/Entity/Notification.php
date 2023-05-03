@@ -36,9 +36,6 @@ class Notification
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $readed = false;
 
-    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $forwardedAt;
-
     #[ORM\Column(type: Types::JSON)]
     private array $data = [];
 
@@ -91,18 +88,6 @@ class Notification
     public function setReaded(bool $readed): self
     {
         $this->readed = $readed;
-
-        return $this;
-    }
-
-    public function getForwardedAt(): ?\DateTimeImmutable
-    {
-        return $this->forwardedAt;
-    }
-
-    public function setForwardedAt(?\DateTimeImmutable $forwardedAt): self
-    {
-        $this->forwardedAt = $forwardedAt;
 
         return $this;
     }

@@ -16,7 +16,7 @@ function requestConfig(config: InternalAxiosRequestConfig, authStore, appStore, 
 
   // Set Auth Header
   if (authStore.isLoggedIn()) {
-    config.headers.Authorization = `Bearer ${authStore.appToken}` as AxiosHeaderValue
+    config.headers.Authorization = `Bearer ${authStore.appToken}` as AxiosHeaderValue;
   }
 
   // Set Switch User
@@ -77,11 +77,13 @@ async function responseError(error: AxiosError, client: AxiosInstance, authStore
     if (['TokenExpiredException'].includes(data.type) && !error.config.retry) {
       error.config.retry = true;
       delete error.config.headers.Authorization;
-      return authStore
-        .reloadTokenWithRefreshToken()
-        // @ts-ignore
-        .then(() => client(error.config))
-        .catch(() => authStore.logout(false));
+      return (
+        authStore
+          .reloadTokenWithRefreshToken()
+          // @ts-ignore
+          .then(() => client(error.config))
+          .catch(() => authStore.logout(false))
+      );
     }
 
     // Logout for JWTException

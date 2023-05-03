@@ -34,6 +34,25 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
         return $this;
     }
 
+    public function merge(object $object, bool $flush = true): object
+    {
+        $columns = (array) $object;
+        $class = get_class($object);
+        $newObj = $this->getEntityManager()->find($class, $object->getId());
+        foreach ($columns as $column => $value) {
+            $setter = 'set'.ucfirst(trim(str_replace($class, '', $column)));
+            $getter = 'get'.ucfirst(trim(str_replace($class, '', $column)));
+
+            if (method_exists($newObj, $setter) && method_exists($newObj, $getter)) {
+                $newObj->{$setter}($object->{$getter}());
+            }
+        }
+
+        $this->add($newObj, $flush);
+
+        return $newObj;
+    }
+
     public function flush(): void
     {
         $this->getEntityManager()->flush();

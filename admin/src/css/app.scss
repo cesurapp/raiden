@@ -2,7 +2,7 @@
  * Animate CSS
  */
 :root {
-  --animate-duration: .1s;
+  --animate-duration: 0.1s;
 }
 
 .q-notification__caption {
@@ -348,9 +348,9 @@ body.body--dark {
 /**
  * Q-Card
  */
-.q-card__actions{
+.q-card__actions {
   padding: 6.5px 8px;
-  & > .q-btn ,
+  & > .q-btn,
   & > div > .q-btn {
     font-size: 13px;
   }
@@ -620,10 +620,10 @@ body.body--dark {
 .popup-dropdown {
   .q-dialog__inner {
     & > div {
-      background: #FFF;
+      background: #fff;
       padding: map_get($space-sm, 'y') map_get($space-sm, 'x');
     }
-    .q-item{
+    .q-item {
       border-radius: $button-border-radius;
     }
   }

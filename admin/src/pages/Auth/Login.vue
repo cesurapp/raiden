@@ -12,8 +12,13 @@
 
     <!-- Login Form-->
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-tabs align="left" inline-label no-caps active-bg-color="dark-transparent-1"
-              class="text-primary q-mb-md login-tab" v-model="type"
+      <q-tabs
+        align="left"
+        inline-label
+        no-caps
+        active-bg-color="dark-transparent-1"
+        class="text-primary q-mb-md login-tab"
+        v-model="type"
       >
         <q-tab :ripple="false" name="email" :icon="mdiEmail" :label="$t('Email')" />
         <q-tab :ripple="false" name="phone" :icon="mdiPhone" :label="$t('Phone')" />
@@ -63,16 +68,14 @@
       </q-input>
 
       <!--PasswordLess Login-->
-      <q-checkbox v-model="isOtp" dense class='q-mb-md' :label="$t('Passwordless Login')" />
+      <q-checkbox v-model="isOtp" dense class="q-mb-md" :label="$t('Passwordless Login')" />
 
       <div class="flex justify-between items-center">
-        <q-btn color="primary"
-          :label="$t('Login')"
-          :loading="$appStore.isBusy"
-          @click="onSubmit"
-          :icon="mdiLogin"
-        />
-        <q-btn flat class="q-px-sm" color="grey-7"
+        <q-btn color="primary" :label="$t('Login')" :loading="$appStore.isBusy" @click="onSubmit" :icon="mdiLogin" />
+        <q-btn
+          flat
+          class="q-px-sm"
+          color="grey-7"
           :disable="isOtp"
           v-show="!isOtp"
           :to="{ name: 'auth.reset.request' }"
@@ -81,7 +84,6 @@
       </div>
 
       <!--Submit-->
-
     </q-form>
 
     <!-- Footer-->

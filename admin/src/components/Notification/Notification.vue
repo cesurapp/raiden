@@ -325,7 +325,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .panel-head {
-  padding-top: max(#{map-get($space-sm, "y")}, calc(#{map-get($space-sm, "y")} + env(safe-area-inset-top)));
+  padding-top: max(#{map-get($space-sm, 'y')}, calc(#{map-get($space-sm, 'y')} + env(safe-area-inset-top)));
   font-weight: 500;
   // height: 46px;
   background: $primary;

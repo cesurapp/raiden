@@ -8,9 +8,10 @@ use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\ORM\AbstractQuery;
-use OpenSwoole\Core\Coroutine\WaitGroup;
 use Package\SwooleBundle\Cron\AbstractCronJob;
 use Symfony\Component\Uid\Ulid;
+
+use function OpenSwoole\Core\Coroutine\batch;
 
 /**
  * Send Scheduled Notification.
@@ -28,25 +29,26 @@ class SchedulerCron extends AbstractCronJob
 
     public function __invoke(): void
     {
-        /** @var Scheduler[] $scheduler */
-        $scheduler = $this->repo->getProcessed()->getQuery()->getResult();
-        if (!$scheduler) {
-            return;
-        }
-
         // Disable SQL Logger
         $this->repo->connection()->getConfiguration()->setMiddlewares([]);
 
         // Process
-        foreach ($scheduler as $scheduled) {
+        $scheduler = $this->repo->getProcessed()->getQuery();
+        foreach ($scheduler->toIterable() as $scheduled) {
             try {
                 $this->repo->add($scheduled->setStatus(SchedulerStatus::PROCESSING));
+
+                // Send
+                $this->createPersistentNotificaiton($scheduled);
                 $this->sendNotification($scheduled);
-                $this->repo->add($scheduled->setStatus(SchedulerStatus::SENDED));
+
+                $this->repo->merge($scheduled->setStatus(SchedulerStatus::SENDED));
             } catch (\Throwable) {
-                $this->repo->add($scheduled->setStatus(SchedulerStatus::ERROR));
+                $this->repo->merge($scheduled->setStatus(SchedulerStatus::ERROR));
             }
         }
+
+        // Clear All
         $this->repo->em()->clear();
     }
 
@@ -56,49 +58,42 @@ class SchedulerCron extends AbstractCronJob
     private function sendNotification(Scheduler $scheduler): void
     {
         // Send Notification
-        $devices = $scheduler
-            ->getDeviceQuery($this->deviceRepo->createQueryBuilder('q'))
-            ->getQuery();
-
-        $counter = 0;
-        $waitGroup = new WaitGroup();
-        foreach ($devices->toIterable([], AbstractQuery::HYDRATE_SIMPLEOBJECT) as $device) {
-            ++$counter;
-            go(function () use ($waitGroup, $device, $scheduler) {
-                $waitGroup->add();
-                usleep(1000);
-
-                // Send
+        $batch = [];
+        $devices = $scheduler->getDeviceQuery($this->deviceRepo->createQueryBuilder('q'))->getQuery();
+        $notification = $scheduler->getNotification();
+        foreach ($devices->toIterable([], AbstractQuery::HYDRATE_SIMPLEOBJECT) as $index => $device) {
+            $batch[] = function () use ($notification, $device) {
                 try {
-                    $result = call_user_func($this->notificationTask, [
-                        'notification' => $scheduler->getNotification(),
-                        'device' => $device,
-                    ]);
+                    return false !== call_user_func($this->notificationTask, [
+                            'notification' => $notification,
+                            'device' => $device,
+                        ]);
                 } catch (\Throwable) {
-                    $result = false;
+                    return false;
                 }
+            };
 
-                // Result Counter
-                if (false !== $result) {
-                    $scheduler->incDeliveredCount();
-                } else {
-                    $scheduler->incFailedCount();
-                }
-
-                $waitGroup->done();
-            });
-
-            // Wait 250 Item and Update Scheduler
-            if (($counter % 250) === 0) {
-                $counter -= 250;
-                $waitGroup->wait($counter);
-                $this->repo->add($scheduler);
+            // Wait 500 Item and Send
+            if ($index > 0 && ($index % 500) === 0) {
+                $this->initResult($scheduler, $batch);
             }
         }
 
-        // Finish & Update Scheduler
-        if ($counter > 0) {
-            $waitGroup->wait($counter);
+        $this->initResult($scheduler, $batch);
+    }
+
+    private function initResult(Scheduler $scheduler, array &$batch): void
+    {
+        if (count($batch) > 0) {
+            $result = batch($batch);
+            $batch = [];
+
+            // Update Count
+            $scheduler
+                ->incDeliveredCount(count(array_filter($result, static fn ($i) => true === $i)))
+                ->incFailedCount(count(array_filter($result, static fn ($i) => false === $i)));
+
+            $this->repo->em()->clear();
         }
     }
 
@@ -107,38 +102,42 @@ class SchedulerCron extends AbstractCronJob
      */
     public function createPersistentNotificaiton(Scheduler $scheduler): void
     {
-        // Find User IDs
-        $userIds = $scheduler
-            ->getDeviceQuery($this->deviceRepo->createQueryBuilder('q'))
-            ->distinct()
-            ->select('u.id')
-            ->getQuery();
+        if ($scheduler->isPersistNotification()) {
+            go(function () use ($scheduler) {
+                // Find User IDs
+                $userIds = $scheduler
+                    ->getDeviceQuery($this->deviceRepo->createQueryBuilder('q'))
+                    ->distinct()
+                    ->select('u.id')
+                    ->getQuery();
 
-        $notification = $scheduler->getNotification();
-        $conn = $this->repo->connection();
+                $notification = $scheduler->getNotification();
+                $conn = $this->repo->connection();
 
-        foreach ($userIds->toIterable([], 3) as $userId) {
-            $conn->createQueryBuilder()
-                ->insert('notification')
-                ->values([
-                    'id' => '?',
-                    'title' => '?',
-                    'message' => '?',
-                    'status' => '?',
-                    'readed' => '?',
-                    'data' => '?',
-                    'owner_id' => '?',
-                ])
-                ->setParameters([
-                    0 => (new Ulid())->toRfc4122(),
-                    1 => $notification->getTitle(),
-                    2 => $notification->getMessage() ?? '',
-                    3 => $notification->getStatus()->value,
-                    4 => (int) $notification->isReaded(),
-                    5 => json_encode($notification->getData(), JSON_THROW_ON_ERROR),
-                    6 => $userId['id'],
-                ])
-                ->executeStatement();
+                foreach ($userIds->toIterable([], AbstractQuery::HYDRATE_SCALAR) as $userId) {
+                    $conn->createQueryBuilder()
+                        ->insert('notification')
+                        ->values([
+                            'id' => '?',
+                            'title' => '?',
+                            'message' => '?',
+                            'status' => '?',
+                            'readed' => '?',
+                            'data' => '?',
+                            'owner_id' => '?',
+                        ])
+                        ->setParameters([
+                            0 => (new Ulid())->toRfc4122(),
+                            1 => $notification->getTitle(),
+                            2 => $notification->getMessage() ?? '',
+                            3 => $notification->getStatus()->value,
+                            4 => (int) $notification->isReaded(),
+                            5 => json_encode($notification->getData(), JSON_THROW_ON_ERROR),
+                            6 => $userId['id'],
+                        ])
+                        ->executeStatement();
+                }
+            });
         }
     }
 }

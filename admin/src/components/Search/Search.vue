@@ -1,5 +1,5 @@
 <template>
-  <div class='search-bar' :class='{"mobile": $q.screen.lt.sm}'>
+  <div class="search-bar" :class="{ mobile: $q.screen.lt.sm }">
     <!--Search Bar-->
     <div class="search-input q-mx-sm-md q-mx-sm" @click="dialog = true">
       <q-icon :name="mdiMagnify"></q-icon>
@@ -291,17 +291,16 @@ export default defineComponent({
   }
 }
 
-.search-bar.mobile{
+.search-bar.mobile {
   .search-input {
     padding: 5px 6px 5px 6px;
 
-    .text{
+    .text {
       display: none;
     }
     .q-icon {
       margin-right: 0;
     }
-
   }
 }
 </style>

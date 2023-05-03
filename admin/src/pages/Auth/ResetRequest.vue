@@ -11,7 +11,14 @@
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
-      <q-tabs align="left" inline-label no-caps v-model="type" active-bg-color="dark-transparent-1" class="text-primary q-mb-md login-tab">
+      <q-tabs
+        align="left"
+        inline-label
+        no-caps
+        v-model="type"
+        active-bg-color="dark-transparent-1"
+        class="text-primary q-mb-md login-tab"
+      >
         <q-tab :ripple="false" name="email" :icon="mdiEmail" :label="$t('Email')" />
         <q-tab :ripple="false" name="phone" :icon="mdiPhone" :label="$t('Phone')" />
       </q-tabs>

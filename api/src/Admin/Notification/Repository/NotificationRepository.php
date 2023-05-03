@@ -72,15 +72,4 @@ class NotificationRepository extends ApiServiceEntityRepository
     {
         $this->remove($notification);
     }
-
-    /**
-     * Notification Sended to Device.
-     */
-    public function setForwarded(Notification $notification, ?\DateTimeImmutable $forwarded = new \DateTimeImmutable()): void
-    {
-        $this->createQueryBuilder('q')->update()
-            ->where('q.id = :id')->setParameter('id', $notification->getId(), 'ulid')
-            ->set('q.forwardedAt', ':at')->setParameter('at', $forwarded)
-            ->getQuery()->execute();
-    }
 }

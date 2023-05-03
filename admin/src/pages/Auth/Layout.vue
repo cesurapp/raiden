@@ -67,7 +67,7 @@ export default defineComponent({
   }
 }
 .login-tab {
-  .q-tabs__content{
+  .q-tabs__content {
     gap: 10px;
   }
   .q-tab {

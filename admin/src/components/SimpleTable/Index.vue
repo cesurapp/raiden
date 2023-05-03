@@ -17,11 +17,11 @@
     binary-state-sort
   >
     <!--Top Area-->
-    <template #top v-if='header'>
-      <q-pull-to-refresh class='full-width' @refresh='refresh(false, $event)'>
-        <div class='relative-position row items-center full-width'>
+    <template #top v-if="header">
+      <q-pull-to-refresh class="full-width" @refresh="refresh(false, $event)">
+        <div class="relative-position row items-center full-width">
           <!--Selected Actions-->
-          <div class='q-table__control' v-if="selectedRows.length > 0">
+          <div class="q-table__control" v-if="selectedRows.length > 0">
             <q-btn-group v-if="!$q.screen.xs">
               <q-btn
                 color="red"
@@ -55,7 +55,7 @@
                   v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
                   :icon="mdiDeleteOutline"
                   @click="onActionRemoveAll(this.selectedRows)"
-                ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
+                  ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
                 >
                 <slot name="selectedActions" :props="selectedRows"></slot>
               </div>
@@ -63,7 +63,7 @@
           </div>
 
           <!--Title-->
-          <div class='q-table__control' v-else>
+          <div class="q-table__control" v-else>
             <div v-if="!isFiltered" class="table-title text-h5">
               <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
             </div>
@@ -92,9 +92,12 @@
                     class="q-pr-sm q-pl-sm q-mr-sm"
                   >
                     <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
-                    <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
-                        type
-                      }}</q-avatar>
+                    <q-avatar
+                      :color="$q.dark.isActive ? 'primary' : 'secondary'"
+                      text-color="white"
+                      class="full-w q-px-sm"
+                      >{{ type }}</q-avatar
+                    >
                     {{ val }}
                   </q-chip>
                 </div>
@@ -102,15 +105,21 @@
             </template>
           </div>
 
-          <div class='q-table__separator col'></div>
+          <div class="q-table__separator col"></div>
 
           <!--Table Actions-->
-          <div class='q-table__control'>
+          <div class="q-table__control">
             <template v-if="header">
               <div class="row q-gutter-sm">
                 <q-btn-group v-if="!$q.screen.xs">
-                  <q-btn v-if="refreshButton" color="primary" v-close-popup :icon="mdiRefresh" size="12px" @click="refresh"
-                  ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
+                  <q-btn
+                    v-if="refreshButton"
+                    color="primary"
+                    v-close-popup
+                    :icon="mdiRefresh"
+                    size="12px"
+                    @click="refresh"
+                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
                   >
                   <q-btn
                     v-if="exportButton && getExportedColumns.length > 0"
@@ -119,7 +128,7 @@
                     :icon="mdiFileExportOutline"
                     size="12px"
                     @click="$refs.exporter.toggle()"
-                  ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
+                    ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
                   >
                   <slot name="tableActions"></slot>
                 </q-btn-group>
@@ -135,8 +144,14 @@
                   :menu-offset="[0, 10]"
                 >
                   <div class="column q-gutter-sm">
-                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh"
-                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
+                    <q-btn
+                      v-if="refreshButton"
+                      v-close-popup
+                      color="primary"
+                      :icon="mdiRefresh"
+                      size="12px"
+                      @click="refresh"
+                      ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
                     >
                     <q-btn
                       v-if="exportButton && getExportedColumns.length > 0"
@@ -145,7 +160,7 @@
                       :icon="mdiFileExportOutline"
                       size="12px"
                       @click="$refs.exporter.toggle()"
-                    ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
+                      ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
                     >
                     <slot name="tableActions"></slot>
                   </div>
@@ -220,7 +235,7 @@
       </q-td>
 
       <!--Context Actions-->
-      <q-popup-proxy :breakpoint='600' context-menu v-if="contextActions || $slots.getRowActions">
+      <q-popup-proxy :breakpoint="600" context-menu v-if="contextActions || $slots.getRowActions">
         <q-list dense style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
           <q-item
@@ -255,7 +270,7 @@
           :color="![null, undefined, ''].includes(filterValues[props.col.name]) ? 'primary' : 'default'"
           :style="[![null, undefined, ''].includes(filterValues[props.col.name]) ? 'opacity: 1' : 'opacity: .6']"
         >
-          <q-popup-proxy :breakpoint='600' style='padding: 0 !important;'>
+          <q-popup-proxy :breakpoint="600" style="padding: 0 !important">
             <TableFilter
               v-if="$slots['filter_' + props.col.name]"
               :filter="getColumnFilter[props.col.name]"
@@ -514,7 +529,7 @@ export default defineComponent({
       return this.columns.find((c) => c.hasOwnProperty('sortable_desc'))?.sortable_desc || false;
     },
     isFiltered() {
-      return Object.values(this.filterValues).filter((item: any) => ! [undefined, null, ''].includes(item)).length > 0;
+      return Object.values(this.filterValues).filter((item: any) => ![undefined, null, ''].includes(item)).length > 0;
     },
   },
   mounted() {
@@ -620,7 +635,7 @@ export default defineComponent({
         this.pagination.page--;
       }
 
-      this.onRequest({ pagination: this.pagination, pullRefresh })
+      this.onRequest({ pagination: this.pagination, pullRefresh });
     },
 
     /**
@@ -790,7 +805,7 @@ export default defineComponent({
   min-height: 60px;
   flex-wrap: nowrap;
 
-  .q-table__control{
+  .q-table__control {
     overflow: hidden;
     white-space: nowrap;
     display: block;
