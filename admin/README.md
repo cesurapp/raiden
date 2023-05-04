@@ -4,6 +4,7 @@ Admin Application UI for [Quasar 2.7](https://quasar.dev/) & Vue 3 & Vite
 
 **Features**
 
+- Web - IOS/Android Supported
 - Developed with Quasar 2.7.
 - Firebase integration for notifications
 - Responsive design
@@ -31,7 +32,15 @@ yarn quasar build  # Build the app for production
 yarn run fix       # Lint the files
 ```
 
-**Configure Realtime Notification (Firebase FCM)**
+**Build or Development Mobile App**
+```bash
+yarn quasar dev-ios       # Start the app in development mode required Xcode
+yarn quasar dev-android   # Start the app in development mode required Android Studio
+yarn quasar build-ios     # Build IOS Application
+yarn quasar build-android # Build Android Application
+```
+
+**Configure Realtime Notification (Web Spa) (Firebase FCM)**
 
 1. Create Firebase Project [Open Firebase Console](https://console.firebase.google.com/)
 2. Open -> Project Settings -> General
