@@ -3,6 +3,8 @@ import { Dialog, exportFile } from 'quasar';
 import CustomDialog from 'components/CustomDialog/Index.vue';
 import { notifyShow } from '../helper/NotifyHelper';
 import { AxiosResponse } from 'axios';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
+import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 
 // DayJS Install
 import dayjs from 'dayjs';
@@ -19,6 +21,7 @@ export const useAppStore = defineStore('app', {
     busy: [],
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm',
+    platform: {}
   }),
   getters: {
     isBusy() {
@@ -130,12 +133,32 @@ export const useAppStore = defineStore('app', {
     /**
      * Axios Download to Blob
      */
-    axiosDownloadFile(response: AxiosResponse) {
+    async axiosDownloadFile(response: AxiosResponse) {
       const fileName = response.headers['content-disposition'].split('=');
-      const status = exportFile(fileName[1], response.data, { mimeType: response.headers['content-type'] });
-      if (status !== true) {
-        this.dialogDanger(String(status));
+
+      // Web
+      if (! this.platform.nativeMobile) {
+        const status = exportFile(fileName[1], response.data, { mimeType: response.headers['content-type'] });
+        if (status !== true) {
+          await this.dialogDanger(String(status));
+        }
+
+        return;
       }
+
+      // Native Mobile
+      const textContent = await new Blob([response.data]).text()
+      await Filesystem.writeFile({
+        path: fileName[1],
+        data: textContent,
+        directory: Directory.Cache,
+        encoding: Encoding.UTF8,
+      }).then(async (r) => {
+        await FileOpener.openFile({
+          path: r.uri,
+          mimeType: response.headers['content-type'].split(';')[0]
+        })
+      });
     },
   },
 });

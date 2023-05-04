@@ -37,10 +37,20 @@
   dependencies:
     tslib "^2.1.0"
 
+"@capacitor/filesystem@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/filesystem/-/filesystem-5.0.0.tgz#05c52b20165a533be1b4c7e9155ca8a9f2ef40bb"
+  integrity sha512-Mp7wu+eU2/3IdbuhZ7f02T4rMZkss8FuQYRB4XX4P2cGRSACejAOCnmmNLKEUSp8ZdnagNLCMy7GOXe+UHr6oQ==
+
 "@capacitor/ios@^4.0.0-beta.0":
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/@capacitor/ios/-/ios-4.8.0.tgz#b6db0092bdacb1404488447e927c098a9c7e3b12"
   integrity sha512-FbEXFzZIe5EGZNKpGxHNUEGKjcKK0XY45P3QXLoJPF3fEndW96ThLZOy3rHjt436sTu41NubFpPyIzyyy1YgMA==
+
+"@capawesome-team/capacitor-file-opener@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@capawesome-team/capacitor-file-opener/-/capacitor-file-opener-5.0.0.tgz#e994f4ce698167fe676cbef5c5c17ca71a469c92"
+  integrity sha512-Oe/dQndqoznlbkSfH93vpl3wOKSn9T2SBFA4k/Mu5zwBpj/HqWlvOzZbDTji721LH2qm10rKCLbAtvDkVh9f3g==
 
 "@ionic/cli-framework-output@2.2.5":
   version "2.2.5"

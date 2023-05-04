@@ -7,6 +7,23 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.21.5.tgz#821bb520118fd25b982eaf8d37421cf5c64a312b"
   integrity sha512-J+IxH2IsxV4HbnTrSWgMAQj0UEo61hDA4Ny8h8PCX0MLXiibqHbqIOVneqdocemSBc22VpBKxt4J6FQzy9HarQ==
 
+"@capacitor/core@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-5.0.0.tgz#31264d3708cb9c8de35024ad0be51c48adc560df"
+  integrity sha512-Fm8jNUPpCBPQVKLEwMt7D+w/7sh1AGiLVpL+D6Xc7iRdrPU/3NI9bgzca3uzDA1SOV8O+tVxk7bjZGXPbiTRAA==
+  dependencies:
+    tslib "^2.1.0"
+
+"@capacitor/filesystem@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/filesystem/-/filesystem-5.0.0.tgz#05c52b20165a533be1b4c7e9155ca8a9f2ef40bb"
+  integrity sha512-Mp7wu+eU2/3IdbuhZ7f02T4rMZkss8FuQYRB4XX4P2cGRSACejAOCnmmNLKEUSp8ZdnagNLCMy7GOXe+UHr6oQ==
+
+"@capawesome-team/capacitor-file-opener@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@capawesome-team/capacitor-file-opener/-/capacitor-file-opener-5.0.0.tgz#e994f4ce698167fe676cbef5c5c17ca71a469c92"
+  integrity sha512-Oe/dQndqoznlbkSfH93vpl3wOKSn9T2SBFA4k/Mu5zwBpj/HqWlvOzZbDTji721LH2qm10rKCLbAtvDkVh9f3g==
+
 "@esbuild/linux-loong64@0.14.54":
   version "0.14.54"
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.14.54.tgz#de2a4be678bd4d0d1ffbb86e6de779cde5999028"
