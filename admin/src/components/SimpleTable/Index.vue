@@ -235,7 +235,12 @@
       </q-td>
 
       <!--Context Actions-->
-      <q-popup-proxy :breakpoint="600" class="popup-dropdown" context-menu v-if="contextActions || $slots.getRowActions">
+      <q-popup-proxy
+        :breakpoint="600"
+        class="popup-dropdown"
+        context-menu
+        v-if="contextActions || $slots.getRowActions"
+      >
         <q-list dense style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
           <q-item

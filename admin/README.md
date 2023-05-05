@@ -33,6 +33,7 @@ yarn run fix       # Lint the files
 ```
 
 **Build or Development Mobile App**
+
 ```bash
 yarn quasar dev-ios       # Start the app in development mode required Xcode
 yarn quasar dev-android   # Start the app in development mode required Android Studio

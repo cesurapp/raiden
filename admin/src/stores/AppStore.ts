@@ -21,7 +21,7 @@ export const useAppStore = defineStore('app', {
     busy: [],
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm',
-    platform: {}
+    platform: {},
   }),
   getters: {
     isBusy() {
@@ -137,7 +137,7 @@ export const useAppStore = defineStore('app', {
       const fileName = response.headers['content-disposition'].split('=');
 
       // Web
-      if (! this.platform.nativeMobile) {
+      if (!this.platform.nativeMobile) {
         const status = exportFile(fileName[1], response.data, { mimeType: response.headers['content-type'] });
         if (status !== true) {
           await this.dialogDanger(String(status));
@@ -147,7 +147,7 @@ export const useAppStore = defineStore('app', {
       }
 
       // Native Mobile
-      const textContent = await new Blob([response.data]).text()
+      const textContent = await new Blob([response.data]).text();
       await Filesystem.writeFile({
         path: fileName[1],
         data: textContent,
@@ -156,8 +156,8 @@ export const useAppStore = defineStore('app', {
       }).then(async (r) => {
         await FileOpener.openFile({
           path: r.uri,
-          mimeType: response.headers['content-type'].split(';')[0]
-        })
+          mimeType: response.headers['content-type'].split(';')[0],
+        });
       });
     },
   },

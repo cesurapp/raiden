@@ -51,7 +51,7 @@ export default boot(({ app, router, store }) => {
 
   const authStore = useAuthStore(store);
   const appStore = useAppStore(store);
-  appStore.platform = app.config.globalProperties.$q.platform.is
+  appStore.platform = app.config.globalProperties.$q.platform.is;
 
   // Init Global Properties
   app.config.globalProperties.$api = api;
