@@ -5,11 +5,11 @@ storage:
       driver: local
       root: "%kernel.project_dir%/storage/files/"
 
-    main:
-      driver: cloudflare
-      root: /
-      accessKey: "27bb250534f19f59be7ad468f3a65ac5"
-      secretKey: "1bad239edfab8c98cf5cbed6be77616c5fb19e61523cc26305f392d7d46d9c2d"
-      bucket: "unit-test"
-      region: "auto"
-      endPoint: "https://11d0547262baad2e6bdeb340e88f83be.r2.cloudflarestorage.com"
+#    main:
+#      driver: cloudflare
+#      root: /
+#      accessKey: ""
+#      secretKey: ""
+#      bucket: "bucket-id"
+#      region: "auto"
+#      endPoint: "https://*.r2.cloudflarestorage.com"

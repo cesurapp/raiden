@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  postgres:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres2315
+    volumes:
+      - '/pgdata:/var/lib/postgresql/data'
+    ports:
+      - '5432:5432'
+
+  mainapp:
+    image: ${APPIMAGE}
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - '80:80'
+    env_file:
+      - .env
+    logging:
+      options:
+        max-size: 1g
+    entrypoint: sh -c "bin/console doctrine:schema:update --force --complete && php bin/index.php"

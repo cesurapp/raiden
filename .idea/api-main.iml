@@ -29,6 +29,9 @@
       <excludeFolder url="file://$MODULE_DIR$/api/var/cache" />
       <excludeFolder url="file://$MODULE_DIR$/admin/.vscode" />
       <excludeFolder url="file://$MODULE_DIR$/admin/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/admin/src-capacitor/android" />
+      <excludeFolder url="file://$MODULE_DIR$/admin/src-capacitor/ios" />
+      <excludeFolder url="file://$MODULE_DIR$/admin/src-capacitor/www" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

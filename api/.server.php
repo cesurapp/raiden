@@ -35,7 +35,7 @@ return static function (array $opt) {
         ],
         'cache_table' => [
             'size' => 700,
-            'column_length' => 12000,
+            'column_length' => 25000,
         ],
         'cron' => [
             'interval' => 1000 * 60,

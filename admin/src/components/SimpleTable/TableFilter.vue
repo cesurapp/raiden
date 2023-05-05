@@ -179,10 +179,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.datepopup {
-  padding: 0;
-  backdrop-filter: none;
-}
 .table-filter {
   padding: calc(#{map-get($space-sm, 'x')} + 3px) map-get($space-sm, 'x');
 }
