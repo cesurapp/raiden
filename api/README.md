@@ -149,8 +149,17 @@ Container Registry and then deployed to the servers via ssh.
 
    ```shell
    STAG_ENVS: [
+     "POSTGRES_PASSWORD=123123123" 
      "APP_ENV=prod",
-     "APP_LOG_LEVEL=info"
+     "APP_LOG_LEVEL=info",
+     "APP_SECRET=hsadgjh231",
+     "APP_JWT_SECRET=askjdhask",
+     "DATABASE_URL=ostgres://postgres:123123123@postgres:5432/postgres?charset=utf8&serverVersion=14",
+     "DATABASE_URL=postgresql+advisory://postgres:123123123@postgres:5432/postgres?serverVersion=14",
+     "SERVER_HTTP_SETTINGS_WORKER_NUM=2",
+     "SERVER_HTTP_SETTINGS_TASK_WORKER_NUM=2",
+     "FIREBASE_DSN=firebase://KEY@default",
+     "APP_LOG_GOOGLE_KEY=Base64 Encoded JSON File"
    ]
    ```
 5. Create __Staging__ branch and run __Staging__ action.

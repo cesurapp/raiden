@@ -9,7 +9,7 @@ env:
   ssh_username: root
   ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
   ssh_hosts: ${{ vars.STAG_HOSTS }}
-  app_envs: ${{ join(fromJSON(vars.STAG_ENVS), '\n') }}
+  app_envs: ${{ join(fromJSON(vars.STAG_ENVS || secrets.STAG_ENVS), '\n') }}
 
 jobs:
   build:
@@ -67,17 +67,14 @@ jobs:
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
           script: |
-            APPIMAGE=${{ env.app_image }}
+            APP_IMAGE=${{ env.app_image }}
             tee docker-compose.yml <<EOF
             ${{ steps.compose.outputs.content }}
             EOF
             echo -e "${{ env.app_envs }}" > .env
             
-            echo "DATABASE_URL=postgres://postgres:postgres2315@postgres:5432/postgres?charset=utf8&serverVersion=14" >> .env
-            echo "LOCK_DSN=postgresql+advisory://postgres:postgres2315@postgres:5432/postgres?serverVersion=14" >> .env
-            
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker pull ${{ env.app_image }}
             docker compose stop
-            docker compose up -d --remove-orphans
+            docker compose --env-file .env up -d --remove-orphans
             docker rmi $(docker images -q -f 'dangling=true') || true

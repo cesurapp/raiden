@@ -10,7 +10,7 @@ env:
   ssh_privatekey: ${{ secrets.SERVER_PRIVATEKEY }}
   ssh_hosts: ${{ join(fromJSON(vars.APP_HOSTS)) }}
   cmd_host: ${{ fromJSON(vars.APP_HOSTS)[0] }}
-  app_envs: ${{ join(fromJSON(vars.APP_ENVS), '\n') }}
+  app_envs: ${{ join(fromJSON(vars.APP_ENVS || secrets.APP_ENVS), '\n') }}
 
 jobs:
   build:
