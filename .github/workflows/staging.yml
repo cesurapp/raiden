@@ -31,7 +31,7 @@ jobs:
         with:
           registry: ${{ env.registry }}
           username: ${{ github.actor }}
-          password: ${{ secrets.ACCESS_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build & Push
         uses: docker/build-push-action@v3
         with:
@@ -64,7 +64,7 @@ jobs:
             echo -e "${{ env.app_envs }}" > .env
             echo "DATABASE_URL=postgres://postgres:postgres2315@postgres:5432/postgres?charset=utf8&serverVersion=14" >> .env
             echo "LOCK_DSN=postgresql+advisory://postgres:postgres2315@postgres:5432/postgres?serverVersion=14" >> .env
-            echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
             docker run --name postgres --restart always -e POSTGRES_PASSWORD=postgres2315 -v /pgdata:/var/lib/postgresql/data -p 5432:5432 -d postgres:14-alpine || docker restart postgres

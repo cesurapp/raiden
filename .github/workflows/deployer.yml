@@ -32,7 +32,7 @@ jobs:
         with:
           registry: ${{ env.registry }}
           username: ${{ github.actor }}
-          password: ${{ secrets.ACCESS_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build & Push
         uses: docker/build-push-action@v3
         with:
@@ -63,7 +63,7 @@ jobs:
           key: ${{ env.ssh_privatekey }}
           sync: true
           script: |
-            echo ${{ secrets.ACCESS_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker stop -t 120 mainapp || true && docker rm mainapp || true
             docker pull ${{ env.app_image }}
             echo -e "${{ env.app_envs }}" > .env
