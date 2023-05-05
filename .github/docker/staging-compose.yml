@@ -22,4 +22,4 @@ services:
     logging:
       options:
         max-size: 1g
-    entrypoint: sh -c "bin/console doctrine:schema:update --force --complete && php bin/index.php"
+    entrypoint: sh -c "bin/console cache:clear && bin/console doctrine:schema:update --force --complete && php bin/index.php"
