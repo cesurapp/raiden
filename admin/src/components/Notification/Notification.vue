@@ -246,6 +246,10 @@ export default defineComponent({
         return;
       }
 
+      if (!process.env.FIREBASE_APIKEY) {
+        return
+      }
+
       if (this.access.permission === null) {
         this.access.modal = true;
       }

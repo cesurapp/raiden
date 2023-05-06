@@ -67,11 +67,11 @@ jobs:
           username: ${{ env.ssh_username }}
           key: ${{ env.ssh_privatekey }}
           script: |
-            APP_IMAGE=${{ env.app_image }}
-            tee docker-compose.yml <<EOF
+            tee docker-compose.yml <<'EOF'
             ${{ steps.compose.outputs.content }}
             EOF
             echo -e "${{ env.app_envs }}" > .env
+            echo -e "APP_IMAGE=${{ env.app_image }}" >> .env
             
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.registry }} -u ${{ github.actor }} --password-stdin
             docker pull ${{ env.app_image }}
