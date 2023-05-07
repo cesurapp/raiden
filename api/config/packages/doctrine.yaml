@@ -12,23 +12,10 @@ doctrine:
     mappings:
       App:
         is_bundle: false
-        dir: '%kernel.project_dir%/src/Entity'
-        prefix: 'App\Entity'
+        dir: '%kernel.project_dir%/src'
+        prefix: 'App'
         alias: App
 
-      Core:
-        is_bundle: false
-        type: attribute
-        dir: '%kernel.project_dir%/src/Admin/Core/Entity'
-        prefix: 'App\Admin\Core\Entity'
-        alias: Core
-
-      Notification:
-        is_bundle: false
-        type: attribute
-        dir: '%kernel.project_dir%/src/Admin/Notification/Entity'
-        prefix: 'App\Admin\Notification\Entity'
-        alias: Notification
 #PROD
 when@prod:
   framework:
@@ -42,9 +29,6 @@ when@prod:
   doctrine:
     orm:
       auto_generate_proxy_classes: false
-      metadata_cache_driver:
-        type: pool
-        pool: doctrine.system_cache_pool
       query_cache_driver:
         type: pool
         pool: doctrine.system_cache_pool

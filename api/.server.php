@@ -34,7 +34,7 @@ return static function (array $opt) {
             'sock_type' => Constant::SOCK_TCP,
         ],
         'cache_table' => [
-            'size' => 700,
+            'size' => 750,
             'column_length' => 25000,
         ],
         'cron' => [
