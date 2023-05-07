@@ -298,6 +298,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
     }
 
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->email,
+            'emailApproved' => $this->emailApproved,
+            'phone' => $this->phone,
+            'phoneApproved' => $this->phoneApproved,
+            'phoneCountry' => $this->phoneCountry,
+            'roles' => $this->roles,
+            'type' => $this->type,
+            'frozen' => $this->frozen,
+            'language' => $this->language,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+        ];
+    }
+
     #[ORM\PostPersist]
     public function postPersist(LifecycleEventArgs $event): void
     {

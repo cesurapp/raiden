@@ -1,0 +1,14 @@
+{% extends 'email/_layout.html.twig' %}
+
+{% block preHeader %}{{ 'Welcome to Raiden'|trans([], null, locale) }}{% endblock %}
+
+{% block contentStart %}
+    <h1>{{ 'Hi %user%'|trans({'%user%': user.firstName|capitalize}, null, locale) }},</h1>
+    <p>
+        {{ 'email_welcome_message'|trans([], null, locale) }}
+    </p>
+{% endblock %}
+
+{% block contentAction %}
+    <a href="{{ APP_DEFAULT_URI }}" class="f-fallback button" target="_blank">{{ 'Visit Website'|trans([], null, locale) }}</a>
+{% endblock %}

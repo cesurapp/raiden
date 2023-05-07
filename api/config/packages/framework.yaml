@@ -15,6 +15,11 @@ framework:
     php_errors:
         log: "%kernel.debug%"
 
+twig:
+    globals:
+        APP_NAME: "%env(APP_NAME)%"
+        APP_DEFAULT_URI: "%env(APP_DEFAULT_URI)%"
+
 # TEST
 when@test:
     framework:

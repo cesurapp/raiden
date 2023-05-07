@@ -7,8 +7,8 @@ use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Service\MailPusher;
 use App\Admin\Core\Service\SmsPusher;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use Symfony\Component\Mime\Email;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -44,10 +44,14 @@ readonly class OtpKeyListener
     private function sendMail(OtpKey $otpKey): void
     {
         $this->mailPusher->send(
-            (new Email())
+            (new TemplatedEmail())
                 ->to($otpKey->getAddress() ?? $otpKey->getOwner()->getEmail())
                 ->subject('Verification Code')
-                ->text($this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]))
+                ->htmlTemplate('email/otpcode.html.twig')
+                ->context([
+                    'code' => $otpKey->getOtpKey(),
+                    'user' => $otpKey->getOwner(),
+                ])
         );
     }
 

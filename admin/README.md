@@ -75,7 +75,7 @@ Root directory path = admin
 Add Variables:
 
 ```env
-API=https://dev.yeyee.app
+API=https://dev.raiden.app
 NODE_VERSION=16
 ```
 

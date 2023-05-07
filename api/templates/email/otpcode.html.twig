@@ -1,0 +1,12 @@
+{% extends 'email/_layout.html.twig' %}
+
+{% block preHeader %}{{ 'Verification Code'|trans([], null, locale) }}{% endblock %}
+
+{% block contentStart %}
+    <h2>{{ 'Hi %user%'|trans({'%user%': user.firstName|capitalize}, null, locale) }},</h2>
+    <p>{{ 'Verification Code'|trans([], null, locale) }}: <b>{{ code }}</b></p>
+{% endblock %}
+
+{% block contentSub %}
+    {{ 'otp_danger_message'|trans([], null, locale) }}
+{% endblock %}
