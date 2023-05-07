@@ -19,6 +19,9 @@ class SwooleBridge implements HttpClientInterface
         if (isset($options['json'])) {
             $client->setJsonData($options['json']);
         }
+        if (isset($options['body'])) {
+            $client->setJsonData($options['body']);
+        }
 
         return new SwooleResponse($client->execute(), $url);
     }
