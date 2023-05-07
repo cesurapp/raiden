@@ -55,7 +55,7 @@ class SwooleProcess
      */
     public function watch(
         array $options,
-        array $watchDir = ['/src', '/config', '/package', '/templates'],
+        array $watchDir = ['/config', '/package', '/src', '/templates'],
         array $watchExt = ['*.php', '*.yaml', '*.twig']
     ): void {
         // Check fswatch Plugin
@@ -65,8 +65,13 @@ class SwooleProcess
             return;
         }
 
+        $extraFiles = [
+            ...array_filter(glob("$this->rootDir/bin/*"), 'is_file'),
+            ...glob("$this->rootDir/{.env*,.server*.php}", GLOB_BRACE),
+        ];
+
         // Start File Watcher
-        $paths = array_map(fn ($path) => $this->rootDir.$path, $watchDir);
+        $paths = [...array_map(fn ($path) => $this->rootDir.$path, $watchDir), ...$extraFiles];
         $watcher = new SymfonyProcess([$fsWatch, ...$watchExt, '-r', '-e', '.*~', ...$paths], null, null, null, 0);
         $watcher->start();
 
