@@ -71,7 +71,7 @@ class OtpTest extends AbstractKernelTestCase
             if (SendMailTask::class === $object['class']) {
                 /** @var Email $mail */
                 $mail = unserialize($object['payload']);
-                $this->assertStringContainsString('Verification code:', $mail->getTextBody());
+                $this->assertEquals('Verification Code', $mail->getSubject());
             }
         });
 
