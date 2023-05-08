@@ -3,18 +3,19 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Finder\Finder;
 
 return static function (ContainerConfigurator $containerConfigurator): void {
     $mappings = [];
-    $rootDir = dirname(__DIR__, 2);
-    $entityDirs = array_filter(glob($rootDir.'/src/{,*/,*/*/,*/*/*/,*/*/*/*/}Entity', GLOB_BRACE), 'is_dir');
-    foreach ($entityDirs as $index => $dir) {
-        $prefix = str_replace(['/src/', '/'], ['', '\\'], dirname(str_replace($rootDir, '', $dir)));
-        $mappings[0 === $index ? 'App' : $prefix] = [
+    $finder = new Finder();
+    foreach ($finder->directories()->name('Entity')->in(dirname(__DIR__, 2).'/src') as $item) {
+        $alias = str_replace('/', '', $item->getRelativePath());
+
+        $mappings[0 === count($mappings) ? 'App' : $alias] = [
             'is_bundle' => false,
-            'dir' => $dir,
-            'prefix' => 'App\\'.$prefix.'\\Entity',
-            'alias' => str_replace('\\', '', $prefix),
+            'dir' => $item->getRealPath(),
+            'prefix' => 'App\\'.str_replace('/', '\\', $item->getRelativePathname()),
+            'alias' => $alias,
         ];
     }
 
