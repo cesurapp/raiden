@@ -8,9 +8,9 @@ return static function (ContainerConfigurator $containerConfigurator): void {
     $mappings = [];
     $rootDir = dirname(__DIR__, 2);
     $entityDirs = array_filter(glob($rootDir.'/src/{,*/,*/*/,*/*/*/,*/*/*/*/}Entity', GLOB_BRACE), 'is_dir');
-    foreach ($entityDirs as $dir) {
+    foreach ($entityDirs as $index => $dir) {
         $prefix = str_replace(['/src/', '/'], ['', '\\'], dirname(str_replace($rootDir, '', $dir)));
-        $mappings[$prefix] = [
+        $mappings[0 === $index ? 'App' : $prefix] = [
             'is_bundle' => false,
             'dir' => $dir,
             'prefix' => 'App\\'.$prefix.'\\Entity',
