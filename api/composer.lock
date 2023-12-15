@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ac01f52f9af232c22f53d00f04ef24b",
+    "content-hash": "b023abce177211c52bfc58043558a2de",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -193,7 +193,7 @@
         },
         {
             "name": "cesurapp/api-bundle",
-            "version": "dev-main",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/api-bundle.git",
@@ -226,7 +226,6 @@
                 "phpstan/phpstan": "^1.10",
                 "symfony/test-pack": "^1.1"
             },
-            "default-branch": true,
             "type": "symfony-bundle",
             "autoload": {
                 "psr-4": {
@@ -253,13 +252,13 @@
             ],
             "support": {
                 "issues": "https://github.com/cesurapp/api-bundle/issues",
-                "source": "https://github.com/cesurapp/api-bundle/tree/main"
+                "source": "https://github.com/cesurapp/api-bundle/tree/1.0.0"
             },
             "time": "2023-12-15T17:41:28+00:00"
         },
         {
             "name": "cesurapp/media-bundle",
-            "version": "dev-main",
+            "version": "1.0.01",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/media-bundle.git",
@@ -291,7 +290,6 @@
                 "symfony/test-pack": "^1.1",
                 "zenstruck/foundry": "^1.36"
             },
-            "default-branch": true,
             "type": "symfony-bundle",
             "autoload": {
                 "psr-4": {
@@ -316,22 +314,22 @@
             ],
             "support": {
                 "issues": "https://github.com/cesurapp/media-bundle/issues",
-                "source": "https://github.com/cesurapp/media-bundle/tree/main"
+                "source": "https://github.com/cesurapp/media-bundle/tree/1.0.01"
             },
             "time": "2023-12-08T15:50:45+00:00"
         },
         {
             "name": "cesurapp/storage-bundle",
-            "version": "1.0.0",
+            "version": "1.0.01",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/storage-bundle.git",
-                "reference": "394f666f782b51f26b2d8fd165ce54ac100d81fa"
+                "reference": "b31c04b5f6c81804eaec3ad4971bd764ee802f8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cesurapp/storage-bundle/zipball/394f666f782b51f26b2d8fd165ce54ac100d81fa",
-                "reference": "394f666f782b51f26b2d8fd165ce54ac100d81fa",
+                "url": "https://api.github.com/repos/cesurapp/storage-bundle/zipball/b31c04b5f6c81804eaec3ad4971bd764ee802f8c",
+                "reference": "b31c04b5f6c81804eaec3ad4971bd764ee802f8c",
                 "shasum": ""
             },
             "require": {
@@ -339,12 +337,12 @@
                 "ext-fileinfo": "*",
                 "php": ">=8.2",
                 "symfony/dependency-injection": "^7.0",
+                "symfony/framework-bundle": "^7.0",
                 "symfony/http-kernel": "^7.0"
             },
             "require-dev": {
                 "php-cs-fixer/shim": "^3.40",
                 "phpstan/phpstan": "^1.10",
-                "symfony/framework-bundle": "^7.0",
                 "symfony/test-pack": "^1.1"
             },
             "type": "symfony-bundle",
@@ -372,13 +370,13 @@
             ],
             "support": {
                 "issues": "https://github.com/cesurapp/storage-bundle/issues",
-                "source": "https://github.com/cesurapp/storage-bundle/tree/1.0.0"
+                "source": "https://github.com/cesurapp/storage-bundle/tree/1.0.01"
             },
-            "time": "2023-12-02T13:27:08+00:00"
+            "time": "2023-12-08T15:51:34+00:00"
         },
         {
             "name": "cesurapp/swoole-bundle",
-            "version": "dev-main",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/swoole-bundle.git",
@@ -414,7 +412,6 @@
                 "symfony/test-pack": "^1.1",
                 "symfony/uid": "^7.0"
             },
-            "default-branch": true,
             "type": "symfony-bundle",
             "autoload": {
                 "psr-4": {
@@ -442,7 +439,7 @@
             ],
             "support": {
                 "issues": "https://github.com/cesurapp/swoole-bundle/issues",
-                "source": "https://github.com/cesurapp/swoole-bundle/tree/main"
+                "source": "https://github.com/cesurapp/swoole-bundle/tree/1.0.0"
             },
             "time": "2023-12-15T07:54:04+00:00"
         },
@@ -9278,10 +9275,8 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "cesurapp/media-bundle": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -3,15 +3,15 @@
 High concurrency, OpenSwoole based, Symfony 6 Api
 
 __Features__
-* Swoole Http, Task(Queue), Cron server
-* Auto generated api documentation
-* Api typescript client generator
+* Swoole Http Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
+* Auto generated __API__ documentation [ApiBundle](https://github.com/cesurapp/api-bundle)
+* Api __TypeScript__ client generator
 * Github actions auto deployment
 * Horizontally scalable
 * Firebase integration for notifications
 * Firebase bulk notification sender
 * Email/Phone verify system
-* Cloudflare, Backblaze, Local drives for storage integration
+* Cloudflare, Backblaze, Local drives for storage integration [StorageBundle](https://github.com/cesurapp/storage-bundle)
 * Role based authentication
 * Enum permission system
 * Multi language support
@@ -56,15 +56,13 @@ pecl install imagick
 
 # Configure Environment
 cp .env .env.local
-cp .server.php .server.local.php
 
 # Install Dependency
-composer qa:install # (PHPStan - PHPCsFixer)
 composer install
 
 # Create PostgreSql Database
 bin/console doctrine:database:create
-bin/console doctrine:schema:update
+bin/console doctrine:schema:update --force --complete
 ```
 
 #### Production using Docker
@@ -80,7 +78,6 @@ bin/console doctrine:schema:update
 
    ```shell
    cp .env .env.local
-   cp .server.php .server.local.php
    ```
 3. Build Dockerfile & Run
 
@@ -119,7 +116,6 @@ Container Registry and then deployed to the servers via ssh.
    ```shell
    APP_ENVS: [
      "APP_ENV=prod",
-     "APP_LOG_LEVEL=info"
      "DATABASE_URL=postgres://cesur:@127.0.0.1:5432/raiden?charset=utf8&serverVersion=14"
      "LOCK_DSN=semaphore"
    ]
@@ -151,15 +147,12 @@ Container Registry and then deployed to the servers via ssh.
    STAG_ENVS: [
      "POSTGRES_PASSWORD=123123123" 
      "APP_ENV=prod",
-     "APP_LOG_LEVEL=info",
      "APP_SECRET=hsadgjh231",
      "APP_JWT_SECRET=askjdhask",
-     "DATABASE_URL=ostgres://postgres:123123123@postgres:5432/postgres?charset=utf8&serverVersion=14",
      "DATABASE_URL=postgresql+advisory://postgres:123123123@postgres:5432/postgres?serverVersion=14",
      "SERVER_HTTP_SETTINGS_WORKER_NUM=2",
      "SERVER_HTTP_SETTINGS_TASK_WORKER_NUM=2",
      "FIREBASE_DSN=firebase://KEY@default",
-     "APP_LOG_GOOGLE_KEY=Base64 Encoded JSON File"
    ]
    ```
 5. Create __Staging__ branch and run __Staging__ action.
@@ -187,10 +180,10 @@ Documentation
 --------------------
 ### Packages
 
-* [Swoole Server](package/SwooleBundle/README.md)
-* [Storage Bundle](package/StorageBundle/README.md)
-* [Media Bundle](package/MediaBundle/README.md)
-* [Api Bundle](package/ApiBundle/README.md)
+* [Swoole Server Bundle](https://github.com/cesurapp/swoole-bundle)
+* [Storage Bundle](https://github.com/cesurapp/storage-bundle)
+* [Media Bundle](https://github.com/cesurapp/media-bundle)
+* [Api Bundle](https://github.com/cesurapp/api-bundle)
 
 ### Realtime Notification (Firebase)
 
@@ -225,16 +218,6 @@ public function test(NotificationPusher $pusher)
     )
 }
 ```
-
-### Cloud Logging (Google Cloud Logging)
-
-__Configure__
-1. Google Cloud Enable IAM [Enable Logging APU](https://console.cloud.google.com/apis/library/logging.googleapis.com)
-2. Open -> API & Services -> Create Credentials -> Service Account
-3. Role -> Logging Admin
-4. Edit Service Accounts -> Keys -> Add Keys -> JSON
-5. Json Content Convert Base64
-6. Configure .env ``APP_LOG_GOOGLE_KEY=Base64Content``
 
 ### Mail & Sms Pusher
 __Send Mail__
