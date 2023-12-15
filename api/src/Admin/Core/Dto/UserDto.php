@@ -87,7 +87,12 @@ class UserDto extends ApiDto
         }
     }
 
-    public function initObject(string|User $object): User
+    /**
+     * @param User|mixed $object
+     *
+     * @return User|mixed
+     */
+    public function initObject(mixed $object = null): mixed
     {
         return $object
             ->setEmail($this->validated('email'))

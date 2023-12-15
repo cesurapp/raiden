@@ -6,13 +6,11 @@ use App\Admin\Core\Enum\UserType;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;
-use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Enum\SchedulerStatus;
-use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Cesurapp\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class SchedulerDto extends ApiDto
+class SchedulerDto extends NotificationDto
 {
     // Scheduler
     #[Assert\NotNull]
@@ -29,74 +27,6 @@ class SchedulerDto extends ApiDto
     #[Assert\NotNull]
     #[Assert\Type(type: 'bool')]
     public bool $refresh_campaign = false;
-
-    // Notification
-    #[Assert\NotNull]
-    public NotificationStatus $status = NotificationStatus::INFO;
-
-    #[Assert\Length(max: 255)]
-    public ?string $title = null;
-
-    #[Assert\Length(max: 1000)]
-    public ?string $message = null;
-
-    #[Assert\Type('array')]
-    #[Assert\Collection(
-        fields: [
-            'web' => new Assert\Collection([
-                'icon' => new Assert\Optional(),
-                'sound' => new Assert\Optional(),
-                'color' => new Assert\Optional(),
-                'click_action' => new Assert\Optional(),
-                'route_action' => new Assert\Optional(),
-                'download_action' => new Assert\Optional(),
-            ]),
-            'ios' => new Assert\Collection([
-                'icon' => new Assert\Optional(),
-                'sound' => new Assert\Optional(),
-                'color' => new Assert\Optional(),
-                'click_action' => new Assert\Optional(),
-                'route_action' => new Assert\Optional(),
-                'download_action' => new Assert\Optional(),
-            ]),
-            'android' => new Assert\Collection([
-                'icon' => new Assert\Optional(),
-                'sound' => new Assert\Optional(),
-                'color' => new Assert\Optional(),
-                'click_action' => new Assert\Optional(),
-                'route_action' => new Assert\Optional(),
-                'download_action' => new Assert\Optional(),
-            ]),
-        ],
-        allowMissingFields: true
-    )]
-    #[ThorResource(data: [
-        'web' => [
-            'icon' => '?string',
-            'sound' => '?string',
-            'color' => '?string',
-            'click_action' => '?string',
-            'route_action' => '?string',
-            'download_action' => '?string',
-        ],
-        'ios' => [
-            'icon' => '?string',
-            'sound' => '?string',
-            'color' => '?string',
-            'click_action' => '?string',
-            'route_action' => '?string',
-            'download_action' => '?string',
-        ],
-        'android' => [
-            'icon' => '?string',
-            'sound' => '?string',
-            'color' => '?string',
-            'click_action' => '?string',
-            'route_action' => '?string',
-            'download_action' => '?string',
-        ],
-    ])]
-    public ?array $data = null;
 
     #[Assert\Type('array')]
     #[Assert\Collection(
@@ -131,7 +61,12 @@ class SchedulerDto extends ApiDto
     ])]
     public ?array $device_filter = null;
 
-    public function initObject(Scheduler|string $object = null): Scheduler
+    /**
+     * @param Scheduler|null $object
+     *
+     * @return Scheduler|mixed
+     */
+    public function initObject(mixed $object = null): mixed
     {
         $object
             ->setCampaignTitle($this->validated('campaign_title'))

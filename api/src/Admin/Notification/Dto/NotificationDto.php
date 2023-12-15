@@ -77,7 +77,12 @@ class NotificationDto extends ApiDto
     ])]
     public ?array $data = null;
 
-    public function initObject(Notification|string $object = null): Notification
+    /**
+     * @param Notification|null $object
+     *
+     * @return Notification|mixed
+     */
+    public function initObject(mixed $object = null): mixed
     {
         return (new Notification())
             ->setTitle($this->validated('title'))
