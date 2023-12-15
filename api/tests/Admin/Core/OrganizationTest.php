@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Core;
+namespace App\Tests\Admin\Core;
 
 use App\Tests\Setup\AbstractWebTestCase;
 

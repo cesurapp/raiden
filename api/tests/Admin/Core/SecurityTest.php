@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Core;
+namespace App\Tests\Admin\Core;
 
 use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\OtpKey;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Notification;
+namespace App\Tests\Admin\Notification;
 
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Service\NotificationPusher;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Admin\Notification;
+namespace App\Tests\Admin\Notification;
 
 use App\Admin\Core\Enum\UserType;
 use App\Admin\Notification\Cron\SchedulerCron;
