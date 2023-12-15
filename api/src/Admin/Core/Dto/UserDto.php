@@ -13,16 +13,18 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserDto extends ApiDto
 {
+    protected bool $auto = false;
+
     #[Assert\Length(max: 180)]
     #[Assert\Email]
-    #[UniqueEntity(entityClass: User::class, fields: ['email'])]
+    #[UniqueEntity(entityClass: User::class, fields: ['email'], editField: 'id')]
     public ?string $email = null;
 
     #[Assert\Type(type: 'boolean')]
     public bool $email_approved = false;
 
     #[PhoneNumber(regionPath: 'phone_country')]
-    #[UniqueEntity(entityClass: User::class, fields: ['phone'])]
+    #[UniqueEntity(entityClass: User::class, fields: ['phone'], editField: 'id')]
     public int|string|null $phone = null;
 
     #[Assert\Country]

@@ -92,7 +92,7 @@ export default defineComponent({
       this.$refs.form.validate().then((success) => {
         if (success) {
           this.$api
-            .securityResetPassword({
+            .authSecurityResetPassword({
               username: atob(this.$route.params.id),
               otp_key: this.otp_key,
               password: this.password,

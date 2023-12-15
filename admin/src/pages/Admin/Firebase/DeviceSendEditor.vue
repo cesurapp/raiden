@@ -88,7 +88,7 @@ import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { mdiBell, mdiClose, mdiPlus, mdiSend } from '@quasar/extras/mdi-v7';
 import { NotificationStatus } from 'src/api/Enum/NotificationStatus';
 import { DeviceType } from 'src/api/Enum/DeviceType';
-import { DeviceSendRequest } from 'src/api/Request/DeviceSendRequest';
+import { AdminDeviceSendRequest } from 'src/api/Request/AdminDeviceSendRequest';
 
 export default defineComponent({
   name: 'DeviceSendEditor',
@@ -96,7 +96,7 @@ export default defineComponent({
   setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType }),
   data: () => ({
     deviceId: null,
-    form: {} as DeviceSendRequest,
+    form: {} as AdminDeviceSendRequest,
     data: [],
   }),
   computed: {
@@ -132,7 +132,7 @@ export default defineComponent({
 
       this.$refs.form.validate().then((success: any) => {
         if (success) {
-          this.$api.deviceSend(this.deviceId, this.form).then(() => {
+          this.$api.adminDeviceSend(this.deviceId, this.form).then(() => {
             this.$refs.editor.toggle();
           });
         }

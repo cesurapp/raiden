@@ -149,7 +149,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
-import { AccountEditRequest } from 'src/api/Request/AccountEditRequest';
+import { AdminAccountEditRequest } from 'src/api/Request/AdminAccountEditRequest';
 import { mdiAccount, mdiContentSave, mdiEye, mdiEyeOff, mdiSecurity } from '@quasar/extras/mdi-v7';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
@@ -162,7 +162,7 @@ export default defineComponent({
   setup: () => ({ UserType, mdiAccount, mdiContentSave, mdiEyeOff, mdiEye, mdiSecurity }),
   data: () => ({
     isPwd: true,
-    form: {} as AccountEditRequest,
+    form: {} as AdminAccountEditRequest,
     permissions: [],
     proxy: null,
     tab: 'profile',
@@ -193,7 +193,7 @@ export default defineComponent({
     /**
      * Create or Edit Current Proxy Object
      */
-    init(user: AccountEditRequest | null = null) {
+    init(user: AdminAccountEditRequest | null = null) {
       this.tab = 'profile';
       this.proxy = user;
       this.form = user
@@ -213,7 +213,7 @@ export default defineComponent({
     load(id: string) {
       this.tab = 'profile';
 
-      this.$api.accountShow(id).then((r) => {
+      this.$api.adminAccountShow(id).then((r) => {
         this.form = r.data.data;
         this.$refs.editor.toggle();
       });
@@ -230,14 +230,14 @@ export default defineComponent({
         if (success) {
           // Edit
           if (this.form.hasOwnProperty('id')) {
-            return this.$api.accountEdit(this.form.id, this.form).then((r) => {
+            return this.$api.adminAccountEdit(this.form.id, this.form).then((r) => {
               this.proxy = Object.assign(this.proxy || {}, r.data.data);
               this.$refs.editor.toggle();
             });
           }
 
           // Create
-          this.$api.accountCreate(this.form).then((r) => {
+          this.$api.adminAccountCreate(this.form).then((r) => {
             this.$emit('created', r.data.data);
             this.$refs.editor.toggle();
           });
@@ -249,7 +249,7 @@ export default defineComponent({
      * Save Permission
      */
     savePermission() {
-      this.$api.accountEditPermission(this.form.id, { permissions: this.form.roles }).then(() => {
+      this.$api.adminAccountEditPermission(this.form.id, { permissions: this.form.roles }).then(() => {
         this.proxy = Object.assign(this.proxy || {}, this.form);
       });
     },

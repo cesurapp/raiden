@@ -5,7 +5,6 @@ import { UserType } from 'src/api/Enum/UserType';
 import { UserResource } from 'src/api/Resource/UserResource';
 import { watch } from 'vue';
 import { Permission } from 'src/api/Enum/Permission';
-import { AxiosError } from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -25,7 +24,7 @@ export const useAuthStore = defineStore('auth', {
       this.clearToken();
 
       await api
-        .securityLogin({ username: username, password: password })
+        .authSecurityLogin({ username: username, password: password })
         .then((r) => {
           this.user = r.data.data;
           this.appToken = r.data.token;
@@ -37,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
           // Redirect
           this.router.push({ path: '/' });
         })
-        .catch((r: AxiosError) => {
+        .catch((r: any) => {
           if (r.response?.data?.type === 'AccountNotActivatedException') {
             this.loginOtpRequest(username);
           }
@@ -48,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
      * Login with Passwordless Request
      */
     async loginOtpRequest(username: string) {
-      await api.securityLoginOtpRequest({ username: username }).then(() => {
+      await api.authSecurityLoginOtpRequest({ username: username }).then(() => {
         this.router.push({
           name: 'auth.login.otp',
           params: { id: btoa(username) },
@@ -62,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
     async loginOtp(username: string, otpKey: number) {
       this.clearToken();
 
-      await api.securityLoginOtp({ username: username, otp_key: otpKey }).then((r) => {
+      await api.authSecurityLoginOtp({ username: username, otp_key: otpKey }).then((r) => {
         this.user = r.data.data;
         this.appToken = r.data.token;
         this.refreshToken = r.data.refresh_token;
@@ -84,7 +83,7 @@ export const useAuthStore = defineStore('auth', {
       }
 
       return (this.isRefreshingState = api
-        .securityRefreshToken({ refresh_token: this.refreshToken }, { skipInterceptor: true })
+        .authSecurityRefreshToken({ refresh_token: this.refreshToken }, { skipInterceptor: true })
         .then((r) => (this.appToken = r.data.data.token))
         .finally(() => (this.isRefreshingState = false)));
     },
@@ -94,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async reloadUser() {
       if (this.isLoggedIn()) {
-        await api.accountShowProfile().then((r) => {
+        await api.adminAccountShowProfile().then((r) => {
           this.updateUser(r.data.data);
         });
       }
@@ -116,7 +115,7 @@ export const useAuthStore = defineStore('auth', {
 
         if (!this.isLogoutState) {
           this.isLogoutState = api
-            .securityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
+            .authSecurityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
             .finally(() => (this.isLogoutState = false));
         }
       });
@@ -126,7 +125,7 @@ export const useAuthStore = defineStore('auth', {
      * Switch User
      */
     async switchUser(username: string) {
-      await api.accountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
+      await api.adminAccountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
         if (r.data.data.type !== UserType.USER) {
           this.switchedUser = username;
           this.updateUser(r.data.data);

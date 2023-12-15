@@ -187,7 +187,7 @@ import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { mdiBell, mdiPlus, mdiSend, mdiClose, mdiCalendar, mdiClockOutline } from '@quasar/extras/mdi-v7';
 import { NotificationStatus } from 'src/api/Enum/NotificationStatus';
 import { DeviceType } from 'src/api/Enum/DeviceType';
-import { SchedulerCreateRequest } from 'src/api/Request/SchedulerCreateRequest';
+import { AdminSchedulerCreateRequest } from 'src/api/Request/AdminSchedulerCreateRequest';
 import { SchedulerResource } from 'src/api/Resource/SchedulerResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
@@ -200,7 +200,7 @@ export default defineComponent({
   components: { DateInput, DateRangeInput, CountryInput, LanguageInput, UserTypeInput, SimpleEditor },
   setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType, mdiCalendar, mdiClockOutline }),
   data: () => ({
-    form: {} as SchedulerCreateRequest,
+    form: {} as AdminSchedulerCreateRequest,
     data: [],
   }),
   computed: {
@@ -265,14 +265,14 @@ export default defineComponent({
         if (success) {
           // Edit
           if (this.form.hasOwnProperty('id')) {
-            return this.$api.schedulerEdit(this.form.id, this.form).then((r) => {
+            return this.$api.adminSchedulerEdit(this.form.id, this.form).then((r) => {
               this.$emit('updated', r.data.data);
               this.$refs.editor.toggle();
             });
           }
 
           // Create
-          this.$api.schedulerCreate(this.form).then((r) => {
+          this.$api.adminSchedulerCreate(this.form).then((r) => {
             this.$emit('created', r.data.data);
             this.$refs.editor.toggle();
           });

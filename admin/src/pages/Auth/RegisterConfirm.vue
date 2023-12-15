@@ -59,7 +59,7 @@ export default defineComponent({
       this.$refs.form.validate().then((success) => {
         if (success) {
           this.$api
-            .securityApprove({
+            .authSecurityApprove({
               otp_key: this.otp_key,
               username: atob(this.$route.params.id),
             })

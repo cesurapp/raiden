@@ -4,9 +4,9 @@
       <SimpleTable
         ref="table"
         trans-key="account"
-        :columns="AccountListTable"
-        :request-prop="(req, config) => $api.accountList(req, config)"
-        :delete-prop="(row) => $api.accountDelete(row.id)"
+        :columns="AdminAccountListTable"
+        :request-prop="(req, config) => $api.adminAccountList(req, config)"
+        :delete-prop="(row) => $api.adminAccountDelete(row.id)"
         :delete-permission="$permission.AdminAccount.DELETE"
       >
         <!--Selected Actions-->
@@ -144,7 +144,7 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
-import AccountListTable from 'src/api/Table/AccountListTable';
+import AdminAccountListTable from 'src/api/Table/AdminAccountListTable';
 import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
 import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
 import { UserType } from 'src/api/Enum/UserType';
@@ -159,7 +159,7 @@ export default defineComponent({
   name: 'AccountListing',
   components: { SimpleDialog, UserTypeInput, UserEditor, PageContent, SimpleTable },
   setup: () => ({
-    AccountListTable,
+    AdminAccountListTable,
     UserType,
     mdiPencil,
     mdiPlus,

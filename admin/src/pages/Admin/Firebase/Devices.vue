@@ -5,9 +5,9 @@
         ref="table"
         trans-key="devices"
         :export-button="false"
-        :columns="DeviceListTable"
-        :request-prop="(req, config) => $api.deviceList(req, config)"
-        :delete-prop="(row) => $api.deviceDelete(row.id)"
+        :columns="AdminDeviceListTable"
+        :request-prop="(req, config) => $api.adminDeviceList(req, config)"
+        :delete-prop="(row) => $api.adminDeviceDelete(row.id)"
         :delete-permission="$permission.AdminDevice.DELETE"
       >
         <!--Row Actions-->
@@ -78,7 +78,7 @@ import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
 import { mdiSend } from '@quasar/extras/mdi-v7';
-import DeviceListTable from 'src/api/Table/DeviceListTable';
+import AdminDeviceListTable from 'src/api/Table/AdminDeviceListTable';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import { DeviceType } from 'src/api/Enum/DeviceType';
 import DeviceSendEditor from 'pages/Admin/Firebase/DeviceSendEditor.vue';
@@ -86,7 +86,7 @@ import DeviceSendEditor from 'pages/Admin/Firebase/DeviceSendEditor.vue';
 export default defineComponent({
   name: 'FirebaseDeviceListing',
   components: { DeviceSendEditor, UserTypeInput, PageContent, SimpleTable },
-  setup: () => ({ DeviceListTable, DeviceType, mdiSend }),
+  setup: () => ({ AdminDeviceListTable, DeviceType, mdiSend }),
   mixins: [
     createMetaMixin(function () {
       return {

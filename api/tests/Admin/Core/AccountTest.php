@@ -207,6 +207,22 @@ class AccountTest extends KernelTestCase
             ->isFail()
             ->isJsonStructure(['type', 'errors']);
 
+        // Success Same Email|Phone Update
+        $this->login($user)
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
+                'email' => $user->getEmail(),
+                'email_approved' => true,
+                'phone' => $user->getPhone(),
+                'phone_country' => 'TR',
+                'phone_approved' => true,
+                'type' => UserType::ADMIN->value,
+                'password' => '123123123',
+                'frozen' => false,
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+            ])
+            ->isOk();
+
         // Success
         $email = mt_rand().'@test.app';
         $phone = 541 .random_int(1000000, 4999999);

@@ -86,7 +86,7 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success: boolean) => {
         if (success) {
-          this.$api.securityResetRequest({ username: this.username }).then(() => {
+          this.$api.authSecurityResetRequest({ username: this.username }).then(() => {
             this.$router.push({
               name: 'auth.reset.password',
               params: { id: btoa(this.username) },

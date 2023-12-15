@@ -91,6 +91,8 @@ class AccountController extends ApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_CREATE->value)]
     public function create(UserDto $dto): ApiResponse
     {
+        $dto->validate();
+
         if ($dto->validated('type') === UserType::SUPERADMIN->value) {
             $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }
@@ -116,6 +118,8 @@ class AccountController extends ApiController
     #[IsGranted(AccountPermission::ROLE_ACCOUNT_EDIT->value)]
     public function edit(User $user, UserDto $dto): ApiResponse
     {
+        $dto->setProp('id', $user->getId())->validate();
+
         if ($user->hasType(UserType::SUPERADMIN)) {
             $this->isGrantedDeny(UserType::SUPERADMIN->value);
         }

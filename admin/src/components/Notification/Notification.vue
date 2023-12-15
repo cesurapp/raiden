@@ -100,7 +100,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { NotificationListResponse } from 'src/api/Response/NotificationListResponse';
+import { MainNotificationListResponse } from 'src/api/Response/MainNotificationListResponse';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
@@ -113,7 +113,7 @@ export default defineComponent({
   setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
   inheritAttrs: false,
   data: () => ({
-    resp: {} as NotificationListResponse,
+    resp: {} as MainNotificationListResponse,
     unreadCount: 0,
     firebase: {
       app: null,
@@ -157,12 +157,12 @@ export default defineComponent({
       this.load();
     },
     loadUnreadCount() {
-      this.$api.notificationUnreadCount().then((r) => {
+      this.$api.mainNotificationUnreadCount().then((r) => {
         this.unreadCount = r.data.data;
       });
     },
     load() {
-      this.$api.notificationList(DeviceType.WEB, { page: this.resp.pager?.current || 1 }).then((r) => {
+      this.$api.mainNotificationList(DeviceType.WEB, { page: this.resp.pager?.current || 1 }).then((r) => {
         if (!Object.keys(this.resp).length) {
           return (this.resp = r.data);
         }
@@ -184,12 +184,12 @@ export default defineComponent({
       // Descrease Unread Count
       this.unreadCount--;
 
-      this.$api.notificationRead(item.id, { showMessage: false }).then(() => {
+      this.$api.mainNotificationRead(item.id, { showMessage: false }).then(() => {
         item.readed = true;
       });
     },
     readAll() {
-      this.$api.notificationReadAll().then(() => {
+      this.$api.mainNotificationReadAll().then(() => {
         this.resp.data.forEach((i) => {
           i.readed = true;
         });
@@ -199,7 +199,7 @@ export default defineComponent({
       this.unreadCount = 0;
     },
     remove(item) {
-      this.$api.notificationDelete(item.id, { showMessage: false }).then(() => {
+      this.$api.mainNotificationDelete(item.id, { showMessage: false }).then(() => {
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       });
     },
@@ -247,7 +247,7 @@ export default defineComponent({
       }
 
       if (!process.env.FIREBASE_APIKEY) {
-        return
+        return;
       }
 
       if (this.access.permission === null) {
@@ -303,7 +303,7 @@ export default defineComponent({
     saveFirebaseToken(token: string) {
       const fbToken = LocalStorage.getItem('fbToken');
       if (fbToken !== token) {
-        this.$api.deviceRegister({ token: token, device: 'web' }, { showMessage: false }).then(() => {
+        this.$api.mainDeviceRegister({ token: token, device: 'web' }, { showMessage: false }).then(() => {
           LocalStorage.set('fbToken', token);
         });
       }
