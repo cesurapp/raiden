@@ -2,9 +2,7 @@
 
 namespace App\Tests\Setup;
 
-use Cesurapp\SwooleBundle\Task\TaskWorker;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
@@ -316,25 +314,5 @@ abstract class KernelTestCase extends BaseKernelTestCase
         $tester->assertCommandIsSuccessful();
 
         return $tester;
-    }
-
-    /**
-     * Mock TaskWorker.
-     */
-    public function mockTaskWorker(callable $returnCallback): TaskWorker|MockObject
-    {
-        $worker = $this->getMockBuilder(TaskWorker::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $worker->method('handle')->willReturnCallback($returnCallback);
-
-        if (isset(self::$client)) {
-            self::$client->disableReboot();
-        }
-
-        self::getContainer()->set(TaskWorker::class, $worker);
-
-        return $worker;
     }
 }

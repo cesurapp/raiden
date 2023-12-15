@@ -6,6 +6,8 @@ use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\UserType;
+use Cesurapp\SwooleBundle\Task\TaskWorker;
+use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Uid\Ulid;
 
 trait AppTrait
@@ -47,5 +49,25 @@ trait AppTrait
             ->setEmail(Ulid::generate().'@test.com')
             ->setEmailApproved(true)
             ->setPassword($password, static::getContainer()->get('security.user_password_hasher'));
+    }
+
+    /**
+     * Mock TaskWorker.
+     */
+    public function mockTaskWorker(callable $returnCallback): TaskWorker|MockObject
+    {
+        $worker = $this->getMockBuilder(TaskWorker::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $worker->method('handle')->willReturnCallback($returnCallback);
+
+        if (isset(self::$client)) {
+            self::$client->disableReboot();
+        }
+
+        self::getContainer()->set(TaskWorker::class, $worker);
+
+        return $worker;
     }
 }
