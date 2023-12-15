@@ -197,12 +197,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/api-bundle.git",
-                "reference": "a3f20346be0f6df5cf0bb513cb1bd98fc73909e5"
+                "reference": "4ae3159711f8e56bb96d90a6f519af49d9133d6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cesurapp/api-bundle/zipball/a3f20346be0f6df5cf0bb513cb1bd98fc73909e5",
-                "reference": "a3f20346be0f6df5cf0bb513cb1bd98fc73909e5",
+                "url": "https://api.github.com/repos/cesurapp/api-bundle/zipball/4ae3159711f8e56bb96d90a6f519af49d9133d6b",
+                "reference": "4ae3159711f8e56bb96d90a6f519af49d9133d6b",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +255,7 @@
                 "issues": "https://github.com/cesurapp/api-bundle/issues",
                 "source": "https://github.com/cesurapp/api-bundle/tree/main"
             },
-            "time": "2023-12-15T00:40:01+00:00"
+            "time": "2023-12-15T01:19:26+00:00"
         },
         {
             "name": "cesurapp/media-bundle",
