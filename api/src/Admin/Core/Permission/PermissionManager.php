@@ -17,7 +17,7 @@ class PermissionManager
     {
     }
 
-    public function getPermissions(?UserType $type = null): array
+    public function getPermissions(UserType $type = null): array
     {
         if (!$this->permissions) {
             $finder = new Finder();
@@ -39,7 +39,7 @@ class PermissionManager
         return $type ? ($this->permissions[$type->name] ?? []) : $this->permissions;
     }
 
-    public function getPermissionsValues(?UserType $type = null): array
+    public function getPermissionsValues(UserType $type = null): array
     {
         $p = $this->getPermissions($type);
         array_walk_recursive($p, static fn (&$enum) => $enum = $enum->value);
@@ -47,7 +47,7 @@ class PermissionManager
         return $p;
     }
 
-    public function getPermissionsFlatten(?UserType $type = null): array
+    public function getPermissionsFlatten(UserType $type = null): array
     {
         if ($type) {
             return array_merge(...array_values($this->getPermissionsValues($type)));

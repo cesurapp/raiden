@@ -95,7 +95,7 @@ class Notification
     /**
      * Custom FCM Data.
      */
-    public function getData(?DeviceType $type = null): array
+    public function getData(DeviceType $type = null): array
     {
         return $type ? ($this->data[$type->value] ?? []) : $this->data;
     }
@@ -107,7 +107,7 @@ class Notification
         return $this;
     }
 
-    public function addData(string $key, string|int|bool $value, ?DeviceType $type = null): self
+    public function addData(string $key, string|int|bool $value, DeviceType $type = null): self
     {
         if (!$type) {
             foreach (DeviceType::cases() as $deviceType) {
@@ -120,42 +120,42 @@ class Notification
         return $this;
     }
 
-    public function addIcon(string $icon, ?DeviceType $type = null): self
+    public function addIcon(string $icon, DeviceType $type = null): self
     {
         $this->addData('icon', $icon, $type);
 
         return $this;
     }
 
-    public function addSound(string $sound, ?DeviceType $type = null): self
+    public function addSound(string $sound, DeviceType $type = null): self
     {
         $this->addData('sound', $sound, $type);
 
         return $this;
     }
 
-    public function addColor(string $rgbColor, ?DeviceType $type = null): self
+    public function addColor(string $rgbColor, DeviceType $type = null): self
     {
         $this->addData('color', $rgbColor, $type);
 
         return $this;
     }
 
-    public function addClickAction(string $link, ?DeviceType $type = null): self
+    public function addClickAction(string $link, DeviceType $type = null): self
     {
         $this->addData('click_action', $link, $type);
 
         return $this;
     }
 
-    public function addRouteAction(string $link, ?DeviceType $type = null): self
+    public function addRouteAction(string $link, DeviceType $type = null): self
     {
         $this->addData('route_action', $link, $type);
 
         return $this;
     }
 
-    public function addDownloadAction(string $link, ?DeviceType $type = null): self
+    public function addDownloadAction(string $link, DeviceType $type = null): self
     {
         $this->addData('download_action', $link, $type);
 

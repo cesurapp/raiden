@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Admin Application UI",
   "productName": "Admin App",
-  "author": "Ramazan APAYDIN",
+  "author": "Cesur APAYDIN",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",

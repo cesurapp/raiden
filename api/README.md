@@ -120,7 +120,7 @@ Container Registry and then deployed to the servers via ssh.
    APP_ENVS: [
      "APP_ENV=prod",
      "APP_LOG_LEVEL=info"
-     "DATABASE_URL=postgres://ramazan:@127.0.0.1:5432/raiden?charset=utf8&serverVersion=14"
+     "DATABASE_URL=postgres://cesur:@127.0.0.1:5432/raiden?charset=utf8&serverVersion=14"
      "LOCK_DSN=semaphore"
    ]
    ```

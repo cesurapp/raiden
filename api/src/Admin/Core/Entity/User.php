@@ -185,7 +185,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password, ?UserPasswordHasherInterface $hasher = null): self
+    public function setPassword(string $password, UserPasswordHasherInterface $hasher = null): self
     {
         $this->password = $hasher ? $hasher->hashPassword($this, $password) : $password;
 

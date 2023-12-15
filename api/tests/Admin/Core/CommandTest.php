@@ -5,9 +5,6 @@ namespace App\Tests\Admin\Core;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\UserType;
 use App\Tests\Setup\AbstractKernelTestCase;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 class CommandTest extends AbstractKernelTestCase
 {

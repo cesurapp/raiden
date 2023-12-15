@@ -23,7 +23,7 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Create OTP Key.
      */
-    public function create(User $user, OtpType $type, int $expiredMinute = 3, ?string $address = null): OtpKey
+    public function create(User $user, OtpType $type, int $expiredMinute = 3, string $address = null): OtpKey
     {
         $otp = (new OtpKey())
             ->setOwner($user)
@@ -40,7 +40,7 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Check OTP Key is Valid.
      */
-    public function check(User $user, OtpType|array $type, int $key, ?string $address = null): ?OtpKey
+    public function check(User $user, OtpType|array $type, int $key, string $address = null): ?OtpKey
     {
         $qb = $this->createQueryBuilder('q')
             ->andWhere('q.otpKey = :key')

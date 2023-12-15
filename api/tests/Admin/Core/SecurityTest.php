@@ -8,9 +8,7 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\CorePermission;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Enum\UserType;
-use App\Admin\Core\Event\SecurityEvent;
 use App\Tests\Setup\AbstractWebTestCase;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class SecurityTest extends AbstractWebTestCase
 {
@@ -211,7 +209,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test@test.com',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
@@ -221,7 +219,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test@test.com',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isFail();
@@ -231,7 +229,7 @@ class SecurityTest extends AbstractWebTestCase
             'phone' => '905414053420',
             'phone_country' => 'TR',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
@@ -242,7 +240,7 @@ class SecurityTest extends AbstractWebTestCase
             'phone' => '905414053420',
             'phone_country' => 'TR',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isFail();
@@ -255,7 +253,7 @@ class SecurityTest extends AbstractWebTestCase
             'phone' => '905414053421',
             'phone_country' => 'TR',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
@@ -294,7 +292,7 @@ class SecurityTest extends AbstractWebTestCase
             'phone' => '905414053491',
             'phone_country' => 'TR',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
@@ -332,7 +330,7 @@ class SecurityTest extends AbstractWebTestCase
         $this->client()->jsonRequest('POST', '/v1/auth/register', [
             'email' => 'test2@test3.com',
             'password' => '123123123',
-            'first_name' => 'Ramazan',
+            'first_name' => 'Cesur',
             'last_name' => 'APAYDIN',
         ]);
         $this->isOk();
