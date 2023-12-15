@@ -1,6 +1,6 @@
 # Raiden API
 
-High concurrency, OpenSwoole based, Symfony 6 Api
+High concurrency, OpenSwoole based, Symfony 7 Api
 
 __Features__
 * Swoole Http Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
