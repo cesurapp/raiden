@@ -26,7 +26,7 @@ class CredentialsController extends ApiController
     #[Route(path: '/v1/main/credentials', methods: ['PUT'])]
     public function request(#[CurrentUser] User $user, CredentialsDto $dto, OtpKeyRepository $otpKeyRepo, UserRepository $userRepo): ApiResponse
     {
-        $dto->setId($user->getId())->validate(true);
+        $dto->setProp('id', $user->getId())->validate();
 
         $username = $dto->validated('email') ?? $dto->validated('phone');
         $otpType = is_numeric($username) ? OtpType::PHONE : OtpType::EMAIL;
@@ -61,7 +61,7 @@ class CredentialsController extends ApiController
     #[Route(path: '/v1/main/credentials', methods: ['POST'])]
     public function approve(#[CurrentUser] User $user, CredentialsOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        $dto->setId($user->getId())->validate(true);
+        $dto->setProp('id', $user->getId())->validate();
 
         $username = $dto->validated('email') ?? $dto->validated('phone');
         $otpKey = $dto->validated('otp_key');

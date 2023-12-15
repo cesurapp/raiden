@@ -70,7 +70,7 @@ class UserDto extends ApiDto
                 ->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
         }
 
-        if (!$this->id) {
+        if (empty($this->id)) {
             $context->getValidator()
                 ->inContext($context)
                 ->atPath('password')
