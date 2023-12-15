@@ -27,6 +27,6 @@ services:
         public: true
 
     # Logging
-    logger:
-        class: Symfony\Component\HttpKernel\Log\Logger
-        arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
+    #logger:
+    #    class: Symfony\Component\HttpKernel\Log\Logger
+    #    arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
