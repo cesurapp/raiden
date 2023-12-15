@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Admin\Core;
+namespace Admin\Core;
 
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\RefreshToken;

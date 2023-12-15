@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Admin\Notification;
+namespace Admin\Notification;
 
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;

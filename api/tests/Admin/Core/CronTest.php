@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Admin\Core;
+namespace Admin\Core;
 
 use App\Admin\Core\Cron\ClearExpiredOtpKeyCron;
 use App\Admin\Core\Cron\ClearExpiredTokenCron;

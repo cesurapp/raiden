@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Admin\Core;
+namespace Admin\Core;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\UserType;
