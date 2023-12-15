@@ -5,86 +5,79 @@ namespace App\Tests\Admin\Core;
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\RefreshToken;
 use App\Admin\Core\Entity\User;
-use App\Tests\Setup\AbstractWebTestCase;
+use App\Tests\Setup\KernelTestCase;
 
-class UserTest extends AbstractWebTestCase
+class UserTest extends KernelTestCase
 {
     public function testUserConfirm(): void
     {
-        static::createClient();
+        $user = $this->emSave(
+            $this->getUser()
+                ->setEmailApproved(false)
+                ->setPhoneApproved(false)
+        );
 
-        $user = $this->createUser()->setEmailApproved(false)->setPhoneApproved(false);
-        $this->save($user);
-
-        $this->client()->jsonRequest('POST', '/v1/auth/login', [
-            'username' => $user->getEmail(),
-            'password' => '123123123',
-        ]);
-        $this->isForbidden();
+        $this
+            ->jsonRequest('POST', '/v1/auth/login', [
+                'username' => $user->getEmail(),
+                'password' => '123123123',
+            ])
+            ->isEquals('Account has not been activated', 'message')
+            ->isForbidden();
     }
 
     public function testUserFrozen(): void
     {
-        static::createClient();
+        $user = $this->emSave($this->getUser()->setFrozen(true));
 
-        $user = $this->createUser()->setFrozen(true);
-        $this->save($user);
-
-        $this->client()->jsonRequest('POST', '/v1/auth/login', [
-            'username' => $user->getEmail(),
-            'password' => '123123123',
-        ]);
-        $this->isForbidden();
+        $this
+            ->jsonRequest('POST', '/v1/auth/login', [
+                'username' => $user->getEmail(),
+                'password' => '123123123',
+            ])
+            ->isEquals('The account has been suspended', 'message')
+            ->isForbidden();
     }
 
     public function testUserDelete(): void
     {
-        static::createClient();
-
-        $user = $this->createUser();
-        $this->save($user);
-
-        $this->manager()->remove($user);
-        $this->manager()->flush();
-
+        $user = $this->emSave($this->getUser());
+        $this->emRemove($user)->emFlush();
         $this->assertNull($user->getId());
     }
 
     public function testOrganizationDelete(): void
     {
-        static::createClient();
-
-        $user = $this->createUser(true);
-        $this->save($user);
+        /** @var User $user */
+        $user = $this->emSave($this->getUser(true));
         $userId = $user->getId()->toBase32();
         $orgId = $user->getOrganization()->getId()->toBase32();
-        $this->manager()->clear();
+        $this->em()->clear();
 
-        $this->manager()->remove($this->manager()->find(Organization::class, $orgId));
-        $this->manager()->flush();
-
-        $this->assertNull($this->manager()->find(User::class, $userId));
+        $this->emRemove($this->em()->find(Organization::class, $orgId))->emFlush();
+        $this->assertNull($this->em()->find(User::class, $userId));
     }
 
     public function testOwnerTrait(): void
     {
-        static::createClient();
-
-        $user = $this->createUser(true);
-        $token = (new RefreshToken())->setOwner($user)->setToken('asdsadsdasas')->setExpiredAt(new \DateTimeImmutable());
-        $this->save($user);
-        $this->save($token);
+        /** @var User $user */
+        $user = $this->emSave($this->getUser(true));
+        $token = $this->emSave(
+            (new RefreshToken())
+            ->setOwner($user)
+            ->setToken('asdsadsdasas')
+            ->setExpiredAt(new \DateTimeImmutable())
+        );
 
         // Fetch ID
         $userId = $user->getId()->toBase32();
         $orgId = $user->getOrganization()->getId()->toBase32();
         $tokenId = $token->getId()->toBase32();
-        $this->manager()->clear();
+        $this->em()->clear();
 
-        $this->manager()->remove($this->manager()->find(Organization::class, $orgId));
-        $this->manager()->flush();
+        $this->emRemove($this->em()->find(Organization::class, $orgId))->emFlush();
 
-        $this->assertNull($this->manager()->find(User::class, $userId));
-        $this->assertNull($this->manager()->find(RefreshToken::class, $tokenId));
+        $this->assertNull($this->em()->find(User::class, $userId));
+        $this->assertNull($this->em()->find(RefreshToken::class, $tokenId));
     }
 }

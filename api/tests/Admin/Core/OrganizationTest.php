@@ -2,17 +2,15 @@
 
 namespace App\Tests\Admin\Core;
 
-use App\Tests\Setup\AbstractWebTestCase;
+use App\Tests\Setup\KernelTestCase;
 
-class OrganizationTest extends AbstractWebTestCase
+class OrganizationTest extends KernelTestCase
 {
     public function testCreateOrganization(): void
     {
-        static::createClient();
+        $user = $this->emSave($this->getUser(true));
 
-        $user = $this->createUser(true);
-
-        $this->client()->jsonRequest('POST', '/v1/auth/login', [
+        $this->jsonRequest('POST', '/v1/auth/login', [
             'username' => $user->getEmail(),
             'password' => '123123123',
         ]);
@@ -21,16 +19,15 @@ class OrganizationTest extends AbstractWebTestCase
 
     public function testFrozenOrganization(): void
     {
-        static::createClient();
+        $user = $this->emSave($this->getUser(true));
+        $this->emSave($user->getOrganization()->setFrozen(true));
 
-        $user = $this->createUser(true);
-        $user->getOrganization()->setFrozen(true);
-        $this->save($user);
-
-        $this->client()->jsonRequest('POST', '/v1/auth/login', [
-            'username' => $user->getEmail(),
-            'password' => '123123123',
-        ]);
-        $this->isForbidden();
+        $this
+            ->jsonRequest('POST', '/v1/auth/login', [
+                'username' => $user->getEmail(),
+                'password' => '123123123',
+            ])
+            ->isEquals('The organization has been suspended', 'message')
+            ->isForbidden();
     }
 }

@@ -7,25 +7,25 @@ use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Enum\DevicePermission;
 use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Service\NotificationPusher;
-use App\Tests\Setup\AbstractWebTestCase;
+use App\Tests\Setup\KernelTestCase;
 
-class DeviceControllerTest extends AbstractWebTestCase
+class DeviceControllerTest extends KernelTestCase
 {
     public function testRegister(): void
     {
-        static::createClient();
-        $user = $this->createUser();
+        $user = $this->emSave($this->getUser());
 
         // Register Token
         $token = 'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ])
+            ->isOk();
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy([
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy([
             'token' => $token,
         ]);
         $this->assertNotNull($deviceToken);
@@ -33,25 +33,26 @@ class DeviceControllerTest extends AbstractWebTestCase
 
     public function testRegisterDuplicate(): void
     {
-        static::createClient();
-        $user = $this->createUser();
+        $user = $this->emSave($this->getUser());
 
         // Register Token
         $token = 'erj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ])
+            ->isOk();
 
         // Duplicate
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ]);
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findBy([
+        $deviceToken = $this->em()->getRepository(Device::class)->findBy([
             'token' => $token,
         ]);
         $this->assertNotNull($deviceToken);
@@ -60,19 +61,19 @@ class DeviceControllerTest extends AbstractWebTestCase
 
     public function testNotificationTask(): void
     {
-        static::createClient();
-        $user = $this->createUser();
+        $user = $this->emSave($this->getUser());
 
         // Register Token
         $token = 'krj8S08jxbSkogXwy6-cVq:APA91bfHB26gLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ])
+            ->isOk();
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
         $this->assertNotNull($deviceToken);
 
         // Create Notification
@@ -86,7 +87,7 @@ class DeviceControllerTest extends AbstractWebTestCase
             $_SERVER['FIREBASE_DSN']
         );
 
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
         if ('null' !== $transports) {
             $this->assertNull($deviceToken);
         } else {
@@ -96,83 +97,82 @@ class DeviceControllerTest extends AbstractWebTestCase
 
     public function testList(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(DevicePermission::ROLE_DEVICE_LIST);
+        $user = $this->emSave($this->getAdmin()->addRoles(DevicePermission::ROLE_DEVICE_LIST));
 
         // Register Token
         $token = 'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ]);
         $this->isOk();
 
         // List
-        $this->client($user)->jsonRequest('GET', '/v1/admin/notification/device');
-        $this->assertGreaterThanOrEqual(1, count($this->json(key: 'data')));
+        $this->login($user)->jsonRequest('GET', '/v1/admin/notification/device');
+        $this->assertGreaterThanOrEqual(1, count($this->getJson('data')));
 
         // Filter
-        $data = $this->json(key: 'data');
+        $data = $this->getJson('data');
         $item = end($data);
-        $this->client($user)->jsonRequest('GET', '/v1/admin/notification/device?'.http_build_query([
-            'filter' => [
-                'id' => $item['id'],
-                'type' => [$item['type']],
-            ],
-        ]));
-        $this->assertJsonCount(1, 'data');
+        $this->login($user)
+            ->jsonRequest('GET', '/v1/admin/notification/device?'.http_build_query([
+                    'filter' => [
+                        'id' => $item['id'],
+                        'type' => [$item['type']],
+                    ],
+                ]))
+            ->isJsonCount(1, 'data');
     }
 
     public function testDelete(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(DevicePermission::ROLE_DEVICE_DELETE);
+        $user = $this->emSave($this->getAdmin()->addRoles(DevicePermission::ROLE_DEVICE_DELETE));
 
         // Register Token
         $token = 'crj8S08jxbSkogXwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ])
+            ->isOk();
 
         // Delete
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy([
-            'token' => $token,
-        ]);
-        $this->client($user)->jsonRequest('DELETE', '/v1/admin/notification/device/'.$deviceToken->getId()->toBase32());
-        $this->isOk();
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
+        $this->login($user)
+            ->jsonRequest('DELETE', '/v1/admin/notification/device/'.$deviceToken->getId()->toBase32())
+            ->isOk();
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy([
-            'token' => $token,
-        ]);
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
         $this->assertNull($deviceToken);
     }
 
     public function testSendNotification(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(DevicePermission::ROLE_DEVICE_SEND);
+        $user = $this->emSave($this->getAdmin()->addRoles(DevicePermission::ROLE_DEVICE_SEND));
 
         // Register Token
         $token = 'crj8S08jxbSkog3Xwy6-cVq:APA91bfHB26WLonFSnygP6_VJ7Hb6WJKWfb-yZU3oJ3khvJQsupGrq2zwEBF4Ll9-cv2HtF9e2U2_X_7ajlihTB2CEFXSthSSOF9uiFEn5XwJBrBXZqA1HNUq3WNiMrMy0z2A09yulfEB';
-        $this->client($user)->jsonRequest('POST', '/v1/main/notification/fcm-register', [
-            'token' => $token,
-            'device' => 'web',
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/main/notification/fcm-register', [
+                'token' => $token,
+                'device' => 'web',
+            ])
+            ->isOk();
 
         // Check
-        $deviceToken = $this->manager()->getRepository(Device::class)->findOneBy(['token' => $token]);
+        $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
         $this->assertNotNull($deviceToken);
 
         // Send
-        $this->client($user)->jsonRequest('POST', '/v1/admin/notification/device/'.$deviceToken->getId()->toRfc4122(), [
-            'title' => 'Başlık',
-            'message' => 'İçerik',
-            'status' => NotificationStatus::DANGER,
-        ]);
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/admin/notification/device/'.$deviceToken->getId()->toRfc4122(), [
+                'title' => 'Başlık',
+                'message' => 'İçerik',
+                'status' => NotificationStatus::DANGER,
+            ])
+            ->isOk();
     }
 }

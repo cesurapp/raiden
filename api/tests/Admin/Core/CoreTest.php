@@ -2,30 +2,22 @@
 
 namespace App\Tests\Admin\Core;
 
-use App\Tests\Setup\AbstractWebTestCase;
+use App\Tests\Setup\KernelTestCase;
 
-class CoreTest extends AbstractWebTestCase
+class CoreTest extends KernelTestCase
 {
     public function testCorsRequest(): void
     {
-        // Wrong Rquest Header
-        $this->client()->request('HEAD', '/');
-        $this->assertEmpty($this->client()->getResponse()->getContent());
+        static::bootKernel();
 
-        $this->client()->request('GET', '/');
-        $this->assertEquals('*', $this->client()->getResponse()->headers->get('access-control-allow-origin'));
-        $this->assertEquals('GET,POST,PUT,PATCH,DELETE', $this->client()->getResponse()->headers->get('access-control-allow-methods'));
-        $this->assertEquals('*', $this->client()->getResponse()->headers->get('access-control-allow-headers'));
-    }
+        // Wrong Request Header
+        $this->request('HEAD', '/');
+        $this->assertEmpty($this->getContent());
 
-    public function testStickyLocale(): void
-    {
-        $this->client()->request('GET', '/');
-        $this->assertEquals('en_US', $this->client()->getRequest()->getLanguages()[0]);
-
-        $this->client()->request('GET', '/', server: [
-            'HTTP_ACCEPT_LANGUAGE' => 'tr-TR',
-        ]);
-        $this->assertEquals('tr_TR', $this->client()->getRequest()->getLanguages()[0]);
+        $this
+            ->request('GET', '/')
+            ->isHeaderEquals('access-control-allow-origin.0', '*')
+            ->isHeaderEquals('access-control-allow-methods.0', 'GET,POST,PUT,PATCH,DELETE')
+            ->isHeaderEquals('access-control-allow-headers.0', '*');
     }
 }

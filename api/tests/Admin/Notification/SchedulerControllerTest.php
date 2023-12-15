@@ -11,18 +11,17 @@ use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Enum\SchedulerPermission;
 use App\Admin\Notification\Enum\SchedulerStatus;
-use App\Tests\Setup\AbstractWebTestCase;
+use App\Tests\Setup\KernelTestCase;
 use Cesurapp\SwooleBundle\Cron\CronWorker;
 
-class SchedulerControllerTest extends AbstractWebTestCase
+class SchedulerControllerTest extends KernelTestCase
 {
     public function testList(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(SchedulerPermission::ROLE_SCHEDULER_LIST);
+        $user = $this->emSave($this->getAdmin()->addRoles(SchedulerPermission::ROLE_SCHEDULER_LIST));
 
         // Create Scheduled Notification
-        $sn = (new Scheduler())
+        $this->emSave((new Scheduler())
             ->setCampaignTitle('Test')
             ->setPersistNotification(false)
             ->setNotification(
@@ -30,75 +29,74 @@ class SchedulerControllerTest extends AbstractWebTestCase
                     ->setTitle('Title')
                     ->setMessage('Message')
             )
-            ->setSendAt(new \DateTimeImmutable());
-        $this->save($sn);
+            ->setSendAt(new \DateTimeImmutable()));
 
         // List
-        $this->client($user)->jsonRequest('GET', '/v1/admin/scheduler');
-        $this->assertJsonCount(1, 'data');
+        $this->login($user)
+            ->jsonRequest('GET', '/v1/admin/scheduler')
+            ->isJsonCount(1, 'data');
 
         // Filter
-        $id = $this->json(key: 'data')[0]['id'];
-        $this->client($user)->jsonRequest(
-            'GET',
-            '/v1/admin/scheduler?'.http_build_query([
-                'filter' => [
-                    'id' => $id,
-                    'title' => 'Test',
-                    'persist_notification' => false,
-                    'delivered_count' => [
-                        'min' => 0,
-                        'max' => 10,
+        $id = $this->getJson('data.0.id');
+        $this->login($user)
+            ->jsonRequest(
+                'GET',
+                '/v1/admin/scheduler?'.http_build_query([
+                    'filter' => [
+                        'id' => $id,
+                        'title' => 'Test',
+                        'persist_notification' => false,
+                        'delivered_count' => [
+                            'min' => 0,
+                            'max' => 10,
+                        ],
+                        'failed_count' => [
+                            'min' => 0,
+                            'max' => 10,
+                        ],
+                        'status' => SchedulerStatus::INIT->value,
+                        'send_at' => [
+                            'from' => (new \DateTime('-1 hour'))->format(DATE_ATOM),
+                            'to' => (new \DateTime('+1 hour'))->format(DATE_ATOM),
+                        ],
                     ],
-                    'failed_count' => [
-                        'min' => 0,
-                        'max' => 10,
-                    ],
-                    'status' => SchedulerStatus::INIT->value,
-                    'send_at' => [
-                        'from' => (new \DateTime('-1 hour'))->format(DATE_ATOM),
-                        'to' => (new \DateTime('+1 hour'))->format(DATE_ATOM),
-                    ],
-                ],
-            ])
-        );
-        $this->assertJsonCount(1, 'data');
+                ])
+            )
+            ->isJsonCount(1, 'data');
     }
 
     public function testCreate(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(SchedulerPermission::ROLE_SCHEDULER_CREATE);
-
-        $this->client($user)->jsonRequest('POST', '/v1/admin/scheduler', [
-            'campaign_title' => 'Campaign',
-            'persist_notification' => true,
-            'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
-            'title' => 'Başlık',
-            'message' => 'İçerik',
-            'status' => NotificationStatus::DANGER,
-            'device_filter' => [
-                'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
-                'user.createdAt' => [
-                    'from' => (new \DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
-                    'to' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+        $user = $this->emSave($this->getAdmin()->addRoles(SchedulerPermission::ROLE_SCHEDULER_CREATE));
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/admin/scheduler', [
+                'campaign_title' => 'Campaign',
+                'persist_notification' => true,
+                'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                'title' => 'Başlık',
+                'message' => 'İçerik',
+                'status' => NotificationStatus::DANGER,
+                'device_filter' => [
+                    'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
+                    'user.createdAt' => [
+                        'from' => (new \DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
+                        'to' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                    ],
+                    'user.type' => [UserType::USER],
+                    'user.frozen' => false,
+                    'user.language' => 'tr',
+                    'user.phoneCountry' => 'TR',
                 ],
-                'user.type' => [UserType::USER],
-                'user.frozen' => false,
-                'user.language' => 'tr',
-                'user.phoneCountry' => 'TR',
-            ],
-        ]);
-        $this->isOk();
+            ])
+            ->isOk();
     }
 
     public function testEdit(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(SchedulerPermission::ROLE_SCHEDULER_EDIT);
+        $user = $this->emSave($this->getAdmin()->addRoles(SchedulerPermission::ROLE_SCHEDULER_EDIT));
 
         // Create Scheduled Notification
-        $sn = (new Scheduler())
+        $sn = $this->emSave((new Scheduler())
             ->setCampaignTitle('Test')
             ->setPersistNotification(true)
             ->setSendAt(new \DateTimeImmutable('+1 hours'))
@@ -107,11 +105,11 @@ class SchedulerControllerTest extends AbstractWebTestCase
                     ->setTitle('Title')
                     ->setMessage('Message')
             )
-            ->setSendAt(new \DateTimeImmutable());
-        $this->save($sn);
+            ->setSendAt(new \DateTimeImmutable()));
 
         // Update
-        $this->client($user)->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
+        $this->login($user)
+            ->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
             'campaign_title' => 'Campaign',
             'persist_notification' => true,
             'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
@@ -129,24 +127,25 @@ class SchedulerControllerTest extends AbstractWebTestCase
                 'user.language' => 'tr',
                 'user.phoneCountry' => 'TR',
             ],
-        ]);
-        $this->isOk();
+        ])
+            ->isOk();
     }
 
     public function testCronProcess(): void
     {
-        $user = $this->createAdmin();
+        $user = $this->emSave($this->getAdmin());
 
         // Create Device
         for ($i = 0; $i < 10; ++$i) {
-            $this->save(
+            $this->emPersist(
                 (new Device())
                     ->setToken($i.'krj8S08jxbSkas78d6asd87as6ds8da678ogXwy')
                     ->setType(DeviceType::WEB)
                     ->setOwner($user)
             );
         }
-        $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count(['owner' => $user]));
+        $this->emFlush();
+        $this->assertGreaterThanOrEqual(10, $this->em()->getRepository(Device::class)->count(['owner' => $user]));
 
         // Create Scheduled Notification
         $sn = (new Scheduler())
@@ -171,7 +170,7 @@ class SchedulerControllerTest extends AbstractWebTestCase
                 'user.language' => 'tr',
                 'user.phoneCountry' => 'TR',
             ]);
-        $this->save($sn);
+        $this->emSave($sn);
 
         // Work Cron Process
         $worker = self::getContainer()->get(CronWorker::class);
@@ -183,22 +182,20 @@ class SchedulerControllerTest extends AbstractWebTestCase
             $_SERVER['FIREBASE_DSN']
         );
         if ('null' !== $transports) {
-            $this->assertEquals(0, $this->manager()->getRepository(Device::class)->count([]));
+            $this->assertEquals(0, $this->em()->getRepository(Device::class)->count([]));
         } else {
             // Check Persistent
-            $this->assertEquals(1, $this->manager()->getRepository(Notification::class)->count(['owner' => $user]));
-
-            $this->assertGreaterThanOrEqual(10, $this->manager()->getRepository(Device::class)->count([]));
+            $this->assertEquals(1, $this->em()->getRepository(Notification::class)->count(['owner' => $user]));
+            $this->assertGreaterThanOrEqual(10, $this->em()->getRepository(Device::class)->count([]));
         }
     }
 
     public function testDelete(): void
     {
-        static::createClient();
-        $user = $this->createAdmin(SchedulerPermission::ROLE_SCHEDULER_DELETE);
+        $user = $this->emSave($this->getAdmin()->addRoles(SchedulerPermission::ROLE_SCHEDULER_DELETE));
 
         // Create Scheduled Notification
-        $sn = (new Scheduler())
+        $sn = $this->emSave((new Scheduler())
             ->setCampaignTitle('Test')
             ->setPersistNotification(false)
             ->setNotification(
@@ -206,11 +203,11 @@ class SchedulerControllerTest extends AbstractWebTestCase
                     ->setTitle('Title')
                     ->setMessage('Message')
             )
-            ->setSendAt(new \DateTimeImmutable());
-        $this->save($sn);
+            ->setSendAt(new \DateTimeImmutable()));
 
         // Delete
-        $this->client($user)->jsonRequest('DELETE', '/v1/admin/scheduler/'.$sn->getId()->toBase32());
-        $this->isOk();
+        $this->login($user)
+            ->jsonRequest('DELETE', '/v1/admin/scheduler/'.$sn->getId()->toBase32())
+            ->isOk();
     }
 }
