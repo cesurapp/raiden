@@ -197,12 +197,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/api-bundle.git",
-                "reference": "d22d1a30e7fdc969fe6ef8278da646a77a4088c0"
+                "reference": "a3f20346be0f6df5cf0bb513cb1bd98fc73909e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cesurapp/api-bundle/zipball/d22d1a30e7fdc969fe6ef8278da646a77a4088c0",
-                "reference": "d22d1a30e7fdc969fe6ef8278da646a77a4088c0",
+                "url": "https://api.github.com/repos/cesurapp/api-bundle/zipball/a3f20346be0f6df5cf0bb513cb1bd98fc73909e5",
+                "reference": "a3f20346be0f6df5cf0bb513cb1bd98fc73909e5",
                 "shasum": ""
             },
             "require": {
@@ -255,7 +255,7 @@
                 "issues": "https://github.com/cesurapp/api-bundle/issues",
                 "source": "https://github.com/cesurapp/api-bundle/tree/main"
             },
-            "time": "2023-12-10T23:12:33+00:00"
+            "time": "2023-12-15T00:40:01+00:00"
         },
         {
             "name": "cesurapp/media-bundle",
@@ -382,12 +382,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/cesurapp/swoole-bundle.git",
-                "reference": "26b798510587fbdc0eb1876c65c98a157184b1cf"
+                "reference": "d981e478cdd8b1467f72eaa950d3345979f1572a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cesurapp/swoole-bundle/zipball/26b798510587fbdc0eb1876c65c98a157184b1cf",
-                "reference": "26b798510587fbdc0eb1876c65c98a157184b1cf",
+                "url": "https://api.github.com/repos/cesurapp/swoole-bundle/zipball/d981e478cdd8b1467f72eaa950d3345979f1572a",
+                "reference": "d981e478cdd8b1467f72eaa950d3345979f1572a",
                 "shasum": ""
             },
             "require": {
@@ -444,7 +444,7 @@
                 "issues": "https://github.com/cesurapp/swoole-bundle/issues",
                 "source": "https://github.com/cesurapp/swoole-bundle/tree/main"
             },
-            "time": "2023-12-14T11:19:14+00:00"
+            "time": "2023-12-15T00:23:34+00:00"
         },
         {
             "name": "doctrine/cache",
