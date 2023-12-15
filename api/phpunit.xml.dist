@@ -13,11 +13,7 @@
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
 
         <server name="APP_ENV" value="test" force="true"/>
-        <server name="APP_SECRET" value="f3ca4e95684cbae9f79891651296816e" force="true"/>
         <server name="APP_STORAGE" value="local" force="true"/>
-        <server name="APP_JWT_SECRET" value="JH12G3JH21312J3G1H2312J3G" force="true"/>
-        <server name="APP_JWT_TOKEN_EXP" value="3600" force="true"/>
-        <server name="APP_JWT_REFRESH_TOKEN_EXP" value="30" force="true"/>
         <server name="LOCK_DSN" value="semaphore"/>
         <server name="MAILER_DSN" value="null://null" force="true"/>
         <server name="FIREBASE_DSN" value="null://null" force="true"/>

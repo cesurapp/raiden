@@ -69,8 +69,6 @@ jobs:
             ${{ runner.os }}-composer-
 
       # Run Tests
-      - name: Install Quality Tools
-        run: composer qa:install
       - name: Install App Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: PHPStan
