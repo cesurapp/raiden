@@ -8,11 +8,11 @@ use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\NotificationStatus;
 use App\Admin\Notification\Enum\SchedulerStatus;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
-use Package\ApiBundle\Thor\Attribute\ThorResource;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
+use Cesurapp\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class SchedulerDto extends AbstractApiDto
+class SchedulerDto extends ApiDto
 {
     // Scheduler
     #[Assert\NotNull]

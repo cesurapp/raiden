@@ -8,9 +8,9 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(event: SecurityEvent::REGISTER, method: 'onRegister')]
-class RegisterListener
+readonly class RegisterListener
 {
-    public function __construct(private readonly MailPusher $mailPusher)
+    public function __construct(private MailPusher $mailPusher)
     {
     }
 

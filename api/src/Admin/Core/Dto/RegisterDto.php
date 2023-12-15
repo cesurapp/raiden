@@ -4,25 +4,25 @@ namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\UserType;
-use App\Admin\Core\Validator\UniqueEntityConstraint;
-use Misd\PhoneNumberBundle\Validator\Constraints\PhoneNumber;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
+use Cesurapp\ApiBundle\Validator\PhoneNumber;
+use Cesurapp\ApiBundle\Validator\UniqueEntity;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class RegisterDto extends AbstractApiDto
+class RegisterDto extends ApiDto
 {
     #[Assert\Length(max: 180)]
     #[Assert\Email]
-    #[UniqueEntityConstraint(entityClass: User::class, fields: ['email'])]
+    #[UniqueEntity(entityClass: User::class, fields: ['email'])]
     public ?string $email = null;
 
     #[Assert\Country]
     public ?string $phone_country = null;
 
     #[PhoneNumber(regionPath: 'phone_country')]
-    #[UniqueEntityConstraint(entityClass: User::class, fields: ['phone'])]
+    #[UniqueEntity(entityClass: User::class, fields: ['phone'])]
     public null|int|string $phone = null;
 
     #[Assert\NotNull]

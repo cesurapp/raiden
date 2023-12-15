@@ -3,11 +3,11 @@
 namespace App\Admin\Notification\Repository;
 
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Repository\ApiServiceEntityRepository;
 use App\Admin\Notification\Dto\FcmRegisterDto;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Enum\DeviceType;
 use Doctrine\Persistence\ManagerRegistry;
-use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 use Symfony\Component\Uid\Ulid;
 
 /**

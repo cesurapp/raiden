@@ -7,22 +7,22 @@ use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Repository\NotificationRepository;
 use App\Admin\Notification\Resource\NotificationResource;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class NotificationController extends AbstractApiController
+class NotificationController extends ApiController
 {
     public function __construct(private readonly NotificationRepository $repo)
     {
     }
 
     #[Thor(
-        group: 'Notification',
-        desc: 'Get Unread Notification Count',
+        stack: 'Notification',
+        title: 'Get Unread Notification Count',
         response: [
             200 => [
                 'data' => 'int',
@@ -37,11 +37,11 @@ class NotificationController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification|2',
-        groupDesc: 'Global Notification',
-        desc: 'List Notification',
+        stack: 'Notification|2',
+        title: 'List Notification',
+        info: 'Global Notification',
         response: [200 => ['data' => NotificationResource::class]],
-        paginate: true,
+        isPaginate: true,
         order: 0
     )]
     #[Route(path: '/v1/main/notification/{device}', methods: ['GET'])]
@@ -54,8 +54,8 @@ class NotificationController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification',
-        desc: 'Read All Notification',
+        stack: 'Notification',
+        title: 'Read All Notification',
         order: 2
     )]
     #[Route(path: '/v1/main/notification/read-all', methods: ['POST'])]
@@ -67,8 +67,8 @@ class NotificationController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification',
-        desc: 'Read Notification',
+        stack: 'Notification',
+        title: 'Read Notification',
         order: 3,
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['PUT'])]
@@ -84,8 +84,8 @@ class NotificationController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification',
-        desc: 'Delete Notification',
+        stack: 'Notification',
+        title: 'Delete Notification',
         order: 4
     )]
     #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]

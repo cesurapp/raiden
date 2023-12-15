@@ -3,12 +3,12 @@
 namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class ProfileDto extends AbstractApiDto
+class ProfileDto extends ApiDto
 {
     #[Assert\Length(min: 8)]
     public ?string $password = null;

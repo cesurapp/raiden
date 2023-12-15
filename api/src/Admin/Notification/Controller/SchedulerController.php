@@ -7,24 +7,24 @@ use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\SchedulerPermission;
 use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Resource\SchedulerResource;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class SchedulerController extends AbstractApiController
+class SchedulerController extends ApiController
 {
     public function __construct(private readonly SchedulerRepository $repo)
     {
     }
 
     #[Thor(
-        group: 'Scheduled Notifications',
-        desc: 'List Scheduled Notifications',
+        stack: 'Scheduled Notifications',
+        title: 'List Scheduled Notifications',
         response: [200 => ['data' => SchedulerResource::class]],
-        paginate: true,
+        isPaginate: true,
         order: 0
     )]
     #[Route(path: '/v1/admin/scheduler', methods: ['GET'])]
@@ -38,8 +38,8 @@ class SchedulerController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Scheduled Notifications',
-        desc: 'Create Scheduled Notification',
+        stack: 'Scheduled Notifications',
+        title: 'Create Scheduled Notification',
         dto: SchedulerDto::class,
         order: 1
     )]
@@ -57,8 +57,8 @@ class SchedulerController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Scheduled Notifications',
-        desc: 'Edit Scheduled Notification',
+        stack: 'Scheduled Notifications',
+        title: 'Edit Scheduled Notification',
         dto: SchedulerDto::class,
         order: 2
     )]
@@ -75,8 +75,8 @@ class SchedulerController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Scheduled Notifications',
-        desc: 'Delete Scheduled Notification',
+        stack: 'Scheduled Notifications',
+        title: 'Delete Scheduled Notification',
         order: 3
     )]
     #[Route(path: '/v1/admin/scheduler/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]

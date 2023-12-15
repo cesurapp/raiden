@@ -10,16 +10,16 @@ use App\Admin\Core\Enum\UserType;
 use App\Admin\Core\Permission\PermissionManager;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-class AccountController extends AbstractApiController
+class AccountController extends ApiController
 {
     public function __construct(
         private readonly UserPasswordHasherInterface $hasher,
@@ -28,8 +28,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management|10',
-        desc: 'View Profile',
+        stack: 'Account Management|10',
+        title: 'View Profile',
         response: [200 => ['data' => UserResource::class]],
         order: 1,
     )]
@@ -40,8 +40,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Edit Profile',
+        stack: 'Account Management',
+        title: 'Edit Profile',
         response: [200 => ['data' => UserResource::class]],
         dto: ProfileDto::class,
         order: 2
@@ -62,10 +62,10 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'List Accounts',
+        stack: 'Account Management',
+        title: 'List Accounts',
         response: [200 => ['data' => UserResource::class]],
-        paginate: true,
+        isPaginate: true,
         order: 3
     )]
     #[Route(path: '/v1/admin/account/manager', methods: ['GET'])]
@@ -81,8 +81,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Create Account',
+        stack: 'Account Management',
+        title: 'Create Account',
         response: [200 => ['data' => UserResource::class]],
         dto: UserDto::class,
         order: 4
@@ -106,8 +106,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Edit Account',
+        stack: 'Account Management',
+        title: 'Edit Account',
         response: [200 => ['data' => UserResource::class]],
         dto: UserDto::class,
         order: 5
@@ -133,8 +133,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Show Account',
+        stack: 'Account Management',
+        title: 'Show Account',
         response: [200 => ['data' => UserResource::class]],
         order: 6,
     )]
@@ -148,8 +148,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Delete Account',
+        stack: 'Account Management',
+        title: 'Delete Account',
         order: 7
     )]
     #[Route(path: '/v1/admin/account/manager/{id}', methods: ['DELETE'])]
@@ -167,8 +167,8 @@ class AccountController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Account Management',
-        desc: 'Edit Permission',
+        stack: 'Account Management',
+        title: 'Edit Permission',
         request: [
             'permissions' => 'array',
         ],

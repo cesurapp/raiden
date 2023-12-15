@@ -4,7 +4,6 @@ namespace App\Admin\Core\Repository;
 
 use App\Admin\Core\Entity\Organization;
 use Doctrine\Persistence\ManagerRegistry;
-use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method Organization|null find($id, $lockMode = null, $lockVersion = null)

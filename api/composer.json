@@ -1,76 +1,59 @@
 {
-  "type": "project",
+  "type": "raiden",
   "license": "proprietary",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.2.0",
+    "php": ">=8.2",
     "ext-curl": "*",
-    "ext-fileinfo": "*",
-    "ext-imagick": "*",
     "ext-intl": "*",
-    "ext-openswoole": "*",
     "adhocore/jwt": "^1.1",
-    "async-aws/s3": "^1.12",
-    "doctrine/doctrine-bundle": "^2.5",
-    "doctrine/orm": "^2.10",
-    "dragonmantank/cron-expression": "^3.3",
-    "google/cloud-logging": "^1.22",
-    "odolbeau/phone-number-bundle": "^3.7",
-    "openswoole/core": "*",
-    "sonata-project/exporter": "^3.1",
-    "symfony/console": "6.2.*",
-    "symfony/dotenv": "6.2.*",
-    "symfony/firebase-notifier": "6.2.*",
+    "cesurapp/api-bundle": "*",
+    "cesurapp/media-bundle": "dev-main",
+    "cesurapp/storage-bundle": "*",
+    "cesurapp/swoole-bundle": "*",
+    "doctrine/doctrine-bundle": "^2.11",
+    "doctrine/orm": "^2.15",
+    "symfony/console": "7.0.*",
+    "symfony/dotenv": "7.0.*",
+    "symfony/firebase-notifier": "7.0.*",
     "symfony/flex": "^2",
-    "symfony/framework-bundle": "6.2.*",
-    "symfony/lock": "6.2.*",
-    "symfony/mailer": "6.2.*",
-    "symfony/mime": "6.2.*",
-    "symfony/notifier": "6.2.*",
-    "symfony/runtime": "6.2.*",
-    "symfony/security-bundle": "6.2.*",
-    "symfony/translation": "6.2.*",
-    "symfony/twig-bundle": "6.2.*",
-    "symfony/uid": "6.2.*",
-    "symfony/validator": "6.2.*",
-    "symfony/yaml": "6.2.*"
+    "symfony/framework-bundle": "7.0.*",
+    "symfony/lock": "7.0.*",
+    "symfony/mailer": "7.0.*",
+    "symfony/mime": "7.0.*",
+    "symfony/notifier": "7.0.*",
+    "symfony/runtime": "7.0.*",
+    "symfony/security-bundle": "7.0.*",
+    "symfony/translation": "7.0.*",
+    "symfony/twig-bundle": "7.0.*",
+    "symfony/uid": "7.0.*",
+    "symfony/validator": "7.0.*",
+    "symfony/yaml": "7.0.*"
   },
   "require-dev": {
-    "openswoole/ide-helper": "~22.0.1",
     "phpunit/phpunit": "^9.5",
-    "symfony/browser-kit": "6.2.*",
-    "symfony/debug-bundle": "6.2.*",
+    "symfony/browser-kit": "7.0.*",
+    "symfony/debug-bundle": "7.0.*",
     "symfony/maker-bundle": "^1.36",
-    "symfony/phpunit-bridge": "^6.2",
-    "symfony/process": "6.2.*",
-    "symfony/stopwatch": "6.2.*",
-    "symfony/web-profiler-bundle": "6.2.*"
+    "symfony/phpunit-bridge": "^7.0",
+    "symfony/web-profiler-bundle": "7.0.*",
+    "openswoole/ide-helper": "^22.1"
   },
   "config": {
-    "optimize-autoloader": true,
-    "preferred-install": {
-      "*": "dist"
-    },
-    "sort-packages": true,
     "allow-plugins": {
       "symfony/flex": true,
       "symfony/runtime": true
     }
   },
   "autoload": {
-    "exclude-from-classmap": [
-      "src/**/Test/",
-      "package/**/Test/"
-    ],
     "psr-4": {
-      "App\\": "src/",
-      "Package\\": "package/"
+      "App\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Tests\\": "src/"
+      "App\\Tests\\": "tests/"
     }
   },
   "replace": {
@@ -81,6 +64,7 @@
     "symfony/polyfill-php74": "*",
     "symfony/polyfill-php80": "*",
     "symfony/polyfill-php81": "*",
+    "symfony/polyfill-php82": "*",
     "symfony/polyfill-intl-idn": "*"
   },
   "scripts": {
@@ -95,20 +79,15 @@
     "qa:install": "composer install --working-dir=bin/tool",
     "test": "bin/phpunit",
     "test:stop": "bin/phpunit --stop-on-failure --verbose --testdox --colors",
-    "test:coverage": "bin/phpunit --coverage-text",
     "fix": [
       "@qa:fix",
       "@qa:phpstan",
       "@test"
     ]
   },
-  "conflict": {
-    "symfony/symfony": "*"
-  },
   "extra": {
     "symfony": {
-      "allow-contrib": false,
-      "require": "6.2.*"
+      "require": "7.0.*"
     }
   }
 }

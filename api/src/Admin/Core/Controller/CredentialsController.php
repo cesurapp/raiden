@@ -8,24 +8,26 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Repository\OtpKeyRepository;
 use App\Admin\Core\Repository\UserRepository;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
-class CredentialsController extends AbstractApiController
+class CredentialsController extends ApiController
 {
     #[Thor(
-        group: 'Approve Credentials',
-        desc: 'Change or Approve Email|Phone Request',
+        stack: 'Approve Credentials',
+        title: 'Change or Approve Email|Phone Request',
         dto: CredentialsDto::class,
         order: 1,
     )]
     #[Route(path: '/v1/main/credentials', methods: ['PUT'])]
     public function request(#[CurrentUser] User $user, CredentialsDto $dto, OtpKeyRepository $otpKeyRepo, UserRepository $userRepo): ApiResponse
     {
+        $dto->setId($user->getId())->validate(true);
+
         $username = $dto->validated('email') ?? $dto->validated('phone');
         $otpType = is_numeric($username) ? OtpType::PHONE : OtpType::EMAIL;
 
@@ -51,14 +53,16 @@ class CredentialsController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Approve Credentials',
-        desc: 'Change or Approve Email|Phone',
+        stack: 'Approve Credentials',
+        title: 'Change or Approve Email|Phone',
         dto: CredentialsOtpDto::class,
         order: 2,
     )]
     #[Route(path: '/v1/main/credentials', methods: ['POST'])]
     public function approve(#[CurrentUser] User $user, CredentialsOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
+        $dto->setId($user->getId())->validate(true);
+
         $username = $dto->validated('email') ?? $dto->validated('phone');
         $otpKey = $dto->validated('otp_key');
         $type = is_numeric($username) ? OtpType::PHONE : OtpType::EMAIL;

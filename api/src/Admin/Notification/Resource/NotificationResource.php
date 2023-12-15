@@ -4,7 +4,7 @@ namespace App\Admin\Notification\Resource;
 
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Enum\DeviceType;
-use Package\ApiBundle\Response\ApiResourceInterface;
+use Cesurapp\ApiBundle\Response\ApiResourceInterface;
 
 class NotificationResource implements ApiResourceInterface
 {

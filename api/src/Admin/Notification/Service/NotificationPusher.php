@@ -7,7 +7,7 @@ use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Repository\NotificationRepository;
 use App\Admin\Notification\Task\NotificationTask;
-use Package\SwooleBundle\Task\TaskHandler;
+use Cesurapp\SwooleBundle\Task\TaskHandler;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Translation\TranslatorInterface;
 

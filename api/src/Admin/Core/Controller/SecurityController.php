@@ -20,9 +20,9 @@ use App\Admin\Core\Repository\OtpKeyRepository;
 use App\Admin\Core\Repository\RefreshTokenRepository;
 use App\Admin\Core\Repository\UserRepository;
 use App\Admin\Core\Resource\UserResource;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -36,7 +36,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 /**
  * Global Authorization Management.
  */
-class SecurityController extends AbstractApiController
+class SecurityController extends ApiController
 {
     public function __construct(
         private readonly EventDispatcherInterface $dispatcher,
@@ -47,9 +47,8 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security|1',
-        groupDesc: 'Global',
-        desc: 'Login - User & Password',
+        stack: 'Security|1',
+        title: 'Login - User & Password',
         request: [
             'username' => 'string',
             'password' => 'string',
@@ -67,7 +66,7 @@ class SecurityController extends AbstractApiController
             AccountSuspendedException::class,
             OrganizationSuspendedException::class,
         ],
-        requireAuth: false,
+        isAuth: false,
         order: 0
     )]
     #[Route(path: '/v1/auth/login', name: 'api_login', methods: ['POST'])]
@@ -91,8 +90,8 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Login - Refresh Token',
+        stack: 'Security',
+        title: 'Login - Refresh Token',
         request: [
             'refresh_token' => 'string',
         ],
@@ -100,7 +99,7 @@ class SecurityController extends AbstractApiController
             200 => ['data' => ['token' => 'string']],
             RefreshTokenExpiredException::class,
         ],
-        requireAuth: false,
+        isAuth: false,
         order: 1
     )]
     #[Route(path: '/v1/auth/refresh-token', name: 'api_refresh_token', methods: ['POST'])]
@@ -134,10 +133,10 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Login - Generate OTP key',
+        stack: 'Security',
+        title: 'Login - Generate OTP key',
         dto: UsernameDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 2
     )]
     #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp_request', methods: ['PUT'])]
@@ -159,8 +158,8 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Login - Using OTP Key',
+        stack: 'Security',
+        title: 'Login - Using OTP Key',
         response: [
             200 => [
                 'data' => UserResource::class,
@@ -169,7 +168,7 @@ class SecurityController extends AbstractApiController
             ],
         ],
         dto: UsernameOtpDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 3
     )]
     #[Route(path: '/v1/auth/login-otp', name: 'api_login_otp', methods: ['POST'])]
@@ -203,12 +202,12 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Logout',
+        stack: 'Security',
+        title: 'Logout',
         request: [
             'refresh_token' => '?string',
         ],
-        requireAuth: false,
+        isAuth: false,
         order: 4
     )]
     #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
@@ -222,13 +221,13 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Register - New Account',
+        stack: 'Security',
+        title: 'Register - New Account',
         response: [
             200 => ['data' => UserResource::class],
         ],
         dto: RegisterDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 5
     )]
     #[Route(path: '/v1/auth/register', name: 'api_register', methods: ['POST'])]
@@ -248,14 +247,14 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Register - Phone & Email Approve',
+        stack: 'Security',
+        title: 'Register - Phone & Email Approve',
         response: [
             NotFoundHttpException::class,
             BadCredentialsException::class,
         ],
         dto: UsernameOtpDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 6
     )]
     #[Route(path: '/v1/auth/approve', name: 'api_approve_account', methods: ['POST'])]
@@ -277,10 +276,10 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Forgot Password - Reset Request',
+        stack: 'Security',
+        title: 'Forgot Password - Reset Request',
         dto: UsernameDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 7
     )]
     #[Route(path: '/v1/auth/reset-request', name: 'api_reset_request', methods: ['POST'])]
@@ -301,10 +300,10 @@ class SecurityController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Security',
-        desc: 'Forgot Password - Change Password',
+        stack: 'Security',
+        title: 'Forgot Password - Change Password',
         dto: ResetPasswordDto::class,
-        requireAuth: false,
+        isAuth: false,
         order: 8
     )]
     #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]

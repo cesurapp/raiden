@@ -2,11 +2,11 @@
 
 namespace App\Admin\Notification\Repository;
 
+use App\Admin\Core\Repository\ApiServiceEntityRepository;
 use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\SchedulerStatus;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method Scheduler|null find($id, $lockMode = null, $lockVersion = null)

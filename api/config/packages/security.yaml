@@ -41,3 +41,9 @@ security:
 
         # Admin
         - { path: ^/(v1|v2)/admin, roles: ROLE_ADMIN }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: 'plaintext'

@@ -6,7 +6,6 @@ use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
 use Doctrine\Persistence\ManagerRegistry;
-use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method OtpKey|null find($id, $lockMode = null, $lockVersion = null)

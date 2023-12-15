@@ -2,9 +2,9 @@
 
 namespace App\Admin\Core\Exception;
 
-use Package\ApiBundle\AbstractClass\AbstractApiException;
+use Cesurapp\ApiBundle\AbstractClass\ApiException;
 
-class RefreshTokenExpiredException extends AbstractApiException
+class RefreshTokenExpiredException extends ApiException
 {
     public function __construct(string $message = 'Refresh token expired!', int $code = 403)
     {

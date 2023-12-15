@@ -3,7 +3,7 @@
 namespace App\Admin\Core\Service;
 
 use App\Admin\Core\Task\SendSmsTask;
-use Package\SwooleBundle\Task\TaskHandler;
+use Cesurapp\SwooleBundle\Task\TaskHandler;
 
 /**
  * Send SMS to Task Queue.

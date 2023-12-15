@@ -3,10 +3,10 @@
 namespace App\Admin\Notification\Dto;
 
 use App\Admin\Notification\Enum\DeviceType;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class FcmRegisterDto extends AbstractApiDto
+class FcmRegisterDto extends ApiDto
 {
     #[Assert\Length(min: 75)]
     #[Assert\NotNull]

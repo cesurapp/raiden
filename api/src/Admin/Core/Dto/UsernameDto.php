@@ -2,13 +2,13 @@
 
 namespace App\Admin\Core\Dto;
 
-use App\Admin\Core\Validator\UsernameConstraint;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
+use Cesurapp\ApiBundle\Validator\Username;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UsernameDto extends AbstractApiDto
+class UsernameDto extends ApiDto
 {
-    #[UsernameConstraint]
+    #[Username]
     #[Assert\NotNull]
     public string|int $username;
 }

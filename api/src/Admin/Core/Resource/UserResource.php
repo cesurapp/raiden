@@ -4,7 +4,7 @@ namespace App\Admin\Core\Resource;
 
 use App\Admin\Core\Entity\User;
 use Doctrine\ORM\QueryBuilder;
-use Package\ApiBundle\Response\ApiResourceInterface;
+use Cesurapp\ApiBundle\Response\ApiResourceInterface;
 use Symfony\Component\Uid\Ulid;
 
 class UserResource implements ApiResourceInterface

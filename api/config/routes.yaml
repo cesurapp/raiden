@@ -13,7 +13,7 @@ when@dev:
 # Thor Api Documentation
 thor:
   resource: '@ApiBundle/Thor/Controller'
-  type: annotation
+  type: attribute
 
 # All Modules
 panel:

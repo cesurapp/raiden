@@ -1,3 +1,6 @@
 swoole:
+  entrypoint: bin/index.php
+  cron_worker: true
+  task_worker: true
   failed_task_retry: "@EveryMinute10"
   failed_task_attempt: 2

@@ -4,7 +4,7 @@ namespace App\Admin\Notification\Resource;
 
 use App\Admin\Notification\Entity\Scheduler;
 use Doctrine\ORM\QueryBuilder;
-use Package\ApiBundle\Response\ApiResourceInterface;
+use Cesurapp\ApiBundle\Response\ApiResourceInterface;
 use Symfony\Component\Uid\Ulid;
 
 class SchedulerResource implements ApiResourceInterface

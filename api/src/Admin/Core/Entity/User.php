@@ -10,6 +10,7 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -24,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id = null;
 

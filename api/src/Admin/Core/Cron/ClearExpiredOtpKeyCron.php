@@ -3,7 +3,7 @@
 namespace App\Admin\Core\Cron;
 
 use App\Admin\Core\Repository\OtpKeyRepository;
-use Package\SwooleBundle\Cron\AbstractCronJob;
+use Cesurapp\SwooleBundle\Cron\AbstractCronJob;
 
 /**
  * Clear Expired OTP Key Cron.

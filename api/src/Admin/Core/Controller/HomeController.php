@@ -2,18 +2,18 @@
 
 namespace App\Admin\Core\Controller;
 
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 
-class HomeController extends AbstractApiController
+class HomeController extends ApiController
 {
     #[Thor(
-        group: 'Home Page|0',
-        desc: 'View Home Page',
-        hidden: true,
-        requireAuth: false
+        stack: 'Home Page|0',
+        title: 'View Home Page',
+        isHidden: true,
+        isAuth: false
     )]
     #[Route(path: '/', methods: ['GET'])]
     public function home(): ApiResponse

@@ -2,7 +2,7 @@
 
 namespace App\Admin\Core\Task;
 
-use Package\SwooleBundle\Task\TaskInterface;
+use Cesurapp\SwooleBundle\Task\TaskInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\RawMessage;
 

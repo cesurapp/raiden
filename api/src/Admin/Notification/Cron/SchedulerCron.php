@@ -8,7 +8,7 @@ use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\ORM\AbstractQuery;
-use Package\SwooleBundle\Cron\AbstractCronJob;
+use Cesurapp\SwooleBundle\Cron\AbstractCronJob;
 use Symfony\Component\Uid\Ulid;
 
 use function OpenSwoole\Core\Coroutine\batch;

@@ -4,11 +4,11 @@ namespace App\Admin\Notification\Dto;
 
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Enum\NotificationStatus;
-use Package\ApiBundle\AbstractClass\AbstractApiDto;
-use Package\ApiBundle\Thor\Attribute\ThorResource;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
+use Cesurapp\ApiBundle\Thor\Attribute\ThorResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class NotificationDto extends AbstractApiDto
+class NotificationDto extends ApiDto
 {
     #[Assert\NotNull]
     public NotificationStatus $status = NotificationStatus::INFO;

@@ -5,7 +5,7 @@ namespace App\Admin\Notification\Task;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Repository\DeviceRepository;
-use Package\SwooleBundle\Task\TaskInterface;
+use Cesurapp\SwooleBundle\Task\TaskInterface;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Notifier\Message\SentMessage;

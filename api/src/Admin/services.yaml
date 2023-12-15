@@ -13,10 +13,9 @@ services:
             - './*/DependencyInjection'
             - './*/Entity'
             - './*/Enum'
-            - './*/Event'
+            #- './*/Event'
             - './*/Exception'
             - './*/Request'
-            - './*/Test'
             - './*/Translation'
 
     # JWT Token Manager
@@ -26,3 +25,8 @@ services:
             $algo: 'HS256'
             $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
         public: true
+
+    # Logging
+    logger:
+        class: Symfony\Component\HttpKernel\Log\Logger
+        arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']

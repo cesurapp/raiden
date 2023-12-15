@@ -2,22 +2,18 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/.server.*.php
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/*/*
-/var/*.*
+/var/*
 !/var/cache/.gitkeep
 !/var/log/.gitkeep
 /vendor/
 ###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
 ###> Custom ###
 .DS_store
-storage/files
 ###< Custom ###
+
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###

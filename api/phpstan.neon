@@ -3,15 +3,9 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     doctrine:
-        ormRepositoryClass: Package\ApiBundle\Repository\ApiServiceEntityRepository
+        ormRepositoryClass: App\Admin\Core\Repository\ApiServiceEntityRepository
     paths:
         - src
-        - package
-    ignoreErrors:
-        - '#While loop condition is always true.#'
-    excludePaths:
-        - 'package/ApiBundle/Thor/Template/*'
-        - 'package/SwooleBundle/Runtime/SwooleServer/TcpServer'
 
 includes:
     - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon

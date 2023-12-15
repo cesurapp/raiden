@@ -3,7 +3,7 @@
 namespace App\Admin\Core\Service;
 
 use App\Admin\Core\Task\SendMailTask;
-use Package\SwooleBundle\Task\TaskHandler;
+use Cesurapp\SwooleBundle\Task\TaskHandler;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\HttpFoundation\RequestStack;

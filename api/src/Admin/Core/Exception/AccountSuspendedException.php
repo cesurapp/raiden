@@ -2,9 +2,9 @@
 
 namespace App\Admin\Core\Exception;
 
-use Package\ApiBundle\AbstractClass\AbstractApiException;
+use Cesurapp\ApiBundle\AbstractClass\ApiException;
 
-class AccountSuspendedException extends AbstractApiException
+class AccountSuspendedException extends ApiException
 {
     public function __construct(string $message = 'The account has been suspended', int $code = 403)
     {

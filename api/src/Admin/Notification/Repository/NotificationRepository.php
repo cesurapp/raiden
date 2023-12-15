@@ -3,10 +3,10 @@
 namespace App\Admin\Notification\Repository;
 
 use App\Admin\Core\Entity\User;
+use App\Admin\Core\Repository\ApiServiceEntityRepository;
 use App\Admin\Notification\Entity\Notification;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Package\ApiBundle\Repository\ApiServiceEntityRepository;
 
 /**
  * @method Notification|null find($id, $lockMode = null, $lockVersion = null)

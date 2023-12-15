@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd" cacheResultFile="var/cache/.phpunit.result.cache" colors="true" testdox="true" verbose="true" bootstrap="config/test-bootstrap.php">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         cacheResultFile="var/cache/.phpunit.result.cache" colors="true" testdox="true" verbose="true"
+         bootstrap="tests/bootstrap.php">
     <php>
         <ini name="display_errors" value="1"/>
         <ini name="error_reporting" value="-1"/>
@@ -7,11 +10,11 @@
         <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
         <server name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
 
-        <!--App Environment-->
         <server name="APP_ENV" value="test" force="true"/>
+        <server name="APP_DEBUG" value="true" force="true"/>
         <server name="APP_SECRET" value="f3ca4e95684cbae9f79891651296816e" force="true"/>
-        <server name="APP_LOG_LEVEL" value="error" force="true"/>
         <server name="APP_STORAGE" value="local" force="true"/>
         <server name="APP_JWT_SECRET" value="JH12G3JH21312J3G1H2312J3G" force="true"/>
         <server name="APP_JWT_TOKEN_EXP" value="3600" force="true"/>
@@ -19,30 +22,11 @@
         <server name="LOCK_DSN" value="semaphore"/>
         <server name="MAILER_DSN" value="null://null" force="true"/>
         <server name="FIREBASE_DSN" value="null://null" force="true"/>
-        <server name="APP_LOG_GOOGLE_KEY" value="" force="true"/>
-        <!--App Environment-->
-
-        <!--Package Storage Driver Environment-->
-        <!--<server name="BACKBLAZE_ACCESS_KEY" value="KEY"/>
-        <server name="BACKBLAZE_SECRET" value="KEY"/>
-        <server name="BACKBLAZE_BUCKET" value="KEY"/>-->
-        <!--<server name="CLOUDFLARE_R2_ACCESS_KEY" value="27bb250534f19f59be7ad468f3a65ac5"/>
-        <server name="CLOUDFLARE_R2_SECRET" value="1bad239edfab8c98cf5cbed6be77616c5fb19e61523cc26305f392d7d46d9c2d"/>
-        <server name="CLOUDFLARE_R2_ENDPOINT" value="https://11d0547262baad2e6bdeb340e88f83be.r2.cloudflarestorage.com"/>
-        <server name="CLOUDFLARE_R2_BUCKET" value="unit-test"/>-->
-        <!--Package Storage Driver Environment-->
     </php>
 
     <testsuites>
-        <!--App Test-->
         <testsuite name="App Test Suite">
-            <directory>src/*/*/Test</directory>
-        </testsuite>
-
-        <!--Package Test-->
-        <testsuite name="Package Test Suite">
-            <directory>package/*/Test</directory>
-            <!--<exclude>package/StorageBundle/Test</exclude>-->
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
@@ -51,15 +35,13 @@
             <directory suffix=".php">src</directory>
         </include>
         <exclude>
-            <directory suffix=".php">src/*/*/Test</directory>
             <directory suffix=".php">src/*/*/Enum</directory>
         </exclude>
     </coverage>
 
     <extensions>
-        <extension class="App\Admin\Core\Test\Setup\PhpunitExtension"/>
+        <extension class="App\Tests\Setup\PhpunitExtension"/>
     </extensions>
-
     <listeners>
         <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>

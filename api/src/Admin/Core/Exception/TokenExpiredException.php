@@ -2,9 +2,9 @@
 
 namespace App\Admin\Core\Exception;
 
-use Package\ApiBundle\AbstractClass\AbstractApiException;
+use Cesurapp\ApiBundle\AbstractClass\ApiException;
 
-class TokenExpiredException extends AbstractApiException
+class TokenExpiredException extends ApiException
 {
     public function __construct(string $message = 'Token expired!', int $code = 403)
     {

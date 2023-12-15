@@ -10,9 +10,9 @@ use App\Admin\Notification\Enum\DevicePermission;
 use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Resource\DeviceResource;
 use App\Admin\Notification\Service\NotificationPusher;
-use Package\ApiBundle\AbstractClass\AbstractApiController;
-use Package\ApiBundle\Response\ApiResponse;
-use Package\ApiBundle\Thor\Attribute\Thor;
+use Cesurapp\ApiBundle\AbstractClass\ApiController;
+use Cesurapp\ApiBundle\Response\ApiResponse;
+use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -20,11 +20,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * Firebase Cloud Messaging Device Controller.
  */
-class DeviceController extends AbstractApiController
+class DeviceController extends ApiController
 {
     #[Thor(
-        group: 'Notification',
-        desc: 'Register Device to Firebase Cloud Messaging',
+        stack: 'Notification',
+        title: 'Register Device to Firebase Cloud Messaging',
         dto: FcmRegisterDto::class,
         order: 10
     )]
@@ -40,10 +40,10 @@ class DeviceController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification Devices',
-        desc: 'List Devices',
+        stack: 'Notification Devices',
+        title: 'List Devices',
         response: [200 => ['data' => DeviceResource::class]],
-        paginate: true,
+        isPaginate: true,
         order: 1
     )]
     #[Route(path: '/v1/admin/notification/device', methods: ['GET'])]
@@ -59,8 +59,8 @@ class DeviceController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification Devices',
-        desc: 'Delete Device',
+        stack: 'Notification Devices',
+        title: 'Delete Device',
         order: 2
     )]
     #[Route(path: '/v1/admin/notification/device/{id}', methods: ['DELETE'])]
@@ -73,8 +73,8 @@ class DeviceController extends AbstractApiController
     }
 
     #[Thor(
-        group: 'Notification Devices',
-        desc: 'Send Notification to Device',
+        stack: 'Notification Devices',
+        title: 'Send Notification to Device',
         dto: NotificationDto::class,
         order: 3
     )]
