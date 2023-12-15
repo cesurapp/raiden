@@ -8,6 +8,7 @@ parameters:
         - src
 
 includes:
-    - bin/tool/vendor/phpstan/phpstan-symfony/extension.neon
-    - bin/tool/vendor/phpstan/phpstan-symfony/rules.neon
-    - bin/tool/vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-symfony/rules.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-doctrine/rules.neon
