@@ -253,8 +253,11 @@ abstract class KernelTestCase extends BaseKernelTestCase
             } elseif (is_array($value)) {
                 $this->assertArrayHasKey($index, $data);
                 $this->isJsonStructure($value, $data[$index]);
-            } else {
+            } elseif (is_int($index)) {
                 $this->assertArrayHasKey($value, $data);
+            } else {
+                $this->assertArrayHasKey($index, $data);
+                $this->assertSame($data[$index], $value);
             }
         }
 

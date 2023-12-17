@@ -26,7 +26,7 @@ class AccountTest extends KernelTestCase
             ->login($user)
             ->jsonRequest('GET', '/v1/admin/account/profile')
             ->isOk()
-            ->isJsonStructure(['data' => ['id']]);
+            ->isJsonStructure(['data' => ['id', 'type' => 'ROLE_ADMIN']]);
     }
 
     public function testEditProfile(): void
