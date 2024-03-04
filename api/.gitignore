@@ -10,6 +10,5 @@
 .phpunit.result.cache
 /phpunit.xml
 ###> php-cs-fixer/shim ###
-/.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< php-cs-fixer/shim ###
