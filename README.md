@@ -1,6 +1,6 @@
 # Raiden API & Admin Panel
 
-[![App Tester](https://github.com/arrrray/raiden/actions/workflows/tester.yml/badge.svg)](https://github.com/arrrray/raiden/actions/workflows/tester.yml)
+[![App Tester](https://github.com/cesurapp/raiden/actions/workflows/tester.yml/badge.svg)](https://github.com/cesurapp/raiden/actions/workflows/tester.yml)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?logo=Unlicense)](LICENSE.md)
 [![Symfony Runtime](https://img.shields.io/badge/Symfony%20Runtime-Compatible-brightgreen.svg?logo=Symfony)](https://symfony.com/doc/current/components/runtime.html)
 
