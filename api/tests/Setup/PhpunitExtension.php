@@ -20,11 +20,25 @@ class PhpunitExtension extends KernelTestCase implements BeforeFirstTestHook
         }
 
         $entityManager = self::getContainer()->get('doctrine')->getManager();
+        $this->createDbIfNotExist($entityManager);
         $metaData = $entityManager->getMetadataFactory()->getAllMetadata();
         $schemaTool = new SchemaTool($entityManager);
         $schemaTool->dropDatabase();
         $schemaTool->updateSchema($metaData);
 
         static::ensureKernelShutdown();
+    }
+
+    private function createDbIfNotExist($entityManager): void
+    {
+        $conn = $entityManager->getConnection();
+        $config = $conn->getParams();
+        $dbName = $config['dbname'];
+        unset($config['dbname'], $config['path'], $config['url']);
+        $tmpCon = DriverManager::getConnection($config, $conn->getConfiguration());
+        $schemaManager = $tmpCon->createSchemaManager();
+        if (!in_array($dbName, $schemaManager->listDatabases())) {
+            $schemaManager->createDatabase($dbName);
+        }
     }
 }
