@@ -2,7 +2,7 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/var/*
+/var/*/*
 !/var/cache/.gitkeep
 !/var/log/.gitkeep
 /vendor/
