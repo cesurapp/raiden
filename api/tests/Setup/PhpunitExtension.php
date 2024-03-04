@@ -2,6 +2,7 @@
 
 namespace App\Tests\Setup;
 
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit\Runner\BeforeFirstTestHook;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
