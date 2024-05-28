@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 
 const { toString, hasOwnProperty } = Object.prototype;
 const OBJECT_TYPE = '[object Object]';

@@ -3,6 +3,7 @@
 namespace App\Tests\Setup;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase as BaseKernelTestCase;
@@ -25,10 +26,13 @@ abstract class KernelTestCase extends BaseKernelTestCase
      */
     public function request(string $method, string $uri, array $parameters = [], array $files = [], array $server = [], ?string $content = null, bool $changeHistory = true): self
     {
+        $getUri = 'GET' === $method ? implode('?', array_filter([$uri, http_build_query($parameters) ?: ''])) : $uri;
+        $getParams = 'GET' !== $method ? $parameters : [];
+
         if (static::$client) {
-            static::$client->request($method, $uri, $parameters, $files, [...$server, ...$this->server], $content, $changeHistory);
+            static::$client->request($method, $getUri, $getParams, $files, [...$server, ...$this->server], $content, $changeHistory);
         } else {
-            static::$response = static::$kernel->handle(Request::create($uri, $method, $parameters, [], $files, [...$server, ...$this->server], $content));
+            static::$response = static::$kernel->handle(Request::create($getUri, $method, $getParams, [], $files, [...$server, ...$this->server], $content));
         }
 
         // Clear Login
@@ -40,17 +44,20 @@ abstract class KernelTestCase extends BaseKernelTestCase
     public function jsonRequest(string $method, string $uri, array $parameters = [], array $server = [], bool $changeHistory = true): self
     {
         try {
+            $getUri = 'GET' === $method ? implode('?', array_filter([$uri, http_build_query($parameters) ?: ''])) : $uri;
+            $getParams = 'GET' !== $method ? $parameters : [];
+
             if (static::$client) {
-                static::$client->request($method, $uri, [], [], [...$server, ...$this->server, ...[
+                static::$client->request($method, $getUri, [], [], [...$server, ...$this->server, ...[
                     'CONTENT_TYPE' => 'application/json',
                     'HTTP_ACCEPT' => 'application/json',
-                ]], json_encode($parameters, JSON_THROW_ON_ERROR), $changeHistory);
+                ]], json_encode($getParams, JSON_THROW_ON_ERROR), $changeHistory);
             } else {
                 static::$response = static::$kernel->handle(
-                    Request::create($uri, $method, [], [], [], [...$server, ...$this->server, ...[
+                    Request::create($getUri, $method, [], [], [], [...$server, ...$this->server, ...[
                         'CONTENT_TYPE' => 'application/json',
                         'HTTP_ACCEPT' => 'application/json',
-                    ]], json_encode($parameters, JSON_THROW_ON_ERROR))
+                    ]], json_encode($getParams, JSON_THROW_ON_ERROR))
                 );
             }
         } catch (\Exception) {
@@ -299,6 +306,17 @@ abstract class KernelTestCase extends BaseKernelTestCase
         $this->em()->flush();
 
         return $object;
+    }
+
+    public function refreshDB(): self
+    {
+        // Refresh DB
+        $em = self::getContainer()->get('doctrine')->getManager();
+        $schemaTool = new SchemaTool($em);
+        $schemaTool->dropDatabase();
+        $schemaTool->updateSchema($em->getMetadataFactory()->getAllMetadata());
+
+        return $this;
     }
 
     /**

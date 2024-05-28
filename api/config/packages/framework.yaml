@@ -18,7 +18,8 @@ framework:
 twig:
     globals:
         APP_NAME: "%env(APP_NAME)%"
-        APP_DEFAULT_URI: "%env(APP_DEFAULT_URI)%"
+        APP_WEBSITE_URI: "%env(APP_WEBSITE_URI)%"
+        APP_PANEL_URI: "%env(APP_PANEL_URI)%"
 
 # TEST
 when@test:

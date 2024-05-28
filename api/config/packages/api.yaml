@@ -1,7 +1,7 @@
 api:
   exception_converter: true
   thor:
-    base_url: "%env(APP_DEFAULT_URI)%"
+    base_url: "%env(APP_API_URI)%"
 
 when@test:
   api:

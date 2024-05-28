@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { NotificationResource } from '../Resource/NotificationResource';
+import type { NotificationResource } from '../Resource/NotificationResource';
 
 export type SchedulerResource = {
   notification: NotificationResource,

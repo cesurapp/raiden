@@ -6,6 +6,6 @@ export type AuthSecurityRegisterRequest = {
   last_name: string,
   email?: string,
   phone_country?: string,
-  phone?: string | number | null,
+  phone?: string | number,
   type?: string
 }

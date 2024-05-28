@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { SchedulerResource } from '../Resource/SchedulerResource';
+import type { SchedulerResource } from '../Resource/SchedulerResource';
 
 export interface AdminSchedulerListResponse {
   data: [

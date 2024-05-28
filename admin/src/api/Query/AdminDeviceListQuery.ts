@@ -2,6 +2,7 @@
 
 export type AdminDeviceListQuery = {
   page?: number,
+  max?: number,
   sort?: 'ASC' | 'DESC',
   sort_by?: 'id' | 'type' | 'owner_type' | 'created_at',
   export?: 'csv' | 'xls',

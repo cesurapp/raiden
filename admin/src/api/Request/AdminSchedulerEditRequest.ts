@@ -8,6 +8,21 @@ export type AdminSchedulerEditRequest = {
   send_at: string,
   refresh_campaign: boolean,
   status: NotificationStatus,
+  device_filter: {
+    'device.type': [
+      'web',
+      'android',
+      'ios'
+    ],
+    'user.createdAt'?: {
+      from?: string,
+      to?: string
+    },
+    'user.type'?: Array<string|number|boolean>,
+    'user.frozen'?: boolean,
+    'user.language'?: string,
+    'user.phoneCountry'?: string
+  },
   title?: string,
   message?: string,
   data?: {
@@ -35,20 +50,5 @@ export type AdminSchedulerEditRequest = {
       route_action?: string,
       download_action?: string
     }
-  },
-  device_filter?: {
-    'device.type': [
-      'web',
-      'android',
-      'ios'
-    ],
-    'user.createdAt'?: {
-      from?: string,
-      to?: string
-    },
-    'user.type'?: Array<string|number|boolean>,
-    'user.frozen'?: boolean,
-    'user.language'?: string,
-    'user.phoneCountry'?: string
   }
 }

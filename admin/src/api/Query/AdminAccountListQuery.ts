@@ -2,6 +2,7 @@
 
 export type AdminAccountListQuery = {
   page?: number,
+  max?: number,
   sort?: 'ASC' | 'DESC',
   sort_by?: 'id' | 'type' | 'email' | 'email_approved' | 'phone' | 'phone_country' | 'phone_approved' | 'approved' | 'frozen' | 'language' | 'created_at',
   export?: 'csv' | 'xls',

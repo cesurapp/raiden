@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { DeviceResource } from '../Resource/DeviceResource';
+import type { DeviceResource } from '../Resource/DeviceResource';
 
 export interface AdminDeviceListResponse {
   data: [

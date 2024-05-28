@@ -39,11 +39,16 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
         $columns = (array) $object;
         $class = get_class($object);
         $newObj = $this->getEntityManager()->find($class, $object->getId());
+
         foreach ($columns as $column => $value) {
             $setter = 'set'.ucfirst(trim(str_replace($class, '', $column)));
             $getter = 'get'.ucfirst(trim(str_replace($class, '', $column)));
 
             if (method_exists($newObj, $setter) && method_exists($newObj, $getter)) {
+                if (in_array($setter, ['setOrganization', 'setOwner'])) {
+                    continue;
+                }
+
                 $newObj->{$setter}($object->{$getter}());
             }
         }

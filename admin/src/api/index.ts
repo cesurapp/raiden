@@ -203,4 +203,11 @@ export default class Api {
 
     return await this.client.request(config);
   }
+
+  rl(method: Method, url: string, config: AxiosRequestConfig = {}) {
+    config.method = method;
+    config.url = url;
+
+    return this.client.getUri(config);
+  }
 }

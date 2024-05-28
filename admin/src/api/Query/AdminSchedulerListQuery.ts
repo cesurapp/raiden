@@ -2,6 +2,7 @@
 
 export type AdminSchedulerListQuery = {
   page?: number,
+  max?: number,
   sort?: 'ASC' | 'DESC',
   sort_by?: 'id' | 'status' | 'persist_notification' | 'delivered_count' | 'failed_count' | 'send_at' | 'created_at',
   export?: 'csv' | 'xls',

@@ -6,9 +6,10 @@ use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Service\MailPusher;
 use App\Admin\Core\Service\SmsPusher;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -16,14 +17,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * Send Email | SMS.
  */
-#[Autoconfigure(tags: [
-    [
-        'name' => 'doctrine.orm.entity_listener',
-        'event' => 'postPersist',
-        'entity' => OtpKey::class,
-        'lazy' => true,
-    ],
-])]
+#[AsEntityListener(Events::postPersist, method: 'postPersist', lazy: true, entity: OtpKey::class)]
 readonly class OtpKeyListener
 {
     public function __construct(

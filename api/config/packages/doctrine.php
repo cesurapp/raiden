@@ -25,6 +25,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'options' => [
                 PDO::ATTR_PERSISTENT => true,
             ],
+            'use_savepoints' => true,
         ],
         'orm' => [
             'auto_generate_proxy_classes' => true,

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-import { UserResource } from '../Resource/UserResource';
+import type { UserResource } from '../Resource/UserResource';
 
 export interface AdminAccountCreateResponse {
   data: UserResource,

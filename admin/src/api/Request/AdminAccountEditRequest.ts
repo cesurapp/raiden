@@ -7,7 +7,7 @@ export type AdminAccountEditRequest = {
   first_name: string,
   last_name: string,
   email?: string,
-  phone?: string | number | null,
+  phone?: string | number,
   phone_country?: string,
   type?: string,
   password?: string,
