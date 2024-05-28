@@ -97,8 +97,8 @@ class AccountTest extends KernelTestCase
 
         $this->login($user)
             ->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
-                    'filter' => ['type' => UserType::USER->value],
-                ]))
+                'filter' => ['type' => UserType::USER->value],
+            ]))
             ->isOk()
             ->isJsonCount(1, 'data');
 
@@ -106,18 +106,18 @@ class AccountTest extends KernelTestCase
         $this->emSave($this->getUser()->setFirstName('LastUser'));
         $this->login($user)
             ->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
-                    'sort' => 'ASC',
-                    'sort_by' => 'id',
-                ]))
+                'sort' => 'ASC',
+                'sort_by' => 'id',
+            ]))
             ->isOk()
             ->isEquals('John', 'data.0.first_name');
 
         // Sort DESC
         $this->login($user)
             ->jsonRequest('GET', '/v1/admin/account/manager?'.http_build_query([
-                    'sort' => 'DESC',
-                    'sort_by' => 'id',
-                ]))
+                'sort' => 'DESC',
+                'sort_by' => 'id',
+            ]))
             ->isOk()
             ->isEquals('LastUser', 'data.0.first_name');
     }

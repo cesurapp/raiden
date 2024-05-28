@@ -8,7 +8,6 @@ use Cesurapp\ApiBundle\Validator\UniqueEntity;
 use Cesurapp\ApiBundle\Validator\PhoneNumber;
 use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserDto extends ApiDto
@@ -69,14 +68,14 @@ class UserDto extends ApiDto
             $context->getValidator()
                 ->inContext($context)
                 ->atPath('email')
-                ->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
+                ->validate($this->email, [new Assert\NotNull(), new Assert\NotBlank()]);
         }
 
         if (empty($this->id)) {
             $context->getValidator()
                 ->inContext($context)
                 ->atPath('password')
-                ->validate($this->password, new NotNull());
+                ->validate($this->password, new Assert\NotNull());
         }
     }
 

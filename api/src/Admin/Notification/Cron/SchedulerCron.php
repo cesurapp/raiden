@@ -65,9 +65,9 @@ class SchedulerCron extends AbstractCronJob
             $batch[] = function () use ($notification, $device) {
                 try {
                     return false !== call_user_func($this->notificationTask, [
-                            'notification' => $notification,
-                            'device' => $device,
-                        ]);
+                        'notification' => $notification,
+                        'device' => $device,
+                    ]);
                 } catch (\Throwable) {
                     return false;
                 }

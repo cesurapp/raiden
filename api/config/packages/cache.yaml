@@ -4,7 +4,7 @@ framework:
         #prefix_seed: your_vendor_name/app_name
 
         # System
-        system: cache.adapter.swoole
+        system: cache.adapter.filesystem
 
         # Application
-        app: cache.adapter.swoole
+        app: cache.adapter.filesystem

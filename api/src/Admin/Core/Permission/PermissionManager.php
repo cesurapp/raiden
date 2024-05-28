@@ -3,43 +3,45 @@
 namespace App\Admin\Core\Permission;
 
 use App\Admin\Core\Enum\UserType;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 
 /**
  * Permission Finder.
  */
-class PermissionManager
+readonly class PermissionManager
 {
-    private array $permissions = [];
-
-    public function __construct(private readonly ParameterBagInterface $parameterBag)
+    public function __construct(private array $permissions)
     {
     }
 
-    public function getPermissions(UserType $type = null): array
+    public static function findPermission(ContainerBuilder $container): array
     {
-        if (!$this->permissions) {
-            $finder = new Finder();
-            $finder->in($this->parameterBag->get('kernel.project_dir').'/src/')
-                ->files()
-                ->name('*Permission.php')
-                ->notName('*Interface*');
+        $permissions = [];
+        $finder = new Finder();
+        $finder->in($container->getParameter('kernel.project_dir').'/src/')
+            ->files()
+            ->name('*Permission.php')
+            ->notName('*Interface*');
 
-            foreach ($finder as $file) {
-                $enum = $this->pathToNamespace($file->getRealPath());
-                if (is_subclass_of($enum, PermissionInterface::class)) {
-                    $extractType = str_replace(['PermissionInterface', '\\'], ['', '/'], array_values(class_implements($enum, false))[0]);
-                    $enumBasename = basename(str_replace('\\', '/', $enum));
-                    $this->permissions[strtoupper(basename($extractType))][$enumBasename] = $enum::cases();
-                }
+        foreach ($finder as $file) {
+            $enum = pathinfo(str_replace([$container->getParameter('kernel.project_dir'), '/src', '/'], ['', 'App', '\\'], $file->getRealPath()), PATHINFO_FILENAME);
+            if (is_subclass_of($enum, PermissionInterface::class)) {
+                $extractType = str_replace(['PermissionInterface', '\\'], ['', '/'], array_values(class_implements($enum, false))[0]);
+                $enumBasename = basename(str_replace('\\', '/', $enum));
+                $permissions[strtoupper(basename($extractType))][$enumBasename] = $enum::cases();
             }
         }
 
+        return $permissions;
+    }
+
+    public function getPermissions(?UserType $type = null): array
+    {
         return $type ? ($this->permissions[$type->name] ?? []) : $this->permissions;
     }
 
-    public function getPermissionsValues(UserType $type = null): array
+    public function getPermissionsValues(?UserType $type = null): array
     {
         $p = $this->getPermissions($type);
         array_walk_recursive($p, static fn (&$enum) => $enum = $enum->value);
@@ -47,7 +49,7 @@ class PermissionManager
         return $p;
     }
 
-    public function getPermissionsFlatten(UserType $type = null): array
+    public function getPermissionsFlatten(?UserType $type = null): array
     {
         if ($type) {
             return array_merge(...array_values($this->getPermissionsValues($type)));
@@ -68,13 +70,5 @@ class PermissionManager
         });
 
         return $selectedPerms;
-    }
-
-    public function pathToNamespace(string $realPath): string
-    {
-        return pathinfo(
-            str_replace([$this->parameterBag->get('kernel.project_dir'), '/src', '/'], ['', 'App', '\\'], $realPath),
-            PATHINFO_FILENAME
-        );
     }
 }

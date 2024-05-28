@@ -17,7 +17,7 @@ trait AppTrait
     /**
      * Set Login Header Params.
      */
-    public function login(User $user = null): self
+    public function login(?User $user = null): self
     {
         if ($user) {
             $token = static::getContainer()->get(JWT::class)->encode(['id' => $user->getId()->toBase32()]);

@@ -8,7 +8,6 @@ use Cesurapp\ApiBundle\Validator\PhoneNumber;
 use Cesurapp\ApiBundle\Validator\UniqueEntity;
 use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class RegisterDto extends ApiDto
@@ -23,7 +22,7 @@ class RegisterDto extends ApiDto
 
     #[PhoneNumber(regionPath: 'phone_country')]
     #[UniqueEntity(entityClass: User::class, fields: ['phone'])]
-    public null|int|string $phone = null;
+    public int|string|null $phone = null;
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: 'getTypes')]
@@ -60,7 +59,7 @@ class RegisterDto extends ApiDto
             $context->getValidator()
                 ->inContext($context)
                 ->atPath('email')
-                ->validate($this->email, [new NotNull(), new Assert\NotBlank()]);
+                ->validate($this->email, [new Assert\NotNull(), new Assert\NotBlank()]);
         }
     }
 

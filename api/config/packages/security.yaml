@@ -16,7 +16,7 @@ security:
             security: true
             lazy: true
             stateless: true
-            pattern: ^/(v1|v2)/(auth|main|user|admin)
+            pattern: ^/(v1|v2)/(auth|main|client|admin)
             provider: user_provider
             access_token:
                 token_handler: App\Admin\Core\Security\AccessTokenHandler

@@ -17,6 +17,8 @@
         <server name="LOCK_DSN" value="semaphore"/>
         <server name="MAILER_DSN" value="null://null" force="true"/>
         <server name="FIREBASE_DSN" value="null://null" force="true"/>
+        <server name="SMS_MAIN_TRANSPORT" value="null://null" force="true"/>
+        <server name="SMS_TR_TRANSPORT" value="null://null" force="true"/>
     </php>
 
     <testsuites>

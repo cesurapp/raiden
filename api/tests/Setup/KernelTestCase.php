@@ -18,12 +18,12 @@ abstract class KernelTestCase extends BaseKernelTestCase
     use AppTrait;
 
     public static AbstractBrowser|KernelBrowser|null $client = null;
-    public static Response|null $response = null;
+    public static ?Response $response = null;
 
     /**
      * Request Client or Kernel Handle.
      */
-    public function request(string $method, string $uri, array $parameters = [], array $files = [], array $server = [], string $content = null, bool $changeHistory = true): self
+    public function request(string $method, string $uri, array $parameters = [], array $files = [], array $server = [], ?string $content = null, bool $changeHistory = true): self
     {
         if (static::$client) {
             static::$client->request($method, $uri, $parameters, $files, [...$server, ...$this->server], $content, $changeHistory);
@@ -112,14 +112,14 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return static::$response->getContent();
     }
 
-    public function getJson(string $key = null, mixed $default = null): mixed
+    public function getJson(?string $key = null, mixed $default = null): mixed
     {
         $data = json_decode($this->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         return $key ? $this->getArrayDot($data, $key, $default) : $data;
     }
 
-    public function getHeader(string $key = null): mixed
+    public function getHeader(?string $key = null): mixed
     {
         return $this->getArrayDot($this->getResponses()->headers->all(), $key);
     }
@@ -203,7 +203,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
-    public function isEquals(mixed $content, string $key = null, mixed $data = null): self
+    public function isEquals(mixed $content, ?string $key = null, mixed $data = null): self
     {
         $data ??= $this->getJson($key);
 
@@ -212,7 +212,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
-    public function isContains(string $needle, string $haystack = null): self
+    public function isContains(string $needle, ?string $haystack = null): self
     {
         $haystack ??= $this->getContent();
 
@@ -221,7 +221,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
-    public function isHeaderEquals(string $key = null, mixed $data = null, mixed $header = null): self
+    public function isHeaderEquals(?string $key = null, mixed $data = null, mixed $header = null): self
     {
         $header ??= $this->getHeader($key);
 
@@ -230,7 +230,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
-    public function isJsonCount(int $count, string $key = null, array $data = null): self
+    public function isJsonCount(int $count, ?string $key = null, ?array $data = null): self
     {
         $data ??= $this->getJson($key, []);
 
@@ -239,7 +239,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
-    public function isJsonStructure(array $structure, array $arrData = null, string $key = null): self
+    public function isJsonStructure(array $structure, ?array $arrData = null, ?string $key = null): self
     {
         $data = $arrData ?? $this->getJson($key);
 

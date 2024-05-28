@@ -117,11 +117,11 @@ class DeviceControllerTest extends KernelTestCase
         $item = end($data);
         $this->login($user)
             ->jsonRequest('GET', '/v1/admin/notification/device?'.http_build_query([
-                    'filter' => [
-                        'id' => $item['id'],
-                        'type' => [$item['type']],
-                    ],
-                ]))
+                'filter' => [
+                    'id' => $item['id'],
+                    'type' => [$item['type']],
+                ],
+            ]))
             ->isJsonCount(1, 'data');
     }
 

@@ -11,10 +11,12 @@ services:
         resource: './'
         exclude:
             - './*/Dto'
+            - './*/DependencyInjection'
             - './*/Entity'
             - './*/Enum'
             - './*/Event'
             - './*/Exception'
+            - './*/Permission'
             - './*/Translation'
 
     # JWT Token Manager
@@ -25,7 +27,15 @@ services:
             $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
         public: true
 
-    # Logging
-    #logger:
-    #    class: Symfony\Component\HttpKernel\Log\Logger
-    #    arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
+# Logging
+when@dev:
+    services:
+        logger:
+            class: Symfony\Component\HttpKernel\Log\Logger
+            arguments: ['debug', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
+
+when@test:
+    services:
+        logger:
+            class: Symfony\Component\HttpKernel\Log\Logger
+            arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']

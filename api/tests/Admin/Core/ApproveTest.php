@@ -168,10 +168,10 @@ class ApproveTest extends KernelTestCase
         // Approve Email Request
         $this->login($user)
             ->jsonRequest('POST', '/v1/main/credentials', [
-            'phone' => $phone,
-            'phone_country' => $phoneCountry,
-            'otp_key' => $key->getOtpKey(),
-        ])
+                'phone' => $phone,
+                'phone_country' => $phoneCountry,
+                'otp_key' => $key->getOtpKey(),
+            ])
         ->isOk();
 
         // Check

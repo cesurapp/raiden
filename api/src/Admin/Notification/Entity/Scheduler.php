@@ -88,7 +88,7 @@ class Scheduler
         return $this;
     }
 
-    public function incDeliveredCount(int $count = null): self
+    public function incDeliveredCount(?int $count = null): self
     {
         if (null !== $count) {
             $this->deliveredCount += $count;
@@ -111,7 +111,7 @@ class Scheduler
         return $this;
     }
 
-    public function incFailedCount(int $count = null): self
+    public function incFailedCount(?int $count = null): self
     {
         if (null !== $count) {
             $this->failedCount += $count;

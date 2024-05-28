@@ -3,7 +3,8 @@ swoole:
   watch_dir: "/config,/src,/templates"
   watch_extension: "*.php,*.yaml,*.yml,*.twig"
   replace_http_client: true # Replace Symfony HTTP Client to Swoole Client
-  cron_worker: true
-  task_worker: true
+  cron_worker: "%env(bool:SERVER_WORKER_CRON)%"
+  task_worker: "%env(bool:SERVER_WORKER_TASK)%"
+  task_sync_mode: "%kernel.debug%"
   failed_task_retry: "@EveryMinute10"
   failed_task_attempt: 2

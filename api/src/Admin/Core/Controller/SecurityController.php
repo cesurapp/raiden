@@ -25,6 +25,7 @@ use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -266,7 +267,7 @@ class SecurityController extends ApiController
 
         // Check
         if (!$otp = $otpRepo->check($user, [OtpType::PHONE, OtpType::EMAIL], $dto->validated('otp_key'))) {
-            throw $this->createAccessDeniedException('Wrong OTP key!');
+            throw new AccessDeniedHttpException('Wrong OTP key!');
         }
 
         // Approve

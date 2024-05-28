@@ -110,24 +110,24 @@ class SchedulerControllerTest extends KernelTestCase
         // Update
         $this->login($user)
             ->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
-            'campaign_title' => 'Campaign',
-            'persist_notification' => true,
-            'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
-            'title' => 'Başlık',
-            'message' => 'İçerik',
-            'status' => NotificationStatus::INFO,
-            'device_filter' => [
-                'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
-                'user.createdAt' => [
-                    'from' => (new \DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
-                    'to' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                'campaign_title' => 'Campaign',
+                'persist_notification' => true,
+                'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                'title' => 'Başlık',
+                'message' => 'İçerik',
+                'status' => NotificationStatus::INFO,
+                'device_filter' => [
+                    'device.type' => [DeviceType::WEB, DeviceType::ANDROID],
+                    'user.createdAt' => [
+                        'from' => (new \DateTimeImmutable('-1 hour'))->format(DATE_ATOM),
+                        'to' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
+                    ],
+                    'user.type' => [UserType::USER],
+                    'user.frozen' => false,
+                    'user.language' => 'tr',
+                    'user.phoneCountry' => 'TR',
                 ],
-                'user.type' => [UserType::USER],
-                'user.frozen' => false,
-                'user.language' => 'tr',
-                'user.phoneCountry' => 'TR',
-            ],
-        ])
+            ])
             ->isOk();
     }
 
