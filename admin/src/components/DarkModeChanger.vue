@@ -1,16 +1,13 @@
 <template>
   <slot>
-    <q-btn
-      v-bind="$attrs"
-      :color="!isDarkMode ? (onlyWhite ? 'white' : 'dark') : 'white'"
-      round
-      :ripple="false"
-      flat
-      @click="$q.dark.set(!$q.dark.isActive)"
-      :icon="!isDarkMode ? mdiWeatherNight : mdiWeatherSunny"
-    >
-      <q-tooltip>{{ $t('Dark Mode') }}</q-tooltip>
-    </q-btn>
+    <q-item clickable class="custom-dense-q-item" @click="$q.dark.set(!$q.dark.isActive)">
+      <q-item-section
+        ><q-item-label>{{ $t('Dark Mode') }}</q-item-label></q-item-section
+      >
+      <q-item-section avatar
+        ><q-toggle dense color="primary" @click="$q.dark.set(!$q.dark.isActive)" :model-value="isDarkMode"
+      /></q-item-section>
+    </q-item>
   </slot>
 </template>
 

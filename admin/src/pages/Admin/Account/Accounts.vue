@@ -145,7 +145,7 @@ import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import AdminAccountListTable from 'src/api/Table/AdminAccountListTable';
-import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
+import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
 import { UserType } from 'src/api/Enum/UserType';
 import UserEditor from 'pages/Admin/Account/UserEditor.vue';

@@ -1,11 +1,5 @@
 <template>
   <div class="search-bar" :class="{ mobile: $q.screen.lt.sm }">
-    <!--Search Bar-->
-    <div class="search-input q-mx-sm-md q-mx-sm" @click="dialog = true">
-      <q-icon :name="mdiMagnify"></q-icon>
-      <span class="text">{{ $t('Search') }}</span>
-    </div>
-
     <!--Search Dialog-->
     <q-dialog v-model="dialog" position="top" class="search-dialog" no-route-dismiss>
       <q-card style="width: 640px" class="search-card q-mx-md">
@@ -19,6 +13,7 @@
             v-model="search"
             ref="self"
             @focus="$refs.self.select()"
+            class="modal-input"
             :style="{ background: $q.dark.isActive ? 'var(--q-dark-page)' : 'white' }"
           >
             <template #prepend>
@@ -69,18 +64,18 @@
 
         <!--Actions-->
         <q-card-actions align="right">
-          <q-btn disable push no-caps size="11px">
+          <q-btn disable push no-caps size="12px">
             <template #default
               ><b class="q-mr-xs">META+K</b><span>{{ $t('to Open') }}</span></template
             >
           </q-btn>
-          <q-btn disable push no-caps size="11px">
+          <q-btn disable push no-caps size="12px">
             <template #default
               ><b class="q-mr-xs">ESC</b><span> {{ $t('to Close') }}</span></template
             >
           </q-btn>
           <q-space></q-space>
-          <q-btn flat size="12px" :label="$t('Close')" v-close-popup />
+          <q-btn flat size="13px" :label="$t('Close')" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -119,15 +114,19 @@ export default defineComponent({
     },
   },
   mounted() {
+    const rootPath = this.$route.matched[0]?.path;
+
     this.routes = this.$route.matched[0].children
       .filter((route) => !route.path.includes('/:') && route?.meta?.breadcrumb)
       .filter((route) =>
         route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true
       )
-      .map((route) => ({
-        label: this.$t(route.meta.breadcrumb ?? ''),
-        route: route.path,
-      }));
+      .map((route) => {
+        return {
+          label: this.$t(route.meta.breadcrumb ?? ''),
+          route: route.path.startsWith('/') ? route.path : rootPath + '/' + route.path,
+        };
+      });
   },
   watch: {
     hotkeyOpen(v) {
@@ -164,6 +163,10 @@ export default defineComponent({
     },
   },
   methods: {
+    toggle() {
+      this.dialog = !this.dialog;
+    },
+
     onClickItem(route) {
       this.$router.push({ path: route }).then(() => {
         this.dialog = false;
@@ -265,30 +268,8 @@ export default defineComponent({
   }
 }
 
-.search-input {
-  padding: 5px 18px 5px 15px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 25px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  transition: 0.2s all;
-  cursor: pointer;
-  user-select: none;
-
-  .q-icon {
-    font-size: 22px;
-    margin-right: 8px;
-  }
-
-  .text {
-    font-weight: 500;
-    opacity: 0.9;
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-  }
+.modal-input {
+  border-radius: $generic-border-radius;
 }
 
 .search-bar.mobile {

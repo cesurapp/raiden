@@ -76,6 +76,8 @@
             v-model="form.password"
             :label="$t('Password')"
             :rules="[$rules.minLength(8)]"
+            :error="$rules.ssrValid('password')"
+            :error-message="$rules.ssrException('password')"
           >
             <template v-slot:append>
               <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />

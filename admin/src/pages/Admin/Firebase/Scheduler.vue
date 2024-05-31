@@ -78,7 +78,7 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
-import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
+import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPlus, mdiPencil } from '@quasar/extras/mdi-v7';
 import AdminSchedulerListTable from 'src/api/Table/AdminSchedulerListTable';
 import SchedulerEditor from 'pages/Admin/Firebase/SchedulerEditor.vue';

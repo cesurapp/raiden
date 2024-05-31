@@ -76,7 +76,7 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
-import PageContent from 'pages/Admin/Components/Layout/PageContent.vue';
+import PageContent from 'components/Layout/PageContent.vue';
 import { mdiSend } from '@quasar/extras/mdi-v7';
 import AdminDeviceListTable from 'src/api/Table/AdminDeviceListTable';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';

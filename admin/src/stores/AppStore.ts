@@ -18,6 +18,8 @@ export const useAppStore = defineStore('app', {
     title: 'Raiden Admin',
     apiExceptions: {},
     networkError: false,
+    navMenu: true,
+    navMini: false,
     busy: [],
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm',
@@ -29,6 +31,15 @@ export const useAppStore = defineStore('app', {
     },
   },
   actions: {
+    /**
+     * Close Navigation
+     */
+    closeNav() {
+      if (!this.platform.desktop) {
+        this.navMenu = false;
+      }
+    },
+
     /**
      * Axios Process
      */

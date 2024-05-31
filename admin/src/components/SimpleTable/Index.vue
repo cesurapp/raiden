@@ -20,6 +20,8 @@
     <template #top v-if="header">
       <q-pull-to-refresh class="full-width" @refresh="refresh(false, $event)">
         <div class="relative-position row items-center full-width">
+          <NavigationToggle></NavigationToggle>
+
           <!--Selected Actions-->
           <div class="q-table__control" v-if="selectedRows.length > 0">
             <q-btn-group v-if="!$q.screen.xs">
@@ -64,7 +66,7 @@
 
           <!--Title-->
           <div class="q-table__control" v-else>
-            <div v-if="!isFiltered" class="table-title text-h5">
+            <div v-if="!isFiltered" class="table-title text-h6">
               <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
             </div>
 
@@ -400,10 +402,11 @@ import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
 import { deFlatten, flatten } from 'src/api/flatten';
+import NavigationToggle from 'components/Layout/NavigationToggle.vue';
 
 export default defineComponent({
   name: 'SimpleTable',
-  components: { SimpleDialog, TableFilter },
+  components: { NavigationToggle, SimpleDialog, TableFilter },
   emits: ['rowClick', 'rowRightClick'],
   setup: () => ({
     mdiRefresh,
@@ -800,28 +803,44 @@ export default defineComponent({
 
 <style lang="scss">
 .table-title {
-  // font-size: 1.8rem;
-  // line-height: 1.8rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  .sub {
+    font-size: 14px;
+    line-height: 16px;
+    opacity: 0.5;
+  }
 }
 
 .q-table__top {
   min-height: 60px;
   flex-wrap: nowrap;
-
+  box-shadow: 0 0 23px -5px rgba(0, 0, 0, 0.15);
+  z-index: 4;
+  color: #000;
+  background: #fff;
+  padding-bottom: 8px;
+  padding-top: max(env(safe-area-inset-top), 8px);
+  padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
+  padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
   .q-table__control {
     overflow: hidden;
     white-space: nowrap;
     display: block;
   }
-}
 
+  .body--dark & {
+    background: var(--q-dark);
+    color: #fff;
+    box-shadow: 0 0 23px -5px rgba(0, 0, 0, 0.4);
+  }
+}
 .screen--xl,
-.screen--lg {
+.screen--lg,
+.screen--md {
   .q-table__top {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: calc(env(safe-area-inset-left) / 2 + 32px);
+    padding-right: calc(env(safe-area-inset-right) / 2 + 32px);
   }
 }
 

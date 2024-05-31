@@ -1,39 +1,32 @@
 <template>
   <q-layout class="admin" view="lHh LpR lFr">
-    <!--Header-->
-    <q-header elevated>
-      <q-toolbar class="q-pr-md-sm q-pr-lg-md q-pl-md-sm q-pl-lg-md">
-        <div id="head-toolbar"></div>
-
-        <!--BreadCrumbs & Title-->
-        <q-toolbar-title class="q-pl-none">
-          <q-breadcrumbs class="breadcrumbs">
-            <q-breadcrumbs-el
-              v-for="(route, index) in getBreadcrumbs"
-              :key="index"
-              :label="$t(route.meta.breadcrumb)"
-              :to="route.path"
-            />
-          </q-breadcrumbs>
-        </q-toolbar-title>
-
-        <!--Search Bar-->
-        <SearchBar></SearchBar>
-
-        <!--Notification Button-->
-        <q-btn @click="$refs.notification.toggle()" dense flat round :icon="mdiBell" size="13px">
+    <!--Drawers-->
+    <Navigation :navs="navs" :title="$appStore.title">
+      <q-btn-group flat spread>
+        <q-btn
+          @click="
+            $refs.search.toggle();
+            $appStore.closeNav();
+          "
+          size="12px"
+          class="q-px-sm"
+          :icon="mdiMagnify"
+        />
+        <q-btn
+          @click="
+            $refs.notification.toggle();
+            $appStore.closeNav();
+          "
+          size="12px"
+          class="q-px-sm"
+          :icon="mdiBell"
+        >
           <q-badge v-if="unreadCount > 0" color="red" rounded floating></q-badge>
         </q-btn>
+      </q-btn-group>
+    </Navigation>
 
-        <!-- Profile Menu-->
-        <Profile></Profile>
-      </q-toolbar>
-    </q-header>
-
-    <!--Navigation Drawer-->
-    <Navigation v-model:activated="menuActived"></Navigation>
-
-    <!--Notification Drawer-->
+    <SearchBar ref="search"></SearchBar>
     <Notifications v-model:unreadcount="unreadCount" ref="notification"></Notifications>
 
     <!--Page Container-->
@@ -51,50 +44,80 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
-import Navigation from './Components/Layout/Navigation.vue';
-import Profile from './Components/Layout/ProfileNav.vue';
-import { mdiBell, mdiMagnify } from '@quasar/extras/mdi-v7';
+import Navigation from 'components/Layout/Navigation.vue';
 import SearchBar from 'components/Search/Search.vue';
+import {
+  mdiBell,
+  mdiMagnify,
+  mdiAccountMultiple,
+  mdiCalendarClock,
+  mdiFirebase,
+  mdiTabletCellphone,
+  mdiViewDashboard,
+} from '@quasar/extras/mdi-v7';
+import { Permission } from 'src/api/Enum/Permission';
 
 export default defineComponent({
   name: 'AdminLayout',
-  setup: () => ({ mdiBell, mdiMagnify }),
-  components: { SearchBar, Notifications, Navigation, Profile },
-  data: () => ({
-    menuActived: true,
-    unreadCount: 0,
-  }),
   mixins: [
     createMetaMixin(function () {
       return {
+        title: this.$t(String(this.$route.meta.breadcrumb)),
         titleTemplate: (title) => `${title} - ` + this.$appStore.title,
       };
     }),
   ],
-  computed: {
-    getBreadcrumbs() {
-      return this.$route.matched.filter((route) => {
-        return route.meta?.breadcrumb;
-      });
-    },
+  components: { SearchBar, Notifications, Navigation },
+  setup: () => ({ mdiBell, mdiMagnify }),
+  mounted() {
+    this.$appStore.panel = 'admin';
   },
-  created() {
-    this.$authStore.reloadUser();
-    this.loadUserDefinedLocale();
-  },
-  methods: {
-    loadUserDefinedLocale() {
-      const ul = localStorage.getItem('user_locale');
-      if (ul) {
-        const lang = this.$i18n.availableLocales.find((l) => l.indexOf(ul) !== -1);
-        if (lang) {
-          localStorage.removeItem('user_locale');
-          localStorage.setItem('locale', lang);
-          this.$i18n.locale = lang;
-        }
-      }
-    },
-  },
+  data: () => ({
+    unreadCount: 0,
+    navs: [
+      { icon: mdiViewDashboard, text: 'Dashboard', to: '/admin' },
+      {
+        header: 'Account Management',
+        items: [
+          {
+            icon: mdiAccountMultiple,
+            text: 'Accounts',
+            to: '/admin/account',
+            permission: [Permission.AdminAccount.LIST],
+          },
+          /*{
+            icon: mdiAccountMultiple,
+            text: 'Restoranlar',
+            to: '/admin/dddd',
+            permission: [Permission.AdminAccount.LIST],
+          },*/
+        ],
+      },
+      {
+        header: 'Tools',
+        items: [
+          {
+            icon: mdiFirebase,
+            text: 'Firebase',
+            child: [
+              {
+                icon: mdiTabletCellphone,
+                text: 'Devices',
+                to: '/admin/firebase/devices',
+                permission: [Permission.AdminDevice.LIST],
+              },
+              {
+                icon: mdiCalendarClock,
+                text: 'Scheduled Notifications',
+                to: '/admin/firebase/scheduler',
+                permission: [Permission.AdminScheduler.LIST],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  }),
 });
 </script>
 

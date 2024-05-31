@@ -7,6 +7,7 @@
     v-model="drawer"
     elevated
     @before-show="onShowPanel"
+    behavior="mobile"
   >
     <q-scroll-area class="fit">
       <!--System Notification Alert-->
@@ -31,7 +32,7 @@
           <q-item-section
             ><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section
           >
-          <q-item-section side top>
+          <q-item-section side top class="flex justify-center items-center">
             <q-btn color="white" size="sm" flat round :icon="mdiCheckAll" @click="readAll" v-close-popup>
               <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
             </q-btn>
@@ -331,7 +332,7 @@ export default defineComponent({
 .panel-head {
   padding-top: max(#{map-get($space-sm, 'y')}, calc(#{map-get($space-sm, 'y')} + env(safe-area-inset-top)));
   font-weight: 500;
-  // height: 46px;
+  height: 60px;
   background: $primary;
   color: #fff;
   font-size: $button-font-size + 2;

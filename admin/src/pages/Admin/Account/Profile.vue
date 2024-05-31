@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!--Page Header-->
-    <PageHeader borderless liquid></PageHeader>
+    <PageHeader liquid></PageHeader>
 
     <!--Page Content-->
     <PageContent borderless liquid>
@@ -132,8 +132,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import PageHeader from '../Components/Layout/PageHeader.vue';
-import PageContent from '../Components/Layout/PageContent.vue';
+import PageHeader from 'components/Layout/PageHeader.vue';
+import PageContent from 'components/Layout/PageContent.vue';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
 import { createMetaMixin } from 'quasar';
 import LanguageInput from 'components/Language/LanguageInput.vue';

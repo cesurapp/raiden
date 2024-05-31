@@ -1,6 +1,8 @@
 <template>
-  <q-btn flat rounded :icon="mdiWeb" :menu-offset="[0, 8]" :label="$t(curentLocale)" no-caps>
-    <q-popup-proxy :breakpoint="600" class="popup-dropdown">
+  <q-item clickable class="custom-dense-q-item">
+    <q-item-section>{{ $t(curentLocale) }}</q-item-section>
+    <q-item-section side><q-icon :name="localeFlag" /></q-item-section>
+    <q-popup-proxy :breakpoint="5000" class="popup-dropdown">
       <q-list style="min-width: 140px" v-close-popup>
         <q-item v-for="locale in localeOptions" :key="locale" @click="$i18n.locale = locale.value" clickable>
           <q-item-section side><q-icon :name="locale.icon" /></q-item-section>
@@ -10,7 +12,7 @@
         </q-item>
       </q-list>
     </q-popup-proxy>
-  </q-btn>
+  </q-item>
 </template>
 
 <script lang="ts">
@@ -36,6 +38,11 @@ export default defineComponent({
         });
       });
       return locales;
+    },
+    localeFlag() {
+      return this.localeOptions.find((locales) => {
+        return locales.value === this.curentLocale;
+      }).icon;
     },
   },
   watch: {

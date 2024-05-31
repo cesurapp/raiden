@@ -56,7 +56,7 @@
  */
 .q-field__control,
 .q-field__marginal {
-  height: 44px;
+  height: 42px;
 }
 
 .q-field__marginal {
@@ -96,12 +96,12 @@
  * Q-Item
  */
 .q-item {
-  min-height: 40px;
+  min-height: 42px;
   padding: 8px 12px;
 }
 
 .q-tab {
-  min-height: 44px;
+  min-height: 42px;
   border-radius: $generic-border-radius;
 }
 
@@ -263,7 +263,7 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
  */
 .q-field--auto-height .q-field__control,
 .q-field--auto-height .q-field__native {
-  min-height: 44px;
+  min-height: 42px;
 }
 
 .q-select {
@@ -287,13 +287,20 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
   padding: 6px 0;
 
   .q-item {
-    min-height: 36px;
-    padding: 6px 8px;
+    min-height: 38px;
+    padding: 6px 10px;
     margin: 0 6px;
     border-radius: $generic-border-radius;
 
     display: flex;
     align-items: center;
+  }
+}
+
+.q-dialog__inner {
+  .q-item {
+    min-height: 38px;
+    padding: 6px 10px;
   }
 }
 
@@ -366,7 +373,7 @@ body.body--dark {
 
 .q-table thead tr,
 .q-table tbody td {
-  height: 44px;
+  height: 42px;
 }
 
 .q-table__card .q-table__middle {
@@ -389,7 +396,7 @@ body.body--dark {
 }
 
 .q-table__bottom {
-  min-height: 44px;
+  min-height: 42px;
   padding-top: 4px;
   padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 4px);
   border-bottom: 1px solid $table-border-color;

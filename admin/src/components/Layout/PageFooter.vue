@@ -46,10 +46,22 @@ export default defineComponent({
   .content-fixed {
     width: 100%;
     max-width: 1140px;
+    margin-left: calc(env(safe-area-inset-left) / 2 + 16px);
+    margin-right: calc(env(safe-area-inset-right) / 2 + 16px);
   }
 
   .content-liquid {
     width: 100%;
+    margin-left: calc(env(safe-area-inset-left) / 2 + 16px);
+    margin-right: calc(env(safe-area-inset-right) / 2 + 16px);
+  }
+}
+
+.screen--xl,
+.screen--lg {
+  .page-footer .content-liquid {
+    margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
+    margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
   }
 }
 </style>

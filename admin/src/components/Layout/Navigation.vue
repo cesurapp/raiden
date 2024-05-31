@@ -1,8 +1,22 @@
 <template>
-  <q-drawer show-if-above class="main-nav text-white" v-model="menu" :width="280">
+  <q-drawer
+    :mini="$appStore.navMini && miniState"
+    :mini-to-overlay="$appStore.navMini"
+    :no-mini-animation="miniAnimation"
+    @mouseover="miniState = false"
+    @mouseout="miniState = true"
+    :mini-width="70"
+    :width="300"
+    class="main-nav text-white"
+    v-model="$appStore.navMenu"
+    :behavior="$q.platform.is.desktop ? 'desktop' : 'mobile'"
+  >
     <!--Logo-->
-    <q-toolbar class="logo">
-      <q-toolbar-title>{{ this.$appStore.title }}</q-toolbar-title>
+    <q-toolbar class="logo justify-center">
+      <q-toolbar-title>
+        <q-avatar size="26px"><q-img src="/icons/favicon-128x128.png" /></q-avatar>
+      </q-toolbar-title>
+      <slot></slot>
     </q-toolbar>
 
     <!--Menu List-->
@@ -10,7 +24,9 @@
       <div class="item" v-for="(nav, index) in getNavs" :key="index">
         <!--With Header-->
         <template v-if="nav.header && nav.hasOwnProperty('items')">
-          <q-item-label v-if="nav.header" header>{{ $t(nav.header) }}</q-item-label>
+          <q-item-label v-if="nav.header" caption header class="grup-header"
+            ><span>{{ $t(nav.header) }}</span></q-item-label
+          >
           <template v-for="(subNav, index) in nav.items" :key="index">
             <!--Single-->
             <q-item
@@ -81,7 +97,7 @@
             group="navigation"
             active-class="active-item-grup"
             :icon="nav.icon"
-            :label="$t(subNav.text)"
+            :label="$t(nav.text)"
             v-model="nav.active"
           >
             <q-list>
@@ -106,111 +122,32 @@
     </q-list>
 
     <!--Footer-->
-    <div class="footer flex items-center justify-evenly">
-      <LanguageChanger size="sm"></LanguageChanger>
-      <DarkModeChanger size="sm" :only-white="true"></DarkModeChanger>
+    <div class="footer flex items-center justify-between">
+      <NavigationProfile>
+        <LanguageChanger></LanguageChanger>
+        <DarkModeChanger></DarkModeChanger>
+        <q-separator spaced />
+      </NavigationProfile>
     </div>
-
-    <!--Toogle Button-->
-    <teleport to="#head-toolbar" v-if="mounted">
-      <q-btn
-        flat
-        dense
-        round
-        :icon="mdiMenu"
-        size="md"
-        class="q-mr-sm"
-        color="blue-2"
-        @click="this.menu = !this.menu"
-      />
-    </teleport>
   </q-drawer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mdiBackburger, mdiForwardburger, mdiAutoMode } from '@quasar/extras/mdi-v7';
 import LanguageChanger from 'components/Language/LanguageChanger.vue';
 import DarkModeChanger from 'components/DarkModeChanger.vue';
-import { Permission } from 'src/api/Enum/Permission';
-import {
-  mdiMenu,
-  mdiViewDashboard,
-  mdiAccountMultiple,
-  mdiFirebase,
-  mdiCalendarClock,
-  mdiTabletCellphone,
-} from '@quasar/extras/mdi-v7';
+import NavigationProfile from 'components/Layout/NavigationProfile.vue';
 
 export default defineComponent({
   name: 'AdminNavigation',
-  setup: () => ({ mdiMenu }),
-  components: { LanguageChanger, DarkModeChanger },
+  components: { NavigationProfile, DarkModeChanger, LanguageChanger },
+  setup: () => ({ mdiBackburger, mdiForwardburger, mdiAutoMode }),
+  props: ['navs', 'title'],
   data: () => ({
     mounted: false,
-    menu: false,
-    navs: [
-      { icon: mdiViewDashboard, text: 'Dashboard', to: '/' },
-
-      // Account Management
-      {
-        header: 'Account Management',
-        items: [
-          {
-            icon: mdiAccountMultiple,
-            text: 'Accounts',
-            to: '/account',
-            permission: [Permission.AdminAccount.LIST],
-          },
-        ],
-      },
-
-      // Tools
-      {
-        header: 'Tools',
-        items: [
-          {
-            icon: mdiFirebase,
-            text: 'Firebase',
-            child: [
-              {
-                icon: mdiTabletCellphone,
-                text: 'Devices',
-                to: '/firebase/devices',
-                permission: [Permission.AdminDevice.LIST],
-              },
-              {
-                icon: mdiCalendarClock,
-                text: 'Scheduled Notifications',
-                to: '/firebase/scheduler',
-                permission: [Permission.AdminScheduler.LIST],
-              },
-            ],
-          },
-        ],
-      },
-
-      /* With Header
-      {
-        header: 'Tools',
-        items: [
-          {
-            icon: mdiFirebase,
-            text: 'Firebase Devices',
-            to: '/fcm/devices',
-            permission: [Permission.AdminDevice.LIST],
-          }
-        ],
-      }, */
-
-      /* Headerless
-      {
-        icon: mdiFirebase,
-        text: 'Firebase Devices',
-        to: '/fcm/devices',
-        permission: [Permission.AdminDevice.LIST],
-        child: []
-      }, */
-    ],
+    miniState: false,
+    miniAnimation: true,
   }),
   computed: {
     getNavs() {
@@ -273,12 +210,21 @@ export default defineComponent({
         });
     },
   },
+  created() {
+    this.$appStore.navMenu = this.$q.platform.is.desktop;
+    this.$appStore.navMini = this.$q.localStorage.getItem('navMini') ?? false;
+    this.miniState = this.$appStore.navMini;
+  },
   mounted() {
     this.mounted = true;
+    setTimeout(() => {
+      this.miniAnimation = false;
+    }, 50);
   },
   watch: {
-    menu(v) {
-      this.$emit('update:activated', v);
+    '$appStore.navMini'(val) {
+      this.miniState = val;
+      this.$q.localStorage.set('navMini', val);
     },
   },
 });
@@ -291,8 +237,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   box-shadow: 0 0 5px 2px rgb(0 0 0 / 10%);
-
-  padding-bottom: calc(env(safe-area-inset-bottom) / 2) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 
   .menus {
     flex: 1;
@@ -305,8 +251,11 @@ export default defineComponent({
   }
 
   .logo {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0 24px;
+    height: 60px;
+    position: relative;
+    padding: 8px 14px 8px 20px;
+    box-shadow: 0 5px 5px -2px rgba(0, 0, 0, 0.1);
+    padding-top: max(env(safe-area-inset-top), 8px);
   }
 
   .q-item {
@@ -339,7 +288,7 @@ export default defineComponent({
   }
 
   .q-item__section--avatar {
-    min-width: 40px;
+    min-width: 34px;
   }
 
   .q-item__section--side > .q-icon {
@@ -348,19 +297,87 @@ export default defineComponent({
 
   .active-link {
     color: white;
-    background: $primary;
+    background: var(--q-primary);
   }
 
   .q-item__label--header {
-    color: rgba(255, 255, 255, 0.64);
+    color: rgba(255, 255, 255, 0.55);
+    padding: 14px;
+    text-transform: uppercase;
+    height: 42px;
   }
 
   .footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    min-height: 44px;
-    & > * {
-      transform: scale(1.1);
+    box-shadow: 0 -5px 5px -2px rgba(0, 0, 0, 0.1);
+    min-height: 46px;
+    padding: 5px 24px;
+    padding-bottom: max(env(safe-area-inset-bottom) / 2, 5px) !important;
+
+    .profile-btn {
+      .q-btn__content {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+      }
     }
+  }
+}
+
+// Mini
+.q-drawer--mini .main-nav {
+  .q-toolbar__title {
+    // display: none;
+    text-overflow: unset;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo {
+    padding: 0 14px 0 14px;
+    height: 60px !important;
+    .q-btn-group {
+      display: none;
+    }
+  }
+  .footer {
+    // display: none;
+    .nav-text,
+    .nav-dropdown {
+      display: none;
+    }
+    .profile-btn {
+      padding-right: 0;
+    }
+  }
+
+  .grup-header {
+    & > span {
+      display: none;
+    }
+    display: flex !important;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    width: 100%;
+    &:after {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      width: 100%;
+      content: ' ';
+      position: absolute;
+      height: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .logo {
+    border-bottom: none;
   }
 }
 </style>
