@@ -7,7 +7,10 @@
         <q-btn :icon="mdiClose" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section class="scroll content q-pb-xs" :class="[clean ? 'q-pt-none' : '']">
+      <q-card-section
+        class="scroll content"
+        :class="{ 'q-pt-none': clean, 'q-pa-none': cleanForce, 'q-py-sm': !cleanForce }"
+      >
         <slot name="content" />
       </q-card-section>
 
@@ -34,6 +37,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    cleanForce: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     active: false,
@@ -48,10 +55,6 @@ export default defineComponent({
 
 <style lang="scss">
 .simple-dialog {
-  /*.header {
-    position: sticky;
-    top: 0;
-  }*/
   .q-card__actions {
     position: sticky;
     bottom: 0;

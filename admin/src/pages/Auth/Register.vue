@@ -120,7 +120,7 @@ export default defineComponent({
       // Register
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api.authSecurityRegister(this.data).then((r) => {
+          this.$api.auth.SecurityRegister(this.data).then((r) => {
             // Redirect Login Page
             if (r.data.data.approved) {
               return this.$router.push({ name: 'auth.login' });

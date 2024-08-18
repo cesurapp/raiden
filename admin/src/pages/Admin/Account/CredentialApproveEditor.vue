@@ -86,7 +86,7 @@
 import { defineComponent } from 'vue';
 import { mdiContentSave, mdiSecurity, mdiKey, mdiEmail } from '@quasar/extras/mdi-v7';
 import PhoneInput from 'components/Phone/PhoneInput.vue';
-import { MainCredentialsApproveRequest } from 'src/api/Request/MainCredentialsApproveRequest';
+import { CredentialsApproveRequest } from 'api/main/request/CredentialsApproveRequest';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 
 export default defineComponent({
@@ -96,7 +96,7 @@ export default defineComponent({
   data: () => ({
     mode: null,
     credential: null,
-    form: {} as MainCredentialsApproveRequest,
+    form: {} as CredentialsApproveRequest,
   }),
   methods: {
     /**
@@ -118,7 +118,7 @@ export default defineComponent({
 
         this.$appStore.confirmPromise('mdiCheck', 'info', 'approve_message').then(() => {
           this.$refs.editor.toggle();
-          this.$api.mainCredentialsRequest(this.form, { showMessage: false }).catch(() => {
+          this.$api.main.CredentialsRequest(this.form, { showMessage: false }).catch(() => {
             this.mode = 'change';
           });
         });
@@ -141,13 +141,13 @@ export default defineComponent({
         if (success) {
           // Generate OTP Key
           if (this.mode === 'change') {
-            return this.$api.mainCredentialsRequest(this.form, { showMessage: false }).then(() => {
+            return this.$api.main.CredentialsRequest(this.form, { showMessage: false }).then(() => {
               this.mode = 'approve';
             });
           }
 
           // Approve
-          this.$api.mainCredentialsApprove(this.form).then(() => {
+          this.$api.main.CredentialsApprove(this.form).then(() => {
             this.$refs.editor.toggle();
 
             // Update User State

@@ -119,7 +119,7 @@ export default defineComponent({
     this.routes = this.$route.matched[0].children
       .filter((route) => !route.path.includes('/:') && route?.meta?.breadcrumb)
       .filter((route) =>
-        route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true
+        route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true,
       )
       .map((route) => {
         return {

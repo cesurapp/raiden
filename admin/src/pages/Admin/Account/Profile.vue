@@ -196,7 +196,7 @@ export default defineComponent({
       // Register
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api.adminAccountEditProfile(this.data).then((r) => {
+          this.$api.admin.AccountEditProfile(this.data).then((r) => {
             this.$authStore.updateUser(r.data.data);
           });
         }

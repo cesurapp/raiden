@@ -4,12 +4,13 @@
     ref="tel"
     unmasked-value
     lazy-rules
-    :mask="`+${code} ############`"
+    :placeholder="`+${getCC}`"
+    :mask="`+${getCC} ############`"
     :label="$t('Phone')"
     :rules="required ? [$rules.required(), $rules.minLength(7)] : []"
     :error="$rules.ssrValid(serverSideInput)"
     :error-message="$rules.ssrException(serverSideInput)"
-    @update:modelValue="(val) => $emit('update:fullNumber', val ? code + val : null)"
+    @update:modelValue="(val) => $emit('update:fullNumber', val ? getCC + val : null)"
   >
     <template v-slot:prepend>
       <CountryInput
@@ -21,7 +22,6 @@
         borderless
         :modelValue="phoneCountry"
         @update:modelValue="(val) => $emit('update:phoneCountry', val)"
-        v-model:phone-code="code"
         :clearable="false"
         :bottom-slots="false"
         @popupHide="onPopupHide"
@@ -36,23 +36,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import CountryInput from 'components/Country/CountryInput.vue';
+import { countries } from 'countries-list';
 
 export default defineComponent({
   name: 'PhoneInput',
   components: { CountryInput },
   props: {
-    phoneCountry: [String],
-    fullNumber: [String, Number],
+    phoneCountry: { type: [String], required: false },
+    fullNumber: { type: [String, Number], default: null, required: false },
     required: { type: Boolean, default: true },
     serverSideInput: { type: String, default: 'phone' },
   },
-  data: () => ({
-    code: null,
-  }),
-  mounted() {
-    if (!this.phoneCountry) {
-      this.$emit('update:phoneCountry', 'TR');
-    }
+  computed: {
+    getCC() {
+      return this.phoneCountry ? countries[this.phoneCountry].phone : null;
+    },
   },
   methods: {
     onPopupHide() {
@@ -68,7 +66,7 @@ export default defineComponent({
 <style lang="scss">
 .country-input {
   .q-field__control {
-    padding-left: 2px;
+    padding-left: 0;
     padding-right: 0;
   }
 

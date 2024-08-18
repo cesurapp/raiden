@@ -1,5 +1,5 @@
-import { UserType } from 'src/api/Enum/UserType';
-import { Permission } from 'src/api/Enum/Permission';
+import { UserType } from 'api/enum/UserType';
+import { Permission } from 'api/enum/Permission';
 
 export default [
   {

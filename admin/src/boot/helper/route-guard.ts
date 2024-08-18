@@ -1,4 +1,4 @@
-import { UserType } from 'src/api/Enum/UserType';
+import { UserType } from 'api/enum/UserType';
 
 export default (router, authStore, appStore, i18n) => {
   router.beforeEach((to, from, next) => {

@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "noImplicitThis": false,
     "noImplicitAny": false
-    //"strict": false
-  }
+  },
+  "exclude": ["./.api"]
 }

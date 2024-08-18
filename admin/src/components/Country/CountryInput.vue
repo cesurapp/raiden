@@ -3,30 +3,28 @@
     bottom-slots
     outlined
     :options="options"
+    v-model="getSelected"
     :label="$t('Country')"
-    emit-value
-    map-options
     clearable
     use-input
     hide-selected
     fill-input
-    input-debounce="0"
     @filter="filterFn"
-    @update:modelValue="updateCountry"
+    input-debounce="0"
     ref="country"
     transition-duration="0"
     virtual-scroll-slice-ratio-before="12"
     virtual-scroll-slice-ratio-after="12"
-    class="country-inputs"
+    class="emoji-input"
   >
     <template v-slot:prepend>
-      <q-icon v-if="!selectedCountry" :name="mdiWeb" />
-      <q-icon v-else :name="selectedCountry.icon" class="country-emoji" />
+      <q-icon v-if="!getSelected" :name="mdiWeb" />
+      <q-icon v-else :name="getSelected.icon" class="language-emoji" />
     </template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
         <q-item-section avatar>
-          <q-icon :name="scope.opt.icon" class="country-emoji" />
+          <q-icon :name="scope.opt.icon" class="language-emoji" />
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -39,57 +37,59 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiWeb } from '@quasar/extras/mdi-v7';
+import { countries } from 'countries-list';
+
+let countryOptions = [] as any;
+Object.entries(countries).forEach(([code, country]: [string, any]) => {
+  if (code !== 'default') {
+    countryOptions.push({
+      value: code,
+      label: country.name,
+      icon: country.emoji,
+    });
+  }
+});
 
 export default defineComponent({
   name: 'CountryInput',
-  emits: ['update:phoneCode'],
+  emits: ['update:modelValue'],
   setup: () => ({ mdiWeb }),
   props: {
-    phoneCode: [String, Number],
+    modelValue: { type: String, required: false },
   },
   data: () => ({
-    countries: [],
-    options: [],
-    selectedCountry: null,
+    countries: {},
+    options: countryOptions,
+    selectedProxied: undefined,
   }),
-  async created() {
-    // Load Countries
-    await import('countries-list/dist/countries.emoji.min.json').then((list: any) => {
-      Object.entries(list).forEach(([code, country]: [string, any]) => {
-        if (code !== 'default') {
-          this.countries.push({
-            value: code,
-            label: country.name,
-            icon: country.emoji,
-            code: country.phone,
-          });
+  computed: {
+    getSelected: {
+      get() {
+        if (this.selectedProxied) {
+          return this.selectedProxied;
         }
-      });
-    });
-    this.options = this.countries;
 
-    if (this.$attrs['modelValue']) {
-      this.updateCountry(this.$attrs['modelValue']);
-    }
+        return this.modelValue
+          ? {
+              value: this.modelValue,
+              label: countries[this.modelValue].name,
+              icon: countries[this.modelValue].emoji,
+            }
+          : null;
+      },
+      set(value) {
+        this.selectedProxied = value;
+        this.$emit('update:modelValue', value?.value);
+      },
+    },
   },
   methods: {
     filterFn(val, update) {
       val = val.toLowerCase();
       update(() => {
-        this.options = this.countries.filter((item) => item.label.toLowerCase().indexOf(val) !== -1);
+        this.options = countryOptions.filter((item) => item.label.toLowerCase().indexOf(val) !== -1);
       });
-    },
-    updateCountry(value) {
-      this.selectedCountry = this.countries.find((c) => c.value === value);
-      this.$emit('update:phoneCode', this.selectedCountry?.code);
     },
   },
 });
 </script>
-
-<style lang="scss">
-.country-emoji {
-  transform: skew(14deg, 1deg) translate(-2px, 1px);
-  color: red;
-}
-</style>

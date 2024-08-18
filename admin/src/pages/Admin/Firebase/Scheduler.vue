@@ -5,9 +5,9 @@
         ref="table"
         trans-key="scheduler"
         :export-button="false"
-        :columns="AdminSchedulerListTable"
-        :request-prop="(req, config) => $api.adminSchedulerList(req, config)"
-        :delete-prop="(row) => $api.adminSchedulerDelete(row.id)"
+        :columns="SchedulerListTable"
+        :request-prop="(req, config) => $api.admin.SchedulerList(req, config)"
+        :delete-prop="(row) => $api.admin.SchedulerDelete(row.id)"
         :delete-permission="$permission.AdminScheduler.DELETE"
       >
         <template #tableActions>
@@ -80,13 +80,13 @@ import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPlus, mdiPencil } from '@quasar/extras/mdi-v7';
-import AdminSchedulerListTable from 'src/api/Table/AdminSchedulerListTable';
+import SchedulerListTable from 'api/admin/table/SchedulerListTable';
 import SchedulerEditor from 'pages/Admin/Firebase/SchedulerEditor.vue';
 
 export default defineComponent({
   name: 'AccountListing',
   components: { SchedulerEditor, PageContent, SimpleTable },
-  setup: () => ({ AdminSchedulerListTable, mdiPlus, mdiPencil }),
+  setup: () => ({ SchedulerListTable, mdiPlus, mdiPencil }),
   mixins: [
     createMetaMixin(function () {
       return {

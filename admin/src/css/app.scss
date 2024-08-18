@@ -38,6 +38,19 @@
   font-weight: 500;
 }
 
+.language-emoji {
+  transform: skew(14deg, 1deg) translate(-4px, 0) scale(1.15);
+  color: blue;
+  .emoji-input & {
+    transform: skew(14deg, 1deg) translate(-3px, 1px) scale(1.1);
+  }
+
+  .safari &,
+  .platform-ios & {
+    transform: scale(1.1) !important;
+  }
+}
+
 /**
  * Q-BTN
  */
@@ -47,9 +60,6 @@
     //padding-top: 1px;
   }
 }
-/**
- * SM Button
- */
 
 /**
  * Q-Input
@@ -359,7 +369,7 @@ body.body--dark {
   padding: 6.5px 8px;
   & > .q-btn,
   & > div > .q-btn {
-    font-size: 13px;
+    // font-size: 13px;
   }
 }
 

@@ -124,8 +124,8 @@
     <!--Footer-->
     <div class="footer flex items-center justify-between">
       <NavigationProfile>
-        <LanguageChanger></LanguageChanger>
-        <DarkModeChanger></DarkModeChanger>
+        <LanguageChanger :list-item="true"></LanguageChanger>
+        <DarkModeChanger :list-item="true"></DarkModeChanger>
         <q-separator spaced />
       </NavigationProfile>
     </div>
@@ -158,7 +158,7 @@ export default defineComponent({
             nav.items = nav.items.filter((c) => {
               if (c.hasOwnProperty('child')) {
                 c.child = c.child.filter(
-                  (cd) => !(cd.hasOwnProperty('permission') && !this.$authStore.hasPermission(cd.permission))
+                  (cd) => !(cd.hasOwnProperty('permission') && !this.$authStore.hasPermission(cd.permission)),
                 );
                 return c.child.length !== 0;
               }
@@ -171,7 +171,7 @@ export default defineComponent({
           // Headerless
           if (nav.hasOwnProperty('child')) {
             nav.child = nav.child.filter(
-              (c) => !(c.hasOwnProperty('permission') && !this.$authStore.hasPermission(c.permission))
+              (c) => !(c.hasOwnProperty('permission') && !this.$authStore.hasPermission(c.permission)),
             );
 
             return nav.child.length !== 0;
@@ -186,7 +186,7 @@ export default defineComponent({
               if (
                 n.hasOwnProperty('child') &&
                 n.child.some((child) =>
-                  typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path
+                  typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path,
                 )
               ) {
                 n.active = true;
@@ -200,7 +200,7 @@ export default defineComponent({
           if (
             nav.hasOwnProperty('child') &&
             nav.child.some((child) =>
-              typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path
+              typeof child.to === 'string' ? child.to === this.$route.path : child.to.path === this.$route.path,
             )
           ) {
             nav.active = true;
@@ -308,10 +308,9 @@ export default defineComponent({
   }
 
   .footer {
-    box-shadow: 0 -5px 5px -2px rgba(0, 0, 0, 0.1);
     min-height: 46px;
-    padding: 5px 24px;
-    padding-bottom: max(env(safe-area-inset-bottom) / 2, 5px) !important;
+    padding: 5px 18px;
+    padding-bottom: max(env(safe-area-inset-bottom) / 2, 12px) !important;
 
     .profile-btn {
       .q-btn__content {
@@ -351,9 +350,6 @@ export default defineComponent({
   }
 
   .grup-header {
-    & > span {
-      display: none;
-    }
     display: flex !important;
     align-items: center;
     position: relative;
@@ -373,6 +369,9 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+    & > span {
+      display: none;
     }
   }
 

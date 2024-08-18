@@ -1,7 +1,11 @@
 import * as methods from '@vuelidate/validators';
 
 class Rules {
-  constructor(public app, public appStore, public t) {}
+  constructor(
+    public app,
+    public appStore,
+    public t,
+  ) {}
 
   is(value, message) {
     message = message !== undefined ? message : false;
@@ -81,7 +85,7 @@ class Rules {
               min: 0,
               max: 1,
             },
-          })
+          }),
         )
           .replace('0', min)
           .replace('1', max)

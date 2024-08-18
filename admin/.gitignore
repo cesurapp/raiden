@@ -1,11 +1,11 @@
 .DS_Store
 .thumbs.db
 node_modules
-.env.local
 
 # Quasar core related directories
 .quasar
 /dist
+/quasar.config.*.temporary.compiled*
 /public/firebase-messaging-sw.js
 
 # Cordova related directories and files
@@ -17,10 +17,6 @@ node_modules
 # Capacitor related directories and files
 /src-capacitor/www
 /src-capacitor/node_modules
-
-# BEX related directories and files
-/src-bex/www
-/src-bex/js/core
 
 # Log files
 npm-debug.log*
@@ -34,3 +30,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 .vscode
+
+# local .env files
+.env.local*
+

@@ -16,7 +16,7 @@ Admin Application UI for [Quasar 2.7](https://quasar.dev/) & Vue 3 & Vite
 **Requirements**
 
 ```
-"node": "^18 || ^16 || ^14.19",
+"node": "^24 || ^22 || ^20 || ^18",
 "yarn": ">= 1.21.1"
 ```
 
@@ -76,7 +76,7 @@ Add Variables:
 
 ```env
 API=https://dev.raiden.app
-NODE_VERSION=16
+NODE_VERSION=20
 ```
 
 ## Documentation

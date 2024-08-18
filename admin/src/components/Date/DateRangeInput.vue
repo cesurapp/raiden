@@ -63,7 +63,7 @@ export default defineComponent({
                 from: this.$appStore.inputDate(val.from, false),
                 to: this.$appStore.inputDate(val.to, false),
               }
-            : null
+            : null,
         );
       },
     },

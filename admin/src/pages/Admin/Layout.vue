@@ -55,7 +55,7 @@ import {
   mdiTabletCellphone,
   mdiViewDashboard,
 } from '@quasar/extras/mdi-v7';
-import { Permission } from 'src/api/Enum/Permission';
+import { Permission } from 'api/enum/Permission';
 
 export default defineComponent({
   name: 'AdminLayout',

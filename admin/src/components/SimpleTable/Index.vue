@@ -401,7 +401,7 @@ import {
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
-import { deFlatten, flatten } from 'src/api/flatten';
+import { deFlatten, flatten } from 'api/flatten';
 import NavigationToggle from 'components/Layout/NavigationToggle.vue';
 
 export default defineComponent({
@@ -585,7 +585,7 @@ export default defineComponent({
     onExport(type) {
       this.requestProp(
         { ...this.getQuery(), ...{ export: type, export_field: this.exportedColumns } },
-        { responseType: 'blob' }
+        { responseType: 'blob' },
       ).then((r) => this.$appStore.axiosDownloadFile(r));
     },
 

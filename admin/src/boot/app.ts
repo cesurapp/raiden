@@ -7,8 +7,10 @@ import messages from 'src/i18n';
 import { createI18n } from 'vue-i18n';
 const i18n = createI18n({
   locale: localStorage.getItem('locale') ?? 'en-US',
-  fallbackLocale: 'en-US',
+  legacy: false,
   messages,
+  missingWarn: false,
+  fallbackWarn: false,
 });
 
 /**
@@ -20,7 +22,7 @@ const client = axios.create({ baseURL: process.env.API });
 /**
  * Create API Client
  */
-import Api from 'src/api';
+import Api from 'api/index';
 const api = new Api(client);
 
 /**
@@ -31,7 +33,7 @@ import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
 import { useAuthStore } from 'stores/AuthStore';
 import { useAppStore } from 'stores/AppStore';
-import { Permission } from 'src/api/Enum/Permission';
+import { Permission } from 'api/enum/Permission';
 const typeAuthStore = useAuthStore();
 const typeAppStore = useAppStore();
 

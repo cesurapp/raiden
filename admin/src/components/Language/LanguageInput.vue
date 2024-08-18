@@ -9,14 +9,16 @@
     :label="$t('Language')"
     emit-value
     map-options
+    class="emoji-input"
+    :class="{ default: !locale }"
   >
     <template v-slot:prepend>
       <q-icon v-if="!locale" :name="mdiWeb" />
-      <q-icon v-else :name="getSelectedIcon" />
+      <q-icon class="language-emoji" v-else :name="getSelectedIcon" />
     </template>
     <template v-slot:option="scope">
       <q-item v-bind="scope.itemProps">
-        <q-item-section avatar><q-icon :name="scope.opt.icon" /></q-item-section>
+        <q-item-section avatar><q-icon class="language-emoji" :name="scope.opt.icon" /></q-item-section>
         <q-item-section
           ><q-item-label>{{ scope.opt.label }}</q-item-label></q-item-section
         >
@@ -28,6 +30,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiWeb } from '@quasar/extras/mdi-v7';
+import { getEmojiFlag } from 'countries-list';
 
 export default defineComponent({
   name: 'LanguageInput',
@@ -49,7 +52,7 @@ export default defineComponent({
         locales.push({
           value: locale.split('-')[0].toLowerCase(),
           label: this.$t(locale),
-          icon: `img:/images/flags/${String(country).toLowerCase()}.svg`,
+          icon: getEmojiFlag(country.toUpperCase()),
         });
       });
       return locales;

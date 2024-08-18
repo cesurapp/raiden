@@ -4,9 +4,9 @@
       <SimpleTable
         ref="table"
         trans-key="account"
-        :columns="AdminAccountListTable"
-        :request-prop="(req, config) => $api.adminAccountList(req, config)"
-        :delete-prop="(row) => $api.adminAccountDelete(row.id)"
+        :columns="AccountListTable"
+        :request-prop="(req, config) => $api.admin.AccountList(req, config)"
+        :delete-prop="(row) => $api.admin.AccountDelete(row.id)"
         :delete-permission="$permission.AdminAccount.DELETE"
       >
         <!--Selected Actions-->
@@ -67,7 +67,7 @@
 
         <!--Custom Column Template-->
         <template #column_phone_country="{ props }">
-          {{ props.value && CountryHelper.hasOwnProperty(props.value) ? CountryHelper[props.value].name : '' }}
+          {{ props.value && countries.hasOwnProperty(props.value) ? countries[props.value].name : '' }}
         </template>
         <template #column_language="{ props }">
           {{ props.value && LanguageHelper.hasOwnProperty(props.value) ? LanguageHelper[props.value] : '' }}
@@ -110,7 +110,7 @@
     <!--Permission Viewer-->
     <SimpleDialog ref="permViewer">
       <template #content>
-        <div class="text-h5 q-mb-md">{{ $t('Permissions') }}</div>
+        <div class="text-h5 q-mb-md q-mt-sm">{{ $t('Permissions') }}</div>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
             :model-value="true"
@@ -144,30 +144,30 @@
 import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
-import AdminAccountListTable from 'src/api/Table/AdminAccountListTable';
+import AccountListTable from 'api/admin/table/AccountListTable';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
-import { UserType } from 'src/api/Enum/UserType';
+import { UserType } from 'api/enum/UserType';
 import UserEditor from 'pages/Admin/Account/UserEditor.vue';
-import { UserResource } from 'src/api/Resource/UserResource';
+import { UserResource } from 'api/admin/resource/UserResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageHelper from 'src/helper/LanguageHelper';
-import CountryHelper from 'src/helper/CountryHelper';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
+import { countries } from 'countries-list';
 
 export default defineComponent({
   name: 'AccountListing',
   components: { SimpleDialog, UserTypeInput, UserEditor, PageContent, SimpleTable },
   setup: () => ({
-    AdminAccountListTable,
+    AccountListTable,
     UserType,
     mdiPencil,
     mdiPlus,
     mdiCancel,
     mdiAccountMultipleOutline,
     mdiMagnify,
-    CountryHelper,
     LanguageHelper,
+    countries,
   }),
   mixins: [
     createMetaMixin(function () {

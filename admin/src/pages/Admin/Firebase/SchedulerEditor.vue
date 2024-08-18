@@ -185,10 +185,10 @@
 import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { mdiBell, mdiPlus, mdiSend, mdiClose, mdiCalendar, mdiClockOutline } from '@quasar/extras/mdi-v7';
-import { NotificationStatus } from 'src/api/Enum/NotificationStatus';
-import { DeviceType } from 'src/api/Enum/DeviceType';
-import { AdminSchedulerCreateRequest } from 'src/api/Request/AdminSchedulerCreateRequest';
-import { SchedulerResource } from 'src/api/Resource/SchedulerResource';
+import { NotificationStatus } from 'api/enum/NotificationStatus';
+import { DeviceType } from 'api/enum/DeviceType';
+import { SchedulerCreateRequest } from 'api/admin/request/SchedulerCreateRequest';
+import { SchedulerResource } from 'api/admin/resource/SchedulerResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import CountryInput from 'components/Country/CountryInput.vue';
@@ -200,7 +200,7 @@ export default defineComponent({
   components: { DateInput, DateRangeInput, CountryInput, LanguageInput, UserTypeInput, SimpleEditor },
   setup: () => ({ mdiBell, mdiSend, mdiPlus, mdiClose, DeviceType, mdiCalendar, mdiClockOutline }),
   data: () => ({
-    form: {} as AdminSchedulerCreateRequest,
+    form: {} as SchedulerCreateRequest,
     data: [],
   }),
   computed: {
@@ -265,14 +265,14 @@ export default defineComponent({
         if (success) {
           // Edit
           if (this.form.hasOwnProperty('id')) {
-            return this.$api.adminSchedulerEdit(this.form.id, this.form).then((r) => {
+            return this.$api.admin.SchedulerEdit(this.form.id, this.form).then((r) => {
               this.$emit('updated', r.data.data);
               this.$refs.editor.toggle();
             });
           }
 
           // Create
-          this.$api.adminSchedulerCreate(this.form).then((r) => {
+          this.$api.admin.SchedulerCreate(this.form).then((r) => {
             this.$emit('created', r.data.data);
             this.$refs.editor.toggle();
           });

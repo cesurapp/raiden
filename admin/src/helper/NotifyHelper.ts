@@ -28,7 +28,6 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
         icon: mdiClose,
         dense: true,
         color: 'white',
-        class: 'notify-close-btn',
       },
     ],
   };

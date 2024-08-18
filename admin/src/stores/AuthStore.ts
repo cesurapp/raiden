@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { api } from 'boot/app';
-import { UserType } from 'src/api/Enum/UserType';
-import { UserResource } from 'src/api/Resource/UserResource';
+import { UserType } from 'api/enum/UserType';
+import { UserResource } from 'api/admin/resource/UserResource';
 import { watch } from 'vue';
-import { Permission } from 'src/api/Enum/Permission';
+import { Permission } from 'api/enum/Permission';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -23,8 +23,8 @@ export const useAuthStore = defineStore('auth', {
     async loginUsername(username: string, password: string) {
       this.clearToken();
 
-      await api
-        .authSecurityLogin({ username: username, password: password })
+      await api.auth
+        .SecurityLogin({ username: username, password: password })
         .then((r) => {
           this.user = r.data.data;
           this.appToken = r.data.token;
@@ -47,7 +47,7 @@ export const useAuthStore = defineStore('auth', {
      * Login with Passwordless Request
      */
     async loginOtpRequest(username: string) {
-      await api.authSecurityLoginOtpRequest({ username: username }).then(() => {
+      await api.auth.SecurityLoginOtpRequest({ username: username }).then(() => {
         this.router.push({
           name: 'auth.login.otp',
           params: { id: btoa(username) },
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
     async loginOtp(username: string, otpKey: number) {
       this.clearToken();
 
-      await api.authSecurityLoginOtp({ username: username, otp_key: otpKey }).then((r) => {
+      await api.auth.SecurityLoginOtp({ username: username, otp_key: otpKey }).then((r) => {
         this.user = r.data.data;
         this.appToken = r.data.token;
         this.refreshToken = r.data.refresh_token;
@@ -82,8 +82,8 @@ export const useAuthStore = defineStore('auth', {
         return this.isRefreshingState;
       }
 
-      return (this.isRefreshingState = api
-        .authSecurityRefreshToken({ refresh_token: this.refreshToken }, { skipInterceptor: true })
+      return (this.isRefreshingState = api.auth
+        .SecurityRefreshToken({ refresh_token: this.refreshToken }, { skipInterceptor: true })
         .then((r) => (this.appToken = r.data.data.token))
         .finally(() => (this.isRefreshingState = false)));
     },
@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async reloadUser() {
       if (this.isLoggedIn()) {
-        await api.adminAccountShowProfile().then((r) => {
+        await api.admin.AccountShowProfile().then((r) => {
           this.updateUser(r.data.data);
         });
       }
@@ -114,8 +114,8 @@ export const useAuthStore = defineStore('auth', {
         this.clearToken();
 
         if (!this.isLogoutState) {
-          this.isLogoutState = api
-            .authSecurityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
+          this.isLogoutState = api.auth
+            .SecurityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
             .finally(() => (this.isLogoutState = false));
         }
       });
@@ -125,7 +125,7 @@ export const useAuthStore = defineStore('auth', {
      * Switch User
      */
     async switchUser(username: string) {
-      await api.adminAccountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
+      await api.admin.AccountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
         if (r.data.data.type !== UserType.USER) {
           this.switchedUser = username;
           this.updateUser(r.data.data);

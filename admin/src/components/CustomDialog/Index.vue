@@ -96,9 +96,6 @@ export default {
     hide() {
       this.$refs.dialog.hide();
     },
-    onDialogHide() {
-      this.$emit('hide');
-    },
     onOKClick() {
       this.$emit('ok');
       this.hide();
@@ -109,3 +106,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.q-card__actions .q-btn--rectangle {
+  padding: $button-padding;
+}
+</style>

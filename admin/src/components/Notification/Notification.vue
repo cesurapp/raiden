@@ -101,20 +101,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { MainNotificationListResponse } from 'src/api/Response/MainNotificationListResponse';
+import { NotificationListResponse } from 'api/main/response/NotificationListResponse';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
 import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh } from '@quasar/extras/mdi-v7';
-import { DeviceType } from 'src/api/Enum/DeviceType';
-import { NotificationResource } from 'src/api/Resource/NotificationResource';
+import { DeviceType } from 'api/enum/DeviceType';
+import { NotificationResource } from 'api/admin/resource/NotificationResource';
 
 export default defineComponent({
   name: 'NotificationComponent',
   setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
   inheritAttrs: false,
   data: () => ({
-    resp: {} as MainNotificationListResponse,
+    resp: {} as NotificationListResponse,
     unreadCount: 0,
     firebase: {
       app: null,
@@ -158,12 +158,12 @@ export default defineComponent({
       this.load();
     },
     loadUnreadCount() {
-      this.$api.mainNotificationUnreadCount().then((r) => {
+      this.$api.main.NotificationUnreadCount().then((r) => {
         this.unreadCount = r.data.data;
       });
     },
     load() {
-      this.$api.mainNotificationList(DeviceType.WEB, { page: this.resp.pager?.current || 1 }).then((r) => {
+      this.$api.main.NotificationList(DeviceType.WEB, { page: this.resp.pager?.current || 1 }).then((r) => {
         if (!Object.keys(this.resp).length) {
           return (this.resp = r.data);
         }
@@ -185,12 +185,12 @@ export default defineComponent({
       // Descrease Unread Count
       this.unreadCount--;
 
-      this.$api.mainNotificationRead(item.id, { showMessage: false }).then(() => {
+      this.$api.main.NotificationRead(item.id, { showMessage: false }).then(() => {
         item.readed = true;
       });
     },
     readAll() {
-      this.$api.mainNotificationReadAll().then(() => {
+      this.$api.main.NotificationReadAll().then(() => {
         this.resp.data.forEach((i) => {
           i.readed = true;
         });
@@ -200,7 +200,7 @@ export default defineComponent({
       this.unreadCount = 0;
     },
     remove(item) {
-      this.$api.mainNotificationDelete(item.id, { showMessage: false }).then(() => {
+      this.$api.main.NotificationDelete(item.id, { showMessage: false }).then(() => {
         this.resp.data?.splice(this.resp.data.indexOf(item), 1);
       });
     },
@@ -304,7 +304,7 @@ export default defineComponent({
     saveFirebaseToken(token: string) {
       const fbToken = LocalStorage.getItem('fbToken');
       if (fbToken !== token) {
-        this.$api.mainDeviceRegister({ token: token, device: 'web' }, { showMessage: false }).then(() => {
+        this.$api.main.DeviceRegister({ token: token, device: 'web' }, { showMessage: false }).then(() => {
           LocalStorage.set('fbToken', token);
         });
       }

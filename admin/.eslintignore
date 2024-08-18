@@ -3,7 +3,6 @@
 /src-cordova
 /.quasar
 /node_modules
+/.api
 .eslintrc.js
-/src-ssr
 quasar.conf.js
-/src/api

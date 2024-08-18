@@ -1,20 +1,4 @@
-import {
-  AxiosAdapter,
-  AxiosBasicCredentials,
-  AxiosHeaders,
-  AxiosProgressEvent,
-  AxiosProxyConfig,
-  AxiosRequestTransformer,
-  AxiosResponseTransformer,
-  CancelToken,
-  CustomParamsSerializer,
-  FormSerializerOptions,
-  GenericAbortSignal,
-  Method,
-  ParamsSerializerOptions,
-  ResponseType,
-  TransitionalOptions,
-} from 'axios';
+import { AxiosAdapter, AxiosHeaders, Method } from 'axios';
 
 type MethodsHeaders = Partial<
   {
@@ -54,7 +38,10 @@ declare module 'axios' {
     maxBodyLength?: number;
     maxRedirects?: number;
     maxRate?: number | [MaxUploadRate, MaxDownloadRate];
-    beforeRedirect?: (options: Record<string, any>, responseDetails: { headers: Record<string, string> }) => void;
+    beforeRedirect?: (
+      options: Record<string, any>,
+      responseDetails: { headers: Record<string, string>; statusCode: HttpStatusCode },
+    ) => void;
     socketPath?: string | null;
     transport?: any;
     httpAgent?: any;
@@ -69,10 +56,19 @@ declare module 'axios' {
       FormData?: new (...args: any[]) => object;
     };
     formSerializer?: FormSerializerOptions;
-    family?: 4 | 6 | undefined;
+    family?: AddressFamily;
     lookup?:
-      | ((hostname: string, options: object, cb: (err: Error | null, address: string, family: number) => void) => void)
-      | ((hostname: string, options: object) => Promise<[address: string, family: number] | string>);
+      | ((
+          hostname: string,
+          options: object,
+          cb: (err: Error | null, address: LookupAddress | LookupAddress[], family?: AddressFamily) => void,
+        ) => void)
+      | ((
+          hostname: string,
+          options: object,
+        ) => Promise<[address: LookupAddressEntry | LookupAddressEntry[], family?: AddressFamily] | LookupAddress>);
+    withXSRFToken?: boolean | ((config: InternalAxiosRequestConfig) => boolean | undefined);
+    fetchOptions?: Record<string, any>;
 
     // Custom
     retry?: boolean;

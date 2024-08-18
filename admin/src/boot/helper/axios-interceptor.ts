@@ -116,10 +116,10 @@ export default (client: AxiosInstance, authStore, appStore, i18n) => {
         appStore.busyComplete(error.config.uniqId);
       }
       return Promise.reject(error);
-    }
+    },
   );
   client.interceptors.response.use(
     async (response) => responseSuccess(response, appStore),
-    async (error) => responseError(error, client, authStore, appStore)
+    async (error) => responseError(error, client, authStore, appStore),
   );
 };

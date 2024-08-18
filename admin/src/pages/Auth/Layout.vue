@@ -7,7 +7,7 @@
     <div class="auth-main flex column no-wrap q-pa-lg">
       <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper row full-width rounded-borders">
         <div class="xs-hide sm-hide col-12 col-md-7 q-pa-lg flex items-center">
-          <q-img src="/images/login.svg" style="width: 100%" />
+          <q-img src="/assets/login.svg" style="width: 100%" />
         </div>
         <div class="col-12 col-md-5 justify-center items-center flex">
           <div class="q-pa-xs-lg q-pa-sm-xl full-width">
