@@ -11,7 +11,7 @@ class NotificationResource implements ApiResourceInterface
     /**
      * @param Notification $item
      */
-    public function toArray(object $item, mixed $optional = null): array
+    public function toArray(mixed $item, mixed $optional = null): array
     {
         return [
             'id' => $item->getId()?->toBase32(),

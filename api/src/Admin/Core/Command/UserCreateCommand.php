@@ -3,7 +3,7 @@
 namespace App\Admin\Core\Command;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
 use App\Admin\Core\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

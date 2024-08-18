@@ -5,7 +5,7 @@ namespace App\Tests\Setup;
 use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\Organization;
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
 use Cesurapp\SwooleBundle\Task\TaskWorker;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Uid\Ulid;

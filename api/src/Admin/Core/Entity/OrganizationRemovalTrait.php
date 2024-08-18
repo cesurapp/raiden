@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 trait OrganizationRemovalTrait
 {
-    #[ORM\ManyToOne(targetEntity: Organization::class, cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: Organization::class)]
     #[ORM\JoinColumn(onDelete: 'cascade')]
     private Organization $organization;
 

@@ -33,12 +33,12 @@ class PhpunitExtension extends KernelTestCase implements BeforeFirstTestHook
         $schemaManager = $newConn->createSchemaManager();
         if (!in_array($conn->getParams()['dbname'], $schemaManager->listDatabases(), true)) {
             $schemaManager->createDatabase($conn->getParams()['dbname']);
-
-            // Create Extension
-            // $newConn->executeStatement('CREATE EXTENSION IF NOT EXISTS postgis;');
-            // $newConn->executeStatement('DROP EXTENSION IF EXISTS postgis_tiger_geocoder;');
-            // $newConn->executeStatement('DROP EXTENSION IF EXISTS postgis_topology;');
         }
+
+        // Create PostGis Extension
+        /*$conn->executeStatement('CREATE EXTENSION IF NOT EXISTS postgis;');
+        $conn->executeStatement('DROP EXTENSION IF EXISTS postgis_tiger_geocoder;');
+        $conn->executeStatement('DROP EXTENSION IF EXISTS postgis_topology;');*/
 
         // Refresh DB
         $schemaTool = new SchemaTool($em);

@@ -5,9 +5,9 @@ namespace App\Tests\Admin\Core;
 use Ahc\Jwt\JWT;
 use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\CorePermission;
 use App\Admin\Core\Enum\OtpType;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\CorePermission;
+use App\Admin\Core\Permission\UserType;
 use App\Tests\Setup\KernelTestCase;
 
 class SecurityTest extends KernelTestCase
@@ -129,6 +129,7 @@ class SecurityTest extends KernelTestCase
                 'username' => $user->getPhone(),
             ])
             ->isOk();
+        self::assertNotificationSubjectContains(self::getNotifierMessage(), 'Verification code');
 
         /** @var OtpKey $key */
         $key = $this->em()->getRepository(OtpKey::class)->findOneBy([
@@ -163,6 +164,7 @@ class SecurityTest extends KernelTestCase
                 'username' => $user->getEmail(),
             ])
             ->isOk();
+        self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
 
         /** @var OtpKey $key */
         $key = $this->em()->getRepository(OtpKey::class)->findOneBy([
@@ -214,6 +216,9 @@ class SecurityTest extends KernelTestCase
             ])
             ->isOk()
             ->isJsonStructure(['message' => ['success']]);
+        self::assertEmailCount(2);
+        self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
+        self::assertEmailSubjectContains(self::getMailerMessage(1), 'Welcome to Raiden');
 
         // Register Email Duplicate
         $this->jsonRequest('POST', '/v1/auth/register', [
@@ -234,6 +239,9 @@ class SecurityTest extends KernelTestCase
         ])
             ->isOk()
             ->isJsonStructure(['message' => ['success']]);
+        self::assertEmailCount(0);
+        self::assertNotificationCount(1);
+        self::assertNotificationSubjectContains(self::getNotifierMessage(), 'Verification code');
 
         // Register Phone Duplicate
         $this->jsonRequest('POST', '/v1/auth/register', [
@@ -376,12 +384,13 @@ class SecurityTest extends KernelTestCase
             ])
             ->isNotFound();
 
-        // Create Sucess Reset Request
+        // Create Success Reset Request
         $this
             ->jsonRequest('POST', '/v1/auth/reset-request', [
                 'username' => $user->getPhone(),
             ])
             ->isOk();
+        self::assertNotificationSubjectContains(self::getNotifierMessage(), 'Verification code');
 
         // OTP Token
         $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
@@ -403,6 +412,7 @@ class SecurityTest extends KernelTestCase
             'username' => $user->getEmail(),
         ])
             ->isOk();
+        self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
 
         // OTP Token
         $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
@@ -413,10 +423,11 @@ class SecurityTest extends KernelTestCase
     {
         $user = $this->emSave($this->getUser());
 
-        // Create Sucess Reset Request
+        // Create Success Reset Request
         $this
             ->jsonRequest('POST', '/v1/auth/reset-request', ['username' => $user->getEmail()])
             ->isOk();
+        self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
 
         // User & Otp Key
         $user = $this->em()->getRepository(User::class)->findOneBy(['id' => $user->getId()]);

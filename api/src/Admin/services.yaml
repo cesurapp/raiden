@@ -1,5 +1,6 @@
 parameters:
     core.refresh_token_exp: "%env(APP_JWT_REFRESH_TOKEN_EXP)%"
+    core.log.file: "%kernel.logs_dir%/%kernel.environment%.log"
 
 services:
     _defaults:
@@ -17,7 +18,7 @@ services:
             - './*/Event'
             - './*/Exception'
             - './*/Permission'
-            - './*/Translation'
+            - './*/Factory'
 
     # JWT Token Manager
     Ahc\Jwt\JWT:
@@ -27,15 +28,7 @@ services:
             $maxAge: "%env(APP_JWT_TOKEN_EXP)%"
         public: true
 
-# Logging
-when@dev:
-    services:
-        logger:
-            class: Symfony\Component\HttpKernel\Log\Logger
-            arguments: ['debug', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
-
-when@test:
-    services:
-        logger:
-            class: Symfony\Component\HttpKernel\Log\Logger
-            arguments: ['info', '%kernel.logs_dir%/%kernel.environment%.log', null, '@request_stack']
+    # Logging
+    logger:
+        class: Symfony\Component\HttpKernel\Log\Logger
+        arguments: ["%env(APP_LOG_LEVEL)%", "%env(default:core.log.file:APP_LOG_FILE)%", null, '@request_stack', "%kernel.debug%"]

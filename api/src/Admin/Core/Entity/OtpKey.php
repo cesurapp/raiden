@@ -7,6 +7,7 @@ use App\Admin\Core\Repository\OtpKeyRepository;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: OtpKeyRepository::class)]
@@ -17,9 +18,9 @@ class OtpKey
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: 'integer')]
     private int $otpKey;
@@ -29,6 +30,9 @@ class OtpKey
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $address = null;
+
+    #[ORM\Column(type: 'string', length: 2, nullable: true)]
+    private ?string $phoneCountry = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $used = false;
@@ -73,6 +77,18 @@ class OtpKey
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getPhoneCountry(): ?string
+    {
+        return $this->phoneCountry;
+    }
+
+    public function setPhoneCountry(?string $phoneCountry): self
+    {
+        $this->phoneCountry = $phoneCountry;
 
         return $this;
     }

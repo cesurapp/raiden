@@ -12,7 +12,7 @@ class SchedulerResource implements ApiResourceInterface
     /**
      * @param Scheduler $item
      */
-    public function toArray(object $item, mixed $optional = null): array
+    public function toArray(mixed $item, mixed $optional = null): array
     {
         return [
             'id' => $item->getId()?->toBase32(),

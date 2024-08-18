@@ -2,6 +2,7 @@
 
 namespace App\Tests\Setup;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -72,7 +73,7 @@ abstract class KernelTestCase extends BaseKernelTestCase
     /**
      * Dumping.
      */
-    public function dd(): void
+    public function ddResponse(): void
     {
         if (static::$client) {
             dd(static::$client->getResponses());
@@ -293,6 +294,37 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
+    public function emRemoveDetached(object $object): self
+    {
+        $this->emRemove($this->reload($object));
+
+        return $this;
+    }
+
+    /**
+     * @template T
+     *
+     * @param T $object
+     *
+     * @return T
+     */
+    public function reload(mixed $object): mixed
+    {
+        $class = get_class($object);
+
+        // Doctrine Proxy Class to Real Class
+        if (str_starts_with($class, 'Proxies')) {
+            $class = ClassUtils::getRealClass($class);
+        }
+
+        // Proxy Zentruck Foundry
+        if (str_ends_with($class, 'Proxy')) {
+            $class = get_class($object->_real());
+        }
+
+        return $this->em()->find($class, $object->getId());
+    }
+
     public function emFlush(): self
     {
         $this->em()->flush();
@@ -300,6 +332,13 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this;
     }
 
+    /**
+     * @template T
+     *
+     * @param T $object
+     *
+     * @return T
+     */
     public function emSave(mixed $object): mixed
     {
         $this->em()->persist($object);

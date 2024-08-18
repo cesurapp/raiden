@@ -3,7 +3,7 @@
 namespace App\Tests\Admin\Core;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
 use App\Tests\Setup\KernelTestCase;
 
 class CommandTest extends KernelTestCase

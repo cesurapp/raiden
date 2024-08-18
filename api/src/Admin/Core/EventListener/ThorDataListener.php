@@ -2,8 +2,8 @@
 
 namespace App\Admin\Core\EventListener;
 
-use App\Admin\Core\Enum\UserType;
-use App\Admin\Core\Permission\PermissionManager;
+use App\Admin\Core\Permission\UserType;
+use App\Admin\Core\Service\PermissionManager;
 use Cesurapp\ApiBundle\Thor\Event\ThorDataEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 

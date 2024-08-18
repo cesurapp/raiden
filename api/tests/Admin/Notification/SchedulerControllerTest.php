@@ -2,7 +2,7 @@
 
 namespace App\Tests\Admin\Notification;
 
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
 use App\Admin\Notification\Cron\SchedulerCron;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;

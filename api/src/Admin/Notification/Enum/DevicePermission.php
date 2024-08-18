@@ -2,7 +2,7 @@
 
 namespace App\Admin\Notification\Enum;
 
-use App\Admin\Core\Permission\AdminPermissionInterface;
+use App\Admin\Core\Permission\Types\AdminPermissionInterface;
 
 enum DevicePermission: string implements AdminPermissionInterface
 {

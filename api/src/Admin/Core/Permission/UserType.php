@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\Core\Enum;
+namespace App\Admin\Core\Permission;
 
-use App\Admin\Core\Permission\PermissionInterface;
+use App\Admin\Core\Permission\Types\PermissionInterface;
 
 enum UserType: string implements PermissionInterface
 {

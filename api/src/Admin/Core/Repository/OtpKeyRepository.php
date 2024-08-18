@@ -23,12 +23,13 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Create OTP Key.
      */
-    public function create(User $user, OtpType $type, int $expiredMinute = 3, ?string $address = null): OtpKey
+    public function create(User $user, OtpType $type, int $expiredMinute = 3, ?string $address = null, ?string $phoneCountry = null): OtpKey
     {
         $otp = (new OtpKey())
             ->setOwner($user)
             ->setType($type)
             ->setAddress($address)
+            ->setPhoneCountry($phoneCountry)
             ->setExpiredAt(new \DateTimeImmutable("+$expiredMinute minute"))
             ->setOtpKey(random_int(100000, 999999));
 

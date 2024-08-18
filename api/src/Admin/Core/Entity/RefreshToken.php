@@ -5,6 +5,7 @@ namespace App\Admin\Core\Entity;
 use App\Admin\Core\Repository\RefreshTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Uid\Ulid;
 
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
@@ -14,9 +15,9 @@ class RefreshToken
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id;
+    private ?Ulid $id = null;
 
     #[ORM\Column(type: 'string', unique: true)]
     private string $token;

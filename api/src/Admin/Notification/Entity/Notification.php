@@ -10,6 +10,7 @@ use App\Admin\Notification\Resource\NotificationResource;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
+use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
 use Symfony\Component\Uid\Ulid;
 
@@ -20,7 +21,7 @@ class Notification
 
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
+    #[ORM\Column(type: UlidType::NAME, unique: true)]
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id = null;
 

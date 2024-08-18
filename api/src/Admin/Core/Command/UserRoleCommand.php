@@ -2,8 +2,8 @@
 
 namespace App\Admin\Core\Command;
 
-use App\Admin\Core\Permission\PermissionManager;
 use App\Admin\Core\Repository\UserRepository;
+use App\Admin\Core\Service\PermissionManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

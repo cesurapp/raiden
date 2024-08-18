@@ -197,15 +197,6 @@
     "symfony/finder": {
         "version": "v6.0.0-BETA1"
     },
-    "symfony/firebase-notifier": {
-        "version": "6.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "5.1",
-            "ref": "a6e63ab1ddcc32c93bc064a19084810bfa673c7b"
-        }
-    },
     "symfony/flex": {
         "version": "1.17",
         "recipe": {

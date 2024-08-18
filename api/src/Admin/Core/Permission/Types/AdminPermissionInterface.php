@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Core\Permission;
+namespace App\Admin\Core\Permission\Types;
 
 /**
  * Admin Area Permission Enum Interface.

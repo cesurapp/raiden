@@ -3,12 +3,12 @@
 namespace App\Admin\Core\Entity;
 
 use App\Admin\Core\Enum\OtpType;
-use App\Admin\Core\Enum\UserType;
-use App\Admin\Core\Permission\PermissionInterface;
+use App\Admin\Core\Permission\Types\PermissionInterface;
+use App\Admin\Core\Permission\UserType;
 use App\Admin\Core\Repository\UserRepository;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;

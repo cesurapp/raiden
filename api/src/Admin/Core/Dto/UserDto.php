@@ -3,10 +3,10 @@
 namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
-use Cesurapp\ApiBundle\Validator\UniqueEntity;
-use Cesurapp\ApiBundle\Validator\PhoneNumber;
+use App\Admin\Core\Permission\UserType;
 use Cesurapp\ApiBundle\AbstractClass\ApiDto;
+use Cesurapp\ApiBundle\Validator\PhoneNumber;
+use Cesurapp\ApiBundle\Validator\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -34,7 +34,7 @@ class UserDto extends ApiDto
 
     #[Assert\NotNull]
     #[Assert\Choice(callback: [UserType::class, 'values'])]
-    public ?string $type = 'ROLE_USER';
+    public ?string $type = UserType::USER->value;
 
     #[Assert\Length(min: 8)]
     public ?string $password = null;

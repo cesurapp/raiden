@@ -3,8 +3,8 @@
 namespace App\Tests\Admin\Core;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\AccountPermission;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\AccountPermission;
+use App\Admin\Core\Permission\UserType;
 use App\Tests\Setup\KernelTestCase;
 
 class AccountTest extends KernelTestCase

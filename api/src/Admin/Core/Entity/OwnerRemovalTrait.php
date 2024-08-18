@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 trait OwnerRemovalTrait
 {
-    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'])]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(onDelete: 'cascade')]
     private ?User $owner = null;
 

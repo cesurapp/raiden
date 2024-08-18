@@ -2,7 +2,7 @@
 
 namespace App\Admin\Core\DependencyInjection;
 
-use App\Admin\Core\Permission\PermissionManager;
+use App\Admin\Core\Service\PermissionManager;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

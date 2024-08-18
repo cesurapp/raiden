@@ -51,12 +51,11 @@ readonly class OtpKeyListener
 
     private function sendPhone(OtpKey $otpKey): void
     {
-        $phone = $otpKey->getAddress() ? (int) $otpKey->getAddress() : $otpKey->getOwner()->getPhone();
-
         $this->smsPusher->send(
-            $phone,
-            $otpKey->getOwner()->getPhoneCountry(),
-            $this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()])
+            (int) ($otpKey->getAddress() ?? $otpKey->getOwner()?->getPhone()),
+            $otpKey->getPhoneCountry() ?? $otpKey->getOwner()?->getPhoneCountry(),
+            $this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]),
+            false
         );
     }
 }

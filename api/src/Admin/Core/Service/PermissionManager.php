@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Admin\Core\Permission;
+namespace App\Admin\Core\Service;
 
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\Types\PermissionInterface;
+use App\Admin\Core\Permission\UserType;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Finder\Finder;
 

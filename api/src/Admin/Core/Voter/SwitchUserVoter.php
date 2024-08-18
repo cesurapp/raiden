@@ -3,8 +3,8 @@
 namespace App\Admin\Core\Voter;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\CorePermission;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\CorePermission;
+use App\Admin\Core\Permission\UserType;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;

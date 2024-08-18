@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Admin\Core\Enum;
+namespace App\Admin\Core\Permission;
 
-use App\Admin\Core\Permission\AdminPermissionInterface;
+use App\Admin\Core\Permission\Types\AdminPermissionInterface;
 
 enum AccountPermission: string implements AdminPermissionInterface
 {

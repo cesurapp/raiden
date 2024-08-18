@@ -47,7 +47,7 @@ class CredentialsController extends ApiController
             throw $this->createAccessDeniedException('This value is currently in use.');
         }
 
-        $otpKeyRepo->create($user, $otpType, address: $username);
+        $otpKeyRepo->create($user, $otpType, address: $username, phoneCountry: $dto->validated('phone_country'));
 
         return ApiResponse::create()->addMessage('One-time approve code has been sent');
     }

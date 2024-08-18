@@ -3,10 +3,10 @@
 namespace App\Admin\Core\Dto;
 
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
+use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Cesurapp\ApiBundle\Validator\PhoneNumber;
 use Cesurapp\ApiBundle\Validator\UniqueEntity;
-use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -65,8 +65,6 @@ class RegisterDto extends ApiDto
 
     /**
      * @param User|mixed $object
-     *
-     * @return User|mixed
      */
     public function initObject(mixed $object = null): mixed
     {

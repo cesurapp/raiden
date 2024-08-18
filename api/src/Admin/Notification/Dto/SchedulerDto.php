@@ -2,7 +2,7 @@
 
 namespace App\Admin\Notification\Dto;
 
-use App\Admin\Core\Enum\UserType;
+use App\Admin\Core\Permission\UserType;
 use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;

@@ -15,7 +15,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
             'is_bundle' => false,
             'dir' => $item->getRealPath(),
             'prefix' => 'App\\'.str_replace('/', '\\', $item->getRelativePathname()),
-            'alias' => $alias,
+            'alias' => empty($alias) ? 'App' : $alias,
         ];
     }
 
@@ -76,6 +76,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         $containerConfigurator->extension('doctrine', [
             'dbal' => [
                 'dbname_suffix' => '_test%env(default::TEST_TOKEN)%',
+                'logging' => false,
             ],
         ]);
     }
