@@ -23,27 +23,14 @@
           :label="typeof cancel === 'string' ? $t(cancel) : $t('Cancel')"
           @click="onCancelClick"
         />
-        <q-btn
-          v-if="yes"
-          flat
-          :color="yesColor"
-          :label="typeof yes === 'string' ? $t(yes) : $t('Yes')"
-          @click="onOKClick"
-        />
+        <q-btn v-if="yes" flat :color="yesColor" :label="typeof yes === 'string' ? $t(yes) : $t('Yes')" @click="onOKClick" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import {
-  mdiDeleteOutline,
-  mdiCheck,
-  mdiClose,
-  mdiAlert,
-  mdiInformationVariant,
-  mdiServerNetwork,
-} from '@quasar/extras/mdi-v7';
+import { mdiDeleteOutline, mdiCheck, mdiClose, mdiAlert, mdiInformationVariant, mdiServerNetwork } from '@quasar/extras/mdi-v7';
 
 export default {
   name: 'CustomDialog',

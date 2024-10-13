@@ -4,7 +4,6 @@ namespace App\Admin\Core\Repository;
 
 use App\Admin\Core\Entity\OtpKey;
 use App\Admin\Core\Entity\User;
-use App\Admin\Core\Enum\OtpType;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -58,11 +57,11 @@ class UserRepository extends ApiServiceEntityRepository implements PasswordUpgra
      */
     public function approve(User $user, OtpKey $otpKey): void
     {
-        if (OtpType::EMAIL === $otpKey->getType()) {
+        if (!is_numeric($otpKey->getAddress())) {
             $user->setEmailApproved(true);
         }
 
-        if (OtpType::PHONE === $otpKey->getType()) {
+        if (is_numeric($otpKey->getAddress())) {
             $user->setPhoneApproved(true);
         }
 

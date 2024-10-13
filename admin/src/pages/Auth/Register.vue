@@ -1,13 +1,9 @@
 <template>
   <div>
     <!--Header-->
-    <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
-        {{ $t('Register') }}
-      </h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">
-        {{ $t('Create a new account.') }}
-      </h6>
+    <div class="q-mb-lg q-mb-sm-xl text-center">
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Register') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Create a new account.') }}</h6>
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
@@ -28,14 +24,15 @@
       <PhoneInput
         outlined
         :modelValue="data.phone"
-        v-model:full-number="data.phone"
-        v-model:phone-country="data.phone_country"
+        v-model:fullNumber="data.phone"
+        v-model:phoneCountry="data.phone_country"
         :label="$t('Phone')"
       ></PhoneInput>
 
       <!--Password-->
       <q-input
         outlined
+        autocomplete
         :type="isPwd ? 'password' : 'text'"
         v-model="data.password"
         :label="$t('Password')"
@@ -70,8 +67,9 @@
         <template v-slot:prepend><q-icon :name="mdiAccount" /></template>
       </q-input>
 
-      <div>
+      <div class="flex justify-between items-center gap-x-md">
         <q-btn
+          class="flex-1"
           :label="$t('Register')"
           @click="onSubmit"
           :loading="$appStore.isBusy"
@@ -86,21 +84,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import PhoneInput from 'components/Phone/PhoneInput.vue';
-import { createMetaMixin } from 'quasar';
+import PhoneInput from 'components/Localization/PhoneInput.vue';
 import { mdiEmail, mdiEye, mdiEyeOff, mdiKey, mdiAccount, mdiAccountPlus } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AuthRegister',
   setup: () => ({ mdiEmail, mdiKey, mdiEye, mdiEyeOff, mdiAccount, mdiAccountPlus }),
   components: { PhoneInput },
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     isPwd: true,
     data: {

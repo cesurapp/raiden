@@ -7,7 +7,7 @@ import { createMemoryHistory, createRouter, createWebHashHistory, createWebHisto
 import AdminRoutes from './admin';
 import AuthRoutes from './auth';
 
-const routes: RouteRecordRaw[] = [...AdminRoutes, ...AuthRoutes];
+const routes: RouteRecordRaw[] = [...AuthRoutes, ...AdminRoutes];
 
 /**
  * 404 Page

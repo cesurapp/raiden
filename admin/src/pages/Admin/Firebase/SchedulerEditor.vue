@@ -36,6 +36,7 @@
             <CountryInput
               outlined
               bottom-slots
+              :onlyActive="false"
               :label="$t('Phone Country')"
               v-model="form.device_filter['user.phoneCountry']"
               :error="$rules.ssrValid('device_filter[user.phoneCountry]')"
@@ -191,7 +192,7 @@ import { SchedulerCreateRequest } from 'api/admin/request/SchedulerCreateRequest
 import { SchedulerResource } from 'api/admin/resource/SchedulerResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
-import CountryInput from 'components/Country/CountryInput.vue';
+import CountryInput from 'components/Localization/CountryInput.vue';
 import DateRangeInput from 'components/Date/DateRangeInput.vue';
 import DateInput from 'components/Date/DateInput.vue';
 

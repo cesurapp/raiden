@@ -43,24 +43,14 @@
           <q-badge color="secondary" :label="$t('No')" v-else></q-badge>
         </template>
         <template #column_status="{ props }">
-          <q-badge
-            color="secondary"
-            class="text-capitalize"
-            :label="props.value"
-            v-if="props.value === 'init'"
-          ></q-badge>
+          <q-badge color="secondary" class="text-capitalize" :label="props.value" v-if="props.value === 'init'"></q-badge>
           <q-badge
             color="warning"
             class="text-capitalize"
             :label="props.value"
             v-else-if="props.value === 'processing'"
           ></q-badge>
-          <q-badge
-            color="positive"
-            class="text-capitalize"
-            :label="props.value"
-            v-else-if="props.value === 'sended'"
-          ></q-badge>
+          <q-badge color="positive" class="text-capitalize" :label="props.value" v-else-if="props.value === 'sended'"></q-badge>
           <q-badge color="negative" class="text-capitalize" :label="props.value" v-else></q-badge>
         </template>
       </SimpleTable>
@@ -76,7 +66,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPlus, mdiPencil } from '@quasar/extras/mdi-v7';
@@ -87,12 +76,5 @@ export default defineComponent({
   name: 'AccountListing',
   components: { SchedulerEditor, PageContent, SimpleTable },
   setup: () => ({ SchedulerListTable, mdiPlus, mdiPencil }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
 });
 </script>

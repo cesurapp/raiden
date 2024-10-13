@@ -11,7 +11,7 @@ export default [
     },
 
     children: [
-      // Global
+      // Admin HomePage
       {
         path: '',
         name: 'admin',

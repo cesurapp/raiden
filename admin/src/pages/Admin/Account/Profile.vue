@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <!--Page Header-->
-    <PageHeader liquid></PageHeader>
+    <PageHeader liquid borderless></PageHeader>
 
     <!--Page Content-->
     <PageContent borderless liquid>
@@ -10,17 +10,19 @@
         <q-input outlined lazy-rules readonly v-model="$authStore.user.email" :label="$t('Email')" bottom-slots>
           <template v-slot:prepend><q-icon :name="mdiEmail" /></template>
           <template #append>
-            <q-btn
-              flat
-              size="12px"
-              color="negative"
-              v-if="!$authStore.user.email_approved"
-              :icon="mdiCheckDecagram"
-              @click="$refs.approveEditor.init('approve', 'email')"
-            >
-              <q-tooltip>{{ $t('Verify') }}</q-tooltip>
-            </q-btn>
-            <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            <template v-if="$authStore.user.email">
+              <q-btn
+                flat
+                size="12px"
+                color="negative"
+                v-if="!$authStore.user.email_approved"
+                :icon="mdiCheckDecagram"
+                @click="$refs.approveEditor.init('approve', 'email')"
+              >
+                <q-tooltip>{{ $t('Verify') }}</q-tooltip>
+              </q-btn>
+              <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            </template>
             <q-btn flat size="12px" :icon="mdiPencil" @click="$refs.approveEditor.init('change', 'email')">
               <q-tooltip>{{ $t('Update') }}</q-tooltip>
             </q-btn>
@@ -29,27 +31,29 @@
 
         <!--Phone-->
         <PhoneInput
+          :label="$t('Phone')"
           outlined
           readonly
-          :modelValue="$authStore.user.phone"
-          v-model:full-number="$authStore.user.phone"
-          v-model:phone-country="$authStore.user.phone_country"
+          v-model="$authStore.user.phone"
+          v-model:fullNumber="$authStore.user.phone"
+          v-model:phoneCountry="$authStore.user.phone_country"
           :required="false"
-          :label="$t('Phone')"
           :error="false"
         >
           <template #append>
-            <q-btn
-              flat
-              size="12px"
-              color="negative"
-              v-if="!$authStore.user.phone_approved"
-              :icon="mdiCheckDecagram"
-              @click="$refs.approveEditor.init('approve', 'phone')"
-            >
-              <q-tooltip>{{ $t('Verify') }}</q-tooltip>
-            </q-btn>
-            <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            <template v-if="$authStore.user.phone">
+              <q-btn
+                flat
+                size="12px"
+                color="negative"
+                v-if="!$authStore.user.phone_approved"
+                :icon="mdiCheckDecagram"
+                @click="$refs.approveEditor.init('approve', 'phone')"
+              >
+                <q-tooltip>{{ $t('Verify') }}</q-tooltip>
+              </q-btn>
+              <q-btn flat size="12px" color="positive" disable v-else :icon="mdiCheckDecagram"></q-btn>
+            </template>
             <q-btn flat size="12px" :icon="mdiPencil" @click="$refs.approveEditor.init('change', 'phone')">
               <q-tooltip>{{ $t('Update') }}</q-tooltip>
             </q-btn>
@@ -84,6 +88,7 @@
         <!--Current Password-->
         <q-input
           outlined
+          autocomplete
           :type="isPwd ? 'password' : 'text'"
           v-model="data.current_password"
           :label="$t('Current Password')"
@@ -101,6 +106,7 @@
         <!--Password-->
         <q-input
           outlined
+          autocomplete
           :type="isPwd ? 'password' : 'text'"
           v-model="data.password"
           :label="$t('Password')"
@@ -115,13 +121,7 @@
 
         <!--Actions-->
         <div>
-          <q-btn
-            :label="$t('Save')"
-            @click="onSubmit"
-            :loading="$appStore.isBusy"
-            color="primary"
-            :icon="mdiAccountPlus"
-          />
+          <q-btn :label="$t('Save')" @click="onSubmit" :loading="$appStore.isBusy" color="primary" :icon="mdiAccountPlus" />
         </div>
       </q-form>
     </PageContent>
@@ -134,9 +134,9 @@
 import { defineComponent } from 'vue';
 import PageHeader from 'components/Layout/PageHeader.vue';
 import PageContent from 'components/Layout/PageContent.vue';
-import PhoneInput from 'components/Phone/PhoneInput.vue';
-import { createMetaMixin } from 'quasar';
+import PhoneInput from 'components/Localization/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
+import CredentialApproveEditor from './CredentialApproveEditor.vue';
 import {
   mdiEmail,
   mdiAccount,
@@ -148,7 +148,6 @@ import {
   mdiCheckDecagram,
   mdiPencil,
 } from '@quasar/extras/mdi-v7';
-import CredentialApproveEditor from 'pages/Admin/Account/CredentialApproveEditor.vue';
 
 export default defineComponent({
   name: 'EditProfile',
@@ -164,13 +163,6 @@ export default defineComponent({
     mdiPencil,
   }),
   components: { CredentialApproveEditor, LanguageInput, PageHeader, PageContent, PhoneInput },
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t('Edit Profile'),
-      };
-    }),
-  ],
   data: () => ({
     isPwd: true,
     data: {
@@ -196,7 +188,7 @@ export default defineComponent({
       // Register
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api.admin.AccountEditProfile(this.data).then((r) => {
+          this.$api.main.ProfileEdit(this.data).then((r) => {
             this.$authStore.updateUser(r.data.data);
           });
         }

@@ -10,7 +10,7 @@ use App\Admin\Core\Enum\OtpType;
 use App\Tests\Setup\KernelTestCase;
 use Cesurapp\SwooleBundle\Cron\CronWorker;
 
-class CronTest extends KernelTestCase
+class ClearTokenCronTest extends KernelTestCase
 {
     public function testClearExpiredToken(): void
     {
@@ -40,9 +40,10 @@ class CronTest extends KernelTestCase
         $rf = $this->emSave(
             (new OtpKey())
                 ->setOwner($user)
-                ->setType(OtpType::EMAIL)
+                ->setType(OtpType::AUTH)
+                ->setAddress($user->getEmail())
                 ->setOtpKey(123445)
-                ->setExpiredAt(new \DateTimeImmutable('-122 minute'))
+                ->setExpiredAt(new \DateTimeImmutable('-1 minute'))
         );
 
         /** @var CronWorker $worker */

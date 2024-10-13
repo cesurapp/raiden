@@ -74,7 +74,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiSend } from '@quasar/extras/mdi-v7';
@@ -87,12 +86,5 @@ export default defineComponent({
   name: 'FirebaseDeviceListing',
   components: { DeviceSendEditor, UserTypeInput, PageContent, SimpleTable },
   setup: () => ({ DeviceListTable, DeviceType, mdiSend }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
 });
 </script>

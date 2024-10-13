@@ -23,12 +23,12 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     /**
      * Create OTP Key.
      */
-    public function create(User $user, OtpType $type, int $expiredMinute = 3, ?string $address = null, ?string $phoneCountry = null): OtpKey
+    public function create(User $user, OtpType $otpType, string|int $address, ?string $phoneCountry = null, int $expiredMinute = 3): OtpKey
     {
         $otp = (new OtpKey())
             ->setOwner($user)
-            ->setType($type)
-            ->setAddress($address)
+            ->setType($otpType)
+            ->setAddress((string) $address)
             ->setPhoneCountry($phoneCountry)
             ->setExpiredAt(new \DateTimeImmutable("+$expiredMinute minute"))
             ->setOtpKey(random_int(100000, 999999));
@@ -39,27 +39,17 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     }
 
     /**
-     * Check OTP Key is Valid.
+     * Check OTP Key is Valid and SET Used.
      */
-    public function check(User $user, OtpType|array $type, int $key, ?string $address = null): ?OtpKey
+    public function check(User $user, OtpType $type, int $key, string $address): ?OtpKey
     {
         $qb = $this->createQueryBuilder('q')
-            ->andWhere('q.otpKey = :key')
-            ->andWhere('q.owner = :owner')
-            ->andWhere('q.type IN(:type)')
-            ->andWhere('q.expiredAt >= :expired')
-            ->andWhere('q.used = :used')
-            ->setParameters([
-                'key' => $key,
-                'type' => is_array($type) ? $type : [$type],
-                'expired' => new \DateTimeImmutable(),
-                'used' => false,
-            ])
-            ->setParameter('owner', $user->getId(), 'ulid');
-
-        if ($address) {
-            $qb->andWhere('q.address = :address')->setParameter('address', $address);
-        }
+            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'ulid')
+            ->andWhere('q.otpKey = :key')->setParameter('key', $key)
+            ->andWhere('q.type = :type')->setParameter('type', $type)
+            ->andWhere('q.expiredAt >= :expired')->setParameter('expired', new \DateTimeImmutable())
+            ->andWhere('q.used = :used')->setParameter('used', false)
+            ->andWhere('q.address = :address')->setParameter('address', $address);
 
         /** @var OtpKey|null $otp */
         $otp = $qb->getQuery()->getOneOrNullResult();
@@ -78,10 +68,9 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     public function disableOtherCodes(OtpKey $otpKey): void
     {
         $this->createQueryBuilder('q')
-            ->andWhere('q.owner = :owner')
-            ->andWhere('q.type = :type')
-            ->setParameter('type', $otpKey->getType())
-            ->setParameter('owner', $otpKey->getOwner()->getId(), 'ulid')
+            ->andWhere('q.owner = :owner')->setParameter('owner', $otpKey->getOwner()->getId(), 'ulid')
+            ->andWhere('q.type = :type')->setParameter('type', $otpKey->getType()->value)
+            // ->andWhere('q.id <> :id')->setParameter('id', $otpKey->getId(), 'ulid')
             ->set('q.used', 'true')
             ->update()->getQuery()->execute();
     }
@@ -93,24 +82,20 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     {
         $this->createQueryBuilder('q')
             ->where('q.expiredAt <= :expire')
-            ->setParameter('expire', new \DateTimeImmutable('-120 minute'))
+            ->setParameter('expire', new \DateTimeImmutable())
             ->delete()->getQuery()->execute();
     }
 
     /**
      * Get Active OTP Key.
      */
-    public function getActiveKey(User $user, OtpType $type): OtpKey
+    public function getActiveKey(User $user, OtpType $type): ?OtpKey
     {
         return $this->createQueryBuilder('q')
-            ->andWhere('q.type = :type')
-            ->andWhere('q.used = :used')
-            ->andWhere('q.owner = :owner')
-            ->andWhere('q.expiredAt >= :expired')
-            ->setParameter('type', $type)
-            ->setParameter('used', false)
-            ->setParameter('owner', $user->getId(), 'ulid')
-            ->setParameter('expired', new \DateTimeImmutable())
+            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'ulid')
+            ->andWhere('q.type = :type')->setParameter('type', $type)
+            ->andWhere('q.used = :used')->setParameter('used', false)
+            ->andWhere('q.expiredAt >= :expired')->setParameter('expired', new \DateTimeImmutable())
             ->getQuery()
             ->getOneOrNullResult();
     }

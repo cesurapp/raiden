@@ -1,5 +1,5 @@
 <template>
-  <SimpleEditor ref="editor" :icon="mdiBell" title-create="Send Notification" class="borderless">
+  <SimpleEditor ref="editor" :icon="mdiBell" title-create="Send Notification" class="borderless" :width="750">
     <!--Form-->
     <template #content>
       <q-form @keydown.enter.prevent="send" class="q-gutter-xs" ref="form">

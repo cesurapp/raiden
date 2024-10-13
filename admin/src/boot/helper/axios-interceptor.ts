@@ -31,6 +31,8 @@ function requestConfig(config: InternalAxiosRequestConfig, authStore, appStore, 
  * Success Response
  */
 function responseSuccess(response: AxiosResponse, appStore) {
+  appStore.busyComplete(response.config.uniqId);
+
   if (response.config.skipInterceptor === true) {
     return response;
   }
@@ -45,25 +47,25 @@ function responseSuccess(response: AxiosResponse, appStore) {
     });
   }
 
-  // Busy Complete
-  appStore.busyComplete(response.config.uniqId);
-
   return response;
 }
 
 async function responseError(error: AxiosError, client: AxiosInstance, authStore, appStore) {
+  appStore.busyComplete(error.response?.config.uniqId);
+
   if (error.config?.skipInterceptor === true) {
     return Promise.reject(error);
   }
-  appStore.busyComplete(error.response?.config);
 
   // Network Error
   if (error.message === 'Network Error') {
     if (!appStore.networkError) {
       appStore.networkError = true;
-      appStore
-        .dialogDanger('Could not connect to the server, refresh the page.', 'Refresh Page')
-        .then(() => window.location.reload());
+      setTimeout(() => {
+        appStore
+          .dialogDanger('Could not connect to the server, refresh the page.', 'Refresh Page')
+          .then(() => window.location.reload());
+      }, 100);
     }
 
     return Promise.reject(error);

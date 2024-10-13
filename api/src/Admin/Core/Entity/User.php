@@ -6,9 +6,9 @@ use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Permission\Types\PermissionInterface;
 use App\Admin\Core\Permission\UserType;
 use App\Admin\Core\Repository\UserRepository;
+use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Types\UlidType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -318,16 +318,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     #[ORM\PostPersist]
-    public function postPersist(LifecycleEventArgs $event): void
+    public function postPersist(PostPersistEventArgs $event): void
     {
         $otpRepo = $event->getObjectManager()->getRepository(OtpKey::class);
 
         if (!$this->isEmailApproved() && $this->getEmail()) {
-            $otpRepo->create($this, OtpType::EMAIL);
+            $otpRepo->create($this, OtpType::AUTH, $this->getEmail());
         }
 
         if (!$this->isPhoneApproved() && $this->getPhone()) {
-            $otpRepo->create($this, OtpType::PHONE);
+            $otpRepo->create($this, OtpType::AUTH, $this->getPhone(), $this->getPhoneCountry());
         }
     }
 

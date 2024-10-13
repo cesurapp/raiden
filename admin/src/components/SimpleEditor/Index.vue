@@ -1,79 +1,110 @@
 <template>
-  <q-dialog v-model="active" :maximized="$q.screen.lt.md" :no-backdrop-dismiss="persistent" class="dialog-main">
-    <q-card class="simple-editor">
+  <!--Modal Mode-->
+  <q-dialog v-if="!inline" v-model="active" :maximized="$q.screen.lt.md" :no-backdrop-dismiss="persistent" class="dialog-main">
+    <q-card class="simple-editor" :style="width ? `width: ${width}px` : ''">
       <!--Header-->
-      <q-toolbar class="bg-primary text-white">
+      <q-toolbar class="text-white">
         <q-btn flat dense class="q-mr-xs" disable v-if="icon" :icon="icon" style="opacity: 1 !important" />
         <q-toolbar-title class="title">{{ updating ? $t(titleUpdate || '') : $t(titleCreate || '') }}</q-toolbar-title>
-        <q-btn flat round dense :icon="mdiClose" @click="active = !active" />
+
+        <slot name="headerActions"></slot>
+        <q-btn class="q-ml-sm" flat round dense :icon="mdiClose" @click="active = !active" />
       </q-toolbar>
 
-      <q-card-section :class="{ 'bg-dark-page': $q.dark.isActive, 'q-pa-none': clean }" class="content">
-        <!--Horizontal Tabs-->
-        <template v-if="$slots.tabsHorizontal">
+      <q-card-section :class="{ 'bg-dark-page': $q.dark.isActive, 'q-pa-none': clean, raw: $slots.content }" class="content">
+        <!--Raw Content-->
+        <slot v-if="$slots.content" name="content" />
+
+        <!--Tabs-->
+        <template v-else-if="$q.screen.lt.sm">
           <q-tabs
             v-model="getTab"
             inline-label
             align="justify"
             class="tab-horz shadow-1"
             :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
-            ><slot name="tabsHorizontal"></slot
+            ><slot name="tabs"></slot
           ></q-tabs>
-          <q-tab-panels
-            v-model="getTab"
-            animated
-            vertical
-            transition-prev="jump-up"
-            transition-next="jump-up"
-            class="borderless"
-          >
+          <q-tab-panels v-model="getTab" animated vertical transition-prev="jump-up" transition-next="jump-up" class="borderless">
             <slot name="tabsContent"></slot>
           </q-tab-panels>
         </template>
-
-        <!--Vertical Tabs-->
-        <q-splitter
-          v-if="$slots.tabsVertical"
-          :model-value="$q.screen.lt.sm ? 65 : 150"
-          :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
-          unit="px"
-          :limits="[$q.screen.lt.sm ? 65 : 150, Infinity]"
-          class="full-height"
-          separator-style="background: transparent; width: 0px"
-        >
-          <template v-slot:before>
-            <q-tabs v-model="getTab" vertical class="q-py-sm vertical-tabs">
-              <slot name="tabsVertical"></slot>
-            </q-tabs>
-          </template>
-          <template v-slot:after>
-            <q-tab-panels
-              v-model="getTab"
-              animated
-              vertical
-              transition-prev="jump-up"
-              transition-next="jump-up"
-              class="borderless full-height"
-            >
-              <slot name="tabsContent"></slot>
-            </q-tab-panels>
-          </template>
-        </q-splitter>
-
-        <!--Raw Content-->
-        <slot name="content" />
+        <template v-else>
+          <q-splitter
+            :model-value="$q.screen.lt.sm ? 65 : 150"
+            :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
+            unit="px"
+            :limits="[$q.screen.lt.sm ? 65 : 150, Infinity]"
+            class="full-height"
+            separator-style="background: transparent; width: 0px"
+          >
+            <template v-slot:before>
+              <q-tabs v-model="getTab" vertical class="q-py-sm vertical-tabs">
+                <slot name="tabs"></slot>
+              </q-tabs>
+            </template>
+            <template v-slot:after>
+              <q-tab-panels
+                v-model="getTab"
+                animated
+                vertical
+                transition-prev="jump-up"
+                transition-next="jump-up"
+                class="borderless full-height"
+              >
+                <slot name="tabsContent"></slot>
+              </q-tab-panels>
+            </template>
+          </q-splitter>
+        </template>
       </q-card-section>
 
       <!--Actions-->
-      <q-card-actions align="between" :class="[$q.dark.isActive ? 'bg-dark' : 'bg-grey-3']">
+      <q-card-actions
+        align="between"
+        v-if="$slots.actionsLeft || $slots.actionsRight"
+        :class="[$q.dark.isActive ? 'bg-dark' : 'bg-grey-3']"
+      >
         <div><slot name="actionsLeft" /></div>
-        <div>
-          <q-btn flat :label="$t('Cancel')" :icon="mdiClose" color="negative" v-close-popup />
+        <div class="q-gutter-xs">
+          <q-btn flat :label="$t('Cancel')" v-if="!noCancel" :icon="mdiClose" color="negative" v-close-popup />
           <slot name="actionsRight" />
         </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <!--Inline Mode-->
+  <div v-else class="full-width inline-mode">
+    <div class="content">
+      <!--Raw Content-->
+      <slot v-if="$slots.content" name="content" />
+
+      <!--Tabs-->
+      <template v-else>
+        <q-tabs v-model="getTab" inline-label narrow-indicator align="left" class="z3">
+          <slot name="tabs"></slot>
+        </q-tabs>
+        <q-tab-panels
+          v-model="getTab"
+          animated
+          vertical
+          transition-prev="jump-up"
+          transition-next="jump-up"
+          class="borderless q-mx-lg-sm q-pt-sm q-mt-xs"
+          :class="{ 'bg-dark-page': $q.dark.isActive }"
+        >
+          <slot name="tabsContent"></slot>
+        </q-tab-panels>
+      </template>
+    </div>
+
+    <!--Actions-->
+    <div class="flex justify-between q-mx-md q-mx-lg-lg q-mb-md">
+      <div class="flex items-center q-gutter-sm" v-if="$slots.actionsLeft"><slot name="actionsLeft" /></div>
+      <div class="flex items-center q-gutter-sm"><slot name="actionsRight" /></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -91,6 +122,17 @@ export default defineComponent({
     clean: {
       type: Boolean,
       default: false,
+    },
+    noCancel: {
+      type: Boolean,
+      default: false,
+    },
+    inline: {
+      type: Boolean,
+      default: false,
+    },
+    width: {
+      type: Number,
     },
     tab: String,
     updating: Boolean,
@@ -116,6 +158,9 @@ export default defineComponent({
     toggle() {
       this.active = !this.active;
     },
+    close() {
+      this.active = false;
+    },
   },
 });
 </script>
@@ -125,6 +170,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: transparent;
 
   .q-toolbar__title {
     line-height: 24px;
@@ -132,7 +178,9 @@ export default defineComponent({
   }
 
   .q-toolbar {
-    padding: max(6.5px, calc(env(safe-area-inset-top) + 6.5px)) 12px 6.5px;
+    background: var(--q-primary);
+    padding: max(6.5px, calc(env(safe-area-inset-top))) calc(env(safe-area-inset-right) / 2 + 12px) 6.5px
+      calc(env(safe-area-inset-left) / 2 + 16px);
     position: sticky;
     top: 0;
     z-index: 3;
@@ -142,11 +190,23 @@ export default defineComponent({
     position: sticky;
     bottom: 0;
     z-index: 3;
-    padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 6.5px);
+    padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 8px);
+    padding-left: calc(env(safe-area-inset-left) / 2 + 12px);
+    padding-right: calc(env(safe-area-inset-right) / 2 + 12px);
   }
 
   .content {
     overflow: auto;
+    background: #fff;
+    &.raw {
+      padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
+      padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
+
+      &.q-pa-none {
+        padding-left: calc(env(safe-area-inset-left) / 2);
+        padding-right: calc(env(safe-area-inset-right) / 2);
+      }
+    }
   }
 
   // Vertical Tab
@@ -164,7 +224,6 @@ export default defineComponent({
   }
 
   .q-tabs--horizontal .q-tab {
-    min-height: 46px;
     border-radius: 0;
   }
   .tab-horz {
@@ -175,8 +234,9 @@ export default defineComponent({
   .q-tab-panels.q-dark {
     background: var(--q-dark-page);
   }
-  .q-panel > div {
+  .content:not(.raw) .q-panel > div {
     height: auto;
+    padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
   }
 }
 
@@ -194,13 +254,15 @@ export default defineComponent({
 .screen--xl {
   .simple-editor {
     max-width: 1140px;
-    width: 700px;
+    width: 850px;
   }
 }
 
 .q-dialog__inner--maximized .simple-editor {
   display: flex;
   flex-direction: column;
+
+  width: 100% !important;
 
   .content {
     flex: 1;
@@ -216,6 +278,24 @@ body.q-ios-padding .dialog-main {
       height: 100vh !important;
       max-height: 100vh !important;
     }
+  }
+}
+
+.inline-mode {
+  .q-tabs {
+    position: sticky;
+    top: 50px;
+
+    .q-tab {
+      border-radius: 0;
+      @media (min-width: $breakpoint-lg-min) {
+        padding: 0 24px;
+      }
+    }
+  }
+
+  .q-tab-panel {
+    padding-bottom: 0;
   }
 }
 </style>

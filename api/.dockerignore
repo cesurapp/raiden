@@ -1,5 +1,7 @@
 var/cache
 var/log
+var/storage
+tests
 .git
 .DS_Store
 .env.*

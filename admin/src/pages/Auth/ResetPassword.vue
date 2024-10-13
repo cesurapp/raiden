@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--Header-->
-    <div class="q-mb-xl">
+    <div class="q-mb-lg q-mb-md-xl text-center">
       <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
         {{ $t('Change Password') }}
       </h4>
@@ -57,8 +57,15 @@
         </template>
       </q-input>
 
-      <div>
-        <q-btn :label="$t('Change')" :loading="$appStore.isBusy" type="submit" color="primary" :icon="mdiLockReset" />
+      <div class="flex justify-between items-center gap-x-md">
+        <q-btn
+          class="flex-1"
+          :label="$t('Change')"
+          :loading="$appStore.isBusy"
+          type="submit"
+          color="primary"
+          :icon="mdiLockReset"
+        />
         <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
@@ -67,19 +74,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import { mdiKey, mdiEye, mdiEyeOff, mdiLockReset } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'ResetPassword',
   setup: () => ({ mdiKey, mdiEye, mdiEyeOff, mdiLockReset }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     isPwd: true,
     id: null,
@@ -91,8 +90,8 @@ export default defineComponent({
     onSubmit() {
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api
-            .authSecurityResetPassword({
+          this.$api.auth
+            .SecurityResetPassword({
               username: atob(this.$route.params.id),
               otp_key: this.otp_key,
               password: this.password,

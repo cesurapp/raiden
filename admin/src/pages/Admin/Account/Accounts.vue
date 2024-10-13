@@ -67,7 +67,7 @@
 
         <!--Custom Column Template-->
         <template #column_phone_country="{ props }">
-          {{ props.value && countries.hasOwnProperty(props.value) ? countries[props.value].name : '' }}
+          {{ props.value ? findCountry(props.value)?.name : '' }}
         </template>
         <template #column_language="{ props }">
           {{ props.value && LanguageHelper.hasOwnProperty(props.value) ? LanguageHelper[props.value] : '' }}
@@ -142,7 +142,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import AccountListTable from 'api/admin/table/AccountListTable';
 import PageContent from 'components/Layout/PageContent.vue';
@@ -153,7 +152,7 @@ import { UserResource } from 'api/admin/resource/UserResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageHelper from 'src/helper/LanguageHelper';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
-import { countries } from 'countries-list';
+import { findCountry } from 'components/Localization/LocalizationLoader';
 
 export default defineComponent({
   name: 'AccountListing',
@@ -167,15 +166,8 @@ export default defineComponent({
     mdiAccountMultipleOutline,
     mdiMagnify,
     LanguageHelper,
-    countries,
+    findCountry,
   }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     selectedPerm: null,
   }),
@@ -199,9 +191,7 @@ export default defineComponent({
       return user.type !== UserType.USER;
     },
     switchUser(user: UserResource) {
-      this.$appStore
-        .confirmInfo('Do you want to switch to the user')
-        .then(() => this.$authStore.switchUser(user.email));
+      this.$appStore.confirmInfo('Do you want to switch to the user').then(() => this.$authStore.switchUser(user.email));
     },
   },
 });

@@ -52,13 +52,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import {
-  mdiAccountCircle,
-  mdiLogout,
-  mdiAccountMultipleOutline,
-  mdiChevronRight,
-  mdiAccount,
-} from '@quasar/extras/mdi-v7';
+import { mdiAccountCircle, mdiLogout, mdiAccountMultipleOutline, mdiChevronRight, mdiAccount } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'NavigationProfile',
@@ -90,9 +84,10 @@ export default defineComponent({
   }
   .sub {
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 11px;
     line-height: 12px;
-    font-weight: 600;
+    opacity: 0.7;
+    font-weight: 400;
     #color: rgba(255, 255, 255, 0.75);
   }
 }

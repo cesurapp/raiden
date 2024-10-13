@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { LocalStorage } from 'quasar';
 import { api } from 'boot/app';
-import { UserType } from 'api/enum/UserType';
-import { UserResource } from 'api/admin/resource/UserResource';
 import { watch } from 'vue';
+import { AxiosError } from 'axios';
+import { UserResource } from 'api/admin/resource/UserResource';
+import { UserType } from 'api/enum/UserType';
 import { Permission } from 'api/enum/Permission';
 
 export const useAuthStore = defineStore('auth', {
@@ -36,7 +37,8 @@ export const useAuthStore = defineStore('auth', {
           // Redirect
           this.router.push({ path: '/' });
         })
-        .catch((r: any) => {
+        .catch((r: AxiosError) => {
+          // @ts-ignore
           if (r.response?.data?.type === 'AccountNotActivatedException') {
             this.loginOtpRequest(username);
           }
@@ -93,7 +95,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async reloadUser() {
       if (this.isLoggedIn()) {
-        await api.admin.AccountShowProfile().then((r) => {
+        await api.main.ProfileShow().then((r) => {
           this.updateUser(r.data.data);
         });
       }
@@ -125,7 +127,7 @@ export const useAuthStore = defineStore('auth', {
      * Switch User
      */
     async switchUser(username: string) {
-      await api.admin.AccountShowProfile({ headers: { SWITCH_USER: username } }).then((r) => {
+      await api.main.ProfileShow({ headers: { SWITCH_USER: username } }).then((r) => {
         if (r.data.data.type !== UserType.USER) {
           this.switchedUser = username;
           this.updateUser(r.data.data);
@@ -187,23 +189,23 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Check User Permission
      */
-    hasPermission(permission: string | Array<string>, user?: UserResource): boolean {
+    hasPermission(perm: string | Array<string>, user?: UserResource): boolean {
       // Super Admin
       if ((user || this.user).type === UserType.SUPERADMIN) {
         return true;
       }
 
-      if (Array.isArray(permission)) {
-        return permission.every((r) => (user || this.user).roles.indexOf(r) !== -1);
+      if (Array.isArray(perm)) {
+        return perm.every((r) => (user || this.user).roles.indexOf(r) !== -1);
       }
 
-      return (user || this.user).roles.includes(permission);
+      return (user || this.user).roles.includes(perm);
     },
 
     /**
      * Get Readable Permissions
      */
-    getReadablePermission(permissions: typeof Permission, user?: UserResource) {
+    getReadablePermission(permissions: typeof Permission, user?: UserResource | null) {
       const perms = {};
 
       Object.entries(permissions).forEach(([type, permList]: [string, any]) => {

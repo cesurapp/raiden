@@ -8,7 +8,17 @@ import Auth from './auth'
 import Main from './main'
 import Admin from './admin'
 
-export default class Api {
+export interface ApiInstance {
+    auth: Auth;
+    main: Main;
+    admin: Admin;
+}
+
+export interface ApiConstructor {
+    new (client: AxiosInstance): ApiInstance;
+}
+
+export default class Api implements ApiInstance {
     public auth: Auth;
     public main: Main;
     public admin: Admin;

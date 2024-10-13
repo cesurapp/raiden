@@ -325,6 +325,20 @@ abstract class KernelTestCase extends BaseKernelTestCase
         return $this->em()->find($class, $object->getId());
     }
 
+    /**
+     * @template T
+     *
+     * @param T $object
+     *
+     * @return T
+     */
+    public function refresh(mixed $object): mixed
+    {
+        $this->em()->refresh($object);
+
+        return $object;
+    }
+
     public function emFlush(): self
     {
         $this->em()->flush();

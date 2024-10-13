@@ -87,14 +87,12 @@ class UserDto extends ApiDto
     }
 
     /**
-     * @param User|mixed $object
-     *
-     * @return User|mixed
+     * @param User $object
      */
-    public function initObject(mixed $object = null): mixed
+    public function initObject(mixed $object = null): User
     {
         return $object
-            ->setEmail($this->validated('email'))
+            ->setEmail($this->validated('email') ? strtolower($this->validated('email')) : null)
             ->setEmailApproved($this->validated('email_approved'))
             ->setPhone($this->validated('phone'))
             ->setPhoneCountry($this->validated('phone_country'))

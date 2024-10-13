@@ -6,14 +6,14 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Notification\Dto\FcmRegisterDto;
 use App\Admin\Notification\Dto\NotificationDto;
 use App\Admin\Notification\Entity\Device;
-use App\Admin\Notification\Enum\DevicePermission;
+use App\Admin\Notification\Permission\DevicePermission;
 use App\Admin\Notification\Repository\DeviceRepository;
 use App\Admin\Notification\Resource\DeviceResource;
 use App\Admin\Notification\Service\NotificationPusher;
 use Cesurapp\ApiBundle\AbstractClass\ApiController;
 use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 

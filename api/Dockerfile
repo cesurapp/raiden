@@ -1,9 +1,18 @@
-FROM openswoole/swoole:22.0.0-php8.2-alpine
+FROM php:8.3.11-cli-alpine
 
-### Install Extensions
-RUN docker-php-ext-install opcache pdo_pgsql intl
-RUN apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS imagemagick-dev libtool \
-    && pecl install imagick && docker-php-ext-enable imagick
+### PHP Extension
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions swoole intl bcmath opcache pdo_pgsql @composer
+
+### Install Imagick
+RUN apk add imagemagick-dev imagemagick
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
+    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
+    && phpize && ./configure \
+    && make && make install \
+    && echo "extension=imagick.so" > "$PHP_INI_DIR/conf.d/ext-imagick.ini" \
+    && rm -rf /tmp/* && apk del .build-deps && rm -rf /var/cache/apk/*
 
 ### PHP Config
 RUN touch "$PHP_INI_DIR/conf.d/custom.ini" \
@@ -19,18 +28,17 @@ RUN touch "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.interned_strings_buffer=64;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.max_accelerated_files=50000;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.validate_timestamps=0;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
-    && echo "opcache.preload=/app/config/preload.php;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
-    && echo "opcache.preload_user=root;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.jit=tracing;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "opcache.jit_buffer_size=256M;" >> "$PHP_INI_DIR/conf.d/custom.ini"
+    #&& echo "opcache.preload=/app/config/preload.php;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
+    #&& echo "opcache.preload_user=root;" >> "$PHP_INI_DIR/conf.d/custom.ini"
 
 ### Copy App
 COPY . /app
 WORKDIR /app
 
 ### Install Composer Dependency
-RUN composer install --no-dev
-RUN composer dump-autoload --no-dev --classmap-authoritative
+RUN composer install --no-dev && composer dump-autoload --no-dev --classmap-authoritative
 
 ### Run & Expose
 CMD ["php", "bin/index.php"]

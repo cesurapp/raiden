@@ -25,7 +25,7 @@ class RegisterDto extends ApiDto
     public int|string|null $phone = null;
 
     #[Assert\NotNull]
-    #[Assert\Choice(callback: 'getTypes')]
+    #[Assert\Choice(callback: [UserType::class, 'getRegisterTypes'])]
     public ?string $type = UserType::USER->value;
 
     #[Assert\Length(min: 8)]
@@ -39,11 +39,6 @@ class RegisterDto extends ApiDto
     #[Assert\Length(min: 2, max: 50)]
     #[Assert\NotNull]
     public string $last_name;
-
-    public static function getTypes(): array
-    {
-        return [UserType::USER->value];
-    }
 
     #[Assert\Callback]
     public function callbackValidator(ExecutionContextInterface $context): void
@@ -64,12 +59,12 @@ class RegisterDto extends ApiDto
     }
 
     /**
-     * @param User|mixed $object
+     * @param User $object
      */
-    public function initObject(mixed $object = null): mixed
+    public function initObject(mixed $object = null): User
     {
         return $object
-            ->setEmail($this->validated('email'))
+            ->setEmail($this->validated('email') ? strtolower($this->validated('email')) : null)
             ->setPhone($this->validated('phone'))
             ->setPhoneCountry($this->validated('phone_country'))
             ->setType(UserType::from($this->validated('type')))

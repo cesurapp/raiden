@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiWeb } from '@quasar/extras/mdi-v7';
-import { getEmojiFlag } from 'countries-list';
+import { getCountryFlag } from 'components/Localization/LocalizationLoader';
 
 export default defineComponent({
   name: 'LanguageInput',
@@ -52,7 +52,7 @@ export default defineComponent({
         locales.push({
           value: locale.split('-')[0].toLowerCase(),
           label: this.$t(locale),
-          icon: getEmojiFlag(country.toUpperCase()),
+          icon: getCountryFlag(country.toUpperCase()) ?? '',
         });
       });
       return locales;

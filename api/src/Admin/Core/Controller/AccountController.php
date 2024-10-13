@@ -2,7 +2,6 @@
 
 namespace App\Admin\Core\Controller;
 
-use App\Admin\Core\Dto\ProfileDto;
 use App\Admin\Core\Dto\UserDto;
 use App\Admin\Core\Entity\User;
 use App\Admin\Core\Permission\AccountPermission;
@@ -15,50 +14,15 @@ use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AccountController extends ApiController
 {
     public function __construct(
         private readonly UserPasswordHasherInterface $hasher,
-        private readonly UserRepository $userRepo
+        private readonly UserRepository $userRepo,
     ) {
-    }
-
-    #[Thor(
-        stack: 'Account Management|10',
-        title: 'View Profile',
-        response: [200 => ['data' => UserResource::class]],
-        order: 1,
-    )]
-    #[Route(path: '/v1/admin/account/profile', methods: ['GET'])]
-    public function showProfile(#[CurrentUser] User $user): ApiResponse
-    {
-        return $this->show($user);
-    }
-
-    #[Thor(
-        stack: 'Account Management',
-        title: 'Edit Profile',
-        response: [200 => ['data' => UserResource::class]],
-        dto: ProfileDto::class,
-        order: 2
-    )]
-    #[Route(path: '/v1/admin/account/profile', methods: ['PUT'])]
-    public function editProfile(#[CurrentUser] User $user, ProfileDto $dto): ApiResponse
-    {
-        $user = $dto->initObject($user);
-        if ($dto->validated('password')) {
-            $user->setPassword($dto->validated('password'), $this->hasher);
-        }
-        $this->userRepo->add($user);
-
-        return ApiResponse::create()
-            ->setData($user)
-            ->setResource(UserResource::class)
-            ->addMessage('Changes are saved');
     }
 
     #[Thor(

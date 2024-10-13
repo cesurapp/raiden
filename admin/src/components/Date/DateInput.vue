@@ -10,14 +10,7 @@
   >
     <template v-slot:append>
       <q-icon :name="mdiCalendar" class="cursor-pointer q-mr-sm">
-        <q-popup-proxy
-          :breakpoint="600"
-          cover
-          ref="dateProxy"
-          transition-show="scale"
-          transition-hide="scale"
-          class="datepopup"
-        >
+        <q-popup-proxy :breakpoint="600" cover ref="dateProxy" transition-show="scale" transition-hide="scale" class="datepopup">
           <q-date
             minimal
             :options="dateRules ? dateRules : undefined"

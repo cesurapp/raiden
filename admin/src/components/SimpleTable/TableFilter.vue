@@ -66,13 +66,14 @@
 
       <!--Country Select-->
       <CountryInput
+        class="q-mb-sm"
+        dense
+        :onlyActive="false"
         v-model="getValue"
         v-if="filter.filter_input === 'country'"
         :label="filter.label || column.label || ''"
         :bottom-slots="false"
-        class="q-mb-sm"
         @update:modelValue="$emit('onSearch')"
-        dense
       ></CountryInput>
 
       <!--Language Input-->
@@ -87,6 +88,18 @@
         dense
       ></LanguageInput>
 
+      <!--Currency Input-->
+      <CurrencyInput
+        v-if="filter.filter_input === 'currency'"
+        v-model="getValue"
+        :label="filter.label || column.label || ''"
+        style="min-width: 230px"
+        :bottom-slots="false"
+        class="q-mb-sm"
+        @update:modelValue="$emit('onSearch')"
+        dense
+      ></CurrencyInput>
+
       <!--Q-Checkbox-->
       <q-checkbox
         v-model="getValue"
@@ -94,6 +107,7 @@
         :label="filter.label || column.label || ''"
         toggle-indeterminate
         class="q-mb-sm"
+        style="min-width: 100px"
         outlined
         @update:modelValue="$emit('onSearch')"
         dense
@@ -124,14 +138,7 @@
     </slot>
 
     <!--Submit-->
-    <q-btn
-      :icon="mdiMagnify"
-      :loading="$appStore.isBusy"
-      size="12px"
-      color="primary"
-      @click="$emit('onSearch')"
-      v-close-popup
-    />
+    <q-btn :icon="mdiMagnify" :loading="$appStore.isBusy" size="12px" color="primary" @click="$emit('onSearch')" v-close-popup />
   </div>
 </template>
 
@@ -139,14 +146,15 @@
 import { defineComponent } from 'vue';
 import { mdiMagnify, mdiCalendar } from '@quasar/extras/mdi-v7';
 import { getCurrentLocale } from 'src/helper/DateHelper';
-import CountryInput from 'components/Country/CountryInput.vue';
+import CountryInput from 'components/Localization/CountryInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import DateRangeInput from 'components/Date/DateRangeInput.vue';
 import DateInput from 'components/Date/DateInput.vue';
+import CurrencyInput from 'components/Localization/CurrencyInput.vue';
 
 export default defineComponent({
   name: 'SimpleTableFilter',
-  components: { DateInput, DateRangeInput, LanguageInput, CountryInput },
+  components: { CurrencyInput, DateInput, DateRangeInput, LanguageInput, CountryInput },
   setup: () => ({ mdiMagnify, mdiCalendar, getCurrentLocale }),
   emits: ['update:modelValue', 'onSearch'],
   props: {
@@ -180,6 +188,6 @@ export default defineComponent({
 
 <style lang="scss">
 .table-filter {
-  padding: calc(#{map-get($space-sm, 'x')} + 3px) map-get($space-sm, 'x');
+  padding: 12px;
 }
 </style>

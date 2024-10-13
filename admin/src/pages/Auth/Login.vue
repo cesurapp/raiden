@@ -1,13 +1,9 @@
 <template>
   <div>
     <!--Header-->
-    <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
-        {{ $t('Welcome') }}
-      </h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">
-        {{ $t('Login to continue') }}
-      </h6>
+    <div class="q-mb-lg q-mb-md-xl text-center">
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Welcome') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Login to continue') }}</h6>
     </div>
 
     <!-- Login Form-->
@@ -15,9 +11,11 @@
       <q-tabs
         align="left"
         inline-label
-        no-caps
-        active-bg-color="dark-transparent-1"
-        class="text-primary q-mb-md login-tab"
+        switch-indicator
+        indicator-color="primary"
+        active-bg-color="primary"
+        active-class="text-white"
+        class="q-mb-md login-tab"
         v-model="type"
       >
         <q-tab :ripple="false" name="email" :icon="mdiEmail" :label="$t('Email')" />
@@ -27,6 +25,7 @@
       <!--Username-->
       <q-input
         v-if="type === 'email'"
+        type="email"
         :class="{ 'q-pb-xs': isOtp }"
         bottom-slots
         outlined
@@ -43,8 +42,8 @@
         v-else
         outlined
         :modelValue="username"
-        v-model:full-number="username"
-        phone-country="TR"
+        v-model:fullNumber="username"
+        v-model:phoneCountry="phone_country"
         :class="{ 'q-pb-xs': isOtp }"
         :label="$t('Phone')"
       ></PhoneInput>
@@ -52,9 +51,10 @@
       <!--Password-->
       <q-input
         :disable="isOtp"
-        v-show="!isOtp"
+        v-if="!isOtp"
         class="q-pb-xs"
         outlined
+        autocomplete
         :type="isPwd ? 'password' : 'text'"
         v-model="password"
         :label="$t('Password')"
@@ -63,27 +63,25 @@
       >
         <template v-slot:prepend><q-icon :name="mdiKey" /></template>
         <template v-slot:append>
-          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer" @click="isPwd = !isPwd" />
+          <q-icon :name="isPwd ? mdiEyeOff : mdiEye" class="cursor-pointer q-ml-sm" @click="isPwd = !isPwd" />
+          <q-icon :name="mdiLockQuestion" class="cursor-pointer q-ml-sm" @click="$router.push({ name: 'auth.reset.request' })">
+            <q-tooltip>{{ $t('Forgot Password') }}</q-tooltip>
+          </q-icon>
         </template>
       </q-input>
 
-      <!--PasswordLess Login-->
-      <q-checkbox v-model="isOtp" dense class="q-mb-md" :label="$t('Passwordless Login')" />
-
-      <div class="flex justify-between items-center">
-        <q-btn color="primary" :label="$t('Login')" :loading="$appStore.isBusy" @click="onSubmit" :icon="mdiLogin" />
+      <div class="flex justify-between items-center gap-x-md">
         <q-btn
-          flat
-          class="q-px-sm"
-          color="grey-7"
-          :disable="isOtp"
-          v-show="!isOtp"
-          :to="{ name: 'auth.reset.request' }"
-          :label="$t('Forgot Password')"
-        ></q-btn>
+          unelevated
+          color="primary"
+          class="flex-1"
+          :label="$t('Login')"
+          :loading="$appStore.isBusy"
+          @click="onSubmit"
+          :icon="mdiLogin"
+        />
+        <q-checkbox v-model="isOtp" dense :label="$t('Passwordless Login')" />
       </div>
-
-      <!--Submit-->
     </q-form>
 
     <!-- Footer-->
@@ -95,10 +93,10 @@
         <q-btn
           :to="{ name: 'auth.register' }"
           :label="$t('Register')"
-          type="button"
           color="primary"
           :icon="mdiEmail"
           class="full-width"
+          unelevated
         />
       </div>
     </div>
@@ -107,27 +105,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
-import PhoneInput from 'components/Phone/PhoneInput.vue';
-import { mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff } from '@quasar/extras/mdi-v7';
+import PhoneInput from 'components/Localization/PhoneInput.vue';
+import { mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff, mdiLockQuestion } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AuthLogin',
-  setup: () => ({ mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff }),
+  setup: () => ({ mdiEmail, mdiPhone, mdiKey, mdiLogin, mdiEye, mdiEyeOff, mdiLockQuestion }),
   components: { PhoneInput },
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     type: 'email',
     isPwd: true,
     isOtp: false,
-    username: null,
+    username: '',
     password: null,
+    phone_country: 'TR',
   }),
   methods: {
     onSubmit() {

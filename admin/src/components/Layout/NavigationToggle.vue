@@ -8,15 +8,7 @@
     @click="$appStore.navMini = !$appStore.navMini"
     v-if="$q.platform.is.desktop"
   />
-  <q-btn
-    flat
-    dense
-    round
-    class="q-mr-sm navToggle"
-    :icon="mdiMenu"
-    @click="$appStore.navMenu = !$appStore.navMenu"
-    v-else
-  />
+  <q-btn flat dense round class="q-mr-sm navToggle" :icon="mdiMenu" @click="$appStore.navMenu = !$appStore.navMenu" v-else />
 </template>
 
 <script lang="ts">

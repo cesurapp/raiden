@@ -8,15 +8,9 @@
     title-create="New User"
     title-update="Edit User"
   >
-    <template #tabsVertical>
+    <template #tabs>
       <q-tab name="profile" :label="$t('Details')" class="text-primary" :icon="mdiAccount" />
-      <q-tab
-        name="permission"
-        :label="$t('Permission')"
-        class="text-red"
-        :disable="!isPermissionEditor"
-        :icon="mdiSecurity"
-      />
+      <q-tab name="permission" :label="$t('Permission')" class="text-red" :disable="!isPermissionEditor" :icon="mdiSecurity" />
     </template>
 
     <template #tabsContent>
@@ -31,6 +25,8 @@
             v-model="form.first_name"
             :label="$t('First Name')"
             :rules="[$rules.required(), $rules.minLength(2)]"
+            :error="$rules.ssrValid('first_name')"
+            :error-message="$rules.ssrException('first_name')"
           ></q-input>
 
           <!--LastName-->
@@ -40,6 +36,8 @@
             v-model="form.last_name"
             :label="$t('Last Name')"
             :rules="[$rules.required(), $rules.minLength(2)]"
+            :error="$rules.ssrValid('last_name')"
+            :error-message="$rules.ssrException('last_name')"
           ></q-input>
 
           <!--Email-->
@@ -59,8 +57,8 @@
             :required="false"
             :label="$t('Phone')"
             :modelValue="form.phone"
-            v-model:full-number="form.phone"
-            v-model:phone-country="form.phone_country"
+            v-model:fullNumber="form.phone"
+            v-model:phoneCountry="form.phone_country"
             :error="$rules.ssrValid('phone')"
             :error-message="$rules.ssrException('phone')"
           ></PhoneInput>
@@ -71,6 +69,7 @@
           <!--Password-->
           <q-input
             outlined
+            autocomplete
             lazy-rules
             :type="isPwd ? 'password' : 'text'"
             v-model="form.password"
@@ -117,19 +116,20 @@
             :key="key"
             v-for="(perms, key) in getAccessPermission"
           >
-            <q-card
-              ><q-card-section>
+            <q-card>
+              <q-card-section>
                 <div class="q-gutter-md">
                   <q-checkbox
-                    v-model="form.roles"
+                    v-model="form['roles']"
                     dense
                     :val="permVal"
                     :label="$t('perm.' + permName)"
                     :key="permName"
                     v-for="(permVal, permName) in perms"
                   />
-                </div> </q-card-section
-            ></q-card>
+                </div>
+              </q-card-section>
+            </q-card>
           </q-expansion-item>
         </q-list>
       </q-tab-panel>
@@ -153,7 +153,7 @@ import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { AccountEditRequest } from 'api/admin/request/AccountEditRequest';
 import { mdiAccount, mdiContentSave, mdiEye, mdiEyeOff, mdiSecurity } from '@quasar/extras/mdi-v7';
-import PhoneInput from 'components/Phone/PhoneInput.vue';
+import PhoneInput from 'components/Localization/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import { UserType } from 'api/enum/UserType';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
@@ -201,6 +201,7 @@ export default defineComponent({
       this.form = user
         ? user
         : {
+            phone_country: 'TR',
             phone_approved: true,
             email_approved: true,
             frozen: false,

@@ -1,6 +1,6 @@
 # Raiden API
 
-High concurrency, OpenSwoole based, Symfony 7 Api
+High concurrency, Swoole based, Symfony 7 Api
 
 __Features__
 * Swoole Http Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
@@ -19,8 +19,8 @@ __Features__
 __Requirement__
 * Postgres 14+
 * Composer 2+
-* PHP 8.2+
-  * OpenSwoole 4.11+ (`pecl install openswoole`)
+* PHP 8.3+
+  * Swoole 4.11+ (`pecl install swoole`)
   * Imagick (`pecl install imagick`)
   * Intl (`pecl install intl`)
   * Php.ini
@@ -51,7 +51,7 @@ brew install fswatch
 brew install util-linux
 
 # Install PHP Extension
-pecl install openswoole # openssl - http2 - curl - postgresql
+pecl install swoole # openssl - http2 - curl - postgresql
 pecl install imagick
 
 # Configure Environment

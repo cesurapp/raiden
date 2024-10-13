@@ -13,8 +13,8 @@ Your password was changed, you can login: Şifreniz değiştirildi, giriş yapab
 The notification has been deleted: Bildirim silindi
 All notifications marked as read: Tüm bildirimler okundu olarak işaretlendi
 Successfully deleted: Silme işlemi tamamlandı.
-otp_danger_message: 'Bu doğrulama kodunu talep etmediniz mi? Lütfen şifrenizi değiştirerek hesabınızın güvenliğini sağlayın. Hesap güvenliğinizi korumak için lütfen başkalarının e-postanıza erişmesine izin vermeyin.'
-email_welcome_message: "Raiden'i denediğin için teşekkürler. Sizi aramızda görmekten heyecan duyuyoruz. Raiden'den en iyi şekilde yararlanmak için sonraki birincil adımı uygulayın:"
+Didn't you request this verification code? Please secure your account by changing your password. To protect your account security, please do not allow others to access your email.: 'Bu doğrulama kodunu talep etmediniz mi? Lütfen şifrenizi değiştirerek hesabınızın güvenliğini sağlayın. Hesap güvenliğinizi korumak için lütfen başkalarının e-postanıza erişmesine izin vermeyin.'
+"Thanks for trying Raiden. We’re thrilled to have you on board. To get the most out of Raiden, do this primary next step:": "Raiden'i denediğin için teşekkürler. Sizi aramızda görmekten heyecan duyuyoruz. Raiden'den en iyi şekilde yararlanmak için sonraki birincil adımı uygulayın:"
 "Hi %user%": 'Merhaba %user%'
 Welcome to Raiden: "Raiden'a Hoşgeldin"
 Visit Website: 'Websiteye Git'

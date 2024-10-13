@@ -7,56 +7,9 @@ use App\Admin\Core\Permission\AccountPermission;
 use App\Admin\Core\Permission\UserType;
 use App\Tests\Setup\KernelTestCase;
 
-class AccountTest extends KernelTestCase
+class AccountControllerTest extends KernelTestCase
 {
-    public function testShowProfile(): void
-    {
-        $user = $this->emSave($this->getUser(true));
-
-        // Fail Missing User Type
-        $this->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/profile')
-            ->isEquals('Access Denied.', 'message')
-            ->isFail();
-
-        // Success
-        $user->setType(UserType::ADMIN);
-        $this->emPersist($user)
-            ->emFlush()
-            ->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/profile')
-            ->isOk()
-            ->isJsonStructure(['data' => ['id', 'type' => 'ROLE_ADMIN']]);
-    }
-
-    public function testEditProfile(): void
-    {
-        /** @var User $user */
-        $user = $this->emSave($this->getAdmin());
-
-        // Fail Validation Exception
-        $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/profile')
-            ->isFail()
-            ->isJsonStructure(['type', 'errors']);
-
-        // Success
-        $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/profile', [
-                'email' => 'a'.$user->getEmail(),
-                'phone' => $user->getPhone() + 1,
-                'phone_country' => 'TR',
-                'current_password' => '123123123',
-                'password' => '123123123',
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-            ])
-            ->isOk()
-            ->isEquals($user->getEmail(), 'data.email')
-            ->isEquals($user->getPhone(), 'data.phone');
-    }
-
-    public function testAccountListing(): void
+    public function testListing(): void
     {
         /** @var User $user */
         $user = $this->emSave($this->getAdmin());
@@ -122,7 +75,7 @@ class AccountTest extends KernelTestCase
             ->isEquals('LastUser', 'data.0.first_name');
     }
 
-    public function testAccountCreate(): void
+    public function testCreate(): void
     {
         $user = $this->emSave($this->getAdmin());
 
@@ -165,7 +118,7 @@ class AccountTest extends KernelTestCase
                 'phone' => $phone,
                 'phone_country' => 'TR',
                 'phone_approved' => true,
-                'type' => 'admin',
+                'type' => UserType::ADMIN->value,
                 'password' => '123123123',
                 'frozen' => true,
                 'first_name' => 'John',
@@ -173,6 +126,10 @@ class AccountTest extends KernelTestCase
             ])
             ->isFail()
             ->isEquals('This value is already used.', 'errors.email.0');
+
+        // Create Same Email SuperAdmin Fail
+        // Create Same Email Merchant
+        // Create Same Email Cargo
 
         // Fail Super Admin
         $this->login($user)
@@ -191,7 +148,41 @@ class AccountTest extends KernelTestCase
             ->isFail();
     }
 
-    public function testAccountEdit(): void
+    public function testCreateSameEmailTypes(): void
+    {
+        $user = $this->emSave($this->getUser()->setType(UserType::SUPERADMIN));
+        $data = [
+            'email' => mt_rand().'@test.app',
+            'email_approved' => true,
+            'phone' => 541 .random_int(1000000, 4999999),
+            'phone_country' => 'TR',
+            'phone_approved' => true,
+            'type' => UserType::SUPERADMIN->value,
+            'password' => '123123123',
+            'frozen' => true,
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ];
+
+        // Success SuperAdmin
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/admin/account/manager', $data)
+            ->isOk();
+        // Duplicate SuperAdmin Fail
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/admin/account/manager', $data)
+            ->isEquals('This value is already used.', 'errors.email.0')
+            ->isEquals('This value is already used.', 'errors.phone.0')
+            ->isFail();
+        // Duplicate Admin Fail
+        $this->login($user)
+            ->jsonRequest('POST', '/v1/admin/account/manager', array_merge($data, ['type' => UserType::ADMIN->value]))
+            ->isEquals('This value is already used.', 'errors.email.0')
+            ->isEquals('This value is already used.', 'errors.phone.0')
+            ->isFail();
+    }
+
+    public function testEdit(): void
     {
         $user = $this->emSave($this->getAdmin());
 
@@ -282,7 +273,7 @@ class AccountTest extends KernelTestCase
             ->isFail();
     }
 
-    public function testAccountShow(): void
+    public function testShow(): void
     {
         $user = $this->emSave($this->getAdmin());
 
@@ -300,7 +291,7 @@ class AccountTest extends KernelTestCase
             ->isJsonStructure(['data' => ['id']]);
     }
 
-    public function testAccountDelete(): void
+    public function testDelete(): void
     {
         $user = $this->emSave($this->getAdmin());
 
@@ -326,7 +317,7 @@ class AccountTest extends KernelTestCase
             ->isFail();
     }
 
-    public function testAccountEditPermission(): void
+    public function testEditPermission(): void
     {
         $user = $this->emSave(
             $this->getAdmin()

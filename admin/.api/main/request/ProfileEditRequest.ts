@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-export type AccountEditProfileRequest = {
+export type ProfileEditRequest = {
   first_name: string,
   last_name: string,
   password?: string,

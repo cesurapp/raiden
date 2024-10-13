@@ -9,9 +9,9 @@ use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\ORM\AbstractQuery;
 use Cesurapp\SwooleBundle\Cron\AbstractCronJob;
+use Swoole\Coroutine;
 use Symfony\Component\Uid\Ulid;
-
-use function OpenSwoole\Core\Coroutine\batch;
+use Swoole\Coroutine\WaitGroup;
 
 /**
  * Send Scheduled Notification.
@@ -23,7 +23,7 @@ class SchedulerCron extends AbstractCronJob
     public function __construct(
         private readonly SchedulerRepository $repo,
         private readonly DeviceRepository $deviceRepo,
-        private readonly NotificationTask $notificationTask
+        private readonly NotificationTask $notificationTask,
     ) {
     }
 
@@ -85,7 +85,7 @@ class SchedulerCron extends AbstractCronJob
     private function initResult(Scheduler $scheduler, array &$batch): void
     {
         if (count($batch) > 0) {
-            $result = batch($batch);
+            $result = $this->batch($batch);
             $batch = [];
 
             // Update Count
@@ -139,5 +139,20 @@ class SchedulerCron extends AbstractCronJob
                 }
             });
         }
+    }
+
+    private function batch(array $tasks, float $timeout = -1): array
+    {
+        $wg = new WaitGroup(count($tasks));
+        foreach ($tasks as $id => $task) {
+            Coroutine::create(static function () use ($wg, &$tasks, $id, $task) {
+                $tasks[$id] = null;
+                $tasks[$id] = $task();
+                $wg->done();
+            });
+        }
+        $wg->wait($timeout);
+
+        return $tasks;
     }
 }

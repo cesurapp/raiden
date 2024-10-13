@@ -8,23 +8,24 @@
     :selection="selectable ? 'multiple' : 'none'"
     v-model:selected="selectedRows"
     v-model:pagination="pagination"
-    :selected-rows-label="(v) => $t('count record selected').replace('count', v)"
+    :selected-rows-label="(v) => $t('count record selected').replace('count', String(v))"
     :no-data-label="$t('There were no results!')"
     class="table-sticky"
     :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable }"
     @request="onRequest"
     @rowClick="(event, row, index) => $emit('rowClick', event, row, index)"
+    @rowDblclick="(event, row, index) => $emit('rowDblclick', event, row, index)"
     binary-state-sort
   >
     <!--Top Area-->
     <template #top v-if="header">
       <q-pull-to-refresh class="full-width" @refresh="refresh(false, $event)">
-        <div class="relative-position row items-center full-width">
+        <div class="relative-position row items-center full-width no-wrap">
           <NavigationToggle></NavigationToggle>
 
           <!--Selected Actions-->
           <div class="q-table__control" v-if="selectedRows.length > 0">
-            <q-btn-group v-if="!$q.screen.xs">
+            <q-btn-group v-if="!$q.screen.xs" unelevated>
               <q-btn
                 color="red"
                 size="12px"
@@ -39,19 +40,20 @@
             </q-btn-group>
             <q-btn-dropdown
               v-else
+              unelevated
               size="12px"
-              padding="7px 8px"
+              padding="5px 6px"
               :dropdown-icon="mdiDotsVertical"
               content-class="shadow-0 transparent-dropdown"
               dense
               outline
               rounded
-              color="primary"
               :menu-offset="[0, 10]"
             >
               <div class="column q-gutter-sm">
                 <q-btn
                   color="red"
+                  unelevated
                   size="12px"
                   v-close-popup
                   v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
@@ -65,7 +67,7 @@
           </div>
 
           <!--Title-->
-          <div class="q-table__control" v-else>
+          <div class="q-table__control ellipsis" v-else>
             <div v-if="!isFiltered" class="table-title text-h6">
               <slot name="title">{{ $t($route.meta?.breadcrumb ?? '') }}</slot>
             </div>
@@ -75,8 +77,9 @@
               <q-btn-dropdown
                 size="12px"
                 split
+                unelevated
                 color="positive"
-                :label="!$q.screen.xs ? 'Clear Filters' : ''"
+                :label="!$q.screen.xs ? $t('Clear Filters') : ''"
                 :icon="mdiFilterRemove"
                 :content-style="{ padding: '6px 12px' }"
                 :menu-offset="[0, 10]"
@@ -94,12 +97,9 @@
                     class="q-pr-sm q-pl-sm q-mr-sm"
                   >
                     <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
-                    <q-avatar
-                      :color="$q.dark.isActive ? 'primary' : 'secondary'"
-                      text-color="white"
-                      class="full-w q-px-sm"
-                      >{{ type }}</q-avatar
-                    >
+                    <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
+                      type
+                    }}</q-avatar>
                     {{ val }}
                   </q-chip>
                 </div>
@@ -113,16 +113,10 @@
           <div class="q-table__control">
             <template v-if="header">
               <div class="row q-gutter-sm">
-                <q-btn-group v-if="!$q.screen.xs">
-                  <q-btn
-                    v-if="refreshButton"
-                    color="primary"
-                    v-close-popup
-                    :icon="mdiRefresh"
-                    size="12px"
-                    @click="refresh"
-                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
-                  >
+                <q-btn-group flat v-if="!$q.screen.xs">
+                  <q-btn color="primary" v-if="refreshButton" v-close-popup size="12px" :icon="mdiRefresh" @click="refresh"
+                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip>
+                  </q-btn>
                   <q-btn
                     v-if="exportButton && getExportedColumns.length > 0"
                     color="primary"
@@ -130,8 +124,8 @@
                     :icon="mdiFileExportOutline"
                     size="12px"
                     @click="$refs.exporter.toggle()"
-                    ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
-                  >
+                    ><q-tooltip>{{ $t('Export') }}</q-tooltip>
+                  </q-btn>
                   <slot name="tableActions"></slot>
                 </q-btn-group>
                 <q-btn-dropdown
@@ -140,19 +134,12 @@
                   content-class="shadow-0 transparent-dropdown"
                   size="12px"
                   outline
-                  padding="7px 8px"
+                  padding="5px 6px"
                   rounded
-                  color="primary"
                   :menu-offset="[0, 10]"
                 >
                   <div class="column q-gutter-sm">
-                    <q-btn
-                      v-if="refreshButton"
-                      v-close-popup
-                      color="primary"
-                      :icon="mdiRefresh"
-                      size="12px"
-                      @click="refresh"
+                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh"
                       ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
                     >
                     <q-btn
@@ -182,6 +169,7 @@
           :dropdown-icon="mdiDotsHorizontal"
           menu-anchor="bottom start"
           menu-self="top left"
+          size="13px"
           dense
           flat
           rounded
@@ -237,13 +225,8 @@
       </q-td>
 
       <!--Context Actions-->
-      <q-popup-proxy
-        :breakpoint="600"
-        class="popup-dropdown"
-        context-menu
-        v-if="contextActions || $slots.getRowActions"
-      >
-        <q-list dense style="min-width: 130px">
+      <q-popup-proxy :breakpoint="600" class="popup-dropdown" context-menu v-if="contextActions || $slots.getRowActions">
+        <q-list style="min-width: 130px">
           <slot name="rowActions" :props="props"></slot>
           <q-item
             clickable
@@ -262,47 +245,42 @@
     <!--Header Cell -->
     <template #header-cell="props">
       <q-th :props="props">
-        <span class="text">{{ props.col.label }}</span>
+        <div class="inline-flex no-wrap items-center">
+          <span class="text">{{ props.col.label }}</span>
 
-        <!--Filters-->
-        <q-btn
-          v-if="getColumnFilter.hasOwnProperty(props.col.name) || $slots['filter_' + props.col.name]"
-          size="11px"
-          class="q-ml-xs"
-          flat
-          dense
-          rounded
-          @click.stop
-          :icon="![null, undefined, ''].includes(filterValues[props.col.name]) ? mdiFilter : mdiFilterOutline"
-          :color="![null, undefined, ''].includes(filterValues[props.col.name]) ? 'primary' : 'default'"
-          :style="[![null, undefined, ''].includes(filterValues[props.col.name]) ? 'opacity: 1' : 'opacity: .6']"
-        >
-          <q-popup-proxy :breakpoint="600" style="padding: 0 !important">
-            <TableFilter
-              v-if="$slots['filter_' + props.col.name]"
-              :filter="getColumnFilter[props.col.name]"
-              :column="props.col"
-              v-model="filterValues[props.col.name]"
-              @onSearch="refresh"
-            >
-              <slot
-                :name="'filter_' + props.col.name"
+          <!--Filters-->
+          <q-btn
+            v-if="getColumnFilter.hasOwnProperty(props.col.name) || $slots['filter_' + props.col.name]"
+            size="11px"
+            class="q-ml-xs filters"
+            flat
+            dense
+            rounded
+            @click.stop
+            v-bind="bindFilterAttr(props.col)"
+          >
+            <q-popup-proxy :breakpoint="600" style="padding: 0 !important">
+              <TableFilter
+                v-if="$slots['filter_' + props.col.name]"
+                :filter="getColumnFilter[props.col.name]"
                 :column="props.col"
-                :values="filterValues"
-                :refresh="refresh"
-              ></slot>
-            </TableFilter>
+                v-model="filterValues[props.col.name]"
+                @onSearch="refresh"
+              >
+                <slot :name="'filter_' + props.col.name" :column="props.col" :values="filterValues" :refresh="refresh"></slot>
+              </TableFilter>
 
-            <TableFilter
-              v-else
-              :filter="getColumnFilter[props.col.name]"
-              :column="props.col"
-              v-model="filterValues[props.col.name]"
-              @onSearch="refresh"
-              @keydown.enter="refresh"
-            ></TableFilter>
-          </q-popup-proxy>
-        </q-btn>
+              <TableFilter
+                v-else
+                :filter="getColumnFilter[props.col.name]"
+                :column="props.col"
+                v-model="filterValues[props.col.name]"
+                @onSearch="refresh"
+                @keydown.enter="refresh"
+              ></TableFilter>
+            </q-popup-proxy>
+          </q-btn>
+        </div>
       </q-th>
     </template>
 
@@ -312,6 +290,22 @@
       <div class="q-mr-md" v-if="props.pagination.isTotal">
         {{ Math.min(props.pagination.page * props.pagination.rowsPerPage, props.pagination.rowsNumber) }} /
         {{ props.pagination.rowsNumber }}
+      </div>
+
+      <div class="pageCount q-mr-md">
+        <q-select
+          dense
+          emit-value
+          borderless
+          hide-dropdown-icon
+          hide-bottom-space
+          map-options
+          hide-hint
+          style="height: 30px; margin-top: -10px"
+          :options="['Auto', 10, 20, 40, 50, 100]"
+          v-model="perPageState"
+          @update:modelValue="(v) => onPerPage(v, true)"
+        />
       </div>
 
       <!--View Pagination Buttons-->
@@ -372,9 +366,11 @@
     </template>
     <template #actions>
       <q-btn flat :label="$t('Select All')" color="primary" :icon="mdiCheckAll" @click="selectAllExportedColumns()" />
-      <q-separator vertical spaced />
+      <q-separator vertical spaced inset />
       <q-btn flat label="Csv" color="primary" :icon="mdiFileDelimited" v-close-popup @click="onExport('csv')" />
-      <q-btn flat label="Excel" color="green" :icon="mdiFileExcel" v-close-popup @click="onExport('xls')" />
+      <div>
+        <q-btn flat label="Excel" color="green" :icon="mdiFileExcel" v-close-popup @click="onExport('xls')" />
+      </div>
     </template>
   </SimpleDialog>
 </template>
@@ -403,11 +399,12 @@ import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
 import { deFlatten, flatten } from 'api/flatten';
 import NavigationToggle from 'components/Layout/NavigationToggle.vue';
+import { LocalStorage } from 'quasar';
 
 export default defineComponent({
   name: 'SimpleTable',
   components: { NavigationToggle, SimpleDialog, TableFilter },
-  emits: ['rowClick', 'rowRightClick'],
+  emits: ['rowClick', 'rowRightClick', 'rowDblclick'],
   setup: () => ({
     mdiRefresh,
     mdiDotsHorizontal,
@@ -419,9 +416,7 @@ export default defineComponent({
     mdiPageLast,
     mdiFileDelimited,
     mdiFileExcel,
-    mdiFilter,
     mdiFilterRemove,
-    mdiFilterOutline,
     mdiCheckAll,
     mdiDeleteOutline,
   }),
@@ -446,6 +441,10 @@ export default defineComponent({
     columns: {
       type: [Array, String],
       default: () => [],
+    },
+    exportColumns: {
+      type: [Array, String],
+      default: null,
     },
     refreshButton: {
       type: Boolean,
@@ -479,6 +478,7 @@ export default defineComponent({
     filterValues: {},
     backEvent: false,
     loadEvent: true,
+    perPageState: LocalStorage.getItem('rowsPerPage') ?? 'Auto',
   }),
   computed: {
     getRowActions() {
@@ -511,7 +511,7 @@ export default defineComponent({
       return all;
     },
     getExportedColumns() {
-      return this.columns
+      return (this.exportColumns || this.columns)
         .filter((c) => c.hasOwnProperty('export') && c.export)
         .map((c) => {
           return {
@@ -534,14 +534,15 @@ export default defineComponent({
       return this.columns.find((c) => c.hasOwnProperty('sortable_default'))?.name || 'id';
     },
     getDefaultSortDescending() {
-      return this.columns.find((c) => c.hasOwnProperty('sortable_desc'))?.sortable_desc || false;
+      return this.columns.find((c) => c.name === this.getDefaultSortBy)?.sortable_desc || false;
     },
     isFiltered() {
       return Object.values(this.filterValues).filter((item: any) => ![undefined, null, ''].includes(item)).length > 0;
     },
   },
   mounted() {
-    this.pagination.descending = this.getDefaultSortDescending;
+    this.onPerPage(this.perPageState);
+    this.pagination.descending = !this.getDefaultSortDescending;
     this.pagination.sortBy = this.getDefaultSortBy;
     this.isMounted = true;
 
@@ -594,6 +595,7 @@ export default defineComponent({
      */
     getQuery() {
       let data = {
+        max: this.pagination.rowsPerPage,
         page: this.pagination.page,
         sort_by: this.pagination.sortBy,
         sort: this.pagination.descending ? 'ASC' : 'DESC',
@@ -674,10 +676,26 @@ export default defineComponent({
       this.rows.splice(this.findIndex(itemProxy), 1);
     },
 
+    /**
+     * Update Item
+     */
     updateItem(item, key) {
       const index = this.rows.findIndex((row) => row[key] === item[key]);
       if (index !== -1) {
         this.rows[index] = item;
+        return true;
+      }
+
+      return false;
+    },
+
+    addOrUpdateItem(items, key: string | undefined = 'id') {
+      if (Array.isArray(items)) {
+        items.forEach((i) => this.addOrUpdateItem(i, key));
+      }
+
+      if (!this.updateItem(items, key)) {
+        this.addFirst(items);
       }
     },
 
@@ -758,7 +776,7 @@ export default defineComponent({
       }
 
       if (updateHash) {
-        return this.$router.push({ query: flatten(this.getQuery()) });
+        return this.$router.push({ query: flatten(this.getQuery()), hash: new URL(location.href).hash });
       }
 
       const params = deFlatten(location.search);
@@ -797,6 +815,42 @@ export default defineComponent({
       this.filterValues = {};
       this.refresh();
     },
+
+    /**
+     * Load PerPage Count
+     */
+    onPerPage(val: number | string, triggerRequest: boolean = false) {
+      if (!['Auto', 10, 20, 40, 50, 100].includes(val)) {
+        val = 'Auto';
+        this.perPageState = val;
+      }
+
+      const headerHeight = document.querySelector('.page-header')?.clientHeight ?? 64;
+      this.pagination.rowsPerPage =
+        val === 'Auto' ? Math.ceil((document.body.clientHeight - (headerHeight + 42 + 42)) / 42) : val;
+      LocalStorage.setItem('rowsPerPage', val);
+
+      if (triggerRequest) {
+        this.pagination.page = 1;
+        this.refresh(false);
+      }
+    },
+
+    /**
+     * Bind Filter Attributes
+     */
+    bindFilterAttr(col) {
+      let result = ![null, undefined, ''].includes(this.filterValues[col.name]);
+      if (col.hasOwnProperty('filter_cols')) {
+        result = col.filter_cols.some((colName) => ![null, undefined, ''].includes(this.filterValues[colName]));
+      }
+
+      return {
+        icon: result ? mdiFilter : mdiFilterOutline,
+        color: result ? 'primary' : 'default',
+        style: [result ? 'opacity: 1' : 'opacity: .6'],
+      };
+    },
   },
 });
 </script>
@@ -805,51 +859,45 @@ export default defineComponent({
 .table-title {
   overflow: hidden;
   text-overflow: ellipsis;
-  .sub {
-    font-size: 14px;
-    line-height: 16px;
-    opacity: 0.5;
-  }
 }
 
 .q-table__top {
-  min-height: 60px;
+  //border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  min-height: var(--header-size);
   flex-wrap: nowrap;
-  box-shadow: 0 0 23px -5px rgba(0, 0, 0, 0.15);
-  z-index: 4;
-  color: #000;
-  background: #fff;
+  background: var(--q-light);
+  z-index: 3;
   padding-bottom: 8px;
   padding-top: max(env(safe-area-inset-top), 8px);
   padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
   padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
-  .q-table__control {
+  /*.q-table__control {
     overflow: hidden;
     white-space: nowrap;
     display: block;
-  }
+  }*/
 
   .body--dark & {
+    //border-bottom: 1px solid rgba(255, 255, 255, 0.13);
     background: var(--q-dark);
-    color: #fff;
-    box-shadow: 0 0 23px -5px rgba(0, 0, 0, 0.4);
   }
 }
 .screen--xl,
-.screen--lg,
-.screen--md {
+.screen--lg {
   .q-table__top {
-    padding-left: calc(env(safe-area-inset-left) / 2 + 32px);
-    padding-right: calc(env(safe-area-inset-right) / 2 + 32px);
+    padding-left: calc(env(safe-area-inset-left) / 2 + 24px);
+    padding-right: calc(env(safe-area-inset-right) / 2 + 24px);
   }
 }
 
 .table-exporter {
-  display: flex;
-  flex-flow: row wrap;
-  & > div {
-    flex: 1 0 47%;
-    min-width: 170px;
+  display: grid;
+  grid-template-columns: 1fr;
+  @media (min-width: 500px) {
+    grid-template-columns: repeat(2, minmax(170px, 1fr));
+  }
+  @media (min-width: $breakpoint-sm-min) {
+    grid-template-columns: repeat(3, minmax(170px, 1fr));
   }
 }
 </style>

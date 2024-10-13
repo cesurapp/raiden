@@ -4,8 +4,8 @@ namespace App\Tests\Admin\Notification;
 
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Entity\Notification;
-use App\Admin\Notification\Enum\DevicePermission;
 use App\Admin\Notification\Enum\NotificationStatus;
+use App\Admin\Notification\Permission\DevicePermission;
 use App\Admin\Notification\Service\NotificationPusher;
 use App\Tests\Setup\KernelTestCase;
 

@@ -7,6 +7,6 @@ namespace App\Admin\Core\Enum;
  */
 enum OtpType: string
 {
-    case EMAIL = 'email';
-    case PHONE = 'phone';
+    case AUTH = 'auth';
+    case CREDENTIALS = 'credentials';
 }

@@ -17,7 +17,7 @@ class SendSmsTask implements TaskInterface
 
     public function __construct(
         private readonly TexterInterface $texter,
-        #[Autowire(service: 'texter.transports')] Transports $transports
+        #[Autowire(service: 'texter.transports')] Transports $transports,
     ) {
         $this->transports = explode(',', trim((string) $transports, '[]'));
     }

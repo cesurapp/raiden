@@ -14,12 +14,12 @@
   >
     <template v-slot:prepend>
       <CountryInput
-        :readonly="$attrs.readonly"
         ref="country"
         class="country-input"
         hide-dropdown-icon
-        dense
         borderless
+        :onlyActive="false"
+        :readonly="$attrs.readonly"
         :modelValue="phoneCountry"
         @update:modelValue="(val) => $emit('update:phoneCountry', val)"
         :clearable="false"
@@ -35,8 +35,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CountryInput from 'components/Country/CountryInput.vue';
-import { countries } from 'countries-list';
+import CountryInput from 'components/Localization/CountryInput.vue';
+import { findCountry } from 'components/Localization/LocalizationLoader';
 
 export default defineComponent({
   name: 'PhoneInput',
@@ -49,7 +49,7 @@ export default defineComponent({
   },
   computed: {
     getCC() {
-      return this.phoneCountry ? countries[this.phoneCountry].phone : null;
+      return this.phoneCountry ? findCountry(this.phoneCountry)?.phone_code : null;
     },
   },
   methods: {
@@ -66,7 +66,7 @@ export default defineComponent({
 <style lang="scss">
 .country-input {
   .q-field__control {
-    padding-left: 0;
+    padding-left: 2px;
     padding-right: 0;
   }
 

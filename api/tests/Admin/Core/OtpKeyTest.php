@@ -9,7 +9,7 @@ use App\Admin\Core\Task\SendSmsTask;
 use App\Tests\Setup\KernelTestCase;
 use Symfony\Component\Mime\Email;
 
-class OtpTest extends KernelTestCase
+class OtpKeyTest extends KernelTestCase
 {
     public function testOtpSingleType(): void
     {
@@ -18,7 +18,8 @@ class OtpTest extends KernelTestCase
         // Create Email LOGIN OTP Key
         $key1 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::EMAIL)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getEmail())
             ->setOtpKey(133449)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());
@@ -27,16 +28,22 @@ class OtpTest extends KernelTestCase
         // Create New LOGIN OTP Key
         $key2 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::EMAIL)
-            ->setOtpKey(133449)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getEmail())
+            ->setOtpKey(131449)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());
         $this->emSave($key2);
 
+        $this->assertTrue($this->refresh($key1)->isUsed());
+        $this->assertFalse($this->refresh($key2)->isUsed());
+
         // Create Login Phone OTP Key
         $key3 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::PHONE)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getPhone())
+            ->setPhoneCountry($user->getPhoneCountry())
             ->setOtpKey(143447)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());
@@ -45,19 +52,17 @@ class OtpTest extends KernelTestCase
         // Create Login Phone OTP Key
         $key4 = (new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::PHONE)
-            ->setOtpKey(143446)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getPhone())
+            ->setPhoneCountry($user->getPhoneCountry())
+            ->setOtpKey(144446)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable());
         $this->emSave($key4);
 
         // Check Refresh Token
-        $this->em()->clear();
-        $this->assertTrue($this->em()->find(OtpKey::class, $key1->getId())->isUsed());
-        $this->assertFalse($this->em()->find(OtpKey::class, $key2->getId())->isUsed());
-
-        $this->assertTrue($this->em()->find(OtpKey::class, $key3->getId())->isUsed());
-        $this->assertFalse($this->em()->find(OtpKey::class, $key4->getId())->isUsed());
+        $this->assertTrue($this->refresh($key3)->isUsed());
+        $this->assertFalse($this->refresh($key4)->isUsed());
     }
 
     public function testOtpKeySendMail(): void
@@ -76,8 +81,9 @@ class OtpTest extends KernelTestCase
         // Create Email LOGIN OTP Key
         $this->emSave((new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::EMAIL)
-            ->setOtpKey(133449)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getEmail())
+            ->setOtpKey(133422)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable()));
     }
@@ -99,8 +105,10 @@ class OtpTest extends KernelTestCase
         // Create Email LOGIN OTP Key
         $this->emSave((new OtpKey())
             ->setOwner($user)
-            ->setType(OtpType::PHONE)
-            ->setOtpKey(133449)
+            ->setType(OtpType::AUTH)
+            ->setAddress($user->getPhone())
+            ->setPhoneCountry($user->getPhoneCountry())
+            ->setOtpKey(233449)
             ->setUsed(false)
             ->setExpiredAt(new \DateTimeImmutable()));
     }

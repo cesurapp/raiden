@@ -37,17 +37,18 @@
             outlined
             :required="false"
             :label="$t('Phone')"
-            :modelValue="form.phone"
             hide-bottom-space
-            v-model:full-number="form.phone"
-            v-model:phone-country="form.phone_country"
+            v-model:fullNumber="form.phone"
+            v-model:phoneCountry="form.phone_country"
           ></PhoneInput>
         </template>
 
         <!--Approve Mode-->
         <template v-else>
           <q-banner rounded class="q-mb-lg" :class="$q.dark.isActive ? 'bg-green-9' : 'bg-green-2'">
-            <span v-html="$t('send_verify_code').replace('msg', `<b>&quot;${form[credential]}&quot;</b>`)"></span>
+            <span
+              v-html="$t('Verification code sent to msg address.').replace('msg', `<b>&quot;${form[credential]}&quot;</b>`)"
+            ></span>
           </q-banner>
           <q-input
             outlined
@@ -85,9 +86,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiContentSave, mdiSecurity, mdiKey, mdiEmail } from '@quasar/extras/mdi-v7';
-import PhoneInput from 'components/Phone/PhoneInput.vue';
-import { CredentialsApproveRequest } from 'api/main/request/CredentialsApproveRequest';
+import PhoneInput from 'components/Localization/PhoneInput.vue';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
+import { CredentialsApproveRequest } from 'api/main/request/CredentialsApproveRequest';
 
 export default defineComponent({
   name: 'CredentialApproveEditor',
@@ -105,7 +106,9 @@ export default defineComponent({
     init(mode: 'approve' | 'change', credential: 'email' | 'phone') {
       this.mode = mode;
       this.credential = credential;
-      this.form = {};
+      this.form = {
+        phone_country: this.$appStore.defaultCountry,
+      };
 
       // Approve Mode
       if (mode === 'approve') {
@@ -116,12 +119,14 @@ export default defineComponent({
           this.form.email = this.$authStore.user.email;
         }
 
-        this.$appStore.confirmPromise('mdiCheck', 'info', 'approve_message').then(() => {
-          this.$refs.editor.toggle();
-          this.$api.main.CredentialsRequest(this.form, { showMessage: false }).catch(() => {
-            this.mode = 'change';
+        this.$appStore
+          .confirmPromise('mdiCheck', 'info', 'Verification code will be sent to the Address or Phone. Do you want to continue?')
+          .then(() => {
+            this.$refs.editor.toggle();
+            this.$api.main.CredentialsRequest(this.form, { showMessage: false }).catch(() => {
+              this.mode = 'change';
+            });
           });
-        });
 
         return;
       }

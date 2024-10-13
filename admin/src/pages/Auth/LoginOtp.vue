@@ -1,10 +1,8 @@
 <template>
   <div>
     <!--Header-->
-    <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
-        {{ $t('Security Code') }}
-      </h4>
+    <div class="q-mb-lg q-mb-md-xl text-center">
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Security Code') }}</h4>
       <h6 class="q-ma-none text-grey-7 text-subtitle1">
         {{ $t('Enter the 6-digit code sent to your account (mail/phone) to login.') }}
       </h6>
@@ -27,8 +25,15 @@
         <template v-slot:prepend><q-icon :name="mdiCellphoneKey" /></template>
       </q-input>
 
-      <div>
-        <q-btn :label="$t('Login')" @click="onSubmit" :loading="$appStore.isBusy" color="primary" :icon="mdiLogin" />
+      <div class="flex justify-between items-center gap-x-md">
+        <q-btn
+          class="flex-1"
+          :label="$t('Login')"
+          @click="onSubmit"
+          :loading="$appStore.isBusy"
+          color="primary"
+          :icon="mdiLogin"
+        />
         <q-btn :label="$t('Back')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
@@ -37,19 +42,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import { mdiCellphoneKey, mdiLogin } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'AuthLoginOtp',
   setup: () => ({ mdiCellphoneKey, mdiLogin }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     otp_key: null,
   }),

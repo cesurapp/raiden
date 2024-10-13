@@ -44,33 +44,25 @@ class Rules {
   minLength(length, message = false): any {
     return (val) => {
       const r = methods.minLength(length);
-      return (
-        r.$validator(val, null, null) || message || this.t(r.$message({ $params: { min: 0 } })).replace('0', length)
-      );
+      return r.$validator(val, null, null) || message || this.t(r.$message({ $params: { min: 0 } })).replace('0', length);
     };
   }
   maxLength(length, message = false): any {
     return (val) => {
       const r = methods.maxLength(length);
-      return (
-        r.$validator(val, null, null) || message || this.t(r.$message({ $params: { max: 0 } })).replace('0', length)
-      );
+      return r.$validator(val, null, null) || message || this.t(r.$message({ $params: { max: 0 } })).replace('0', length);
     };
   }
   minValue(value, message = false): any {
     return (val) => {
       const r = methods.minValue(value);
-      return (
-        r.$validator(val, null, null) || message || this.t(r.$message({ $params: { min: 0 } })).replace('0', value)
-      );
+      return r.$validator(val, null, null) || message || this.t(r.$message({ $params: { min: 0 } })).replace('0', value);
     };
   }
   maxValue(value, message = false): any {
     return (val) => {
       const r = methods.maxValue(value);
-      return (
-        r.$validator(val, null, null) || message || this.t(r.$message({ $params: { max: 0 } })).replace('0', value)
-      );
+      return r.$validator(val, null, null) || message || this.t(r.$message({ $params: { max: 0 } })).replace('0', value);
     };
   }
   between(min, max, message = false): any {

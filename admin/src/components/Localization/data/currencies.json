@@ -1,0 +1,17 @@
+[
+  {
+    "currency": "USD",
+    "currency_name": "US Dollar",
+    "currency_symbol": "$"
+  },
+  {
+    "currency": "EUR",
+    "currency_name": "Euro",
+    "currency_symbol": "€"
+  },
+  {
+    "currency": "TRY",
+    "currency_name": "Turkish lira",
+    "currency_symbol": "₺"
+  }
+]

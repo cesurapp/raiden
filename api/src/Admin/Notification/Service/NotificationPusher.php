@@ -21,7 +21,7 @@ readonly class NotificationPusher
         private TranslatorInterface $translator,
         private NotificationRepository $repo,
         private CurrentUser $currentUser,
-        private TaskHandler $taskHandler
+        private TaskHandler $taskHandler,
     ) {
     }
 

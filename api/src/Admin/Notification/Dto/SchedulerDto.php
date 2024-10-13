@@ -4,7 +4,6 @@ namespace App\Admin\Notification\Dto;
 
 use App\Admin\Core\Permission\UserType;
 use App\Admin\Notification\Entity\Notification;
-use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\SchedulerStatus;
 use Cesurapp\ApiBundle\Thor\Attribute\ThorResource;
@@ -61,11 +60,6 @@ class SchedulerDto extends NotificationDto
     ])]
     public ?array $device_filter = null;
 
-    /**
-     * @param Scheduler|null $object
-     *
-     * @return Scheduler|mixed
-     */
     public function initObject(mixed $object = null): mixed
     {
         $object

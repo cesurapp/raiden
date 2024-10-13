@@ -2,7 +2,6 @@
 
 namespace App\Admin\Core\Dto;
 
-use App\Admin\Core\Entity\User;
 use Cesurapp\ApiBundle\AbstractClass\ApiDto;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
@@ -44,11 +43,6 @@ class ProfileDto extends ApiDto
         }
     }
 
-    /**
-     * @param User|mixed $object
-     *
-     * @return User|mixed
-     */
     public function initObject(mixed $object = null): mixed
     {
         return $object

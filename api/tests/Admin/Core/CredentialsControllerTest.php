@@ -7,7 +7,7 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Enum\OtpType;
 use App\Tests\Setup\KernelTestCase;
 
-class ApproveTest extends KernelTestCase
+class CredentialsControllerTest extends KernelTestCase
 {
     public function testApproveEmail(): void
     {
@@ -29,9 +29,9 @@ class ApproveTest extends KernelTestCase
             ->isOk();
 
         // Find Code
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::CREDENTIALS);
 
-        // Approve Email Request
+        // Approve Email
         $this->login($user)
             ->jsonRequest('POST', '/v1/main/credentials', [
                 'email' => $user->getEmail(),
@@ -71,7 +71,7 @@ class ApproveTest extends KernelTestCase
             ->isOk();
 
         // Find Code
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::CREDENTIALS);
 
         // Approve Email Request
         $this->login($user)
@@ -108,7 +108,7 @@ class ApproveTest extends KernelTestCase
             ->isOk();
 
         // Find Code
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::CREDENTIALS);
 
         // Approve Email Request
         $this->login($user)
@@ -155,7 +155,7 @@ class ApproveTest extends KernelTestCase
             ->isOk();
 
         // Find Code
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::CREDENTIALS);
 
         // Fail
         $this->login($user)
@@ -172,7 +172,7 @@ class ApproveTest extends KernelTestCase
                 'phone_country' => $phoneCountry,
                 'otp_key' => $key->getOtpKey(),
             ])
-        ->isOk();
+            ->isOk();
 
         // Check
         $user = $this->em()->getRepository(User::class)->find($user->getId());

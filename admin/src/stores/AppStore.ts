@@ -10,20 +10,23 @@ import { FileOpener } from '@capawesome-team/capacitor-file-opener';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { i18n } from 'boot/app';
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
 export const useAppStore = defineStore('app', {
   state: () => ({
     title: 'Raiden Admin',
-    apiExceptions: {},
-    networkError: false,
+    panel: 'admin',
     navMenu: true,
     navMini: false,
+    apiExceptions: {},
+    networkError: false,
     busy: [],
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm',
     platform: {},
+    defaultCountry: 'TR',
   }),
   getters: {
     isBusy() {
@@ -59,7 +62,23 @@ export const useAppStore = defineStore('app', {
      * Date ATOM to Custom Format
      */
     formatDate(date: string, time = true) {
+      if (!date) {
+        return date;
+      }
       return dayjs(date).format(time ? this.dateTimeFormat : this.dateFormat);
+    },
+
+    currentDate(time = true) {
+      return dayjs().format(time ? this.dateTimeFormat : this.dateFormat);
+    },
+
+    formatPrice(amount: number, currency: string) {
+      const formatter = new Intl.NumberFormat(i18n.global.locale['value'], {
+        style: 'currency',
+        currency: currency.toLocaleUpperCase(),
+      });
+
+      return formatter.format(amount);
     },
 
     /**
@@ -67,7 +86,7 @@ export const useAppStore = defineStore('app', {
      */
     inputDate(date: string, time = true) {
       return dayjs(date, time ? this.dateTimeFormat : this.dateFormat)
-        .utc()
+        .utc(!time)
         .format();
     },
 
@@ -83,11 +102,16 @@ export const useAppStore = defineStore('app', {
           persistent: true,
         };
 
+        if (okText) {
+          props['yes'] = okText;
+        }
         if (ok) {
           props['cancel'] = false;
+          props['persistent'] = true;
           props['yes'] = okText || 'Close';
+        }
+        if (okColor) {
           props['yes-color'] = okColor;
-          props['persistent'] = false;
         }
 
         Dialog.create({ component: CustomDialog, componentProps: props })

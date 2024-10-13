@@ -1,13 +1,9 @@
 <template>
   <div>
     <!--Header-->
-    <div class="q-mb-xl">
-      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">
-        {{ $t('Approve Account') }}
-      </h4>
-      <h6 class="q-ma-none text-grey-7 text-subtitle1">
-        {{ $t('Enter the code sent to your phone or e-mail address.') }}
-      </h6>
+    <div class="q-mb-lg q-mb-md-xl text-center">
+      <h4 class="q-mt-none q-mb-sm text-h4 text-weight-medium">{{ $t('Approve Account') }}</h4>
+      <h6 class="q-ma-none text-grey-7 text-subtitle1">{{ $t('Enter the code sent to your phone or e-mail address.') }}</h6>
     </div>
 
     <q-form @keydown.enter.prevent="onSubmit" class="q-gutter-xs" ref="form">
@@ -27,8 +23,15 @@
         <template v-slot:prepend><q-icon :name="mdiCellphoneKey" /></template>
       </q-input>
 
-      <div>
-        <q-btn :label="$t('Approve')" @click="onSubmit" :loading="$appStore.isBusy" color="primary" :icon="mdiLogin" />
+      <div class="flex justify-between items-center gap-x-md">
+        <q-btn
+          class="flex-1"
+          :label="$t('Approve')"
+          @click="onSubmit"
+          :loading="$appStore.isBusy"
+          color="primary"
+          :icon="mdiLogin"
+        />
         <q-btn :label="$t('Login')" color="primary" flat :to="{ name: 'auth.login' }" class="q-ml-sm" />
       </div>
     </q-form>
@@ -37,19 +40,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { createMetaMixin } from 'quasar';
 import { mdiCellphoneKey, mdiLogin } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'RegisterConfirm',
   setup: () => ({ mdiCellphoneKey, mdiLogin }),
-  mixins: [
-    createMetaMixin(function () {
-      return {
-        title: this.$t(String(this.$route.meta.breadcrumb)),
-      };
-    }),
-  ],
   data: () => ({
     otp_key: null,
   }),
@@ -58,8 +53,8 @@ export default defineComponent({
       this.$rules.clearSSRException();
       this.$refs.form.validate().then((success) => {
         if (success) {
-          this.$api
-            .authSecurityApprove({
+          this.$api.auth
+            .SecurityApprove({
               otp_key: this.otp_key,
               username: atob(this.$route.params.id),
             })

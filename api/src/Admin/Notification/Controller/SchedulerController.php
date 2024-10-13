@@ -4,7 +4,7 @@ namespace App\Admin\Notification\Controller;
 
 use App\Admin\Notification\Dto\SchedulerDto;
 use App\Admin\Notification\Entity\Scheduler;
-use App\Admin\Notification\Enum\SchedulerPermission;
+use App\Admin\Notification\Permission\SchedulerPermission;
 use App\Admin\Notification\Repository\SchedulerRepository;
 use App\Admin\Notification\Resource\SchedulerResource;
 use Cesurapp\ApiBundle\AbstractClass\ApiController;

@@ -65,7 +65,6 @@ module.exports = configure(function (ctx) {
         FIREBASE_STORAGEBUCKET: process.env.FIREBASE_STORAGEBUCKET,
         FIREBASE_SENDERID: process.env.FIREBASE_SENDERID,
         FIREBASE_APPID: process.env.FIREBASE_APPID,
-        FIREBASE_MEASUREMENTID: process.env.FIREBASE_MEASUREMENTID,
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -114,8 +113,7 @@ module.exports = configure(function (ctx) {
                     .replace('<FIREBASE_PROJECTID>', process.env.FIREBASE_PROJECTID)
                     .replace('<FIREBASE_STORAGEBUCKET>', process.env.FIREBASE_STORAGEBUCKET)
                     .replace('<FIREBASE_SENDERID>', process.env.FIREBASE_SENDERID)
-                    .replace('<FIREBASE_APPID>', process.env.FIREBASE_APPID)
-                    .replace('<FIREBASE_MEASUREMENTID>', process.env.FIREBASE_MEASUREMENTID),
+                    .replace('<FIREBASE_APPID>', process.env.FIREBASE_APPID),
               },
             ],
           },
@@ -138,6 +136,7 @@ module.exports = configure(function (ctx) {
         screen: {
           bodyClasses: true,
         },
+        dark: 'auto',
       },
       cssAddon: true,
       iconSet: 'svg-mdi-v7', // Quasar icon set
@@ -199,7 +198,7 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
     capacitor: {
-      hideSplashscreen: true,
+      hideSplashscreen: false,
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron

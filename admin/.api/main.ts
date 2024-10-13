@@ -20,6 +20,9 @@ import type { CredentialsRequestResponse } from './main/response/CredentialsRequ
 import type { CredentialsRequestRequest } from './main/request/CredentialsRequestRequest';
 import type { CredentialsApproveResponse } from './main/response/CredentialsApproveResponse';
 import type { CredentialsApproveRequest } from './main/request/CredentialsApproveRequest';
+import type { ProfileShowResponse } from './main/response/ProfileShowResponse';
+import type { ProfileEditResponse } from './main/response/ProfileEditResponse';
+import type { ProfileEditRequest } from './main/request/ProfileEditRequest';
 
 export default class Main {
   constructor(private client: AxiosInstance) {}
@@ -54,6 +57,14 @@ export default class Main {
 
   async CredentialsApprove(request?: CredentialsApproveRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<CredentialsApproveResponse>> {
     return this.rq('POST', '/v1/main/credentials', config, request)
+  }
+
+  async ProfileShow(config: AxiosRequestConfig = {}): Promise<AxiosResponse<ProfileShowResponse>> {
+    return this.rq('GET', '/v1/main/profile', config, null)
+  }
+
+  async ProfileEdit(request?: ProfileEditRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<ProfileEditResponse>> {
+    return this.rq('PUT', '/v1/main/profile', config, request)
   }
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {

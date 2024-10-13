@@ -21,7 +21,7 @@
 
     <!--Menu List-->
     <q-list class="menus">
-      <div class="item" v-for="(nav, index) in getNavs" :key="index">
+      <div class="item" v-for="(nav, index) in navFiltered" :key="index">
         <!--With Header-->
         <template v-if="nav.header && nav.hasOwnProperty('items')">
           <q-item-label v-if="nav.header" caption header class="grup-header"
@@ -76,16 +76,7 @@
         <!-- Headerless-->
         <template v-else-if="!nav.header">
           <!--Single-->
-          <q-item
-            exact
-            clickable
-            v-ripple
-            dense
-            class="menu-link"
-            active-class="active-link"
-            v-if="!nav.child"
-            :to="nav.to"
-          >
+          <q-item exact clickable v-ripple dense class="menu-link" active-class="active-link" v-if="!nav.child" :to="nav.to">
             <q-item-section avatar v-if="nav.icon"><q-icon :name="nav.icon" /></q-item-section>
             <q-item-section class="text-weight-medium">{{ $t(nav.text) }}</q-item-section>
           </q-item>
@@ -148,10 +139,24 @@ export default defineComponent({
     mounted: false,
     miniState: false,
     miniAnimation: true,
+    navFiltered: [],
   }),
-  computed: {
-    getNavs() {
-      return this.navs
+  created() {
+    this.$appStore.navMenu = this.$q.platform.is.desktop;
+    this.$appStore.navMini = this.$q.localStorage.getItem('navMini') ?? false;
+    this.miniState = this.$appStore.navMini;
+  },
+  mounted() {
+    this.mounted = true;
+    setTimeout(() => {
+      this.miniAnimation = false;
+    }, 50);
+
+    this.initNavs();
+  },
+  methods: {
+    initNavs() {
+      this.navFiltered = this.navs
         .filter((nav) => {
           // With Header
           if (nav.hasOwnProperty('items')) {
@@ -209,17 +214,6 @@ export default defineComponent({
           return nav;
         });
     },
-  },
-  created() {
-    this.$appStore.navMenu = this.$q.platform.is.desktop;
-    this.$appStore.navMini = this.$q.localStorage.getItem('navMini') ?? false;
-    this.miniState = this.$appStore.navMini;
-  },
-  mounted() {
-    this.mounted = true;
-    setTimeout(() => {
-      this.miniAnimation = false;
-    }, 50);
   },
   watch: {
     '$appStore.navMini'(val) {

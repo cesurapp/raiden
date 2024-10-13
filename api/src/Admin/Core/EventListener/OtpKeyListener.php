@@ -3,13 +3,12 @@
 namespace App\Admin\Core\EventListener;
 
 use App\Admin\Core\Entity\OtpKey;
-use App\Admin\Core\Enum\OtpType;
 use App\Admin\Core\Service\MailPusher;
 use App\Admin\Core\Service\SmsPusher;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
-use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Events;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -23,15 +22,15 @@ readonly class OtpKeyListener
     public function __construct(
         private SmsPusher $smsPusher,
         private MailPusher $mailPusher,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
     ) {
     }
 
     public function postPersist(OtpKey $otpKey, LifecycleEventArgs $event): void
     {
-        match ($otpKey->getType()->value) {
-            OtpType::EMAIL->value => $this->sendMail($otpKey),
-            OtpType::PHONE->value => $this->sendPhone($otpKey),
+        match (is_numeric($otpKey->getAddress())) {
+            true => $this->sendPhone($otpKey),
+            false => $this->sendMail($otpKey),
         };
     }
 
@@ -39,7 +38,7 @@ readonly class OtpKeyListener
     {
         $this->mailPusher->send(
             (new TemplatedEmail())
-                ->to($otpKey->getAddress() ?? $otpKey->getOwner()->getEmail())
+                ->to($otpKey->getAddress())
                 ->subject('Verification Code')
                 ->htmlTemplate('email/otpcode.html.twig')
                 ->context([
@@ -52,8 +51,8 @@ readonly class OtpKeyListener
     private function sendPhone(OtpKey $otpKey): void
     {
         $this->smsPusher->send(
-            (int) ($otpKey->getAddress() ?? $otpKey->getOwner()?->getPhone()),
-            $otpKey->getPhoneCountry() ?? $otpKey->getOwner()?->getPhoneCountry(),
+            $otpKey->getAddress(),
+            $otpKey->getPhoneCountry(),
             $this->translator->trans('Verification code: %otpkey%', ['%otpkey%' => $otpKey->getOtpKey()]),
             false
         );

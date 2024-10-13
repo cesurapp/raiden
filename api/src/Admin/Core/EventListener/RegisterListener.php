@@ -25,9 +25,7 @@ readonly class RegisterListener
                 ->to($event->getUser()->getEmail())
                 ->subject('Welcome to Raiden')
                 ->htmlTemplate('email/welcome.html.twig')
-                ->context([
-                    'user' => $event->getUser(),
-                ])
+                ->context(['user' => $event->getUser()])
         );
     }
 }

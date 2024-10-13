@@ -10,7 +10,7 @@ use App\Admin\Core\Permission\CorePermission;
 use App\Admin\Core\Permission\UserType;
 use App\Tests\Setup\KernelTestCase;
 
-class SecurityTest extends KernelTestCase
+class SecurityControllerTest extends KernelTestCase
 {
     public function testLogin(): void
     {
@@ -55,7 +55,7 @@ class SecurityTest extends KernelTestCase
 
         // Login with Token
         $this
-            ->jsonRequest('GET', '/v1/admin/account/profile', server: [
+            ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_AUTHORIZATION' => 'Bearer '.$this->getJson('token'),
             ])
             ->isOk();
@@ -113,7 +113,7 @@ class SecurityTest extends KernelTestCase
 
         // Login with New Token
         $this
-            ->jsonRequest('GET', '/v1/admin/account/profile', server: [
+            ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_AUTHORIZATION' => 'Bearer '.$newToken,
             ])
             ->isOk();
@@ -133,7 +133,7 @@ class SecurityTest extends KernelTestCase
 
         /** @var OtpKey $key */
         $key = $this->em()->getRepository(OtpKey::class)->findOneBy([
-            'type' => OtpType::PHONE,
+            'type' => OtpType::AUTH,
             'owner' => $user,
         ], ['id' => 'DESC']);
 
@@ -168,7 +168,7 @@ class SecurityTest extends KernelTestCase
 
         /** @var OtpKey $key */
         $key = $this->em()->getRepository(OtpKey::class)->findOneBy([
-            'type' => OtpType::EMAIL,
+            'type' => OtpType::AUTH,
             'owner' => $user,
         ], ['id' => 'DESC']);
 
@@ -216,6 +216,8 @@ class SecurityTest extends KernelTestCase
             ])
             ->isOk()
             ->isJsonStructure(['message' => ['success']]);
+
+        // Check OTP & Welcome Email
         self::assertEmailCount(2);
         self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
         self::assertEmailSubjectContains(self::getMailerMessage(1), 'Welcome to Raiden');
@@ -269,7 +271,7 @@ class SecurityTest extends KernelTestCase
 
         // OTP Key.
         $user = $this->em()->getRepository(User::class)->findOneBy(['phone' => '905414053421']);
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
 
         // Password Login Failed
         $this->jsonRequest('POST', '/v1/auth/login', [
@@ -309,7 +311,7 @@ class SecurityTest extends KernelTestCase
 
         // OTP Key.
         $user = $this->em()->getRepository(User::class)->findOneBy(['phone' => '905414053491']);
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
 
         // Failed
         $this->jsonRequest('POST', '/v1/auth/approve', [
@@ -348,7 +350,7 @@ class SecurityTest extends KernelTestCase
 
         // OTP Key.
         $user = $this->em()->getRepository(User::class)->findOneBy(['email' => 'test2@test3.com']);
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
 
         // Failed
         $this->jsonRequest('POST', '/v1/auth/approve', [
@@ -393,7 +395,7 @@ class SecurityTest extends KernelTestCase
         self::assertNotificationSubjectContains(self::getNotifierMessage(), 'Verification code');
 
         // OTP Token
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::PHONE);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
         $this->assertNotNull($key);
     }
 
@@ -415,7 +417,7 @@ class SecurityTest extends KernelTestCase
         self::assertEmailSubjectContains(self::getMailerMessage(), 'Verification Code');
 
         // OTP Token
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
         $this->assertNotNull($key);
     }
 
@@ -431,7 +433,7 @@ class SecurityTest extends KernelTestCase
 
         // User & Otp Key
         $user = $this->em()->getRepository(User::class)->findOneBy(['id' => $user->getId()]);
-        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::EMAIL);
+        $key = $this->em()->getRepository(OtpKey::class)->getActiveKey($user, OtpType::AUTH);
 
         // Reset Password
         $this->jsonRequest('POST', '/v1/auth/reset-password/', [
@@ -454,15 +456,15 @@ class SecurityTest extends KernelTestCase
         // Access Denied without CorePermission::SWITCH_USER
         $this
             ->login($user2)
-            ->jsonRequest('GET', '/v1/admin/account/profile', server: [
+            ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_SWITCH_USER' => $user->getEmail(),
             ])
             ->isForbidden();
 
-        // Acces
+        // Access
         $this
             ->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/profile', server: [
+            ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ])
             ->isEquals($user2->getId()->toBase32(), 'data.id');
@@ -471,7 +473,7 @@ class SecurityTest extends KernelTestCase
         $userSuper = $this->emSave($this->getUser()->setType(UserType::SUPERADMIN));
         $this
             ->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/profile', server: [
+            ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_SWITCH_USER' => $userSuper->getEmail(),
             ])
             ->isForbidden();

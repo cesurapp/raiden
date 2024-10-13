@@ -58,7 +58,7 @@
         <q-card-section v-else>
           <div class="not-found flex column items-center justify-center">
             <q-icon :name="mdiMagnify" size="48px" color="grey-7"></q-icon>
-            <p class="q-mt-sm" v-html="$t('no_result').replace('msg', `<b>&quot;${search}&quot;</b>`)"></p>
+            <p class="q-mt-sm" v-html="$t('No results for msg').replace('msg', `<b>&quot;${search}&quot;</b>`)"></p>
           </div>
         </q-card-section>
 
@@ -118,9 +118,7 @@ export default defineComponent({
 
     this.routes = this.$route.matched[0].children
       .filter((route) => !route.path.includes('/:') && route?.meta?.breadcrumb)
-      .filter((route) =>
-        route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true,
-      )
+      .filter((route) => (route.meta.hasOwnProperty('permission') ? this.$authStore.hasPermission(route.meta.permission) : true))
       .map((route) => {
         return {
           label: this.$t(route.meta.breadcrumb ?? ''),
@@ -187,10 +185,7 @@ export default defineComponent({
      */
     onSearchRouter() {
       this.data.routes = this.routes.filter((route) => {
-        return (
-          route.label.toLowerCase().includes(this.search.toLowerCase()) ||
-          route.route.includes(this.search.toLowerCase())
-        );
+        return route.label.toLowerCase().includes(this.search.toLowerCase()) || route.route.includes(this.search.toLowerCase());
       });
     },
 

@@ -28,8 +28,8 @@ class OtpKey
     #[ORM\Column(type: 'string', enumType: OtpType::class)]
     private OtpType $type;
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $address = null;
+    #[ORM\Column(type: 'string')]
+    private string $address;
 
     #[ORM\Column(type: 'string', length: 2, nullable: true)]
     private ?string $phoneCountry = null;
@@ -69,12 +69,12 @@ class OtpKey
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getAddress(): string
     {
         return $this->address;
     }
 
-    public function setAddress(?string $address): self
+    public function setAddress(string $address): self
     {
         $this->address = $address;
 

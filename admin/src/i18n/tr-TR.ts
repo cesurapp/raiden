@@ -88,10 +88,11 @@ export default {
   'Session expired, please login again.': 'Oturum süresi doldu, yeniden giriş yapın.',
   'Passwordless Login': 'Şifresiz Giriş',
   'Security Code': 'Güvenlik Kodu',
-  'Enter the 6-digit code sent to your account (mail/phone) to login.':
-    'Hesabınıza giriş için gönderilen (Eposta/Telefon) 6 haneli kodu girin.',
+  'Enter the 6-digit code sent to your account (mail/phone) to login.': 'Hesabınıza giriş için gönderilen (Eposta/Telefon) 6 haneli kodu girin.',
   Back: 'Geri',
   'Dark Mode': 'Koyu Tema',
+  'Light Mode': 'Açık Tema',
+  'Dark Mode - Auto': 'Sistem Teması',
 
   // Notification Component
   Notifications: 'Bildirimler',
@@ -102,10 +103,8 @@ export default {
   Download: 'İndir',
   Activate: 'Etkinleştir',
   'System Notification': 'Sistem Bildirimleri',
-  'Enable browser notifications for instant system alerts and file downloads.':
-    'Anlık sistem uyarıları ve dosya indirmeleri için tarayıcı bildirimlerini etkinleştirin.',
-  'Push notifications are turned off, reset browser permissions to enable it.':
-    'Anlık bildirimler kapalı, etkinleştirmek için tarayıcı izinlerini sıfırlayın.',
+  'Enable browser notifications for instant system alerts and file downloads.': 'Anlık sistem uyarıları ve dosya indirmeleri için tarayıcı bildirimlerini etkinleştirin.',
+  'Push notifications are turned off, reset browser permissions to enable it.': 'Anlık bildirimler kapalı, etkinleştirmek için tarayıcı izinlerini sıfırlayın.',
 
   // Admin
   Dashboard: 'Anasayfa',
@@ -119,7 +118,7 @@ export default {
 
   // Search Bar
   Search: 'Arama',
-  no_result: 'msg için sonuç bulunamadı!',
+  'No results for msg': 'msg için sonuç bulunamadı!',
   'to Open': 'Aç',
   'to Close': 'Kapat',
 
@@ -128,8 +127,8 @@ export default {
   'Current Password': 'Mevcut Şifre',
   Language: 'Dil',
   Update: 'Güncelle',
-  approve_message: 'Doğrulama kodu Adrese veya Telefona gönderilecektir. Devam etmek istiyor musun?',
-  send_verify_code: 'Doğrulama kodu msg adresine gönderildi.',
+  'Verification code will be sent to the Address or Phone. Do you want to continue': 'Doğrulama kodu Adrese veya Telefona gönderilecektir. Devam etmek istiyor musun?',
+  'Verification code sent to msg address.': 'Doğrulama kodu msg adresine gönderildi.',
   'Verify Email': 'E-postayı Doğrulayın',
   'Verify Phone': 'Telefonu Doğrulayın',
   'Update Email': 'E-postayı Güncelle',

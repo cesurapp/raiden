@@ -7,9 +7,6 @@ import type { AxiosInstance, AxiosRequestConfig, Method, AxiosResponse } from 'a
 // @ts-ignore
 import { toQueryString } from './flatten';
 
-import type { AccountShowProfileResponse } from './admin/response/AccountShowProfileResponse';
-import type { AccountEditProfileResponse } from './admin/response/AccountEditProfileResponse';
-import type { AccountEditProfileRequest } from './admin/request/AccountEditProfileRequest';
 import type { AccountListResponse } from './admin/response/AccountListResponse';
 import type { AccountListQuery } from './admin/query/AccountListQuery';
 import type { AccountCreateResponse } from './admin/response/AccountCreateResponse';
@@ -35,14 +32,6 @@ import type { SchedulerDeleteResponse } from './admin/response/SchedulerDeleteRe
 
 export default class Admin {
   constructor(private client: AxiosInstance) {}
-
-  async AccountShowProfile(config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountShowProfileResponse>> {
-    return this.rq('GET', '/v1/admin/account/profile', config, null)
-  }
-
-  async AccountEditProfile(request?: AccountEditProfileRequest, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountEditProfileResponse>> {
-    return this.rq('PUT', '/v1/admin/account/profile', config, request)
-  }
 
   async AccountList(query?: AccountListQuery, config: AxiosRequestConfig = {}): Promise<AxiosResponse<AccountListResponse>> {
     return this.rq('GET', `/v1/admin/account/manager${toQueryString(query)}`, config, null)

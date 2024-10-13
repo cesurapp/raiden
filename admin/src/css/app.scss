@@ -3,6 +3,7 @@
  */
 :root {
   --animate-duration: 0.1s;
+  --header-size: 60px;
 }
 
 .q-notification__caption {
@@ -12,6 +13,7 @@
 .on-left {
   margin-right: 10px;
 }
+
 .q-item__section--side {
   padding-right: 12px;
   color: currentColor !important;
@@ -49,6 +51,14 @@
   .platform-ios & {
     transform: scale(1.1) !important;
   }
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.flex-1 {
+  flex: 1;
 }
 
 /**
@@ -165,8 +175,11 @@ body.desktop .q-checkbox--dense:not(.disabled):hover .q-checkbox__inner:before {
 
   // Dense
   &.q-field--dense {
+    .q-field__label {
+      top: 12px;
+    }
     &.q-field--float .q-field__label {
-      transform: translateY(-85%) scale(0.8) !important;
+      transform: translateY(-105%) scale(0.8) !important;
     }
 
     &.q-field--labeled .q-field__native {

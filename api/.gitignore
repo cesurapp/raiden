@@ -2,7 +2,7 @@
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
-/var/*/*
+/var/*
 !/var/cache/.gitkeep
 !/var/log/.gitkeep
 /vendor/
@@ -10,5 +10,6 @@
 .phpunit.result.cache
 /phpunit.xml
 ###> php-cs-fixer/shim ###
+/.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< php-cs-fixer/shim ###

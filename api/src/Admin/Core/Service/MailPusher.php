@@ -20,7 +20,7 @@ readonly class MailPusher
         private CurrentUser $currentUser,
         private TaskHandler $taskHandler,
         private TranslatorInterface $translator,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
     ) {
     }
 
@@ -39,7 +39,13 @@ readonly class MailPusher
             }
 
             if (!isset($context['locale'])) {
-                $context['locale'] = $this->requestStack->getMainRequest()?->getLocale() ?? 'en';
+                $context['locale'] = $this->requestStack->getMainRequest()?->getLocale();
+                $context['locale'] ??= $context['user']?->getLanguage() ?? 'en';
+                $context['locale'] = strtolower($context['locale']);
+            }
+
+            if (!isset($context['subject'])) {
+                $context['subject'] = $email->getSubject();
             }
 
             $email->context($context);

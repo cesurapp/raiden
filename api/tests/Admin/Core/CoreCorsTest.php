@@ -4,7 +4,7 @@ namespace App\Tests\Admin\Core;
 
 use App\Tests\Setup\KernelTestCase;
 
-class CoreTest extends KernelTestCase
+class CoreCorsTest extends KernelTestCase
 {
     public function testCorsRequest(): void
     {

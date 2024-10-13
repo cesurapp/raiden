@@ -10,32 +10,31 @@
     behavior="mobile"
   >
     <q-scroll-area class="fit">
-      <!--System Notification Alert-->
-      <q-card class="bg-primary text-white square shadow-0" square v-if="access.permission !== true && this.support">
-        <q-card-section class="flex no-wrap items-center q-py-md q-px-md">
-          <div class="q-mr-md">
-            <div class="text-subtitle1">{{ $t('System Notification') }}</div>
-            <div class="text-body2">
-              {{ $t('Enable browser notifications for instant system alerts and file downloads.') }}
-            </div>
-          </div>
-          <q-btn outline color="white" size="md" :icon="mdiCheckAll" rounded dense @click="accessNotification(true)">
-            <q-tooltip>{{ $t('Activate') }}</q-tooltip>
-          </q-btn>
-        </q-card-section>
-      </q-card>
-
       <q-list v-ripple="false">
         <!--Header-->
-        <q-item class="panel-head q-mb-sm">
+        <q-item class="panel-head q-mb-sm bg-primary shadow-bottom">
           <q-item-section avatar><q-icon color="white" :name="mdiBell" /></q-item-section>
           <q-item-section
             ><q-item-label>{{ $t('Notifications') }}</q-item-label></q-item-section
           >
-          <q-item-section side top class="flex justify-center items-center">
-            <q-btn color="white" size="sm" flat round :icon="mdiCheckAll" @click="readAll" v-close-popup>
-              <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
-            </q-btn>
+          <q-item-section side top>
+            <div>
+              <q-btn
+                color="white"
+                size="12px"
+                flat
+                round
+                :icon="mdiBellPlus"
+                @click="onClickInstall"
+                v-if="access.permission !== true && this.support"
+              ></q-btn>
+              <q-btn color="white" size="12px" flat round :icon="mdiRefresh" @click="load" v-close-popup>
+                <q-tooltip>{{ $t('Refresh') }}</q-tooltip>
+              </q-btn>
+              <q-btn color="white" size="12px" flat round :icon="mdiCheckAll" @click="readAll" v-close-popup>
+                <q-tooltip>{{ $t('Mark all as read') }}</q-tooltip>
+              </q-btn>
+            </div>
           </q-item-section>
         </q-item>
 
@@ -66,14 +65,7 @@
 
         <!--Items-->
         <div class="full-width flex justify-center q-my-xs">
-          <q-btn
-            v-if="resp.pager?.next"
-            @click="next()"
-            :label="$t('Load More')"
-            size="11px"
-            :icon="mdiRefresh"
-            flat
-          ></q-btn>
+          <q-btn v-if="resp.pager?.next" @click="next()" :label="$t('Load More')" size="11px" :icon="mdiRefresh" flat></q-btn>
         </div>
       </q-list>
     </q-scroll-area>
@@ -105,13 +97,13 @@ import { NotificationListResponse } from 'api/main/response/NotificationListResp
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
-import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh } from '@quasar/extras/mdi-v7';
+import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh, mdiBellPlus } from '@quasar/extras/mdi-v7';
 import { DeviceType } from 'api/enum/DeviceType';
 import { NotificationResource } from 'api/admin/resource/NotificationResource';
 
 export default defineComponent({
   name: 'NotificationComponent',
-  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck }),
+  setup: () => ({ mdiDeleteOutline, mdiRefresh, mdiCheckAll, mdiBell, mdiClose, mdiCheck, mdiBellPlus }),
   inheritAttrs: false,
   data: () => ({
     resp: {} as NotificationListResponse,
@@ -264,16 +256,18 @@ export default defineComponent({
         return (this.access.permission = false);
       }
 
+      if (Notification.permission === 'granted') {
+        this.installFirebase();
+        return;
+      }
+
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
           this.access.permission = true;
           this.installFirebase();
         } else {
           this.access.permission = false;
-          this.$q.dialog({
-            title: this.$t('System Notification'),
-            message: this.$t('Push notifications are turned off, reset browser permissions to enable it.'),
-          });
+          this.$appStore.dialogWarning('Push notifications are turned off, reset browser permissions to enable it.');
         }
       });
     },
@@ -285,7 +279,6 @@ export default defineComponent({
         storageBucket: process.env.FIREBASE_STORAGEBUCKET,
         messagingSenderId: process.env.FIREBASE_SENDERID,
         appId: process.env.FIREBASE_APPID,
-        measurementId: process.env.FIREBASE_MEASUREMENTID,
       };
       localStorage.setItem('fbConfig', btoa(JSON.stringify(config)));
       this.firebase.app = initializeApp(config);
@@ -324,25 +317,41 @@ export default defineComponent({
       // Open
       this.open(notification);
     },
+    onClickInstall() {
+      this.$appStore
+        .confirmPromise(
+          'mdiInformationVariant',
+          'positive',
+          'Enable browser notifications for instant system alerts and file downloads.',
+          false,
+          'positive',
+          'Activate',
+        )
+        .then(() => this.accessNotification(true));
+    },
   },
 });
 </script>
 
 <style lang="scss" scoped>
 .panel-head {
-  padding-top: max(#{map-get($space-sm, 'y')}, calc(#{map-get($space-sm, 'y')} + env(safe-area-inset-top)));
+  padding-top: max(env(safe-area-inset-top), 7px);
+  padding-right: calc(16px + env(safe-area-inset-right) / 2);
+  padding-left: 16px;
+  padding-bottom: 7px;
   font-weight: 500;
-  height: 60px;
-  background: $primary;
   color: #fff;
   font-size: $button-font-size + 2;
+  min-height: var(--header-size);
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .item {
   min-height: 40px;
-  padding: 8px 10px;
-  margin: 0 6px;
-  border-radius: 4px;
+  padding: 8px 16px;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -352,13 +361,24 @@ export default defineComponent({
 .q-pl-none {
   padding-left: 0 !important;
 }
+
+.sys-notification > div {
+  padding-right: calc(16px + env(safe-area-inset-right) / 2);
+}
 </style>
 
 <style lang="scss">
 .notification-drawer {
-  padding-top: 0 !important;
+  //padding-top: 0 !important;
+  .q-drawer {
+    max-width: 87vw;
+  }
   .q-scrollarea__content {
     width: 100%;
+  }
+
+  .q-drawer__content {
+    padding-top: 0 !important;
   }
 }
 </style>

@@ -9,8 +9,8 @@ use App\Admin\Notification\Entity\Notification;
 use App\Admin\Notification\Entity\Scheduler;
 use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Enum\NotificationStatus;
-use App\Admin\Notification\Enum\SchedulerPermission;
 use App\Admin\Notification\Enum\SchedulerStatus;
+use App\Admin\Notification\Permission\SchedulerPermission;
 use App\Tests\Setup\KernelTestCase;
 use Cesurapp\SwooleBundle\Cron\CronWorker;
 

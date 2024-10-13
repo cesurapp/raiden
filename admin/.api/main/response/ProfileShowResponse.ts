@@ -2,6 +2,6 @@
 
 import type { UserResource } from '@api/admin/resource/UserResource';
 
-export interface AccountShowProfileResponse {
+export interface ProfileShowResponse {
   data: UserResource
 }

@@ -17,7 +17,7 @@ class NotificationTask implements TaskInterface
 {
     public function __construct(
         private readonly ChatterInterface $chatter,
-        private readonly DeviceRepository $deviceRepo
+        private readonly DeviceRepository $deviceRepo,
     ) {
     }
 
@@ -37,7 +37,7 @@ class NotificationTask implements TaskInterface
 
             return $result;
         } catch (\Throwable $exception) {
-            if (preg_match('/(InvalidRegistration|NotRegistered)/i', $exception->getMessage())) {
+            if (preg_match('/(InvalidRegistration|NotRegistered|UNREGISTERED)/i', $exception->getMessage())) {
                 if ($device->getId()) {
                     $this->deviceRepo->removeDevice($device->getId());
                 }

@@ -1,16 +1,13 @@
 <template>
   <q-dialog v-model="active">
     <q-card :style="{ minWidth: width }" class="simple-dialog">
-      <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm">
+      <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm sticky-top">
         <slot name="header" />
         <q-space />
         <q-btn :icon="mdiClose" flat round dense v-close-popup />
       </q-card-section>
 
-      <q-card-section
-        class="scroll content"
-        :class="{ 'q-pt-none': clean, 'q-pa-none': cleanForce, 'q-py-sm': !cleanForce }"
-      >
+      <q-card-section class="scroll content" :class="{ 'q-pt-none': clean, 'q-pa-none': cleanForce, 'q-py-sm': !cleanForce }">
         <slot name="content" />
       </q-card-section>
 
@@ -58,6 +55,13 @@ export default defineComponent({
   .q-card__actions {
     position: sticky;
     bottom: 0;
+
+    .q-btn--rectangle {
+      .screen--xs & {
+        font-size: 12px;
+        padding: 0 6px;
+      }
+    }
   }
 }
 </style>

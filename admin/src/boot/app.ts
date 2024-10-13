@@ -7,11 +7,15 @@ import messages from 'src/i18n';
 import { createI18n } from 'vue-i18n';
 const i18n = createI18n({
   locale: localStorage.getItem('locale') ?? 'en-US',
-  legacy: false,
+  fallbackLocale: 'en-US',
   messages,
   missingWarn: false,
   fallbackWarn: false,
 });
+const tt = (prefix: string, text: string): string => {
+  const result = i18n.global.t(`${prefix}.${text}`);
+  return result !== `${prefix}.${text}` ? result : text;
+};
 
 /**
  * Create Axios
@@ -34,25 +38,24 @@ import validationRules from 'boot/helper/rules';
 import { useAuthStore } from 'stores/AuthStore';
 import { useAppStore } from 'stores/AppStore';
 import { Permission } from 'api/enum/Permission';
-const typeAuthStore = useAuthStore();
-const typeAppStore = useAppStore();
+const authStore = useAuthStore();
+const appStore = useAppStore();
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $api: Api;
+    $api: ApiInstance;
     $client: AxiosInstance;
-    $authStore: typeof typeAuthStore;
-    $appStore: typeof typeAppStore;
+    $authStore: ReturnType<typeof useAuthStore>;
+    $appStore: ReturnType<typeof useAppStore>;
     $permission: typeof Permission;
+    $tt: (prefix, text) => string;
   }
 }
 
-export { i18n, client, api };
-export default boot(({ app, router, store }) => {
+export { api, client, i18n, tt };
+export default boot(({ app, router }) => {
   app.use(i18n);
 
-  const authStore = useAuthStore(store);
-  const appStore = useAppStore(store);
   appStore.platform = app.config.globalProperties.$q.platform.is;
 
   // Init Global Properties
@@ -61,6 +64,7 @@ export default boot(({ app, router, store }) => {
   app.config.globalProperties.$authStore = authStore;
   app.config.globalProperties.$appStore = appStore;
   app.config.globalProperties.$permission = Permission;
+  app.config.globalProperties.$tt = tt;
 
   // Route Guard
   routeGuard(router, authStore, appStore, i18n);

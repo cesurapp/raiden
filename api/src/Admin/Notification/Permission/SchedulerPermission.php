@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Admin\Notification\Enum;
+namespace App\Admin\Notification\Permission;
 
 use App\Admin\Core\Permission\Types\AdminPermissionInterface;
 

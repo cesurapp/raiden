@@ -78,9 +78,7 @@ class NotificationDto extends ApiDto
     public ?array $data = null;
 
     /**
-     * @param Notification|null $object
-     *
-     * @return Notification|mixed
+     * @return Notification
      */
     public function initObject(mixed $object = null): mixed
     {

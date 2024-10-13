@@ -25,10 +25,9 @@ use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
@@ -148,12 +147,13 @@ class SecurityController extends ApiController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
+        $username = $otpDto->validated('username');
+        if (!$user = $this->userRepo->loadUserByIdentifier($username)) {
             throw $this->createNotFoundException('User not found!');
         }
 
         // Create OTP Key
-        $otpKeyRepo->create($user, is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL);
+        $otpKeyRepo->create($user, OtpType::AUTH, $otpDto->validated('username'), is_numeric($username) ? $user->getPhoneCountry() : null);
 
         return ApiResponse::create()->addMessage('One-time login code has been sent');
     }
@@ -180,21 +180,21 @@ class SecurityController extends ApiController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$user = $this->userRepo->loadUserByIdentifier($otpDto->validated('username'))) {
+        $username = $otpDto->validated('username');
+        if (!$user = $this->userRepo->loadUserByIdentifier($username)) {
             throw $this->createNotFoundException('User not found!');
         }
 
-        $type = is_numeric($otpDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
-        if (!$otpRepo->check($user, $type, $otpDto->validated('otp_key'))) {
+        if (!$otpRepo->check($user, OtpType::AUTH, $otpDto->validated('otp_key'), $username)) {
             throw new BadCredentialsException('Wrong OTP key!', 403);
         }
 
         // Approve
-        if (OtpType::PHONE === $type && !$user->isPhoneApproved()) {
+        if (is_numeric($username) && !$user->isPhoneApproved()) {
             $user->setPhoneApproved(true);
             $this->userRepo->add($user);
         }
-        if (OtpType::EMAIL === $type && !$user->isEmailApproved()) {
+        if (!is_numeric($username) && !$user->isEmailApproved()) {
             $user->setEmailApproved(true);
             $this->userRepo->add($user);
         }
@@ -238,7 +238,7 @@ class SecurityController extends ApiController
         $user = $register->initObject(new User())->setPassword($register->validated('password'), $hasher);
         $this->userRepo->add($user);
 
-        // Dispacth Event
+        // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::REGISTER);
 
         return ApiResponse::create()
@@ -261,13 +261,14 @@ class SecurityController extends ApiController
     #[Route(path: '/v1/auth/approve', name: 'api_approve_account', methods: ['POST'])]
     public function approve(UsernameOtpDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
+        $username = $dto->validated('username');
+        if (!$user = $this->userRepo->loadUserByIdentifier($username)) {
             throw $this->createNotFoundException('User not found!');
         }
 
         // Check
-        if (!$otp = $otpRepo->check($user, [OtpType::PHONE, OtpType::EMAIL], $dto->validated('otp_key'))) {
-            throw new AccessDeniedHttpException('Wrong OTP key!');
+        if (!$otp = $otpRepo->check($user, OtpType::AUTH, $dto->validated('otp_key'), $username)) {
+            throw $this->createAccessDeniedException('Wrong OTP key!');
         }
 
         // Approve
@@ -284,15 +285,15 @@ class SecurityController extends ApiController
         order: 7
     )]
     #[Route(path: '/v1/auth/reset-request', name: 'api_reset_request', methods: ['POST'])]
-    public function resetRequest(UsernameDto $usernameDto, OtpKeyRepository $otpRepo): ApiResponse
+    public function resetRequest(UsernameDto $dto, OtpKeyRepository $otpRepo): ApiResponse
     {
-        if (!$user = $this->userRepo->loadUserByIdentifier($usernameDto->validated('username'))) {
+        $username = $dto->validated('username');
+        if (!$user = $this->userRepo->loadUserByIdentifier($username)) {
             throw $this->createNotFoundException('User not found!');
         }
 
         // Create OTP Key
-        $type = is_numeric($usernameDto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
-        $otpRepo->create($user, $type, 60);
+        $otpRepo->create($user, OtpType::AUTH, $username, is_numeric($username) ? $user->getPhoneCountry() : null);
 
         // Dispatch Event
         $this->dispatcher->dispatch(new SecurityEvent($user), SecurityEvent::RESET_REQUEST);
@@ -310,13 +311,13 @@ class SecurityController extends ApiController
     #[Route(path: '/v1/auth/reset-password/', name: 'api_reset_password', methods: ['POST'])]
     public function resetPassword(ResetPasswordDto $dto, OtpKeyRepository $otpRepo, UserPasswordHasherInterface $hasher): ApiResponse
     {
-        if (!$user = $this->userRepo->loadUserByIdentifier($dto->validated('username'))) {
+        $username = $dto->validated('username');
+        if (!$user = $this->userRepo->loadUserByIdentifier($username)) {
             throw $this->createNotFoundException('User not found!');
         }
 
         // Check
-        $type = is_numeric($dto->validated('username')) ? OtpType::PHONE : OtpType::EMAIL;
-        if (!$otpRepo->check($user, $type, $dto->validated('otp_key'))) {
+        if (!$otpRepo->check($user, OtpType::AUTH, $dto->validated('otp_key'), $username)) {
             throw $this->createAccessDeniedException('Wrong OTP key!');
         }
 

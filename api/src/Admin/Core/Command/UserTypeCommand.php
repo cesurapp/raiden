@@ -2,6 +2,7 @@
 
 namespace App\Admin\Core\Command;
 
+use App\Admin\Core\Entity\User;
 use App\Admin\Core\Permission\UserType;
 use App\Admin\Core\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
@@ -27,17 +28,21 @@ class UserTypeCommand extends Command
         /** @var SymfonyQuestionHelper $helper */
         $helper = $this->getHelper('question');
 
-        $user = $helper->ask($input, $output, new Question('Find User Email|Phone: ', 'demo@demo.com'));
-        if (!$user = $this->userRepo->loadUserByIdentifier($user)) {
+        $username = $helper->ask($input, $output, new Question('Find User Email|Phone: ', 'demo@demo.com'));
+        $findUsers = $this->userRepo->findBy(['email' => $username]);
+        if (!$findUsers) {
             throw new EntityNotFoundException('User not found!');
         }
 
-        $user
-            ->setType(
-                UserType::from($helper->ask($input, $output, new ChoiceQuestion('Select Type: ', UserType::values())))
-            )
+        $selectedUser = $helper->ask($input, $output, new ChoiceQuestion('Type: ', array_map(static function (User $u) {
+            return sprintf('%s:%s:%s', $u->getId()->toBase32(), $u->getType()->value, $u->getEmail());
+        }, $findUsers), UserType::USER->value));
+        $selectedUser = $this->userRepo->find(explode(':', $selectedUser)[0]);
+
+        $selectedUser
+            ->setType(UserType::from($helper->ask($input, $output, new ChoiceQuestion('Select Type: ', UserType::values()))))
             ->setRoles([]);
-        $this->userRepo->add($user);
+        $this->userRepo->add($selectedUser);
 
         (new SymfonyStyle($input, $output))->success('Type Changed!');
 

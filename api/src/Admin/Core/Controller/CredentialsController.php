@@ -11,7 +11,7 @@ use App\Admin\Core\Repository\UserRepository;
 use Cesurapp\ApiBundle\AbstractClass\ApiController;
 use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -29,7 +29,6 @@ class CredentialsController extends ApiController
         $dto->setProp('id', $user->getId())->validate();
 
         $username = $dto->validated('email') ?? $dto->validated('phone');
-        $otpType = is_numeric($username) ? OtpType::PHONE : OtpType::EMAIL;
 
         if (in_array(strtolower($username), [strtolower($user->getEmail()), $user->getPhone()], false)) {
             /*
@@ -47,7 +46,7 @@ class CredentialsController extends ApiController
             throw $this->createAccessDeniedException('This value is currently in use.');
         }
 
-        $otpKeyRepo->create($user, $otpType, address: $username, phoneCountry: $dto->validated('phone_country'));
+        $otpKeyRepo->create($user, OtpType::CREDENTIALS, $username, $dto->validated('phone_country'));
 
         return ApiResponse::create()->addMessage('One-time approve code has been sent');
     }
@@ -64,15 +63,13 @@ class CredentialsController extends ApiController
         $dto->setProp('id', $user->getId())->validate();
 
         $username = $dto->validated('email') ?? $dto->validated('phone');
-        $otpKey = $dto->validated('otp_key');
-        $type = is_numeric($username) ? OtpType::PHONE : OtpType::EMAIL;
 
-        if (!$otpRepo->check($user, $type, $otpKey, $username)) {
+        if (!$otpRepo->check($user, OtpType::CREDENTIALS, $dto->validated('otp_key'), $username)) {
             throw new BadCredentialsException('Wrong OTP key!', 403);
         }
 
         // Update
-        if (OtpType::PHONE === $type) {
+        if (is_numeric($username)) {
             $user->setPhone($username)
                 ->setPhoneCountry($dto->validated('phone_country'))
                 ->setPhoneApproved(true);
