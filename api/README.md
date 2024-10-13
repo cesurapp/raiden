@@ -20,7 +20,7 @@ __Requirement__
 * Postgres 14+
 * Composer 2+
 * PHP 8.3+
-  * Swoole 4.11+ (`pecl install swoole`)
+  * Swoole 4.11+ (`pecl install swoole`) 
   * Imagick (`pecl install imagick`)
   * Intl (`pecl install intl`)
   * Php.ini

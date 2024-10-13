@@ -5,7 +5,7 @@ on:
     paths: [ 'api/**' ]
 
 env:
-  php-version: '8.2'
+  php-version: '8.3'
   php-extensions: imagick, swoole, :xdebug
   key: php-cache
 
