@@ -6,7 +6,7 @@ on:
 
 env:
   php-version: '8.3'
-  php-extensions: imagick, swoole, :xdebug
+  php-extensions: swoole, :xdebug
   key: php-cache
 
 jobs:

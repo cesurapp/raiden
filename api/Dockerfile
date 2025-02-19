@@ -4,16 +4,6 @@ FROM php:8.3.11-cli-alpine
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN install-php-extensions swoole intl bcmath opcache pdo_pgsql @composer
 
-### Install Imagick
-RUN apk add imagemagick-dev imagemagick
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
-    curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/3.7.0.tar.gz \
-    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
-    && phpize && ./configure \
-    && make && make install \
-    && echo "extension=imagick.so" > "$PHP_INI_DIR/conf.d/ext-imagick.ini" \
-    && rm -rf /tmp/* && apk del .build-deps && rm -rf /var/cache/apk/*
-
 ### PHP Config
 RUN touch "$PHP_INI_DIR/conf.d/custom.ini" \
     && echo "max_file_uploads=50;" >> "$PHP_INI_DIR/conf.d/custom.ini" \
