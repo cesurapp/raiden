@@ -39,7 +39,7 @@ class Scheduler
     private SchedulerStatus $status = SchedulerStatus::INIT;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
-    private ?\DateTimeImmutable $sendAt;
+    private \DateTimeImmutable $sendAt;
 
     #[ORM\Column(type: Types::JSON)]
     private string $notification;
@@ -139,7 +139,7 @@ class Scheduler
         return $this->sendAt;
     }
 
-    public function setSendAt(?\DateTimeImmutable $sendAt): self
+    public function setSendAt(\DateTimeImmutable $sendAt): self
     {
         $this->sendAt = $sendAt;
 

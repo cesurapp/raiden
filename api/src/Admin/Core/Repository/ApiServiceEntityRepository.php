@@ -67,12 +67,12 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
 
     public function connection(): Connection
     {
-        return $this->_em->getConnection();
+        return $this->getEntityManager()->getConnection();
     }
 
     public function em(): EntityManagerInterface
     {
-        return $this->_em;
+        return $this->getEntityManager();
     }
 
     public function sqlQueryBuilder(): QueryBuilder
@@ -83,10 +83,11 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
     public function rsmQueryBuilder(string $sql, ?array $selectColumns = null): NativeQuery
     {
         $rsm = new ResultSetMapping();
-        $rsm->addEntityResult($this->_class->name, 'q');
+        $meta = $this->getClassMetadata();
+        $rsm->addEntityResult($meta->name, 'q');
 
         // Add Main Entity Fields
-        foreach ($this->_class->fieldNames as $colName => $fieldName) {
+        foreach ($meta->fieldNames as $colName => $fieldName) {
             if ($selectColumns && !in_array($fieldName, $selectColumns, true)) {
                 continue;
             }
@@ -100,7 +101,7 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
         }
 
         // Add Relation Entity Fields
-        foreach ($this->_class->associationMappings as $map) {
+        foreach ($meta->associationMappings as $map) {
             if ($selectColumns && !in_array($map['fieldName'], $selectColumns, true)) {
                 continue;
             }

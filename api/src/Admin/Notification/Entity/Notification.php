@@ -32,10 +32,10 @@ class Notification
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $message = null;
+    private string $message = '';
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $readed = false;
+    private bool $readed = false;
 
     #[ORM\Column(type: Types::JSON)]
     private array $data = [];
@@ -69,7 +69,7 @@ class Notification
         return $this;
     }
 
-    public function getMessage(): ?string
+    public function getMessage(): string
     {
         return $this->message;
     }
@@ -81,7 +81,7 @@ class Notification
         return $this;
     }
 
-    public function isReaded(): ?bool
+    public function isReaded(): bool
     {
         return $this->readed;
     }
@@ -170,7 +170,7 @@ class Notification
     {
         return new WebNotification(
             $device->getToken(),
-            ['title' => $this->getTitle() ?? '', 'body' => $this->getMessage() ?? ''],
+            ['title' => $this->getTitle() ?? '', 'body' => $this->getMessage()],
             ['item' => json_encode((new NotificationResource())->toArray($this, $device->getType()->value), JSON_THROW_ON_ERROR)]
         );
     }

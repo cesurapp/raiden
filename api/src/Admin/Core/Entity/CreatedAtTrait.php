@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * Entity Append
  * #[ORM\HasLifecycleCallbacks]
+ *
+ * @phpstan-ignore-next-line
  */
 trait CreatedAtTrait
 {

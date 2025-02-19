@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Add Organization to Entity.
+ *
+ * @phpstan-ignore-next-line
  */
 trait OrganizationRemovalTrait
 {

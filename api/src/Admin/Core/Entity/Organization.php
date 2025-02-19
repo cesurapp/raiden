@@ -21,14 +21,14 @@ class Organization
     #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
     private ?Ulid $id;
 
-    #[ORM\Column(type: 'string')]
-    private ?string $name;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $name = null;
 
     #[ORM\Column(type: 'boolean')]
     private bool $frozen = false;
 
-    #[ORM\OneToMany(mappedBy: 'organization', targetEntity: User::class, cascade: ['persist', 'remove'])]
-    private Collection $users;
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'organization', cascade: ['persist', 'remove'])]
+    private mixed $users;
 
     public function __construct()
     {

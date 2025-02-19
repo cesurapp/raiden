@@ -129,7 +129,7 @@ class SchedulerCron extends AbstractCronJob
                         ->setParameters([
                             0 => (new Ulid())->toRfc4122(),
                             1 => $notification->getTitle(),
-                            2 => $notification->getMessage() ?? '',
+                            2 => $notification->getMessage(),
                             3 => $notification->getStatus()->value,
                             4 => (int) $notification->isReaded(),
                             5 => json_encode($notification->getData(), JSON_THROW_ON_ERROR),

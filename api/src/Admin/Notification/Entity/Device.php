@@ -25,7 +25,7 @@ class Device
     private ?Ulid $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $token = null;
+    private string $token;
 
     #[ORM\Column(type: Types::STRING, enumType: DeviceType::class)]
     private DeviceType $type = DeviceType::WEB;
@@ -35,7 +35,7 @@ class Device
         return $this->id;
     }
 
-    public function getToken(): ?string
+    public function getToken(): string
     {
         return $this->token;
     }
