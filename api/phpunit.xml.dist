@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         cacheResultFile="var/cache/.phpunit.result.cache" colors="true" testdox="true" verbose="true"
-         bootstrap="tests/bootstrap.php">
+         failOnDeprecation="true"
+         failOnNotice="true"
+         failOnWarning="true"
+         colors="true"
+         testdox="true"
+         bootstrap="tests/bootstrap.php"
+         cacheDirectory="var/.phpunit.cache">
     <php>
         <ini name="display_errors" value="1"/>
         <ini name="error_reporting" value="-1"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
         <server name="APP_LOG_FILE" value=""/>
         <server name="APP_LOG_LEVEL" value="error"/>
-        <server name="SHELL_VERBOSITY" value="-1"/>
         <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
         <server name="KERNEL_CLASS" value="App\Kernel"/>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled" />
-
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
         <server name="APP_ENV" value="test" force="true"/>
         <server name="APP_STORAGE" value="local" force="true"/>
         <server name="LOCK_DSN" value="semaphore"/>
@@ -27,19 +31,21 @@
         </testsuite>
     </testsuites>
 
-    <coverage processUncoveredFiles="true">
+    <source ignoreSuppressionOfDeprecations="true"
+            ignoreIndirectDeprecations="true"
+            restrictNotices="true"
+            restrictWarnings="true"
+    >
         <include>
-            <directory suffix=".php">src</directory>
+            <directory>src</directory>
         </include>
-        <exclude>
-            <directory suffix=".php">src/*/*/Enum</directory>
-        </exclude>
-    </coverage>
+
+        <deprecationTrigger>
+            <function>trigger_deprecation</function>
+        </deprecationTrigger>
+    </source>
 
     <extensions>
-        <extension class="App\Tests\Setup\PhpunitExtension"/>
+        <bootstrap class="App\Tests\Setup\PhpunitExtension"/>
     </extensions>
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
-    </listeners>
 </phpunit>

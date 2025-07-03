@@ -5,7 +5,7 @@ on:
     paths: [ 'api/**' ]
 
 env:
-  php-version: '8.3'
+  php-version: '8.4'
   php-extensions: swoole, :xdebug
   key: php-cache
 

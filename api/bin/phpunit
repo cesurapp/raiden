@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use PHPUnit\TextUI\Command;
+use PHPUnit\TextUI\Application;
 use Swoole\Coroutine\Scheduler;
 use Swoole\Timer;
 
@@ -17,7 +17,8 @@ if (is_file(dirname(__DIR__).'/vendor/phpunit/phpunit/phpunit')) {
     $scheduler = new Scheduler();
     $scheduler->add(function () use (&$exitCode) {
         try {
-            $exitCode = Command::main(false);
+            $application = new Application();
+            $exitCode = $application->run($_SERVER['argv']);
         } catch (Throwable $throwable) {
             if (!str_contains($throwable->getMessage(), 'swoole exit')) {
                 throw $throwable;
@@ -28,11 +29,11 @@ if (is_file(dirname(__DIR__).'/vendor/phpunit/phpunit/phpunit')) {
     });
     $scheduler->start();
     exit($exitCode);
-}
+} else {
+    if (!is_file(dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-phpunit.php')) {
+        echo "Unable to find the `simple-phpunit.php` script in `vendor/symfony/phpunit-bridge/bin/`.\n";
+        exit(1);
+    }
 
-if (!is_file(dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-phpunit.php')) {
-    echo "Unable to find the `simple-phpunit.php` script in `vendor/symfony/phpunit-bridge/bin/`.\n";
-    exit(1);
+    require dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-phpunit.php';
 }
-
-require dirname(__DIR__).'/vendor/symfony/phpunit-bridge/bin/simple-phpunit.php';
