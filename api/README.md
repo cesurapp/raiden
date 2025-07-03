@@ -52,7 +52,6 @@ brew install util-linux
 
 # Install PHP Extension
 pecl install swoole # openssl - http2 - curl - postgresql
-pecl install imagick
 
 # Configure Environment
 cp .env .env.local
@@ -62,7 +61,7 @@ composer install
 
 # Create PostgreSql Database
 bin/console doctrine:database:create
-bin/console doctrine:schema:update --force --complete
+bin/console doctrine:schema:update --force
 ```
 
 #### Production using Docker
@@ -70,7 +69,7 @@ bin/console doctrine:schema:update --force --complete
 1. Clone the repository
  
    ```shell
-   git clone <repo>
+   git clone --depth 1 <repo>
    composer install --no-dev
    composer dump-autoload --no-dev --classmap-authoritative
    ```
