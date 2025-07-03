@@ -44,7 +44,7 @@ jobs:
           extensions: ${{ env.php-extensions }}
           key: ${{ env.key }}
       - name: Cache PHP Extensions
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.extcache.outputs.dir }}
           key: ${{ steps.extcache.outputs.key }}
@@ -60,7 +60,7 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
       - uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
