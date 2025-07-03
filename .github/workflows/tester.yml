@@ -75,6 +75,10 @@ jobs:
         run: composer qa:phpstan
       - name: PHPCS Fixer
         run: composer qa:lint
+      - name: Log Directory
+        run: |
+          mkdir -p var/log
+          chmod -R 777 var
       - name: Execute PHPUnit
         run: composer test:stop
         env:
