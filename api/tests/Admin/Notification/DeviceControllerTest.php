@@ -141,7 +141,7 @@ class DeviceControllerTest extends KernelTestCase
         // Delete
         $deviceToken = $this->em()->getRepository(Device::class)->findOneBy(['token' => $token]);
         $this->login($user)
-            ->jsonRequest('DELETE', '/v1/admin/notification/device/'.$deviceToken->getId()->toBase32())
+            ->jsonRequest('DELETE', '/v1/admin/notification/device/'.$deviceToken->getId()->toString())
             ->isOk();
 
         // Check

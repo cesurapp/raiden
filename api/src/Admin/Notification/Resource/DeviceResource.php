@@ -5,7 +5,7 @@ namespace App\Admin\Notification\Resource;
 use App\Admin\Notification\Entity\Device;
 use Doctrine\ORM\QueryBuilder;
 use Cesurapp\ApiBundle\Response\ApiResourceInterface;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 class DeviceResource implements ApiResourceInterface
 {
@@ -15,7 +15,7 @@ class DeviceResource implements ApiResourceInterface
     public function toArray(mixed $item, mixed $optional = null): array
     {
         return [
-            'id' => $item->getId()->toBase32(),
+            'id' => $item->getId()->toString(),
             'token' => $item->getToken(),
             'type' => $item->getType()->value,
             'owner_type' => $item->getOwner()->getType()->value,
@@ -34,11 +34,11 @@ class DeviceResource implements ApiResourceInterface
             'id' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    if (!Ulid::isValid($data)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid ULID: "%s".', $data));
+                    if (!Uuid::isValid($data)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid UUID: "%s".', $data));
                     }
 
-                    $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'ulid');
+                    $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'uuid');
                 },
                 'table' => [
                     'label' => 'ID',
@@ -94,10 +94,10 @@ class DeviceResource implements ApiResourceInterface
                 'type' => 'string',
                 'filter' => [
                     'from' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.id >= :cFrom")->setParameter('cFrom', Ulid::generate(new \DateTime($data)), 'ulid');
+                        $builder->andWhere("$alias.id >= :cFrom")->setParameter('cFrom', Uuid::v7()->generate(new \DateTime($data)), 'uuid');
                     },
                     'to' => static function (QueryBuilder $builder, string $alias, string $data) {
-                        $builder->andWhere("$alias.id <= :cTo")->setParameter('cTo', Ulid::generate(new \DateTime($data)), 'ulid');
+                        $builder->andWhere("$alias.id <= :cTo")->setParameter('cTo', Uuid::v7()->generate(new \DateTime($data)), 'uuid');
                     },
                 ],
                 'table' => [

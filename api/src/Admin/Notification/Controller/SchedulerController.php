@@ -79,7 +79,7 @@ class SchedulerController extends ApiController
         title: 'Delete Scheduled Notification',
         order: 3
     )]
-    #[Route(path: '/v1/admin/scheduler/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]
+    #[Route(path: '/v1/admin/scheduler/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['DELETE'])]
     #[IsGranted(SchedulerPermission::ROLE_SCHEDULER_DELETE->value)]
     public function delete(Scheduler $scheduledNotification): ApiResponse
     {

@@ -8,7 +8,7 @@ use App\Admin\Notification\Dto\FcmRegisterDto;
 use App\Admin\Notification\Entity\Device;
 use App\Admin\Notification\Enum\DeviceType;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @method Device|null find($id, $lockMode = null, $lockVersion = null)
@@ -45,17 +45,17 @@ class DeviceRepository extends ApiServiceEntityRepository
     {
         return $this->createQueryBuilder('q')
             ->where('IDENTITY(q.owner) = :owner')
-            ->setParameter('owner', $user->getId(), 'ulid')
+            ->setParameter('owner', $user->getId(), 'uuid')
             ->getQuery()->getResult();
     }
 
     /**
      * Remove Device DQL.
      */
-    public function removeDevice(Ulid|string $deviceId): void
+    public function removeDevice(Uuid|string $deviceId): void
     {
         if (is_string($deviceId)) {
-            $deviceId = Ulid::fromString($deviceId);
+            $deviceId = Uuid::fromString($deviceId);
         }
 
         $this->remove($this->em()->getReference(Device::class, $deviceId));

@@ -9,10 +9,9 @@ use App\Admin\Notification\Repository\NotificationRepository;
 use App\Admin\Notification\Resource\NotificationResource;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
-use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Notifier\Bridge\Firebase\Notification\WebNotification;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 class Notification
@@ -20,10 +19,8 @@ class Notification
     use OwnerRemovalTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
-    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?UuidV7 $id;
 
     #[ORM\Column(type: Types::STRING, enumType: NotificationStatus::class)]
     private NotificationStatus $status = NotificationStatus::INFO;
@@ -40,7 +37,12 @@ class Notification
     #[ORM\Column(type: Types::JSON)]
     private array $data = [];
 
-    public function getId(): ?Ulid
+    public function __construct()
+    {
+        $this->id = UuidV7::v7();
+    }
+
+    public function getId(): ?UuidV7
     {
         return $this->id;
     }

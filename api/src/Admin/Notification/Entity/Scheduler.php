@@ -8,9 +8,8 @@ use App\Admin\Notification\Repository\SchedulerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
-use Symfony\Bridge\Doctrine\Types\UlidType;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: SchedulerRepository::class)]
 class Scheduler
@@ -18,10 +17,8 @@ class Scheduler
     use OwnerRemovalTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
-    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?UuidV7 $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $campaignTitle;
@@ -47,7 +44,12 @@ class Scheduler
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $deviceFilter = null;
 
-    public function getId(): ?Ulid
+    public function __construct()
+    {
+        $this->id = UuidV7::v7();
+    }
+
+    public function getId(): ?UuidV7
     {
         return $this->id;
     }

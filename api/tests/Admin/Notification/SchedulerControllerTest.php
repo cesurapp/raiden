@@ -109,7 +109,7 @@ class SchedulerControllerTest extends KernelTestCase
 
         // Update
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/scheduler/'.$sn->getId()->toString(), [
                 'campaign_title' => 'Campaign',
                 'persist_notification' => true,
                 'send_at' => (new \DateTimeImmutable('+1 hour'))->format(DATE_ATOM),
@@ -207,7 +207,7 @@ class SchedulerControllerTest extends KernelTestCase
 
         // Delete
         $this->login($user)
-            ->jsonRequest('DELETE', '/v1/admin/scheduler/'.$sn->getId()->toBase32())
+            ->jsonRequest('DELETE', '/v1/admin/scheduler/'.$sn->getId()->toString())
             ->isOk();
     }
 }

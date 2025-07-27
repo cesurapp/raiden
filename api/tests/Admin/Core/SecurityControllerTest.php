@@ -467,7 +467,7 @@ class SecurityControllerTest extends KernelTestCase
             ->jsonRequest('GET', '/v1/main/profile', server: [
                 'HTTP_SWITCH_USER' => $user2->getEmail(),
             ])
-            ->isEquals($user2->getId()->toBase32(), 'data.id');
+            ->isEquals($user2->getId()->toString(), 'data.id');
 
         // Disable SuperAdmin
         $userSuper = $this->emSave($this->getUser()->setType(UserType::SUPERADMIN));

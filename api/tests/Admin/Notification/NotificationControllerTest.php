@@ -67,7 +67,7 @@ class NotificationControllerTest extends KernelTestCase
 
         // List Notification
         $this->login($user)
-            ->request('PUT', '/v1/main/notification/'.$notification->getId()->toBase32())
+            ->request('PUT', '/v1/main/notification/'.$notification->getId()->toString())
             ->isOk();
 
         $this->assertTrue($notification->isReaded());
@@ -85,9 +85,9 @@ class NotificationControllerTest extends KernelTestCase
 
         // List Notification
         $this->login($user)
-            ->request('DELETE', '/v1/main/notification/'.$notification->getId()->toBase32())
+            ->request('DELETE', '/v1/main/notification/'.$notification->getId()->toString())
             ->isOk();
-        $this->assertNull($notification->getId());
+        $this->assertNull($this->em()->getRepository(Notification::class)->find($notification->getId()));
     }
 
     public function testReadAll(): void

@@ -188,19 +188,19 @@ class AccountControllerTest extends KernelTestCase
 
         // Fail Missing Permission
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32())
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toString())
             ->isFail();
 
         // Fail Validation Exception
         $this->emSave($user->addRoles(AccountPermission::ROLE_ACCOUNT_EDIT));
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32())
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toString())
             ->isFail()
             ->isJsonStructure(['type', 'errors']);
 
         // Success Same Email|Phone Update
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toString(), [
                 'email' => $user->getEmail(),
                 'email_approved' => true,
                 'phone' => $user->getPhone(),
@@ -218,7 +218,7 @@ class AccountControllerTest extends KernelTestCase
         $email = mt_rand().'@test.app';
         $phone = 541 .random_int(1000000, 4999999);
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toString(), [
                 'email' => $email,
                 'email_approved' => true,
                 'phone' => $phone,
@@ -240,7 +240,7 @@ class AccountControllerTest extends KernelTestCase
         // Duplicate Email | Phone Fail
         $user2 = $this->emSave($this->emSave($this->getAdmin()));
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$user->getId()->toString(), [
                 'email' => $user2->getEmail(),
                 'email_approved' => true,
                 'phone' => $user2->getPhone(),
@@ -258,7 +258,7 @@ class AccountControllerTest extends KernelTestCase
         // Fail Edit Super Admin
         $superUser = $this->emSave($this->getUser()->setType(UserType::SUPERADMIN));
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$superUser->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/account/manager/'.$superUser->getId()->toString(), [
                 'email' => $user2->getEmail(),
                 'email_approved' => true,
                 'phone' => $user2->getPhone(),
@@ -279,14 +279,14 @@ class AccountControllerTest extends KernelTestCase
 
         // Fail Mıssing Permission
         $this->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/manager/'.$user->getId()->toBase32())
+            ->jsonRequest('GET', '/v1/admin/account/manager/'.$user->getId()->toString())
             ->isFail();
 
         // Success
         $this->emSave($user->addRoles(AccountPermission::ROLE_ACCOUNT_LIST));
 
         $this->login($user)
-            ->jsonRequest('GET', '/v1/admin/account/manager/'.$user->getId()->toBase32())
+            ->jsonRequest('GET', '/v1/admin/account/manager/'.$user->getId()->toString())
             ->isOk()
             ->isJsonStructure(['data' => ['id']]);
     }
@@ -300,20 +300,20 @@ class AccountControllerTest extends KernelTestCase
 
         // Fail Missing Permission
         $this->login($user)
-            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$userRemove->getId()->toBase32())
+            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$userRemove->getId()->toString())
             ->isFail();
 
         // Success
         $this->emSave($user->addRoles(AccountPermission::ROLE_ACCOUNT_DELETE));
         $this->login($user)
-            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$userRemove->getId()->toBase32())
+            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$userRemove->getId()->toString())
             ->isOk()
             ->isJsonStructure(['message' => ['success']]);
 
         // Fail Delete Super Admin
         $superUser = $this->emSave($this->getUser()->setType(UserType::SUPERADMIN));
         $this->login($user)
-            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$superUser->getId()->toBase32())
+            ->jsonRequest('DELETE', '/v1/admin/account/manager/'.$superUser->getId()->toString())
             ->isFail();
     }
 
@@ -327,7 +327,7 @@ class AccountControllerTest extends KernelTestCase
 
         // Fail Missing Permission
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/permission/'.$user->getId()->toBase32())
+            ->jsonRequest('PUT', '/v1/admin/account/permission/'.$user->getId()->toString())
             ->isFail();
 
         // Success
@@ -338,7 +338,7 @@ class AccountControllerTest extends KernelTestCase
             AccountPermission::ROLE_ACCOUNT_CREATE->value,
         ];
         $this->login($user)
-            ->jsonRequest('PUT', '/v1/admin/account/permission/'.$user->getId()->toBase32(), [
+            ->jsonRequest('PUT', '/v1/admin/account/permission/'.$user->getId()->toString(), [
                 'permissions' => $permissions,
             ])
             ->isOk();

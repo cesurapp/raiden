@@ -8,7 +8,7 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Permission\UserType;
 use Cesurapp\SwooleBundle\Task\TaskWorker;
 use PHPUnit\Framework\MockObject\MockObject;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 trait AppTrait
 {
@@ -20,7 +20,7 @@ trait AppTrait
     public function login(?User $user = null): self
     {
         if ($user) {
-            $token = static::getContainer()->get(JWT::class)->encode(['id' => $user->getId()->toBase32()]);
+            $token = static::getContainer()->get(JWT::class)->encode(['id' => $user->getId()->toString()]);
             $this->server = ['HTTP_AUTHORIZATION' => 'Bearer '.$token];
         }
 
@@ -46,7 +46,7 @@ trait AppTrait
             ->setPhone(random_int(905400000000, 905499999900))
             ->setPhoneCountry('TR')
             ->setPhoneApproved(true)
-            ->setEmail(Ulid::generate().'@test.com')
+            ->setEmail(Uuid::v7()->generate().'@test.com')
             ->setEmailApproved(true)
             ->setPassword($password, static::getContainer()->get('security.user_password_hasher'));
     }

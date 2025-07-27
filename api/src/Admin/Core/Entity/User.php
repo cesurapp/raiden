@@ -9,12 +9,11 @@ use App\Admin\Core\Repository\UserRepository;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
-use Symfony\Bridge\Doctrine\Types\UlidType;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
@@ -24,10 +23,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use TimeStampTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
-    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?UuidV7 $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true, nullable: true)]
     private ?string $email;
@@ -71,7 +68,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(targetEntity: Organization::class, cascade: ['persist'], inversedBy: 'users')]
     private ?Organization $organization = null;
 
-    public function getId(): ?Ulid
+    public function __construct()
+    {
+        $this->id = UuidV7::v7();
+    }
+
+    public function getId(): ?UuidV7
     {
         return $this->id;
     }

@@ -83,7 +83,7 @@ class SecurityController extends ApiController
         return ApiResponse::create()
             ->setData([
                 'data' => $user,
-                'token' => $this->jwt->encode(['id' => $user->getId()->toBase32()]),
+                'token' => $this->jwt->encode(['id' => $user->getId()->toString()]),
                 'refresh_token' => $this->refreshTokenRepo->createToken($user, $this->jwt)->getToken(),
             ])
             ->setResource(UserResource::class);

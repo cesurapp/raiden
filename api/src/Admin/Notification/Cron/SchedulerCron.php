@@ -10,8 +10,8 @@ use App\Admin\Notification\Task\NotificationTask;
 use Doctrine\ORM\AbstractQuery;
 use Cesurapp\SwooleBundle\Cron\AbstractCronJob;
 use Swoole\Coroutine;
-use Symfony\Component\Uid\Ulid;
 use Swoole\Coroutine\WaitGroup;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Send Scheduled Notification.
@@ -127,7 +127,7 @@ class SchedulerCron extends AbstractCronJob
                             'owner_id' => '?',
                         ])
                         ->setParameters([
-                            0 => (new Ulid())->toRfc4122(),
+                            0 => Uuid::v7()->toString(),
                             1 => $notification->getTitle(),
                             2 => $notification->getMessage(),
                             3 => $notification->getStatus()->value,

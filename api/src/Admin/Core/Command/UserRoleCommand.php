@@ -36,7 +36,7 @@ class UserRoleCommand extends Command
         }
 
         $selectedUser = $helper->ask($input, $output, new ChoiceQuestion('Type: ', array_map(static function (User $u) {
-            return sprintf('%s:%s:%s', $u->getId()->toBase32(), $u->getType()->value, $u->getEmail());
+            return sprintf('%s:%s:%s', $u->getId()->toString(), $u->getType()->value, $u->getEmail());
         }, $findUsers), UserType::USER->value));
         $selectedUser = $this->userRepo->find(explode(':', $selectedUser)[0]);
 

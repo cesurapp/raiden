@@ -44,7 +44,7 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     public function check(User $user, OtpType $type, int $key, string $address): ?OtpKey
     {
         $qb = $this->createQueryBuilder('q')
-            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'ulid')
+            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'uuid')
             ->andWhere('q.otpKey = :key')->setParameter('key', $key)
             ->andWhere('q.type = :type')->setParameter('type', $type)
             ->andWhere('q.expiredAt >= :expired')->setParameter('expired', new \DateTimeImmutable())
@@ -68,9 +68,9 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     public function disableOtherCodes(OtpKey $otpKey): void
     {
         $this->createQueryBuilder('q')
-            ->andWhere('q.owner = :owner')->setParameter('owner', $otpKey->getOwner()->getId(), 'ulid')
+            ->andWhere('q.owner = :owner')->setParameter('owner', $otpKey->getOwner()->getId(), 'uuid')
             ->andWhere('q.type = :type')->setParameter('type', $otpKey->getType()->value)
-            // ->andWhere('q.id <> :id')->setParameter('id', $otpKey->getId(), 'ulid')
+            // ->andWhere('q.id <> :id')->setParameter('id', $otpKey->getId(), 'uuid')
             ->set('q.used', 'true')
             ->update()->getQuery()->execute();
     }
@@ -92,7 +92,7 @@ class OtpKeyRepository extends ApiServiceEntityRepository
     public function getActiveKey(User $user, OtpType $type): ?OtpKey
     {
         return $this->createQueryBuilder('q')
-            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'ulid')
+            ->andWhere('q.owner = :owner')->setParameter('owner', $user->getId(), 'uuid')
             ->andWhere('q.type = :type')->setParameter('type', $type)
             ->andWhere('q.used = :used')->setParameter('used', false)
             ->andWhere('q.expiredAt >= :expired')->setParameter('expired', new \DateTimeImmutable())

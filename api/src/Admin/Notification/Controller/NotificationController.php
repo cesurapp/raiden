@@ -71,7 +71,7 @@ class NotificationController extends ApiController
         title: 'Read Notification',
         order: 3,
     )]
-    #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['PUT'])]
+    #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['PUT'])]
     public function read(#[CurrentUser] User $user, Notification $notification): ApiResponse
     {
         if ($user !== $notification->getOwner()) {
@@ -88,7 +88,7 @@ class NotificationController extends ApiController
         title: 'Delete Notification',
         order: 4
     )]
-    #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::ULID], methods: ['DELETE'])]
+    #[Route(path: '/v1/main/notification/{id}', requirements: ['id' => Requirement::UUID_V7], methods: ['DELETE'])]
     public function delete(#[CurrentUser] User $user, Notification $notification): ApiResponse
     {
         if ($user !== $notification->getOwner()) {

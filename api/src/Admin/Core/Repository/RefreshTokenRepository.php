@@ -48,8 +48,8 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
     public function clearAllToken(User $user): void
     {
         $this->createQueryBuilder('q')
-            ->andWhere('IDENTITY(q.owner) = :ulid')
-            ->setParameter('ulid', $user->getId(), 'ulid')
+            ->andWhere('IDENTITY(q.owner) = :uuid')
+            ->setParameter('uuid', $user->getId(), 'uuid')
             ->delete()->getQuery()->execute();
     }
 
@@ -66,7 +66,7 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
 
         $token = (new RefreshToken())
             ->setToken($jwt->encode([
-                'id' => $user->getId()->toBase32(),
+                'id' => $user->getId()->toString(),
                 'exp' => $exp,
             ]))
             ->setOwner($user)

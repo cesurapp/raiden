@@ -7,9 +7,8 @@ use App\Admin\Notification\Enum\DeviceType;
 use App\Admin\Notification\Repository\DeviceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
-use Symfony\Bridge\Doctrine\Types\UlidType;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: DeviceRepository::class)]
 #[ORM\UniqueConstraint(fields: ['token', 'type'])]
@@ -19,10 +18,8 @@ class Device
     use OwnerRemovalTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: UlidType::NAME, unique: true)]
-    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id = null;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?UuidV7 $id;
 
     #[ORM\Column(length: 255)]
     private string $token;
@@ -30,7 +27,12 @@ class Device
     #[ORM\Column(type: Types::STRING, enumType: DeviceType::class)]
     private DeviceType $type = DeviceType::WEB;
 
-    public function getId(): ?Ulid
+    public function __construct()
+    {
+        $this->id = UuidV7::v7();
+    }
+
+    public function getId(): ?UuidV7
     {
         return $this->id;
     }

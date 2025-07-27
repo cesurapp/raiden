@@ -5,7 +5,7 @@ namespace App\Admin\Core\Resource;
 use App\Admin\Core\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Cesurapp\ApiBundle\Response\ApiResourceInterface;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 
 class UserResource implements ApiResourceInterface
 {
@@ -15,7 +15,7 @@ class UserResource implements ApiResourceInterface
     public function toArray(mixed $item, mixed $optional = null): array
     {
         return [
-            'id' => $item->getId()?->toBase32(),
+            'id' => $item->getId()?->toString(),
             'type' => $item->getType()->value,
             'email' => $item->getEmail(),
             'email_approved' => $item->isEmailApproved(),
@@ -39,11 +39,11 @@ class UserResource implements ApiResourceInterface
             'id' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    if (!Ulid::isValid($data)) {
-                        throw new \InvalidArgumentException(sprintf('Invalid ULID: "%s".', $data));
+                    if (!Uuid::isValid($data)) {
+                        throw new \InvalidArgumentException(sprintf('Invalid UUID: "%s".', $data));
                     }
 
-                    $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'ulid');
+                    $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'uuid');
                 },
                 'table' => [
                     'label' => 'ID',

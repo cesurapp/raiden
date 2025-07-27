@@ -43,15 +43,15 @@ class UserTest extends KernelTestCase
     {
         $user = $this->emSave($this->getUser());
         $this->emRemove($user)->emFlush();
-        $this->assertNull($user->getId());
+        $this->assertNull($this->em()->find(User::class, $user->getId()->toString()));
     }
 
     public function testOrganizationDelete(): void
     {
         /** @var User $user */
         $user = $this->emSave($this->getUser(true));
-        $userId = $user->getId()->toBase32();
-        $orgId = $user->getOrganization()->getId()->toBase32();
+        $userId = $user->getId()->toString();
+        $orgId = $user->getOrganization()->getId()->toString();
         $this->em()->clear();
 
         $this->emRemove($this->em()->find(Organization::class, $orgId))->emFlush();
@@ -70,9 +70,9 @@ class UserTest extends KernelTestCase
         );
 
         // Fetch ID
-        $userId = $user->getId()->toBase32();
-        $orgId = $user->getOrganization()->getId()->toBase32();
-        $tokenId = $token->getId()->toBase32();
+        $userId = $user->getId()->toString();
+        $orgId = $user->getOrganization()->getId()->toString();
+        $tokenId = $token->getId()->toString();
         $this->em()->clear();
 
         $this->emRemove($this->em()->find(Organization::class, $orgId))->emFlush();

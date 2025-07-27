@@ -28,7 +28,7 @@ class NotificationRepository extends ApiServiceEntityRepository
     {
         return $this->createQueryBuilder('q')
             ->andWhere('IDENTITY(q.owner) = :owner')
-            ->setParameter('owner', $user->getId(), 'ulid')
+            ->setParameter('owner', $user->getId(), 'uuid')
             ->orderBy('q.id', 'DESC');
     }
 
@@ -59,7 +59,7 @@ class NotificationRepository extends ApiServiceEntityRepository
     {
         $this->createQueryBuilder('q')
             ->andWhere('IDENTITY(q.owner) = :owner')
-            ->setParameter('owner', $user->getId(), 'ulid')
+            ->setParameter('owner', $user->getId(), 'uuid')
             ->update()
             ->set('q.readed', 'true')
             ->getQuery()->execute();

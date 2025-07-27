@@ -6,8 +6,8 @@ use App\Admin\Core\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
-use Symfony\Component\Uid\Ulid;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\UuidV7;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,10 +16,8 @@ class Organization
     use TimeStampTrait;
 
     #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\Column(type: 'ulid', unique: true)]
-    #[ORM\CustomIdGenerator(class: UlidGenerator::class)]
-    private ?Ulid $id;
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    private ?UuidV7 $id;
 
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $name = null;
@@ -32,10 +30,11 @@ class Organization
 
     public function __construct()
     {
+        $this->id = UuidV7::v7();
         $this->users = new ArrayCollection();
     }
 
-    public function getId(): ?Ulid
+    public function getId(): ?UuidV7
     {
         return $this->id;
     }
