@@ -64,7 +64,7 @@ class RefreshTokenRepository extends ApiServiceEntityRepository
 
         $exp = time() + (86400 * $this->bag->get('core.refresh_token_exp'));
 
-        $token = (new RefreshToken())
+        $token = new RefreshToken()
             ->setToken($jwt->encode([
                 'id' => $user->getId()->toString(),
                 'exp' => $exp,

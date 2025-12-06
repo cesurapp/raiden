@@ -121,7 +121,7 @@ abstract class ApiServiceEntityRepository extends ServiceEntityRepository
      *
      * @return T
      */
-    public function reload(mixed $object): mixed
+    public function reload(mixed $object)
     {
         return $this->em()->find(get_class($object), $object->getId()); // @phpstan-ignore-line
     }

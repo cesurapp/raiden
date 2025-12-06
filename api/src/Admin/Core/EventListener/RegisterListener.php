@@ -21,7 +21,7 @@ readonly class RegisterListener
         }
 
         $this->mailPusher->send(
-            (new TemplatedEmail())
+            new TemplatedEmail()
                 ->to($event->getUser()->getEmail())
                 ->subject('Welcome to Raiden')
                 ->htmlTemplate('email/welcome.html.twig')

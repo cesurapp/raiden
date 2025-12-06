@@ -30,6 +30,6 @@ class SuperAdminVoter extends Voter
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
     {
-        return ($token->getUser() instanceof User) && UserType::SUPERADMIN === $token->getUser()->getType();
+        return ($token->getUser() instanceof User) && $token->getUser()->hasType(UserType::SUPERADMIN);
     }
 }

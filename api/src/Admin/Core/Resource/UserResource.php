@@ -39,11 +39,11 @@ class UserResource implements ApiResourceInterface
             'id' => [
                 'type' => 'string',
                 'filter' => static function (QueryBuilder $builder, string $alias, string $data) {
-                    if (!Uuid::isValid($data)) {
+                    if (!Uuid::isValid(trim($data))) {
                         throw new \InvalidArgumentException(sprintf('Invalid UUID: "%s".', $data));
                     }
 
-                    $builder->andWhere("$alias.id = :id")->setParameter('id', $data, 'uuid');
+                    $builder->andWhere("$alias.id = :id")->setParameter('id', trim($data), 'uuid');
                 },
                 'table' => [
                     'label' => 'ID',
@@ -163,6 +163,11 @@ class UserResource implements ApiResourceInterface
                     'label' => 'Approved',
                     'sortable' => true,
                     'filter_input' => 'checkbox',
+                    'sortable_field' => static function (QueryBuilder $builder, string $alias, string $direction) {
+                        $builder
+                            ->orderBy("$alias.emailApproved", $direction)
+                            ->addOrderBy("$alias.phoneApproved", $direction);
+                    },
                 ],
             ],
             'frozen' => [

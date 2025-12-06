@@ -37,7 +37,7 @@ readonly class OtpKeyListener
     private function sendMail(OtpKey $otpKey): void
     {
         $this->mailPusher->send(
-            (new TemplatedEmail())
+            new TemplatedEmail()
                 ->to($otpKey->getAddress())
                 ->subject('Verification Code')
                 ->htmlTemplate('email/otpcode.html.twig')

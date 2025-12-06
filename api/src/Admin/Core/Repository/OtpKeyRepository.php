@@ -25,7 +25,7 @@ class OtpKeyRepository extends ApiServiceEntityRepository
      */
     public function create(User $user, OtpType $otpType, string|int $address, ?string $phoneCountry = null, int $expiredMinute = 3): OtpKey
     {
-        $otp = (new OtpKey())
+        $otp = new OtpKey()
             ->setOwner($user)
             ->setType($otpType)
             ->setAddress((string) $address)
@@ -70,7 +70,6 @@ class OtpKeyRepository extends ApiServiceEntityRepository
         $this->createQueryBuilder('q')
             ->andWhere('q.owner = :owner')->setParameter('owner', $otpKey->getOwner()->getId(), 'uuid')
             ->andWhere('q.type = :type')->setParameter('type', $otpKey->getType()->value)
-            // ->andWhere('q.id <> :id')->setParameter('id', $otpKey->getId(), 'uuid')
             ->set('q.used', 'true')
             ->update()->getQuery()->execute();
     }
