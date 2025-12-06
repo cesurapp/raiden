@@ -10,9 +10,11 @@ use Symfony\Component\Finder\Finder;
 /**
  * Permission Finder.
  */
-readonly class PermissionManager
+class PermissionManager
 {
-    public function __construct(private array $permissions)
+    private array $cache = [];
+
+    public function __construct(private readonly array $permissions)
     {
     }
 
@@ -39,24 +41,51 @@ readonly class PermissionManager
 
     public function getPermissions(?UserType $type = null): array
     {
-        return $type ? ($this->permissions[$type->name] ?? []) : $this->permissions;
+        $cacheKey = 'perms_'.($type->name ?? 'all');
+
+        if (isset($this->cache[$cacheKey])) {
+            return $this->cache[$cacheKey];
+        }
+
+        $result = $type ? ($this->permissions[$type->name] ?? []) : $this->permissions;
+        $this->cache[$cacheKey] = $result;
+
+        return $result;
     }
 
     public function getPermissionsValues(?UserType $type = null): array
     {
+        $cacheKey = 'perms_values_'.($type->name ?? 'all');
+
+        if (isset($this->cache[$cacheKey])) {
+            return $this->cache[$cacheKey];
+        }
+
         $p = $this->getPermissions($type);
         array_walk_recursive($p, static fn (&$enum) => $enum = $enum->value);
+
+        $this->cache[$cacheKey] = $p;
 
         return $p;
     }
 
     public function getPermissionsFlatten(?UserType $type = null): array
     {
-        if ($type) {
-            return array_merge(...array_values($this->getPermissionsValues($type)));
+        $cacheKey = 'perms_flatten_'.($type->name ?? 'all');
+
+        if (isset($this->cache[$cacheKey])) {
+            return $this->cache[$cacheKey];
         }
 
-        return array_map(static fn ($p) => array_merge(...array_values($p)), $this->getPermissionsValues());
+        if ($type) {
+            $result = array_merge(...array_values($this->getPermissionsValues($type)));
+        } else {
+            $result = array_map(static fn ($p) => array_merge(...array_values($p)), $this->getPermissionsValues());
+        }
+
+        $this->cache[$cacheKey] = $result;
+
+        return $result;
     }
 
     public function getPermissionToEnum(array $permissions): array
