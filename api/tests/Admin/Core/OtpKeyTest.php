@@ -16,7 +16,7 @@ class OtpKeyTest extends KernelTestCase
         $user = $this->emSave($this->getUser());
 
         // Create Email LOGIN OTP Key
-        $key1 = (new OtpKey())
+        $key1 = new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
             ->setAddress($user->getEmail())
@@ -26,7 +26,7 @@ class OtpKeyTest extends KernelTestCase
         $this->emSave($key1);
 
         // Create New LOGIN OTP Key
-        $key2 = (new OtpKey())
+        $key2 = new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
             ->setAddress($user->getEmail())
@@ -39,10 +39,10 @@ class OtpKeyTest extends KernelTestCase
         $this->assertFalse($this->refresh($key2)->isUsed());
 
         // Create Login Phone OTP Key
-        $key3 = (new OtpKey())
+        $key3 = new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
-            ->setAddress($user->getPhone())
+            ->setAddress((string)$user->getPhone())
             ->setPhoneCountry($user->getPhoneCountry())
             ->setOtpKey(143447)
             ->setUsed(false)
@@ -50,7 +50,7 @@ class OtpKeyTest extends KernelTestCase
         $this->emSave($key3);
 
         // Create Login Phone OTP Key
-        $key4 = (new OtpKey())
+        $key4 = new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
             ->setAddress($user->getPhone())
@@ -70,16 +70,17 @@ class OtpKeyTest extends KernelTestCase
         $user = $this->emSave($this->getUser());
 
         // Check Send Mail
-        $this->mockTaskWorker(function ($object) {
+        $mock = $this->mockTaskWorker(function ($object) {
             if (SendMailTask::class === $object['class']) {
                 /** @var Email $mail */
                 $mail = unserialize($object['payload']);
                 $this->assertEquals('Verification Code', $mail->getSubject());
             }
         });
+        $mock->expects($this->once())->method('handle');
 
         // Create Email LOGIN OTP Key
-        $this->emSave((new OtpKey())
+        $this->emSave(new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
             ->setAddress($user->getEmail())
@@ -93,7 +94,7 @@ class OtpKeyTest extends KernelTestCase
         $user = $this->emSave($this->getUser());
 
         // Check Send Mail
-        $this->mockTaskWorker(function ($object) use ($user) {
+        $mock = $this->mockTaskWorker(function ($object) use ($user) {
             if (SendSmsTask::class === $object['class']) {
                 $payload = unserialize($object['payload']);
 
@@ -101,12 +102,13 @@ class OtpKeyTest extends KernelTestCase
                 $this->assertEquals($user->getPhoneCountry(), $payload['countryCode']);
             }
         });
+        $mock->expects($this->once())->method('handle');
 
         // Create Email LOGIN OTP Key
-        $this->emSave((new OtpKey())
+        $this->emSave(new OtpKey()
             ->setOwner($user)
             ->setType(OtpType::AUTH)
-            ->setAddress($user->getPhone())
+            ->setAddress((string)$user->getPhone())
             ->setPhoneCountry($user->getPhoneCountry())
             ->setOtpKey(233449)
             ->setUsed(false)

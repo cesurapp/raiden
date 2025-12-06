@@ -1,6 +1,6 @@
 # Raiden API
 
-High concurrency, Swoole based, Symfony 7 Api
+High concurrency, Swoole based, Symfony 8 Api
 
 __Features__
 * Swoole Http Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
@@ -19,7 +19,7 @@ __Features__
 __Requirement__
 * Postgres 14+
 * Composer 2+
-* PHP 8.3+
+* PHP 8.4+
   * Swoole 4.11+ (`pecl install swoole`) 
   * Imagick (`pecl install imagick`)
   * Intl (`pecl install intl`)

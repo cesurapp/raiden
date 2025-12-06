@@ -13,4 +13,5 @@ return [
     Cesurapp\MediaBundle\MediaBundle::class => ['all' => true],
     Cesurapp\ApiBundle\ApiBundle::class => ['all' => true],
     Cesurapp\SwooleBundle\SwooleBundle::class => ['all' => true],
+    Zenstruck\Foundry\ZenstruckFoundryBundle::class => ['dev' => true, 'test' => true],
 ];

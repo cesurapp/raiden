@@ -6,6 +6,7 @@ use App\Admin\Core\Entity\User;
 use App\Admin\Core\Exception\AccountNotActivatedException;
 use App\Admin\Core\Exception\AccountSuspendedException;
 use App\Admin\Core\Exception\OrganizationSuspendedException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -32,7 +33,7 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    public function checkPostAuth(UserInterface $user): void
+    public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
     }
 }

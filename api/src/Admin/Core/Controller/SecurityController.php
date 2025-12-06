@@ -110,7 +110,7 @@ class SecurityController extends ApiController
             throw $this->createAccessDeniedException();
         }
 
-        if (!$token = $request->get('refresh_token')) {
+        if (!$token = $request->request->get('refresh_token')) {
             throw new TokenNotFoundException('Refresh token not found!');
         }
 
@@ -214,7 +214,7 @@ class SecurityController extends ApiController
     #[Route(path: '/v1/auth/logout', name: 'api_logout', methods: ['POST'])]
     public function logout(Request $request, RefreshTokenRepository $refreshTokenRepo): ApiResponse
     {
-        if ($token = $request->get('refresh_token')) {
+        if ($token = $request->request->get('refresh_token')) {
             $refreshTokenRepo->removeToken($token);
         }
 

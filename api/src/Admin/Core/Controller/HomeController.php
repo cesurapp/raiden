@@ -5,7 +5,7 @@ namespace App\Admin\Core\Controller;
 use Cesurapp\ApiBundle\AbstractClass\ApiController;
 use Cesurapp\ApiBundle\Response\ApiResponse;
 use Cesurapp\ApiBundle\Thor\Attribute\Thor;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends ApiController
 {

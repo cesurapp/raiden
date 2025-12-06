@@ -166,7 +166,7 @@ class AccountController extends ApiController
         // Merge
         $permissions = array_intersect(
             $permissionManager->getPermissionsFlatten($user->getType()),
-            $request->get('permissions')
+            $request->request->all('permissions')
         );
         if (!$currentUser->hasType(UserType::SUPERADMIN)) {
             $permissions = array_intersect($currentUser->getRoles(), $permissions);
