@@ -87,7 +87,7 @@ export default class Admin {
 
   async rq(method: Method, url: string, config: AxiosRequestConfig = {}, data?: any) {
     config.method = method;
-    config.url = url;
+    config.url = url.replace(/\/+$/, '');
     if (data) {
       config.data = data;
     }

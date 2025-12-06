@@ -150,7 +150,7 @@ import {
 } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
-  name: 'EditProfile',
+  name: 'ProfilePage',
   setup: () => ({
     mdiEmail,
     mdiAccount,

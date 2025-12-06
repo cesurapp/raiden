@@ -2,6 +2,7 @@
   <q-page>
     <PageContent borderless clear liquid>
       <SimpleTable
+        uId="admin-scheduler-list-table"
         ref="table"
         trans-key="scheduler"
         :export-button="false"
@@ -17,7 +18,7 @@
             color="green"
             :icon="mdiPlus"
             v-if="$authStore.hasPermission($permission.AdminScheduler.CREATE)"
-            @click="$refs.editor.init(null)"
+            @click="($refs.editor as any).init(null)"
           >
             <q-tooltip>{{ $t('New') }}</q-tooltip>
           </q-btn>
@@ -28,7 +29,7 @@
           <q-item
             clickable
             v-close-popup
-            @click="$refs.editor.init(props.row)"
+            @click="($refs.editor as any).init(props.row)"
             :disable="props.row.sended"
             v-if="$authStore.hasPermission($permission.AdminScheduler.EDIT)"
           >
@@ -58,8 +59,8 @@
 
     <SchedulerEditor
       ref="editor"
-      @created="(item) => $refs.table.addFirst(item)"
-      @updated="(item) => $refs.table.updateItem(item, 'id')"
+      @created="(item) => ($refs.table as any).addFirst(item)"
+      @updated="(item) => ($refs.table as any).updateItem(item, 'id')"
     ></SchedulerEditor>
   </q-page>
 </template>
@@ -69,11 +70,11 @@ import { defineComponent } from 'vue';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiPlus, mdiPencil } from '@quasar/extras/mdi-v7';
-import SchedulerListTable from 'api/admin/table/SchedulerListTable';
+import SchedulerListTable from '@api/admin/table/SchedulerListTable';
 import SchedulerEditor from 'pages/Admin/Firebase/SchedulerEditor.vue';
 
 export default defineComponent({
-  name: 'AccountListing',
+  name: 'SchedulerPage',
   components: { SchedulerEditor, PageContent, SimpleTable },
   setup: () => ({ SchedulerListTable, mdiPlus, mdiPencil }),
 });

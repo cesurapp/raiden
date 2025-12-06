@@ -1,5 +1,5 @@
-import { DateLocale } from 'quasar/dist/types/utils/date';
-import { i18n } from 'boot/app';
+import {i18n} from 'boot/app';
+import {DateLocale} from "quasar";
 
 const locales: Record<string, DateLocale> = {
   'tr-TR': {
@@ -10,8 +10,9 @@ const locales: Record<string, DateLocale> = {
   },
 };
 
-const getCurrentLocale = () => {
-  return locales.hasOwnProperty(i18n.global.locale['value']) ? locales[i18n.global.locale['value']] : null;
+const getCurrentLocale = (): DateLocale | undefined => {
+  // @ts-ignore
+  return locales.hasOwnProperty(i18n.global.locale['value']) ? locales[i18n.global.locale['value']] : undefined;
 };
 
-export { getCurrentLocale };
+export {getCurrentLocale};

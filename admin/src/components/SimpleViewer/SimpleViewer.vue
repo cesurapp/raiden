@@ -1,15 +1,14 @@
 <template>
   <div class="simple-viewer">
     <q-drawer v-model="open" side="right" overlay elevated behavior="mobile" :width="width">
-      <div
-        v-if="$slots.title"
-        class="title q-pa-md text-weight-medium bg-primary text-white text-subtitle1 overflow-hidden ellipsis sticky-top shadow-bottom"
-      >
-        <div class="flex items-center gap-x-md">
+      <div v-if="$slots.title" class="title q-py-sm q-px-md text-weight-medium bg-primary text-white text-subtitle1 overflow-hidden ellipsis sticky-top shadow-bottom">
+        <div class="flex items-center gap-x-md no-wrap full-width">
           <slot name="icon"></slot>
-          <slot name="title"></slot>
+          <span class="overflow-hidden ellipsis"><slot name="title"></slot></span>
+          <q-btn class="q-ml-auto" style="margin-right: -8px" flat round dense :icon="mdiClose" @click="toggle" />
         </div>
       </div>
+
       <div class="content">
         <slot name="content"></slot>
       </div>
@@ -23,8 +22,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { mdiClose } from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
+  setup: () => ({mdiClose}),
   props: {
     width: {
       type: Number,
@@ -55,7 +56,9 @@ export default defineComponent({
   }
 
   .title {
-    padding-top: max(env(safe-area-inset-top), 16px);
+    display: flex;
+    min-height: 52px;
+    padding-top: max(env(safe-area-inset-top), 8px);
   }
 
   .q-table th:first-of-type,

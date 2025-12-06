@@ -1,7 +1,7 @@
-import { Notify } from 'quasar';
-import { mdiClose } from '@quasar/extras/mdi-v7';
+import {Notify} from 'quasar';
+import {mdiClose} from '@quasar/extras/mdi-v7';
 
-const convertMessageType = function (type) {
+const convertMessageType = function (type: any) {
   switch (type) {
     case 'danger':
       return 'negative';
@@ -37,7 +37,7 @@ function notifyShow(message?: string, caption?: string, type?: string, options: 
     options['actions'] = [...opts['actions'], ...options['actions']];
   }
 
-  Notify.create({ ...opts, ...options });
+  Notify.create({...opts, ...options});
 }
 
-export { notifyShow };
+export {notifyShow};

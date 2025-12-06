@@ -52,16 +52,16 @@ export default defineComponent({
     width: 100%;
     max-width: 1140px;
     &:not(.cleared) {
-      #margin-left: calc(env(safe-area-inset-left) / 2 + 32px);
-      #margin-right: calc(env(safe-area-inset-right) / 2 + 32px);
+      #margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
+      #margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
     }
   }
 
   .content-liquid {
     width: 100%;
     &:not(.cleared) {
-      margin-left: calc(env(safe-area-inset-left) / 2 + 32px);
-      margin-right: calc(env(safe-area-inset-right) / 2 + 32px);
+      margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
+      margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
 
       .screen--xs &,
       .screen--sm & {
@@ -79,7 +79,7 @@ export default defineComponent({
     .q-table th:first-of-type,
     .q-table td:first-of-type,
     .q-table__bottom {
-      padding-left: 32px;
+      padding-left: 24px;
       .screen--xs &,
       .screen--sm & {
         padding-left: 16px;
@@ -88,7 +88,7 @@ export default defineComponent({
     .q-table th:last-of-type,
     .q-table td:last-of-type,
     .q-table__bottom {
-      padding-right: 32px;
+      padding-right: 24px;
     }
   }
 }

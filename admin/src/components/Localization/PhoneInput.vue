@@ -20,7 +20,7 @@
         borderless
         :onlyActive="false"
         :readonly="$attrs.readonly"
-        :modelValue="phoneCountry"
+        :modelValue="phoneCountry as string"
         @update:modelValue="(val) => $emit('update:phoneCountry', val)"
         :clearable="false"
         :bottom-slots="false"

@@ -4,19 +4,13 @@
     <Navigation :navs="navs" :title="$appStore.title">
       <q-btn-group flat spread>
         <q-btn
-          @click="
-            $refs.search.toggle();
-            $appStore.closeNav();
-          "
+          @click="($refs.search as any).toggle();$appStore.closeNav();"
           size="12px"
           class="q-px-sm"
           :icon="mdiMagnify"
         />
         <q-btn
-          @click="
-            $refs.notification.toggle();
-            $appStore.closeNav();
-          "
+          @click="($refs.notification as any).toggle(); $appStore.closeNav();"
           size="12px"
           class="q-px-sm"
           :icon="mdiBell"
@@ -55,7 +49,7 @@ import {
   mdiTabletCellphone,
   mdiViewDashboard,
 } from '@quasar/extras/mdi-v7';
-import { Permission } from 'api/enum/Permission';
+import { Permission } from '@api/enum/Permission';
 
 export default defineComponent({
   name: 'AdminLayout',

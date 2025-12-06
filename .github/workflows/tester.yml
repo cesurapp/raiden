@@ -3,6 +3,7 @@ on:
   push:
     branches-ignore: [ production ]
     paths: [ 'api/**' ]
+  workflow_dispatch:
 
 env:
   php-version: '8.4'

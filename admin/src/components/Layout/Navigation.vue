@@ -5,16 +5,16 @@
     :no-mini-animation="miniAnimation"
     @mouseover="miniState = false"
     @mouseout="miniState = true"
-    :mini-width="70"
+    :mini-width="60"
     :width="300"
     class="main-nav text-white"
     v-model="$appStore.navMenu"
     :behavior="$q.platform.is.desktop ? 'desktop' : 'mobile'"
   >
     <!--Logo-->
-    <q-toolbar class="logo justify-center">
-      <q-toolbar-title>
-        <q-avatar size="26px"><q-img src="/icons/favicon-128x128.png" /></q-avatar>
+    <q-toolbar class="logo">
+      <q-toolbar-title class="flex no-wrap">
+        <q-avatar size="32px"><q-img src="/icons/favicon-128x128.png" /></q-avatar>
       </q-toolbar-title>
       <slot></slot>
     </q-toolbar>
@@ -237,7 +237,7 @@ export default defineComponent({
   .menus {
     flex: 1;
     overflow: auto;
-    padding: 8px 12px;
+    padding: 8px 7px;
   }
 
   .item {
@@ -245,11 +245,11 @@ export default defineComponent({
   }
 
   .logo {
-    height: 60px;
+    height: var(--header-size);
     position: relative;
-    padding: 8px 14px 8px 20px;
-    box-shadow: 0 5px 5px -2px rgba(0, 0, 0, 0.1);
+    padding: 8px 14px 8px 14px;
     padding-top: max(env(safe-area-inset-top), 8px);
+    //box-shadow: 0 5px 5px -2px rgba(0, 0, 0, 0.1);
   }
 
   .q-item {
@@ -303,8 +303,8 @@ export default defineComponent({
 
   .footer {
     min-height: 46px;
-    padding: 5px 18px;
-    padding-bottom: max(env(safe-area-inset-bottom) / 2, 12px) !important;
+    padding: 8px 10px;
+    padding-bottom: max(env(safe-area-inset-bottom) / 2, 8px) !important;
 
     .profile-btn {
       .q-btn__content {
@@ -327,7 +327,8 @@ export default defineComponent({
   }
   .logo {
     padding: 0 14px 0 14px;
-    height: 60px !important;
+    height: var(--header-size) !important;
+    border-bottom: none;
     .q-btn-group {
       display: none;
     }
@@ -367,10 +368,6 @@ export default defineComponent({
     & > span {
       display: none;
     }
-  }
-
-  .logo {
-    border-bottom: none;
   }
 }
 </style>

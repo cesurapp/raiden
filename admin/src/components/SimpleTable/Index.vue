@@ -7,11 +7,11 @@
     :loading="$appStore.isBusy"
     :selection="selectable ? 'multiple' : 'none'"
     v-model:selected="selectedRows"
-    v-model:pagination="pagination"
+    v-model:pagination="pagination as any"
     :selected-rows-label="(v) => $t('count record selected').replace('count', String(v))"
     :no-data-label="$t('There were no results!')"
     class="table-sticky"
-    :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable }"
+    :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable, 'no-data': rows.length === 0 }"
     @request="onRequest"
     @rowClick="(event, row, index) => $emit('rowClick', event, row, index)"
     @rowDblclick="(event, row, index) => $emit('rowDblclick', event, row, index)"
@@ -30,9 +30,9 @@
                 color="red"
                 size="12px"
                 v-close-popup
-                v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+                v-if="deleteProp && $authStore.hasPermission(deletePermission as string)"
                 :icon="mdiDeleteOutline"
-                @click="onActionRemoveAll(this.selectedRows)"
+                @click="onActionRemoveAll(selectedRows)"
               >
                 <q-tooltip>{{ $t('Delete All') }}</q-tooltip>
               </q-btn>
@@ -56,10 +56,10 @@
                   unelevated
                   size="12px"
                   v-close-popup
-                  v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+                  v-if="deleteProp && $authStore.hasPermission(deletePermission as string)"
                   :icon="mdiDeleteOutline"
-                  @click="onActionRemoveAll(this.selectedRows)"
-                  ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
+                  @click="onActionRemoveAll(selectedRows)"
+                ><q-tooltip>{{ $t('Delete All') }}</q-tooltip></q-btn
                 >
                 <slot name="selectedActions" :props="selectedRows"></slot>
               </div>
@@ -97,9 +97,7 @@
                     class="q-pr-sm q-pl-sm q-mr-sm"
                   >
                     <q-tooltip>{{ $t('Click to remove') }}</q-tooltip>
-                    <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{
-                      type
-                    }}</q-avatar>
+                    <q-avatar :color="$q.dark.isActive ? 'primary' : 'secondary'" text-color="white" class="full-w q-px-sm">{{ type }}</q-avatar>
                     {{ val }}
                   </q-chip>
                 </div>
@@ -114,8 +112,8 @@
             <template v-if="header">
               <div class="row q-gutter-sm">
                 <q-btn-group flat v-if="!$q.screen.xs">
-                  <q-btn color="primary" v-if="refreshButton" v-close-popup size="12px" :icon="mdiRefresh" @click="refresh"
-                    ><q-tooltip>{{ $t('Refresh') }}</q-tooltip>
+                  <q-btn color="primary" v-if="refreshButton" v-close-popup size="12px" :icon="mdiRefresh" @click="refresh(true, false)"
+                  ><q-tooltip>{{ $t('Refresh') }}</q-tooltip>
                   </q-btn>
                   <q-btn
                     v-if="exportButton && getExportedColumns.length > 0"
@@ -123,8 +121,8 @@
                     v-close-popup
                     :icon="mdiFileExportOutline"
                     size="12px"
-                    @click="$refs.exporter.toggle()"
-                    ><q-tooltip>{{ $t('Export') }}</q-tooltip>
+                    @click="($refs.exporter as any).toggle()"
+                  ><q-tooltip>{{ $t('Export') }}</q-tooltip>
                   </q-btn>
                   <slot name="tableActions"></slot>
                 </q-btn-group>
@@ -139,18 +137,18 @@
                   :menu-offset="[0, 10]"
                 >
                   <div class="column q-gutter-sm">
-                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh"
-                      ><q-tooltip>{{ $t('Refresh') }}</q-tooltip></q-btn
-                    >
+                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh">
+                      <q-tooltip>{{ $t('Refresh') }}</q-tooltip>
+                    </q-btn>
                     <q-btn
                       v-if="exportButton && getExportedColumns.length > 0"
                       color="primary"
                       v-close-popup
                       :icon="mdiFileExportOutline"
                       size="12px"
-                      @click="$refs.exporter.toggle()"
-                      ><q-tooltip>{{ $t('Export') }}</q-tooltip></q-btn
-                    >
+                      @click="($refs.exporter as any).toggle()">
+                      <q-tooltip>{{ $t('Export') }}</q-tooltip>
+                    </q-btn>
                     <slot name="tableActions"></slot>
                   </div>
                 </q-btn-dropdown>
@@ -181,7 +179,7 @@
               clickable
               v-close-popup
               class="text-red-5"
-              v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+              v-if="deleteProp && $authStore.hasPermission(deletePermission as any)"
               @click="onActionRemoveItem(props)"
             >
               <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
@@ -190,6 +188,12 @@
           </q-list>
         </q-btn-dropdown>
       </q-td>
+    </template>
+
+    <template #header-cell-actions>
+      <q-th class="actions-column">
+        <q-btn dense flat size="12px" @click="($refs.tableConfig as any).toggle()" :icon="mdiFilterCogOutline" style="opacity: .6"></q-btn>
+      </q-th>
     </template>
 
     <!--Loading-->
@@ -232,7 +236,7 @@
             clickable
             v-close-popup
             class="text-red-5"
-            v-if="deleteProp && $authStore.hasPermission(this.deletePermission)"
+            v-if="deleteProp && $authStore.hasPermission(deletePermission)"
             @click="onActionRemoveItem(props)"
           >
             <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
@@ -245,14 +249,12 @@
     <!--Header Cell -->
     <template #header-cell="props">
       <q-th :props="props">
-        <div class="inline-flex no-wrap items-center">
-          <span class="text">{{ props.col.label }}</span>
-
+        <div class="inline-flex no-wrap items-center vertical-middle" :class="getColumnFilter.hasOwnProperty(props.col.name) ? 'hasfilter' : ''">
           <!--Filters-->
           <q-btn
             v-if="getColumnFilter.hasOwnProperty(props.col.name) || $slots['filter_' + props.col.name]"
-            size="11px"
-            class="q-ml-xs filters"
+            size="9px"
+            class="filters"
             flat
             dense
             rounded
@@ -280,6 +282,8 @@
               ></TableFilter>
             </q-popup-proxy>
           </q-btn>
+
+          <span class="text">{{ props.col.label }}</span>
         </div>
       </q-th>
     </template>
@@ -373,6 +377,29 @@
       </div>
     </template>
   </SimpleDialog>
+
+  <!--Table Config Dialog-->
+  <SimpleDialog ref="tableConfig" clean>
+    <template #header>
+      <q-avatar :icon="mdiFilterCogOutline" color="primary" text-color="white" />
+      <h6 class="q-ml-sm q-ma-none">{{ $t('Column Config') }}</h6>
+    </template>
+    <template #content>
+      <div class="row q-mb-sm">
+        <div v-for="col in columns" :key="col.name" class="q-mb-none col-12 col-sm-6">
+          <q-checkbox :modelValue="!excludedColumns.includes(col.name)"
+                      @update:modelValue="(val) => {
+            if (val) {
+              excludedColumns = excludedColumns.filter((c) => c !== col.name);
+            } else {
+              excludedColumns.push(col.name);
+            }
+          }"
+          >{{ $t(getTranslatePrefix + col.label) }}</q-checkbox>
+        </div>
+      </div>
+    </template>
+  </SimpleDialog>
 </template>
 
 <script lang="ts">
@@ -393,11 +420,12 @@ import {
   mdiFilterOutline,
   mdiCheckAll,
   mdiDeleteOutline,
+  mdiFilterCogOutline
 } from '@quasar/extras/mdi-v7';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
 import { AxiosResponse } from 'axios';
-import { deFlatten, flatten } from 'api/flatten';
+import { deFlatten, flatten } from '@api/flatten';
 import NavigationToggle from 'components/Layout/NavigationToggle.vue';
 import { LocalStorage } from 'quasar';
 
@@ -419,8 +447,10 @@ export default defineComponent({
     mdiFilterRemove,
     mdiCheckAll,
     mdiDeleteOutline,
+    mdiFilterCogOutline
   }),
   props: {
+    uId: String,
     transKey: String,
     header: {
       type: Boolean,
@@ -461,6 +491,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    excludedCols: {
+      type: [Array, String],
+      default: null,
+    },
   },
   data: () => ({
     rows: [],
@@ -479,7 +513,17 @@ export default defineComponent({
     backEvent: false,
     loadEvent: true,
     perPageState: LocalStorage.getItem('rowsPerPage') ?? 'Auto',
+    excludedColumns: ['id'],
   }),
+  watch: {
+    'excludedColumns': {
+      handler(val) {
+        if (!this.isMounted) return;
+        LocalStorage.setItem(this.uId + '_excols', val);
+      },
+      deep: true
+    }
+  },
   computed: {
     getRowActions() {
       if (!this.rowActions) {
@@ -496,9 +540,12 @@ export default defineComponent({
 
         return {
           ...c,
-          ...{ field: c.name, label: this.$t(this.getTranslatePrefix() + c.label) },
+          ...{ field: c.name, label: this.$t(this.getTranslatePrefix + c.label) },
         };
       });
+
+      // Exclude Columns
+      all = all.filter((c) => !this.excludedColumns.includes(c.name));
 
       if (this.getRowActions) {
         all.unshift({
@@ -515,7 +562,7 @@ export default defineComponent({
         .filter((c) => c.hasOwnProperty('export') && c.export)
         .map((c) => {
           return {
-            label: this.$t(this.getTranslatePrefix() + c.label),
+            label: this.$t(this.getTranslatePrefix + c.label),
             value: c.name,
           };
         });
@@ -539,6 +586,16 @@ export default defineComponent({
     isFiltered() {
       return Object.values(this.filterValues).filter((item: any) => ![undefined, null, ''].includes(item)).length > 0;
     },
+    getTranslatePrefix() {
+      return this.$i18n.locale === 'en-US' ? '' : this.transKey + '.';
+    },
+  },
+  beforeMount() {
+    if (this.excludedCols) {
+      this.excludedColumns = this.excludedCols;
+    }
+
+    this.loadColumnConfig();
   },
   mounted() {
     this.onPerPage(this.perPageState);
@@ -761,13 +818,6 @@ export default defineComponent({
     },
 
     /**
-     * Generate Table Translate Prefix
-     */
-    getTranslatePrefix() {
-      return this.$i18n.locale === 'en-US' ? '' : this.transKey + '.';
-    },
-
-    /**
      * Request Params to URL String
      */
     loadQueryString(updateHash) {
@@ -817,6 +867,15 @@ export default defineComponent({
     },
 
     /**
+     * Remove Filter Item
+     */
+    addFilter(type, data) {
+      this.pagination.page = 1;
+      this.filterValues[type] = data;
+      this.refresh();
+    },
+
+    /**
      * Load PerPage Count
      */
     onPerPage(val: number | string, triggerRequest: boolean = false) {
@@ -851,6 +910,17 @@ export default defineComponent({
         style: [result ? 'opacity: 1' : 'opacity: .6'],
       };
     },
+
+    /**
+     * Load Column Config from Local Storage
+     */
+    loadColumnConfig() {
+      // Excluded Columns
+      const excluded = LocalStorage.getItem(this.uId + '_excols');
+      if (excluded) {
+        this.excludedColumns = excluded;
+      }
+    },
   },
 });
 </script>
@@ -859,23 +929,18 @@ export default defineComponent({
 .table-title {
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 1.15rem;
 }
 
 .q-table__top {
-  //border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   min-height: var(--header-size);
   flex-wrap: nowrap;
   background: var(--q-light);
   z-index: 3;
-  padding-bottom: 8px;
-  padding-top: max(env(safe-area-inset-top), 8px);
+  padding-bottom: 6px;
+  padding-top: max(env(safe-area-inset-top), 6px);
   padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
   padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
-  /*.q-table__control {
-    overflow: hidden;
-    white-space: nowrap;
-    display: block;
-  }*/
 
   .body--dark & {
     //border-bottom: 1px solid rgba(255, 255, 255, 0.13);

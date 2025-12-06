@@ -82,7 +82,7 @@ export default defineComponent({
   position: sticky;
   top: 0;
   z-index: 3;
-  min-height: 60px;
+  min-height: var(--header-size);
   box-shadow: 0 0 23px -5px rgba(0, 0, 0, 0.1);
 
   .body--dark & {
@@ -92,7 +92,7 @@ export default defineComponent({
   .wrapper {
     padding-bottom: 8px;
     padding-top: max(env(safe-area-inset-top), 8px);
-    min-height: 60px;
+    min-height: var(--header-size);
     position: relative;
     z-index: 2;
   }
@@ -103,8 +103,8 @@ export default defineComponent({
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       padding-left: 0;
       padding-right: 0;
-      margin-left: calc(env(safe-area-inset-left) / 2 + 32px);
-      margin-right: calc(env(safe-area-inset-right) / 2 + 32px);
+      margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
+      margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
     }
 
     .content-fixed .wrapper {
@@ -160,14 +160,14 @@ export default defineComponent({
       .wrapper {
         padding-left: 0;
         padding-right: 0;
-        margin-left: calc(env(safe-area-inset-left) / 2 + 32px);
-        margin-right: calc(env(safe-area-inset-right) / 2 + 32px);
+        margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
+        margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
       }
     }
 
     .wrapper {
-      padding-left: calc(env(safe-area-inset-left) / 2 + 32px);
-      padding-right: calc(env(safe-area-inset-right) / 2 + 32px);
+      padding-left: calc(env(safe-area-inset-left) / 2 + 24px);
+      padding-right: calc(env(safe-area-inset-right) / 2 + 24px);
     }
 
     .content-fixed {

@@ -149,14 +149,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import {defineComponent, toRaw} from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
-import { AccountEditRequest } from 'api/admin/request/AccountEditRequest';
 import { mdiAccount, mdiContentSave, mdiEye, mdiEyeOff, mdiSecurity } from '@quasar/extras/mdi-v7';
 import PhoneInput from 'components/Localization/PhoneInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
-import { UserType } from 'api/enum/UserType';
+import { UserType } from '@api/enum/UserType';
+import { AccountEditRequest } from '@api/admin/request/AccountEditRequest';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
+import {UserResource} from "@api/admin/resource/UserResource";
 
 export default defineComponent({
   name: 'UserEditor',
@@ -166,7 +167,7 @@ export default defineComponent({
     isPwd: true,
     form: {} as AccountEditRequest,
     permissions: [],
-    proxy: null,
+    proxy: {} as UserResource,
     tab: 'profile',
   }),
   computed: {
@@ -199,7 +200,7 @@ export default defineComponent({
       this.tab = 'profile';
       this.proxy = user;
       this.form = user
-        ? user
+        ? structuredClone(toRaw(user))
         : {
             phone_country: 'TR',
             phone_approved: true,

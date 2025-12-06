@@ -1,12 +1,12 @@
-import { AxiosError, AxiosHeaderValue, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosHeaderValue, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AuthStoreType } from 'stores/AuthStore';
+import type { AppStoreType } from 'stores/AppStore';
 
 /**
  * Configure Request
  */
-function requestConfig(config: InternalAxiosRequestConfig, authStore, appStore, i18n) {
-  if (config.skipInterceptor === true) {
-    return config;
-  }
+function requestConfig(config: InternalAxiosRequestConfig, authStore: AuthStoreType, appStore: AppStoreType, i18n: any) {
+  if (config.skipInterceptor === true) return config;
 
   // Generate Unique ID
   appStore.busyProcess((config.uniqId = Math.random().toString(36).replace('0.', '')));
@@ -30,12 +30,10 @@ function requestConfig(config: InternalAxiosRequestConfig, authStore, appStore, 
 /**
  * Success Response
  */
-function responseSuccess(response: AxiosResponse, appStore) {
+function responseSuccess(response: AxiosResponse, appStore: AppStoreType) {
   appStore.busyComplete(response.config.uniqId);
 
-  if (response.config.skipInterceptor === true) {
-    return response;
-  }
+  if (response.config.skipInterceptor === true) return response;
 
   // Render Error Message
   const msg = response.config.showMessage;
@@ -50,7 +48,7 @@ function responseSuccess(response: AxiosResponse, appStore) {
   return response;
 }
 
-async function responseError(error: AxiosError, client: AxiosInstance, authStore, appStore) {
+async function responseError(error: AxiosError, client: AxiosInstance, authStore: AuthStoreType, appStore: AppStoreType) {
   appStore.busyComplete(error.response?.config.uniqId);
 
   if (error.config?.skipInterceptor === true) {
@@ -62,7 +60,7 @@ async function responseError(error: AxiosError, client: AxiosInstance, authStore
     if (!appStore.networkError) {
       appStore.networkError = true;
       setTimeout(() => {
-        appStore
+        void appStore
           .dialogDanger('Could not connect to the server, refresh the page.', 'Refresh Page')
           .then(() => window.location.reload());
       }, 100);
@@ -82,15 +80,14 @@ async function responseError(error: AxiosError, client: AxiosInstance, authStore
       return (
         authStore
           .reloadTokenWithRefreshToken()
-          // @ts-ignore
-          .then(() => client(error.config))
+          .then(() => client(error.config!))
           .catch(() => authStore.logout(false))
       );
     }
 
     // Logout for JWTException
     if (['JWTException'].includes(data.type)) {
-      await authStore.logout(false);
+      authStore.logout(false);
       return Promise.reject(error);
     }
 
@@ -110,18 +107,19 @@ async function responseError(error: AxiosError, client: AxiosInstance, authStore
   return Promise.reject(error);
 }
 
-export default (client: AxiosInstance, authStore, appStore, i18n) => {
+export default (client: AxiosInstance, authStore: AuthStoreType, appStore: AppStoreType, i18n: any) => {
   client.interceptors.request.use(
-    async (config) => requestConfig(config, authStore, appStore, i18n),
-    async (error: AxiosError) => () => {
+    (config) => requestConfig(config, authStore, appStore, i18n),
+    (error: AxiosError) => () => {
       if (error.config?.uniqId) {
         appStore.busyComplete(error.config.uniqId);
       }
       return Promise.reject(error);
     },
   );
+
   client.interceptors.response.use(
-    async (response) => responseSuccess(response, appStore),
-    async (error) => responseError(error, client, authStore, appStore),
+    (response) => responseSuccess(response, appStore),
+    (error) => responseError(error, client, authStore, appStore),
   );
 };

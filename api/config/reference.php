@@ -1213,6 +1213,18 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     intercept_redirects?: bool, // Default: false
  *     excluded_ajax_paths?: scalar|null, // Default: "^/((index|app(_[\\w]+)?)\\.php/)?_wdt"
  * }
+ * @psalm-type MakerConfig = array{
+ *     root_namespace?: scalar|null, // Default: "App"
+ *     generate_final_classes?: bool, // Default: true
+ *     generate_final_entities?: bool, // Default: false
+ * }
+ * @psalm-type DebugConfig = array{
+ *     max_items?: int, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
+ *     min_depth?: int, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
+ *     max_string_length?: int, // Max length of displayed strings, -1 means no limit. // Default: -1
+ *     dump_destination?: scalar|null, // A stream URL where dumps should be written to. // Default: null
+ *     theme?: "dark"|"light", // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
+ * }
  * @psalm-type SonataExporterConfig = array{
  *     exporter?: array{
  *         default_writers?: list<scalar|null>,
@@ -1313,18 +1325,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     make_story?: array{
  *         default_namespace?: scalar|null, // Default namespace where stories will be created by maker. // Default: "Story"
  *     },
- * }
- * @psalm-type MakerConfig = array{
- *     root_namespace?: scalar|null, // Default: "App"
- *     generate_final_classes?: bool, // Default: true
- *     generate_final_entities?: bool, // Default: false
- * }
- * @psalm-type DebugConfig = array{
- *     max_items?: int, // Max number of displayed items past the first level, -1 means no limit. // Default: 2500
- *     min_depth?: int, // Minimum tree depth to clone all the items, 1 is default. // Default: 1
- *     max_string_length?: int, // Max length of displayed strings, -1 means no limit. // Default: -1
- *     dump_destination?: scalar|null, // A stream URL where dumps should be written to. // Default: null
- *     theme?: "dark"|"light", // Changes the color of the dump() output when rendered directly on the templating. "dark" (default) or "light". // Default: "dark"
  * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,

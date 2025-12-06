@@ -86,9 +86,9 @@
 import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
 import { mdiBell, mdiClose, mdiPlus, mdiSend } from '@quasar/extras/mdi-v7';
-import { NotificationStatus } from 'api/enum/NotificationStatus';
-import { DeviceType } from 'api/enum/DeviceType';
-import { DeviceSendRequest } from 'api/admin/request/DeviceSendRequest';
+import { NotificationStatus } from '@api/enum/NotificationStatus';
+import { DeviceType } from '@api/enum/DeviceType';
+import { DeviceSendRequest } from '@api/admin/request/DeviceSendRequest';
 
 export default defineComponent({
   name: 'DeviceSendEditor',

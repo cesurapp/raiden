@@ -21,12 +21,11 @@ import countries from './data/countries.json';
 const getCountries = (): Country[] => countries;
 const findCountry = (iso2: string): Country | undefined => getCountries().find((c) => c.iso2 === iso2);
 const getCountryFlag = (iso2: string): string | undefined => getCountries().find((c) => c.iso2 === iso2)?.emoji;
-const getCountryOptions = (): CountryOptions[] =>
-  getCountries().map((c) => ({
-    value: c.iso2,
-    label: c.name,
-    icon: c.emoji,
-  }));
+const getCountryOptions = (): CountryOptions[] => getCountries().map((c) => ({
+  value: c.iso2,
+  label: c.name,
+  icon: c.emoji,
+}));
 
 /**
  * States

@@ -1,16 +1,16 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import { Dialog, exportFile } from 'quasar';
 import CustomDialog from 'components/CustomDialog/Index.vue';
 import { notifyShow } from '../helper/NotifyHelper';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { FileOpener } from '@capawesome-team/capacitor-file-opener';
+import type { Platform } from 'quasar';
 
 // DayJS Install
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { i18n } from 'boot/app';
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
@@ -22,10 +22,10 @@ export const useAppStore = defineStore('app', {
     navMini: false,
     apiExceptions: {},
     networkError: false,
-    busy: [],
+    busy: [] as (string | number | undefined)[],
     dateFormat: 'DD/MM/YYYY',
     dateTimeFormat: 'DD/MM/YYYY HH:mm',
-    platform: {},
+    platform: {} as Platform['is'],
     defaultCountry: 'TR',
   }),
   getters: {
@@ -72,14 +72,14 @@ export const useAppStore = defineStore('app', {
       return dayjs().format(time ? this.dateTimeFormat : this.dateFormat);
     },
 
-    formatPrice(amount: number, currency: string) {
+    /*formatPrice(amount: number, currency: string) {
       const formatter = new Intl.NumberFormat(i18n.global.locale['value'], {
         style: 'currency',
         currency: currency.toLocaleUpperCase(),
       });
 
       return formatter.format(amount);
-    },
+    },*/
 
     /**
      * Date Convert from UTC-ATOM
@@ -93,7 +93,7 @@ export const useAppStore = defineStore('app', {
     /**
      * Confirmation Custom Dialog
      */
-    confirmPromise(icon, color, message, ok = false, okColor = null, okText = null) {
+    confirmPromise(icon: string, color: string, message: string, ok = false, okColor: string | null = null, okText: string | null = null) {
       return new Promise((resolve, reject) => {
         const props = {
           icon: icon,
@@ -120,7 +120,7 @@ export const useAppStore = defineStore('app', {
           .onCancel(() => reject(false));
       });
     },
-    confirmInfo(message) {
+    confirmInfo(message: string) {
       return this.confirmPromise('mdiInformationVariant', 'info', message);
     },
     confirmDelete() {
@@ -133,16 +133,16 @@ export const useAppStore = defineStore('app', {
     /**
      * Custom Dialog
      */
-    dialogInfo(message, okText = null) {
+    dialogInfo(message: string, okText: string | null = null) {
       return this.confirmPromise('mdiInformationVariant', 'info', message, true, 'info', okText);
     },
-    dialogDanger(message, okText = null) {
+    dialogDanger(message: string, okText: string | null = null) {
       return this.confirmPromise('mdiAlert', 'negative', message, true, 'negative', okText);
     },
-    dialogSuccess(message, okText = null) {
+    dialogSuccess(message: string, okText: string | null = null) {
       return this.confirmPromise('mdiCheck', 'positive', message, true, 'positive', okText);
     },
-    dialogWarning(message, okText = null) {
+    dialogWarning(message: string, okText: string | null = null) {
       return this.confirmPromise('mdiCheck', 'warning', message, true, 'warning', okText);
     },
 
@@ -197,3 +197,8 @@ export const useAppStore = defineStore('app', {
     },
   },
 });
+
+export type AppStoreType = typeof useAppStore extends () => infer T ? T : never;
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAppStore, import.meta.hot));
+}

@@ -2,10 +2,10 @@
   <q-btn v-if="!listItem" flat :icon="mdiWeb" :menu-offset="[0, 8]" :label="$t(curentLocale)" no-caps>
     <q-popup-proxy :breakpoint="600" class="popup-dropdown">
       <q-list style="min-width: 140px" v-close-popup>
-        <q-item v-for="locale in localeOptions" :key="locale.value" @click="$i18n.locale = locale.value" clickable>
+        <q-item v-for="locale in localeOptions" :key="locale.value as string" @click="$i18n.locale = locale.value as string" clickable>
           <q-item-section side><q-icon class="language-emoji" :name="locale.icon" /></q-item-section>
           <q-item-section
-            ><q-item-label>{{ locale.label }}</q-item-label></q-item-section
+          ><q-item-label>{{ locale.label }}</q-item-label></q-item-section
           >
         </q-item>
       </q-list>
@@ -16,10 +16,10 @@
     <q-item-section side><q-icon class="language-emoji" :name="localeFlag" /></q-item-section>
     <q-popup-proxy :breakpoint="5000" class="popup-dropdown">
       <q-list style="min-width: 140px" v-close-popup>
-        <q-item v-for="locale in localeOptions" :key="locale.value" @click="$i18n.locale = locale.value" clickable>
+        <q-item v-for="locale in localeOptions" :key="locale.value as string" @click="$i18n.locale = locale.value as string" clickable>
           <q-item-section side><q-icon class="language-emoji" :name="locale.icon" /></q-item-section>
           <q-item-section
-            ><q-item-label>{{ locale.label }}</q-item-label></q-item-section
+          ><q-item-label>{{ locale.label }}</q-item-label></q-item-section
           >
         </q-item>
       </q-list>

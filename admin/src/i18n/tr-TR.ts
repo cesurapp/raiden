@@ -154,6 +154,7 @@ export default {
   Date: 'Tarih',
   Minimum: 'En az',
   Maximum: 'En fazla',
+  'Column Config': 'Kolon Ayarları',
 
   // Account Table
   'Switch User': 'Kullanıcıya Geç',

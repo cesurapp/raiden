@@ -185,16 +185,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SimpleEditor from 'components/SimpleEditor/Index.vue';
-import { mdiBell, mdiPlus, mdiSend, mdiClose, mdiCalendar, mdiClockOutline } from '@quasar/extras/mdi-v7';
-import { NotificationStatus } from 'api/enum/NotificationStatus';
-import { DeviceType } from 'api/enum/DeviceType';
-import { SchedulerCreateRequest } from 'api/admin/request/SchedulerCreateRequest';
-import { SchedulerResource } from 'api/admin/resource/SchedulerResource';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
 import LanguageInput from 'components/Language/LanguageInput.vue';
 import CountryInput from 'components/Localization/CountryInput.vue';
 import DateRangeInput from 'components/Date/DateRangeInput.vue';
 import DateInput from 'components/Date/DateInput.vue';
+import { mdiBell, mdiPlus, mdiSend, mdiClose, mdiCalendar, mdiClockOutline } from '@quasar/extras/mdi-v7';
+import { NotificationStatus } from '@api/enum/NotificationStatus';
+import { DeviceType } from '@api/enum/DeviceType';
+import { SchedulerCreateRequest } from '@api/admin/request/SchedulerCreateRequest';
+import { SchedulerResource } from '@api/admin/resource/SchedulerResource';
 
 export default defineComponent({
   name: 'SendNotificationEditor',

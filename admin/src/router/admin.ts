@@ -1,5 +1,5 @@
-import { UserType } from 'api/enum/UserType';
-import { Permission } from 'api/enum/Permission';
+import { UserType } from '@api/enum/UserType';
+import { Permission } from '@api/enum/Permission';
 
 export default [
   {
@@ -20,26 +20,26 @@ export default [
       },
       {
         path: 'account/profile',
-        component: () => import('pages/Admin/Account/Profile.vue'),
+        component: () => import('pages/Admin/Account/ProfilePage.vue'),
         meta: { breadcrumb: 'Edit Profile' },
       },
 
       // Account Management
       {
         path: 'account',
-        component: () => import('pages/Admin/Account/Accounts.vue'),
+        component: () => import('pages/Admin/Account/AccountPage.vue'),
         meta: { breadcrumb: 'Accounts', permission: [Permission.AdminAccount.LIST] },
       },
 
       // Firebase Devices & Scheduled Notifications
       {
         path: 'firebase/devices',
-        component: () => import('pages/Admin/Firebase/Devices.vue'),
+        component: () => import('pages/Admin/Firebase/DevicePage.vue'),
         meta: { breadcrumb: 'Firebase Devices', permission: [Permission.AdminDevice.LIST] },
       },
       {
         path: 'firebase/scheduler',
-        component: () => import('pages/Admin/Firebase/Scheduler.vue'),
+        component: () => import('pages/Admin/Firebase/SchedulerPage.vue'),
         meta: { breadcrumb: 'Scheduled Notifications', permission: [Permission.AdminScheduler.LIST] },
       },
     ],

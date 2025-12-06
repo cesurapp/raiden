@@ -4,7 +4,7 @@
     flat
     :ripple="false"
     v-bind="$attrs"
-    :color="!this.$q.dark.isActive ? (onlyWhite ? 'white' : 'dark') : 'white'"
+    :color="!$q.dark.isActive ? (onlyWhite ? 'white' : 'dark') : 'white'"
     @click="toggle"
     :icon="getIcon"
     v-if="!listItem"
@@ -13,7 +13,7 @@
   </q-btn>
   <q-item v-else clickable @click="toggle">
     <q-item-section
-      ><q-item-label>{{ $t(getText) }}</q-item-label></q-item-section
+    ><q-item-label>{{ $t(getText) }}</q-item-label></q-item-section
     >
     <q-item-section avatar>
       <q-toggle dense color="primary" @click="toggle" :model-value="isDarkMode" />

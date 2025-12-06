@@ -20,7 +20,7 @@
       <q-item v-bind="scope.itemProps">
         <q-item-section avatar><q-icon class="language-emoji" :name="scope.opt.icon" /></q-item-section>
         <q-item-section
-          ><q-item-label>{{ scope.opt.label }}</q-item-label></q-item-section
+        ><q-item-label>{{ scope.opt.label }}</q-item-label></q-item-section
         >
       </q-item>
     </template>

@@ -2,15 +2,13 @@
   <q-dialog ref="dialog" :no-backdrop-dismiss="persistent">
     <q-card class="q-dialog-plugin">
       <!-- Header ICONS -->
-      <q-card-section class="row items-center no-wrap" v-if="icon">
+      <q-card-section class="row items-center no-wrap q-pb-none" v-if="icon">
         <q-avatar :icon="getIcon" :color="iconBg" text-color="white" class="self-start" />
         <span class="q-ml-md">{{ $t(message) }}</span>
       </q-card-section>
 
       <template v-else>
-        <q-card-section v-if="title"
-          ><div class="text-h6">{{ $t(title) }}</div></q-card-section
-        >
+        <q-card-section v-if="title"><div class="text-h6">{{ $t(title) }}</div></q-card-section>
         <q-card-section v-if="message" class="q-pt-none">{{ $t(message) }}</q-card-section>
       </template>
 

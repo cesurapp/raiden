@@ -4,19 +4,17 @@
     class="bg-indigo-12 column justify-center items-center"
     :class="[$q.dark.isActive ? 'bg-dark-page' : 'bg-indigo-12']"
   >
-    <div class="auth-main flex column no-wrap q-pa-lg">
-      <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper row full-width rounded-borders">
-        <div class="col-12 justify-center items-center flex">
-          <div class="q-pa-xs-lg q-pa-sm-xl full-width">
-            <router-view v-slot="{ Component }">
-              <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                <component :is="Component"></component>
-              </transition>
-            </router-view>
-          </div>
-        </div>
+    <div class="auth-main flex column no-wrap q-ma-lg">
+      <!--Pages-->
+      <div :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']" class="wrapper full-width rounded-borders q-pa-lg">
+        <router-view v-slot="{ Component }">
+          <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+            <component :is="Component"></component>
+          </transition>
+        </router-view>
       </div>
 
+      <!--Actions-->
       <div class="lang-wrap full-width flex items-center justify-end q-pt-md text-white">
         <DarkModeChanger size="md" :only-white="true"></DarkModeChanger>
         <span class="divider"></span>
@@ -52,8 +50,9 @@ export default defineComponent({
 
 <style lang="scss">
 .auth-main {
-  max-width: 550px;
-  width: 100%;
+  display: flex;
+  max-width: 100%;
+  width: 500px;
 
   .q-btn {
     min-height: 42px;

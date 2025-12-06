@@ -1,11 +1,11 @@
 <template>
-  <q-btn flat no-caps rounded class="q-pt-none q-pb-none q-pl-none q-pr-xs profile-btn full-width">
-    <q-avatar square size="52px"><q-icon :name="mdiAccountCircle"></q-icon></q-avatar>
+  <q-btn flat no-caps rounded align="left" class="q-pa-none profile-btn full-width">
+    <q-avatar square size="48px"><q-icon :name="mdiAccountCircle"></q-icon></q-avatar>
     <div class="nav-text q-pl-sm">
       <div class="title">{{ $authStore.user.first_name }} {{ $authStore.user.last_name }}</div>
       <div class="sub">{{ $t($authStore.user.type) }}</div>
     </div>
-    <q-icon class="nav-dropdown q-ml-auto" size="sm" :name="mdiChevronRight" />
+    <q-icon class="nav-dropdown q-ml-auto q-mr-xs" size="sm" :name="mdiChevronRight" />
     <q-popup-proxy class="popup-dropdown" breakpoint="600">
       <q-list style="min-width: 200px">
         <slot></slot>

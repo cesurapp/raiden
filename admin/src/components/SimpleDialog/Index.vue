@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model="active">
     <q-card :style="{ minWidth: width }" class="simple-dialog">
-      <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm sticky-top">
+      <q-card-section v-if="$slots.header" class="flex items-center header q-pb-sm sticky-top" :class="[$q.dark.isActive ? 'bg-dark' : 'bg-white']">
         <slot name="header" />
         <q-space />
         <q-btn :icon="mdiClose" flat round dense v-close-popup />
@@ -18,7 +18,7 @@
   </q-dialog>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiClose } from '@quasar/extras/mdi-v7';
 

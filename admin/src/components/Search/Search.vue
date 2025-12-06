@@ -12,7 +12,7 @@
             :loading="$appStore.isBusy"
             v-model="search"
             ref="self"
-            @focus="$refs.self.select()"
+            @focus="($refs.self as any).select()"
             class="modal-input"
             :style="{ background: $q.dark.isActive ? 'var(--q-dark-page)' : 'white' }"
           >
@@ -66,12 +66,12 @@
         <q-card-actions align="right">
           <q-btn disable push no-caps size="12px">
             <template #default
-              ><b class="q-mr-xs">META+K</b><span>{{ $t('to Open') }}</span></template
+            ><b class="q-mr-xs">META+K</b><span>{{ $t('to Open') }}</span></template
             >
           </q-btn>
           <q-btn disable push no-caps size="12px">
             <template #default
-              ><b class="q-mr-xs">ESC</b><span> {{ $t('to Close') }}</span></template
+            ><b class="q-mr-xs">ESC</b><span> {{ $t('to Close') }}</span></template
             >
           </q-btn>
           <q-space></q-space>

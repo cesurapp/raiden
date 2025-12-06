@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { UserType } from 'api/enum/UserType';
+import { UserType } from '@api/enum/UserType';
 
 export default defineComponent({
   name: 'UserTypeInput',

@@ -8,7 +8,7 @@
     :debounce="75"
     dense
     readonly
-    @click="$refs.dateProxy.show()"
+    @click="($refs.dateProxy as any).show()"
   >
     <template #append>
       <q-icon :name="mdiCalendar" class="cursor-pointer">
@@ -16,9 +16,8 @@
           <q-date
             v-model="getDate"
             range
-            minimal
             :mask="$appStore.dateFormat"
-            @rangeEnd="$refs.dateProxy.hide()"
+            @rangeEnd="($refs.dateProxy as any).hide()"
             :locale="getCurrentLocale()"
           ></q-date>
         </q-popup-proxy>
@@ -43,19 +42,19 @@ export default defineComponent({
       get() {
         return this.$attrs.modelValue
           ? {
-              from: this.$appStore.formatDate(this.$attrs.modelValue.from, false),
-              to: this.$appStore.formatDate(this.$attrs.modelValue.to, false),
-            }
+            from: this.$appStore.formatDate(this.$attrs.modelValue.from, false),
+            to: this.$appStore.formatDate(this.$attrs.modelValue.to, false),
+          }
           : null;
       },
-      set(val) {
+      set(val: any) {
         this.$emit(
           'update:modelValue',
           val
             ? {
-                from: this.$appStore.inputDate(val.from, false),
-                to: this.$appStore.inputDate(val.to, false),
-              }
+              from: this.$appStore.inputDate(val.from, false),
+              to: this.$appStore.inputDate(val.to, false),
+            }
             : null,
         );
       },

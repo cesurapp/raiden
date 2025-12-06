@@ -2,6 +2,7 @@
   <q-page>
     <PageContent borderless clear liquid>
       <SimpleTable
+        uId="admin-fb-device-list"
         ref="table"
         trans-key="devices"
         :export-button="false"
@@ -15,7 +16,7 @@
           <q-item
             clickable
             v-close-popup
-            @click="$refs.editor.init(props.row.id)"
+            @click="($refs.editor as any).init(props.row.id)"
             v-if="$authStore.hasPermission($permission.AdminDevice.SEND)"
           >
             <q-item-section side><q-icon :name="mdiSend" /></q-item-section>
@@ -77,13 +78,13 @@ import { defineComponent } from 'vue';
 import SimpleTable from 'components/SimpleTable/Index.vue';
 import PageContent from 'components/Layout/PageContent.vue';
 import { mdiSend } from '@quasar/extras/mdi-v7';
-import DeviceListTable from 'api/admin/table/DeviceListTable';
+import DeviceListTable from '@api/admin/table/DeviceListTable';
 import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
-import { DeviceType } from 'api/enum/DeviceType';
+import { DeviceType } from '@api/enum/DeviceType';
 import DeviceSendEditor from 'pages/Admin/Firebase/DeviceSendEditor.vue';
 
 export default defineComponent({
-  name: 'FirebaseDeviceListing',
+  name: 'FirebaseDevicesPage',
   components: { DeviceSendEditor, UserTypeInput, PageContent, SimpleTable },
   setup: () => ({ DeviceListTable, DeviceType, mdiSend }),
 });

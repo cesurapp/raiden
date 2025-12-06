@@ -3,7 +3,7 @@
  */
 :root {
   --animate-duration: 0.1s;
-  --header-size: 60px;
+  --header-size: 56px;
 }
 
 .q-notification__caption {
@@ -88,7 +88,7 @@
 }
 
 .q-field--with-bottom {
-  min-height: 60px;
+  min-height: var(--header-size);
   padding-bottom: 0;
 }
 
@@ -414,14 +414,18 @@ body.body--dark {
 
 .q-table th.sorted .q-table__sort-icon,
 .q-table__sort-icon--right {
-  vertical-align: text-top;
+  //vertical-align: text-top;
   margin-top: -1px;
+}
+
+.q-table__sort-icon--right{
+  margin-right: 0;
 }
 
 .q-table__bottom {
   min-height: 42px;
-  padding-top: 4px;
-  padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 4px);
+  padding-top: 3px;
+  padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 3px);
   border-bottom: 1px solid $table-border-color;
 
   &.q-table__bottom--nodata {
@@ -435,7 +439,7 @@ body.body--dark {
   top: 42px;
 
   &.headed {
-    top: 102px;
+    top: 96px;
   }
 }
 
@@ -447,7 +451,7 @@ body.body--dark {
 
 .q-table th {
   font-size: $button-font-size - 1;
-  border-top: 1px solid $table-border-color;
+  // border-top: 1px solid $table-border-color;
 }
 
 .q-table__bottom--nodata {
@@ -675,4 +679,11 @@ body.body--dark {
 .datepopup {
   padding: 0;
   backdrop-filter: none;
+}
+
+/**
+ * Q-Card
+ */
+.q-card--dark{
+  box-shadow: $shadow-1;
 }

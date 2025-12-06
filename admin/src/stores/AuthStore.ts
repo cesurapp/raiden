@@ -1,15 +1,15 @@
-import { defineStore } from 'pinia';
-import { LocalStorage } from 'quasar';
-import { api } from 'boot/app';
-import { watch } from 'vue';
-import { AxiosError } from 'axios';
-import { UserResource } from 'api/admin/resource/UserResource';
-import { UserType } from 'api/enum/UserType';
-import { Permission } from 'api/enum/Permission';
+import {acceptHMRUpdate, defineStore} from 'pinia';
+import {LocalStorage} from 'quasar';
+import {api} from 'boot/app';
+import {watch} from 'vue';
+import type {AxiosError} from 'axios';
+import type {UserResource} from '@api/admin/resource/UserResource';
+import {UserType} from '@api/enum/UserType';
+import type {Permission} from '@api/enum/Permission';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: LocalStorage.getItem('user') as UserResource,
+    user: (LocalStorage.getItem('user') as UserResource) || {} as UserResource,
     appToken: LocalStorage.getItem('appToken'),
     refreshToken: LocalStorage.getItem('refreshToken'),
     switchedUser: LocalStorage.getItem('switchedUser'),
@@ -111,30 +111,28 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Logout User and Clear Token
      */
-    async logout(showMessage = false) {
-      this.router.push({ name: 'auth.login' }).then(() => {
-        this.clearToken();
+    logout(showMessage = false, redirect = true) {
+      void api.auth.SecurityLogout({refresh_token: this.refreshToken}, {showMessage: showMessage})
 
-        if (!this.isLogoutState) {
-          this.isLogoutState = api.auth
-            .SecurityLogout({ refresh_token: this.refreshToken }, { showMessage: showMessage })
-            .finally(() => (this.isLogoutState = false));
-        }
-      });
+      if (redirect) {
+        void this.router.push({name: 'auth.login'}).then(() => {
+          this.clearToken();
+        });
+      } else {
+        this.clearToken();
+      }
     },
 
     /**
      * Switch User
      */
     async switchUser(username: string) {
-      await api.main.ProfileShow({ headers: { SWITCH_USER: username } }).then((r) => {
-        if (r.data.data.type !== UserType.USER) {
-          this.switchedUser = username;
-          this.updateUser(r.data.data);
-          this.router.push({ path: '/' }).then(() => {
-            window.location.reload();
-          });
-        }
+      await api.main.ProfileShow({headers: {SWITCH_USER: username}}).then((r) => {
+        this.switchedUser = username;
+        this.updateUser(r.data.data);
+        void this.router.push({path: '/'}).then(() => {
+          window.location.reload();
+        });
       });
     },
 
@@ -178,7 +176,7 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Check User Type
      */
-    hasUserType(userType: UserType | Array<string>): boolean {
+    hasUserType(userType: UserType | Array<string> | unknown[]): boolean {
       if (Array.isArray(userType)) {
         return userType.includes(this.user.type);
       }
@@ -189,14 +187,15 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Check User Permission
      */
-    hasPermission(perm: string | Array<string>, user?: UserResource): boolean {
+    hasPermission(perm: string | Array<string> | unknown[], user?: UserResource): boolean {
       // Super Admin
       if ((user || this.user).type === UserType.SUPERADMIN) {
         return true;
       }
 
+      // Other
       if (Array.isArray(perm)) {
-        return perm.every((r) => (user || this.user).roles.indexOf(r) !== -1);
+        return perm.every((r) => (user || this.user).roles.indexOf(r as any) !== -1);
       }
 
       return (user || this.user).roles.includes(perm);
@@ -227,10 +226,12 @@ export const useAuthStore = defineStore('auth', {
   },
 });
 
+export type AuthStoreType = typeof useAuthStore extends () => infer T ? T : never;
+
 // Set State to LocalStorage
 watch(useAuthStore().$state, (states) => {
   Object.entries(states).forEach(([k, v]) => {
-    if (['isLogoutState', 'isRefreshingState'].includes(k)) {
+    if (['isRefreshingState'].includes(k)) {
       return;
     }
 
@@ -241,3 +242,9 @@ watch(useAuthStore().$state, (states) => {
     }
   });
 });
+
+// @ts-ignore
+if (import.meta.hot) {
+// @ts-ignore
+  import.meta.hot.accept(acceptHMRUpdate(useAuthStore, import.meta.hot));
+}

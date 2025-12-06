@@ -93,13 +93,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { NotificationListResponse } from 'api/main/response/NotificationListResponse';
+import { NotificationListResponse } from '@api/main/response/NotificationListResponse';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 import { LocalStorage } from 'quasar';
 import { mdiBell, mdiCheck, mdiCheckAll, mdiClose, mdiDeleteOutline, mdiRefresh, mdiBellPlus } from '@quasar/extras/mdi-v7';
-import { DeviceType } from 'api/enum/DeviceType';
-import { NotificationResource } from 'api/admin/resource/NotificationResource';
+import { DeviceType } from '@api/enum/DeviceType';
+import { NotificationResource } from '@api/admin/resource/NotificationResource';
 
 export default defineComponent({
   name: 'NotificationComponent',

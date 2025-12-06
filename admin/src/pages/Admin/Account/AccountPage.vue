@@ -22,7 +22,7 @@
             color="green"
             :icon="mdiPlus"
             v-if="$authStore.hasPermission($permission.AdminAccount.CREATE)"
-            @click="$refs.editor.init()"
+            @click="($refs.editor as any).init()"
             ><q-tooltip>{{ $t('New') }}</q-tooltip>
           </q-btn>
         </template>
@@ -32,7 +32,7 @@
           <q-item
             clickable
             v-close-popup
-            @click="$refs.editor.init(props.row)"
+            @click="($refs.editor as any).init(props.row)"
             :disable="!isEditable(props.row)"
             v-if="$authStore.hasPermission($permission.AdminAccount.EDIT)"
           >
@@ -97,7 +97,7 @@
             :icon="mdiMagnify"
             @click="
               selectedPerm = props.row;
-              $refs.permViewer.toggle();
+              ($refs.permViewer as any).toggle();
             "
           ></q-btn>
         </template>
@@ -105,12 +105,14 @@
     </PageContent>
 
     <!--User Editor-->
-    <UserEditor ref="editor" @created="(item) => $refs.table.addFirst(item)"></UserEditor>
+    <UserEditor ref="editor" @created="(item) => ($refs.table as any).addFirst(item)"></UserEditor>
 
     <!--Permission Viewer-->
-    <SimpleDialog ref="permViewer">
+    <SimpleDialog ref="permViewer" clean>
+      <template #header>
+        <h6 class="q-ml-sm q-ma-none">{{ $t('Permissions') }}</h6>
+      </template>
       <template #content>
-        <div class="text-h5 q-mb-md q-mt-sm">{{ $t('Permissions') }}</div>
         <q-list bordered class="rounded-borders">
           <q-expansion-item
             :model-value="true"
@@ -143,16 +145,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import SimpleTable from 'components/SimpleTable/Index.vue';
-import AccountListTable from 'api/admin/table/AccountListTable';
 import PageContent from 'components/Layout/PageContent.vue';
-import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
-import { UserType } from 'api/enum/UserType';
-import UserEditor from 'pages/Admin/Account/UserEditor.vue';
-import { UserResource } from 'api/admin/resource/UserResource';
-import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
-import LanguageHelper from 'src/helper/LanguageHelper';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import { findCountry } from 'components/Localization/LocalizationLoader';
+import UserEditor from 'pages/Admin/Account/UserEditor.vue';
+import UserTypeInput from 'pages/Admin/Components/UserTypeInput.vue';
+import LanguageHelper from 'src/helper/LanguageHelper';
+import { mdiPencil, mdiPlus, mdiCancel, mdiAccountMultipleOutline, mdiMagnify } from '@quasar/extras/mdi-v7';
+import AccountListTable from '@api/admin/table/AccountListTable';
+import { UserType } from '@api/enum/UserType';
+import { UserResource } from '@api/admin/resource/UserResource';
 
 export default defineComponent({
   name: 'AccountListing',

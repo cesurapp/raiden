@@ -1,9 +1,18 @@
 {
-  "extends": "@quasar/app-vite/tsconfig-preset",
+  "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "strict": false,
+    "strictNullChecks": true,
     "noImplicitThis": false,
-    "noImplicitAny": false
-  },
-  "exclude": ["./.api"]
+    "noImplicitAny": false,
+    // "strictBindCallApply": false,
+    // "strictPropertyInitialization": false,
+    // "alwaysStrict": false,
+    // "skipLibCheck": true,
+    // "noUnusedLocals": false,
+    // "noUnusedParameters": false,
+    // "noImplicitReturns": false,
+    // "noFallthroughCasesInSwitch": false,
+    // "exactOptionalPropertyTypes": false
+  }
 }

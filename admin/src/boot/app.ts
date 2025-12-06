@@ -1,33 +1,43 @@
-import { boot } from 'quasar/wrappers';
+import {defineBoot} from '#q-app/wrappers';
 
 /**
  * Create i18n
  */
+import {createI18n} from 'vue-i18n';
 import messages from 'src/i18n';
-import { createI18n } from 'vue-i18n';
-const i18n = createI18n({
+export type MessageLanguages = keyof typeof messages;
+export type MessageSchema = typeof messages['tr-TR'];
+declare module 'vue-i18n' {
+  export interface DefineLocaleMessage extends MessageSchema {}
+  export interface DefineDateTimeFormat {}
+  export interface DefineNumberFormat {}
+}
+
+const i18n = createI18n<{ message: MessageSchema }, MessageLanguages>({
   locale: localStorage.getItem('locale') ?? 'en-US',
-  fallbackLocale: 'en-US',
+  legacy: false,
+  // @ts-ignore
   messages,
+  fallbackLocale: 'en-US',
   missingWarn: false,
   fallbackWarn: false,
 });
-const tt = (prefix: string, text: string): string => {
-  const result = i18n.global.t(`${prefix}.${text}`);
-  return result !== `${prefix}.${text}` ? result : text;
+const tt = (prefix: string, text: string | undefined): string => {
+  const mText = text ? `${prefix}.${text}` : prefix;
+
+  // @ts-ignore
+  const result = i18n.global.t(mText);
+  return result !== mText ? result : (mText.split('.').pop() ?? '');
 };
 
 /**
  * Create Axios
  */
-import axios, { AxiosInstance } from 'axios';
-const client = axios.create({ baseURL: process.env.API });
-
-/**
- * Create API Client
- */
-import Api from 'api/index';
+import axios from 'axios';
+const client = axios.create({baseURL: process.env.API ?? ''});
+import Api from '@api/index';
 const api = new Api(client);
+
 
 /**
  * Init Vue Global Properties
@@ -35,30 +45,18 @@ const api = new Api(client);
 import routeGuard from 'boot/helper/route-guard';
 import axiosInterceptors from 'boot/helper/axios-interceptor';
 import validationRules from 'boot/helper/rules';
-import { useAuthStore } from 'stores/AuthStore';
-import { useAppStore } from 'stores/AppStore';
-import { Permission } from 'api/enum/Permission';
-const authStore = useAuthStore();
-const appStore = useAppStore();
+import {useAuthStore} from 'stores/AuthStore';
+import {useAppStore} from 'stores/AppStore';
+import {Permission} from '@api/enum/Permission';
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $api: ApiInstance;
-    $client: AxiosInstance;
-    $authStore: ReturnType<typeof useAuthStore>;
-    $appStore: ReturnType<typeof useAppStore>;
-    $permission: typeof Permission;
-    $tt: (prefix, text) => string;
-  }
-}
-
-export { api, client, i18n, tt };
-export default boot(({ app, router }) => {
+export {api, client, i18n, tt};
+export default defineBoot(({app, router}) => {
   app.use(i18n);
-
-  appStore.platform = app.config.globalProperties.$q.platform.is;
+  const authStore = useAuthStore();
+  const appStore = useAppStore();
 
   // Init Global Properties
+  appStore.platform = app.config.globalProperties.$q.platform.is;
   app.config.globalProperties.$api = api;
   app.config.globalProperties.$client = client;
   app.config.globalProperties.$authStore = authStore;

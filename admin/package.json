@@ -6,66 +6,45 @@
   "author": "Cesur APAYDIN",
   "private": true,
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.vue ./",
-    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" \"!**/.api/**\" --ignore-path .gitignore",
     "test": "echo \"No test specified\" && exit 0",
-    "fix": "yarn lint && yarn format",
     "dev": "quasar dev",
     "dev-ios": "quasar dev -m capacitor -T ios --ide",
     "dev-android": "quasar dev -m capacitor -T android",
     "build": "quasar build",
     "build-ios": "quasar build -m capacitor -T ios --ide Xcode",
-    "build-android": "quasar build -m capacitor -T android --ide 'Android Studio'"
+    "build-android": "quasar build -m capacitor -T android --ide 'Android Studio'",
+    "postinstall": "quasar prepare"
   },
   "dependencies": {
-    "@capacitor/core": "^5.7.8",
-    "@capacitor/filesystem": "^5.2.2",
-    "@capawesome-team/capacitor-file-opener": "^5.0.4",
+    "@api": "file:./.api",
+    "@capacitor/core": "^7.4.4",
+    "@capacitor/filesystem": "^7.1.4",
+    "@capawesome-team/capacitor-file-opener": "^7.0.1",
     "@quasar/extras": "^1.16.12",
     "@vuelidate/validators": "^2.0.2",
-    "@vueuse/core": "^9.13.0",
-    "api": "./.api",
-    "axios": "^1.7.4",
+    "@vueuse/core": "^14.0.0",
+    "axios": "^1.2.1",
     "dayjs": "^1.11.12",
-    "firebase": "^10.13.0",
-    "pinia": "^2.2.2",
+    "firebase": "^12.5.0",
+    "pinia": "^3.0.1",
     "quasar": "^2.16.0",
-    "vue": "^3.4.18",
-    "vue-i18n": "^9.2.2",
-    "vue-router": "^4.4.3"
+    "vue": "^3.5.22",
+    "vue-i18n": "^11.0.0",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
-    "@intlify/vite-plugin-vue-i18n": "^3.3.1",
-    "@intlify/vue-i18n-loader": "^4.2.0",
-    "@quasar/app-vite": "^1.0.0",
+    "@intlify/unplugin-vue-i18n": "^4.0.0",
+    "@quasar/app-vite": "^2.1.0",
     "@types/node": "^20.5.9",
-    "@typescript-eslint/eslint-plugin": "^7.16.0",
-    "@typescript-eslint/parser": "^7.16.0",
     "autoprefixer": "^10.4.2",
-    "dotenv": "^16.0.1",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-vue": "^9.0.0",
-    "prettier": "^3.0.3",
-    "rollup-plugin-copy": "^3.4.0",
-    "typescript": "~5.5.3"
+    "typescript": "^5.9.2"
+  },
+  "resolutions": {
+    "vite": "^6.3.2"
   },
   "engines": {
-    "node": "^24 || ^22 || ^20 || ^18",
+    "node": "^28 || ^26 || ^24 || ^22 || ^20",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
-  },
-  "prettier": {
-    "semi": true,
-    "singleQuote": true,
-    "printWidth": 130,
-    "overrides": [
-      {
-        "files": "src/i18n/*.ts",
-        "options": {
-          "printWidth": 1000
-        }
-      }
-    ]
   }
 }

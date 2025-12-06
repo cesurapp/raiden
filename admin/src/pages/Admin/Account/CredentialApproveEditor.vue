@@ -88,7 +88,7 @@ import { defineComponent } from 'vue';
 import { mdiContentSave, mdiSecurity, mdiKey, mdiEmail } from '@quasar/extras/mdi-v7';
 import PhoneInput from 'components/Localization/PhoneInput.vue';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
-import { CredentialsApproveRequest } from 'api/main/request/CredentialsApproveRequest';
+import { CredentialsApproveRequest } from '@api/main/request/CredentialsApproveRequest';
 
 export default defineComponent({
   name: 'CredentialApproveEditor',

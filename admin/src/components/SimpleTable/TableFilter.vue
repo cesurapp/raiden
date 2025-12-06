@@ -8,7 +8,7 @@
         :label="filter.label || column.label || ''"
         :debounce="75"
         clearable
-        autofocus
+
         class="q-mb-sm"
         outlined
         dense
@@ -180,7 +180,7 @@ export default defineComponent({
   },
   mounted() {
     if (this.$refs.input) {
-      setTimeout(() => this.$refs.input.focus(), 1);
+      this.$nextTick(() => this.$refs.input.focus())
     }
   },
 });

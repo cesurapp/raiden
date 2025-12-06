@@ -1,9 +1,0 @@
-/dist
-/src-capacitor
-/src-cordova
-/.quasar
-/node_modules
-/.api
-/src/bin
-.eslintrc.js
-quasar.conf.js

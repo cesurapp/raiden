@@ -4,16 +4,16 @@
     <q-card class="simple-editor" :style="width ? `width: ${width}px` : ''">
       <!--Header-->
       <q-toolbar class="text-white">
-        <q-btn flat dense class="q-mr-xs" disable v-if="icon" :icon="icon" style="opacity: 1 !important" />
+        <q-btn flat dense class="q-mr-xs" disable v-if="icon" :icon="icon" style="opacity: 1 !important"/>
         <q-toolbar-title class="title">{{ updating ? $t(titleUpdate || '') : $t(titleCreate || '') }}</q-toolbar-title>
 
         <slot name="headerActions"></slot>
-        <q-btn class="q-ml-sm" flat round dense :icon="mdiClose" @click="active = !active" />
+        <q-btn class="q-ml-sm" flat round dense :icon="mdiClose" @click="active = !active"/>
       </q-toolbar>
 
       <q-card-section :class="{ 'bg-dark-page': $q.dark.isActive, 'q-pa-none': clean, raw: $slots.content }" class="content">
         <!--Raw Content-->
-        <slot v-if="$slots.content" name="content" />
+        <slot v-if="$slots.content" name="content"/>
 
         <!--Tabs-->
         <template v-else-if="$q.screen.lt.sm">
@@ -23,8 +23,9 @@
             align="justify"
             class="tab-horz shadow-1"
             :class="[$q.dark.isActive ? 'q-dark' : 'bg-grey-3']"
-            ><slot name="tabs"></slot
-          ></q-tabs>
+          >
+            <slot name="tabs"></slot>
+          </q-tabs>
           <q-tab-panels v-model="getTab" animated vertical transition-prev="jump-up" transition-next="jump-up" class="borderless">
             <slot name="tabsContent"></slot>
           </q-tab-panels>
@@ -36,7 +37,7 @@
             unit="px"
             :limits="[$q.screen.lt.sm ? 65 : 150, Infinity]"
             class="full-height"
-            separator-style="background: transparent; width: 0px"
+            separator-style="display: none"
           >
             <template v-slot:before>
               <q-tabs v-model="getTab" vertical class="q-py-sm vertical-tabs">
@@ -60,15 +61,13 @@
       </q-card-section>
 
       <!--Actions-->
-      <q-card-actions
-        align="between"
-        v-if="$slots.actionsLeft || $slots.actionsRight"
-        :class="[$q.dark.isActive ? 'bg-dark' : 'bg-grey-3']"
-      >
-        <div><slot name="actionsLeft" /></div>
+      <q-card-actions align="between" v-if="$slots.actionsLeft || $slots.actionsRight" :class="[$q.dark.isActive ? 'bg-dark' : 'bg-grey-3']">
+        <div>
+          <slot name="actionsLeft"/>
+        </div>
         <div class="q-gutter-xs">
-          <q-btn flat :label="$t('Cancel')" v-if="!noCancel" :icon="mdiClose" color="negative" v-close-popup />
-          <slot name="actionsRight" />
+          <q-btn flat :label="$t('Cancel')" v-if="!noCancel" :icon="mdiClose" color="negative" v-close-popup/>
+          <slot name="actionsRight"/>
         </div>
       </q-card-actions>
     </q-card>
@@ -78,7 +77,7 @@
   <div v-else class="full-width inline-mode">
     <div class="content">
       <!--Raw Content-->
-      <slot v-if="$slots.content" name="content" />
+      <slot v-if="$slots.content" name="content"/>
 
       <!--Tabs-->
       <template v-else>
@@ -101,19 +100,23 @@
 
     <!--Actions-->
     <div class="flex justify-between q-mx-md q-mx-lg-lg q-mb-md">
-      <div class="flex items-center q-gutter-sm" v-if="$slots.actionsLeft"><slot name="actionsLeft" /></div>
-      <div class="flex items-center q-gutter-sm"><slot name="actionsRight" /></div>
+      <div class="flex items-center q-gutter-sm" v-if="$slots.actionsLeft">
+        <slot name="actionsLeft"/>
+      </div>
+      <div class="flex items-center q-gutter-sm">
+        <slot name="actionsRight"/>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { mdiClose, mdiAccount } from '@quasar/extras/mdi-v7';
+<script lang="ts">
+import {defineComponent} from 'vue';
+import {mdiClose, mdiAccount} from '@quasar/extras/mdi-v7';
 
 export default defineComponent({
   name: 'SimpleEditor',
-  setup: () => ({ mdiClose, mdiAccount }),
+  setup: () => ({mdiClose, mdiAccount}),
   props: {
     persistent: {
       type: Boolean,
@@ -139,6 +142,7 @@ export default defineComponent({
     icon: String,
     titleCreate: String,
     titleUpdate: String,
+    onBeforeTabChange: Function
   },
   data: () => ({
     active: false,
@@ -149,8 +153,15 @@ export default defineComponent({
       get() {
         return this.tab;
       },
-      set(val) {
-        this.$emit('update:tab', val);
+      async set(val) {
+        let result = true;
+        if (this.onBeforeTabChange) {
+          result = await this.onBeforeTabChange(val, this.getTab)
+        }
+
+        if (result !== false) {
+          this.$emit('update:tab', val);
+        }
       },
     },
   },
@@ -160,7 +171,7 @@ export default defineComponent({
     },
     close() {
       this.active = false;
-    },
+    }
   },
 });
 </script>
@@ -179,8 +190,7 @@ export default defineComponent({
 
   .q-toolbar {
     background: var(--q-primary);
-    padding: max(6.5px, calc(env(safe-area-inset-top))) calc(env(safe-area-inset-right) / 2 + 12px) 6.5px
-      calc(env(safe-area-inset-left) / 2 + 16px);
+    padding: max(6.5px, calc(env(safe-area-inset-top))) calc(env(safe-area-inset-right) / 2 + 12px) 6.5px calc(env(safe-area-inset-left) / 2 + 16px);
     position: sticky;
     top: 0;
     z-index: 3;
@@ -190,7 +200,8 @@ export default defineComponent({
     position: sticky;
     bottom: 0;
     z-index: 3;
-    padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 8px);
+    padding-top: 5px;
+    padding-bottom: calc(env(safe-area-inset-bottom) / 2 + 5px);
     padding-left: calc(env(safe-area-inset-left) / 2 + 12px);
     padding-right: calc(env(safe-area-inset-right) / 2 + 12px);
   }
@@ -198,6 +209,7 @@ export default defineComponent({
   .content {
     overflow: auto;
     background: #fff;
+
     &.raw {
       padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
       padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
@@ -214,6 +226,7 @@ export default defineComponent({
     position: sticky;
     top: 0;
   }
+
   .q-splitter--vertical > .q-splitter__after {
     height: auto;
   }
@@ -226,14 +239,17 @@ export default defineComponent({
   .q-tabs--horizontal .q-tab {
     border-radius: 0;
   }
+
   .tab-horz {
     position: sticky;
     top: 0;
     z-index: 3;
   }
+
   .q-tab-panels.q-dark {
     background: var(--q-dark-page);
   }
+
   .content:not(.raw) .q-panel > div {
     height: auto;
     padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
@@ -249,6 +265,7 @@ export default defineComponent({
     }
   }
 }
+
 .screen--md,
 .screen--lg,
 .screen--xl {
