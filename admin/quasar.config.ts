@@ -4,6 +4,7 @@
 import {defineConfig} from '#q-app/wrappers';
 import path from 'path';
 import {fileURLToPath} from 'node:url';
+import firebasePublicGenerator from './src/components/Notification/firebasePublicGenerator'
 
 export default defineConfig((ctx) => {
   return {
@@ -13,7 +14,7 @@ export default defineConfig((ctx) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['app'],
+    boot: ['app', 'close-menu-directive'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -88,7 +89,8 @@ export default defineConfig((ctx) => {
 
           // you need to set i18n resource including paths !
           include: [fileURLToPath(new URL('./src/i18n', import.meta.url))]
-        }]
+        }],
+        firebasePublicGenerator()
       ]
     },
 

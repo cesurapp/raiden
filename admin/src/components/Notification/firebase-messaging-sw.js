@@ -8,7 +8,6 @@ firebase.initializeApp({
   storageBucket: '<FIREBASE_STORAGEBUCKET>',
   messagingSenderId: '<FIREBASE_SENDERID>',
   appId: '<FIREBASE_APPID>',
-  measurementId: '<FIREBASE_MEASUREMENTID>',
 });
 
 firebase.messaging().onBackgroundMessage((payload) => {

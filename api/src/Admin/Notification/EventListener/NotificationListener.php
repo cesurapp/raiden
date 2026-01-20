@@ -30,6 +30,10 @@ readonly class NotificationListener
 
     public function postPersist(Notification $notification, LifecycleEventArgs $event): void
     {
+        if (str_contains(getenv('FIREBASE_DSN'), 'USER:PASS')) {
+            return;
+        }
+
         $devices = $this->deviceRepo->getDevices($notification->getOwner());
         if ($devices) {
             foreach ($devices as $device) {

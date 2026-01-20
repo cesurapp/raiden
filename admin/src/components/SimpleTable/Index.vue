@@ -10,18 +10,21 @@
     v-model:pagination="pagination as any"
     :selected-rows-label="(v) => $t('count record selected').replace('count', String(v))"
     :no-data-label="$t('There were no results!')"
+    :hide-pagination="!isPaginate"
     class="table-sticky"
     :class="{ 'sticky-action': getRowActions, 'sticky-first': !getRowActions && selectable, 'no-data': rows.length === 0 }"
     @request="onRequest"
     @rowClick="(event, row, index) => $emit('rowClick', event, row, index)"
     @rowDblclick="(event, row, index) => $emit('rowDblclick', event, row, index)"
+    @rowContextmenu="onRowContextMenu"
     binary-state-sort
   >
     <!--Top Area-->
     <template #top v-if="header">
       <q-pull-to-refresh class="full-width" @refresh="refresh(false, $event)">
         <div class="relative-position row items-center full-width no-wrap">
-          <NavigationToggle></NavigationToggle>
+          <q-btn v-if="titleCloseButton" :icon="mdiClose" v-close-popup round dense flat style="margin-right: 10px" />
+          <NavigationToggle v-else></NavigationToggle>
 
           <!--Selected Actions-->
           <div class="q-table__control" v-if="selectedRows.length > 0">
@@ -29,7 +32,7 @@
               <q-btn
                 color="red"
                 size="12px"
-                v-close-popup
+                v-close-menu
                 v-if="deleteProp && $authStore.hasPermission(deletePermission as string)"
                 :icon="mdiDeleteOutline"
                 @click="onActionRemoveAll(selectedRows)"
@@ -55,7 +58,7 @@
                   color="red"
                   unelevated
                   size="12px"
-                  v-close-popup
+                  v-close-menu
                   v-if="deleteProp && $authStore.hasPermission(deletePermission as string)"
                   :icon="mdiDeleteOutline"
                   @click="onActionRemoveAll(selectedRows)"
@@ -89,8 +92,8 @@
               >
                 <div class="flex column items-start">
                   <q-chip
-                    v-for="(val, type) in filterValues"
-                    :key="val"
+                    v-for="(val, type, index) in filterValues"
+                    :key="`filter-${type}-${index}`"
                     clickable
                     @click="unsetFilter(type)"
                     square
@@ -112,13 +115,13 @@
             <template v-if="header">
               <div class="row q-gutter-sm">
                 <q-btn-group flat v-if="!$q.screen.xs">
-                  <q-btn color="primary" v-if="refreshButton" v-close-popup size="12px" :icon="mdiRefresh" @click="refresh(true, false)"
+                  <q-btn color="primary" v-if="refreshButton" v-close-menu size="12px" :icon="mdiRefresh" @click="refresh(true, false)"
                   ><q-tooltip>{{ $t('Refresh') }}</q-tooltip>
                   </q-btn>
                   <q-btn
                     v-if="exportButton && getExportedColumns.length > 0"
                     color="primary"
-                    v-close-popup
+                    v-close-menu
                     :icon="mdiFileExportOutline"
                     size="12px"
                     @click="($refs.exporter as any).toggle()"
@@ -137,13 +140,13 @@
                   :menu-offset="[0, 10]"
                 >
                   <div class="column q-gutter-sm">
-                    <q-btn v-if="refreshButton" v-close-popup color="primary" :icon="mdiRefresh" size="12px" @click="refresh">
+                    <q-btn v-if="refreshButton" v-close-menu color="primary" :icon="mdiRefresh" size="12px" @click="refresh">
                       <q-tooltip>{{ $t('Refresh') }}</q-tooltip>
                     </q-btn>
                     <q-btn
                       v-if="exportButton && getExportedColumns.length > 0"
                       color="primary"
-                      v-close-popup
+                      v-close-menu
                       :icon="mdiFileExportOutline"
                       size="12px"
                       @click="($refs.exporter as any).toggle()">
@@ -163,22 +166,17 @@
     <template v-if="getRowActions" #body-cell-actions="props">
       <q-td :props="props" class="actions-column">
         <q-btn-dropdown
-          color="primary"
           :dropdown-icon="mdiDotsHorizontal"
           menu-anchor="bottom start"
+          color="primary" style="margin: -1px 0"
           menu-self="top left"
-          size="13px"
-          dense
-          flat
-          rounded
+          size="13px" dense flat rounded autoClose
           @click.stop
         >
           <q-list style="min-width: 130px">
             <slot name="rowActions" :props="props"></slot>
             <q-item
-              clickable
-              v-close-popup
-              class="text-red-5"
+              clickable class="text-red-5"
               v-if="deleteProp && $authStore.hasPermission(deletePermission as any)"
               @click="onActionRemoveItem(props)"
             >
@@ -190,6 +188,7 @@
       </q-td>
     </template>
 
+    <!--Column Config-->
     <template #header-cell-actions>
       <q-th class="actions-column">
         <q-btn dense flat size="12px" @click="($refs.tableConfig as any).toggle()" :icon="mdiFilterCogOutline" style="opacity: .6"></q-btn>
@@ -222,28 +221,11 @@
     <!--BodyCell-->
     <template #body-cell="props">
       <q-td :props="props">
-        <span v-if="$slots['column_' + props.col.name]">
+        <template v-if="columnSlots.has(props.col.name)">
           <slot :name="'column_' + props.col.name" :props="props"></slot>
-        </span>
-        <span v-else>{{ props.value }}</span>
+        </template>
+        <template v-else>{{ props.value }}</template>
       </q-td>
-
-      <!--Context Actions-->
-      <q-popup-proxy :breakpoint="600" class="popup-dropdown" context-menu v-if="contextActions || $slots.getRowActions">
-        <q-list style="min-width: 130px">
-          <slot name="rowActions" :props="props"></slot>
-          <q-item
-            clickable
-            v-close-popup
-            class="text-red-5"
-            v-if="deleteProp && $authStore.hasPermission(deletePermission)"
-            @click="onActionRemoveItem(props)"
-          >
-            <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
-            <q-item-section>{{ $t('Delete') }}</q-item-section>
-          </q-item>
-        </q-list>
-      </q-popup-proxy>
     </template>
 
     <!--Header Cell -->
@@ -289,7 +271,7 @@
     </template>
 
     <!--Bottoms-->
-    <template #pagination="props">
+    <template #pagination="props" v-if="isPaginate">
       <!--View Total-->
       <div class="q-mr-md" v-if="props.pagination.isTotal">
         {{ Math.min(props.pagination.page * props.pagination.rowsPerPage, props.pagination.rowsNumber) }} /
@@ -305,7 +287,7 @@
           hide-bottom-space
           map-options
           hide-hint
-          style="height: 30px; margin-top: -10px"
+          style="height: 30px; margin-top: -7px"
           :options="['Auto', 10, 20, 40, 50, 100]"
           v-model="perPageState"
           @update:modelValue="(v) => onPerPage(v, true)"
@@ -352,6 +334,25 @@
     </template>
   </q-table>
 
+  <!--Context Actions-->
+  <div>
+    <q-menu autoClose touchPosition :transitionDuration="150"  ref="contextMenu" v-if="contextActions || $slots.getRowActions">
+      <q-list style="min-width: 130px">
+        <slot name="rowActions" :props="contextMenuProps"></slot>
+        <q-item
+          clickable
+          v-close-popup
+          class="text-red-5"
+          v-if="deleteProp && $authStore.hasPermission(deletePermission as string)"
+          @click="onActionRemoveItem(contextMenuProps)"
+        >
+          <q-item-section side><q-icon color="red-5" :name="mdiDeleteOutline" /></q-item-section>
+          <q-item-section>{{ $t('Delete') }}</q-item-section>
+        </q-item>
+      </q-list>
+    </q-menu>
+  </div>
+
   <!--Exporter Dialog-->
   <SimpleDialog ref="exporter" v-if="exportButton" clean>
     <template #header>
@@ -395,7 +396,7 @@
               excludedColumns.push(col.name);
             }
           }"
-          >{{ $t(getTranslatePrefix + col.label) }}</q-checkbox>
+          >{{ $tt(transKey, col.label) }}</q-checkbox>
         </div>
       </div>
     </template>
@@ -420,7 +421,8 @@ import {
   mdiFilterOutline,
   mdiCheckAll,
   mdiDeleteOutline,
-  mdiFilterCogOutline
+  mdiFilterCogOutline,
+  mdiClose
 } from '@quasar/extras/mdi-v7';
 import SimpleDialog from 'components/SimpleDialog/Index.vue';
 import TableFilter from 'components/SimpleTable/TableFilter.vue';
@@ -447,7 +449,8 @@ export default defineComponent({
     mdiFilterRemove,
     mdiCheckAll,
     mdiDeleteOutline,
-    mdiFilterCogOutline
+    mdiFilterCogOutline,
+    mdiClose
   }),
   props: {
     uId: String,
@@ -495,6 +498,14 @@ export default defineComponent({
       type: [Array, String],
       default: null,
     },
+    titleCloseButton: {
+      type: Boolean,
+      default: false,
+    },
+    isPaginate: {
+      type: Boolean,
+      default: true,
+    },
   },
   data: () => ({
     rows: [],
@@ -514,6 +525,8 @@ export default defineComponent({
     loadEvent: true,
     perPageState: LocalStorage.getItem('rowsPerPage') ?? 'Auto',
     excludedColumns: ['id'],
+    contextMenuProps: null as any,
+    columnSlotsCache: null as Map<string, boolean> | null,
   }),
   watch: {
     'excludedColumns': {
@@ -525,6 +538,21 @@ export default defineComponent({
     }
   },
   computed: {
+    columnSlots() {
+      if (this.columnSlotsCache) return this.columnSlotsCache;
+
+      const slotMap = new Map<string, boolean>();
+      if (this.$slots) {
+        Object.keys(this.$slots).forEach(slotName => {
+          if (slotName.startsWith('column_')) {
+            slotMap.set(slotName.replace('column_', ''), true);
+          }
+        });
+      }
+
+      this.columnSlotsCache = slotMap;
+      return slotMap;
+    },
     getRowActions() {
       if (!this.rowActions) {
         return false;
@@ -533,36 +561,38 @@ export default defineComponent({
       return !this.$q.screen.lt.md;
     },
     getColumns() {
-      let all = this.columns.map((c) => {
-        if (c.name.endsWith('_at')) {
-          c.format = (val) => this.$appStore.formatDate(val);
-        }
-
-        return {
-          ...c,
-          ...{ field: c.name, label: this.$t(this.getTranslatePrefix + c.label) },
-        };
-      });
-
-      // Exclude Columns
-      all = all.filter((c) => !this.excludedColumns.includes(c.name));
+      const all = [];
 
       if (this.getRowActions) {
-        all.unshift({
+        all.push({
           name: 'actions',
           label: '',
           style: 'width: 10px',
-        });
+        } as never);
       }
 
-      return all;
+      const mappedCols = this.columns.filter(c => !this.excludedColumns.includes(c.name)).map((c) => {
+        const col = {
+          ...c,
+          field: c.name,
+          label: this.$tt(this.transKey, c.label)
+        };
+
+        if (c.name.endsWith('_at') && !c.format) {
+          col.format = (val) => this.$appStore.formatDate(val);
+        }
+
+        return col;
+      });
+
+      return all.concat(mappedCols);
     },
     getExportedColumns() {
       return (this.exportColumns || this.columns)
         .filter((c) => c.hasOwnProperty('export') && c.export)
         .map((c) => {
           return {
-            label: this.$t(this.getTranslatePrefix + c.label),
+            label: this.$tt(this.transKey, c.label),
             value: c.name,
           };
         });
@@ -585,9 +615,6 @@ export default defineComponent({
     },
     isFiltered() {
       return Object.values(this.filterValues).filter((item: any) => ![undefined, null, ''].includes(item)).length > 0;
-    },
-    getTranslatePrefix() {
-      return this.$i18n.locale === 'en-US' ? '' : this.transKey + '.';
     },
   },
   beforeMount() {
@@ -614,6 +641,19 @@ export default defineComponent({
     window.onpopstate = null;
   },
   methods: {
+    onRowContextMenu(event: MouseEvent, row: any, index: number) {
+      if (!this.contextActions && !this.$slots.rowActions) return;
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.contextMenuProps = {row, rowIndex: index, cols: this.getColumns,};
+
+      this.$nextTick(() => {
+        //(this.$refs.contextMenu as any).hide(event);
+        (this.$refs.contextMenu as any).show(event);
+      });
+    },
+
     /**
      * Table List | Sort | Filter
      */
@@ -652,11 +692,14 @@ export default defineComponent({
      */
     getQuery() {
       let data = {
-        max: this.pagination.rowsPerPage,
-        page: this.pagination.page,
         sort_by: this.pagination.sortBy,
         sort: this.pagination.descending ? 'ASC' : 'DESC',
-      };
+      } as any;
+
+      if (this.isPaginate) {
+        data.max = this.pagination.rowsPerPage;
+        data.page = this.pagination.page;
+      }
 
       // Add Filter
       if (Object.values(this.getColumnFilter).length > 0) {
@@ -680,17 +723,23 @@ export default defineComponent({
       this.rows = r.data.data;
 
       // Paginator
-      this.pagination.page = r.data.pager.current;
-      this.pagination.rowsPerPage = r.data.pager.max;
-      this.pagination.rowsNumber = r.data.pager.total || null;
-      this.pagination.isTotal = true;
+      if (this.isPaginate && r.data.pager) {
+        this.pagination.page = r.data.pager.current;
+        this.pagination.rowsPerPage = r.data.pager.max;
+        this.pagination.rowsNumber = r.data.pager.total || null;
+        this.pagination.isTotal = true;
 
-      // Set Total
-      if (!r.data.pager.hasOwnProperty('total')) {
-        this.pagination.rowsNumber = r.data.pager.next
-          ? r.data.pager.next * r.data.pager.max
-          : r.data.pager.current * r.data.pager.max;
-        this.pagination.isTotal = false;
+        // Set Total
+        if (!r.data.pager.hasOwnProperty('total')) {
+          this.pagination.rowsNumber = r.data.pager.next
+            ? r.data.pager.next * r.data.pager.max
+            : r.data.pager.current * r.data.pager.max;
+          this.pagination.isTotal = false;
+        }
+      } else {
+        this.pagination.rowsNumber = this.rows.length;
+        this.pagination.rowsPerPage = 0;
+        this.pagination.isTotal = true;
       }
     },
 
@@ -746,6 +795,23 @@ export default defineComponent({
       return false;
     },
 
+    /**
+     * Update Partial Item Properties
+     */
+    updatePartial(item, key) {
+      const index = this.rows.findIndex((row) => row[key] === item[key]);
+      if (index !== -1) {
+        Object.keys(item).forEach((prop) => {
+          if (this.rows[index].hasOwnProperty(prop)) {
+            this.rows[index][prop] = item[prop];
+          }
+        });
+        return true;
+      }
+
+      return false;
+    },
+
     addOrUpdateItem(items, key: string | undefined = 'id') {
       if (Array.isArray(items)) {
         items.forEach((i) => this.addOrUpdateItem(i, key));
@@ -788,11 +854,15 @@ export default defineComponent({
      * Select All Exported Columns
      */
     selectAllExportedColumns() {
-      this.getExportedColumns.forEach((c) => {
-        if (!this.exportedColumns.includes(c.value)) {
-          this.exportedColumns.push(c.value);
-        }
-      });
+      if (this.exportedColumns.length === this.getExportedColumns.length) {
+        this.exportedColumns = [];
+      } else {
+        this.getExportedColumns.forEach((c) => {
+          if (!this.exportedColumns.includes(c.value)) {
+            this.exportedColumns.push(c.value);
+          }
+        });
+      }
     },
 
     /**
@@ -884,9 +954,9 @@ export default defineComponent({
         this.perPageState = val;
       }
 
-      const headerHeight = document.querySelector('.page-header')?.clientHeight ?? 64;
-      this.pagination.rowsPerPage =
-        val === 'Auto' ? Math.ceil((document.body.clientHeight - (headerHeight + 42 + 42)) / 42) : val;
+      const dialogPadding = this.$el.parentNode.closest('.q-dialog') ? 48 : 0;
+      const headerHeight = document.querySelector('.page-header')?.clientHeight ?? 52;
+      this.pagination.rowsPerPage = val === 'Auto' ? Math.ceil(((document.body.clientHeight - (headerHeight + dialogPadding + 40 + 40)) / 40) - 1) : val;
       LocalStorage.setItem('rowsPerPage', val);
 
       if (triggerRequest) {

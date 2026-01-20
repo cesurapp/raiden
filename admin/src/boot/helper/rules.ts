@@ -101,6 +101,16 @@ export class Rules {
       return methods.numeric.$validator(val, null, null) || message || this.t(methods.numeric.$message);
     };
   }
+  phoneNumber(message = false): any {
+    return (val: any) => {
+      // International phone number format: + followed by country code (1-3 digits) and phone number (4-14 digits)
+      // No spaces allowed
+      const phoneRegex = /^\+[1-9]\d{1,2}\d{4,14}$/;
+      const hasSpaces = /\s/.test(String(val));
+      const isValid = !val || (!hasSpaces && phoneRegex.test(String(val)));
+      return isValid || message || this.t('Please enter a valid phone number +1XXXXXXXXXX');
+    };
+  }
   integer(message = false): any {
     return (val: any) => {
       return methods.integer.$validator(val, null, null) || message || this.t(methods.integer.$message);
@@ -132,16 +142,66 @@ export class Rules {
       return methods.url.$validator(val, null, null) || message || this.t(methods.url.$message);
     };
   }
-  or(...args: boolean[]): any {
+
+  hostname(message = false): any {
+    return (val: any) => {
+      const ipValid = methods.ipAddress.$validator(val, null, null);
+      const urlValid = methods.url.$validator(val, null, null);
+      return ipValid || urlValid || message || this.t('Please enter a valid hostname or IP address');
+    };
+  }
+
+  domain(allowWildcard = false, message = false): any {
+    return (val: any) => {
+      if (!val) return true;
+
+      const domainStr = String(val).toLowerCase().trim();
+
+      // Domain regex: allows letters, numbers, hyphens, and dots
+      // Must start and end with alphanumeric, hyphens only in middle
+      // TLD must be at least 2 characters
+      const domainRegex = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/;
+
+      if (allowWildcard) {
+        // Wildcard regex: allows asterisk anywhere within domain parts
+        // Each part can contain letters, numbers, hyphens, and asterisks
+        // Must have at least one non-wildcard character per part
+        const wildcardDomainRegex = /^(?:[a-z0-9*](?:[a-z0-9*-]{0,61}[a-z0-9*])?)(?:\.(?:[a-z0-9*](?:[a-z0-9*-]{0,61}[a-z0-9*])?))*\.[a-z]{2,}$/;
+        const isValid = wildcardDomainRegex.test(domainStr);
+        return isValid || message || this.t('Please enter a valid domain (wildcards allowed, example*.com)');
+      }
+
+      const isValid = domainRegex.test(domainStr);
+      return isValid || message || this.t('Please enter a valid domain (e.g., example.com)');
+    };
+  }
+
+  or(...args: any[]): any {
     let message = false;
     if (typeof args[args.length - 1] === 'string') {
       message = args.pop() ?? false;
     }
     return (val: any) => {
-      const r = methods.or(...args);
-      return r.$validator(val, null, null) || message || this.t(r.$message);
+      // Execute each validator function with the value
+      const validators = args.map(arg => {
+        // If arg is a function (like the return value from $rules.ipAddress()), call it
+        if (typeof arg === 'function') {
+          const result = arg(val);
+          // If result is true, validation passed. If it's a string, validation failed
+          return result === true;
+        }
+        return arg;
+      });
+
+      // Use vuelidate's or with the validation results
+      const r = methods.or(...validators.map(isValid => ({
+        $validator: () => isValid
+      })));
+
+      return r.$validator(val, null, null) || message || this.t('Value must satisfy at least one condition');
     };
   }
+
   and(...args: boolean[]): any {
     let message = false;
     if (typeof args[args.length - 1] === 'string') {

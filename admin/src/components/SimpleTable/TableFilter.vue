@@ -6,9 +6,8 @@
         v-model="getValue"
         v-if="filter.filter_input === 'input'"
         :label="filter.label || column.label || ''"
-        :debounce="75"
+        :debounce="150"
         clearable
-
         class="q-mb-sm"
         outlined
         dense
@@ -21,7 +20,7 @@
         v-model="getValue"
         v-if="filter.filter_input === 'number'"
         :label="filter.label || column.label || ''"
-        :debounce="75"
+        :debounce="150"
         clearable
         autofocus
         type="number"
@@ -38,7 +37,7 @@
           :model-value="getValue ? getValue.min : null"
           @update:modelValue="$emit('update:modelValue', { min: $event, max: getValue?.max })"
           :label="$t('Minimum')"
-          :debounce="75"
+          :debounce="150"
           clearable
           autofocus
           type="number"
@@ -52,7 +51,7 @@
           :model-value="getValue ? getValue.max : null"
           @update:modelValue="$emit('update:modelValue', { max: $event, min: getValue?.min })"
           :label="$t('Maximum')"
-          :debounce="75"
+          :debounce="150"
           clearable
           autofocus
           type="number"
@@ -138,24 +137,25 @@
     </slot>
 
     <!--Submit-->
-    <q-btn :icon="mdiMagnify" :loading="$appStore.isBusy" size="12px" color="primary" @click="$emit('onSearch')" v-close-popup />
+    <q-btn :icon="mdiMagnify" :loading="$appStore.isBusy" size="12px" color="primary" @click="$emit('onSearch')" v-close-popup/>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { mdiMagnify, mdiCalendar } from '@quasar/extras/mdi-v7';
-import { getCurrentLocale } from 'src/helper/DateHelper';
-import CountryInput from 'components/Localization/CountryInput.vue';
-import LanguageInput from 'components/Language/LanguageInput.vue';
-import DateRangeInput from 'components/Date/DateRangeInput.vue';
-import DateInput from 'components/Date/DateInput.vue';
-import CurrencyInput from 'components/Localization/CurrencyInput.vue';
+import {defineComponent, defineAsyncComponent} from 'vue';
+import {mdiMagnify, mdiCalendar} from '@quasar/extras/mdi-v7';
+import {getCurrentLocale} from 'src/helper/DateHelper';
+
+const CountryInput = defineAsyncComponent(() => import('components/Localization/CountryInput.vue'));
+const LanguageInput = defineAsyncComponent(() => import('components/Language/LanguageInput.vue'));
+const DateRangeInput = defineAsyncComponent(() => import('components/Date/DateRangeInput.vue'));
+const DateInput = defineAsyncComponent(() => import('components/Date/DateInput.vue'));
+const CurrencyInput = defineAsyncComponent(() => import('components/Localization/CurrencyInput.vue'));
 
 export default defineComponent({
   name: 'SimpleTableFilter',
-  components: { CurrencyInput, DateInput, DateRangeInput, LanguageInput, CountryInput },
-  setup: () => ({ mdiMagnify, mdiCalendar, getCurrentLocale }),
+  components: {CurrencyInput, DateInput, DateRangeInput, LanguageInput, CountryInput},
+  setup: () => ({mdiMagnify, mdiCalendar, getCurrentLocale}),
   emits: ['update:modelValue', 'onSearch'],
   props: {
     modelValue: [String, Boolean, Array, Object],

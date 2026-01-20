@@ -1,12 +1,12 @@
 import {defineBoot} from '#q-app/wrappers';
 
 /**
- * Create i18n
+ * Create i18n with Lazy Loading
  */
 import {createI18n} from 'vue-i18n';
-import messages from 'src/i18n';
-export type MessageLanguages = keyof typeof messages;
-export type MessageSchema = typeof messages['tr-TR'];
+export const SUPPORT_LOCALES = ['en-US', 'tr-TR'] as const;
+export type MessageLanguages = typeof SUPPORT_LOCALES[number];
+export type MessageSchema = Record<string, any>;
 declare module 'vue-i18n' {
   export interface DefineLocaleMessage extends MessageSchema {}
   export interface DefineDateTimeFormat {}
@@ -14,28 +14,54 @@ declare module 'vue-i18n' {
 }
 
 const i18n = createI18n<{ message: MessageSchema }, MessageLanguages>({
-  locale: localStorage.getItem('locale') ?? 'en-US',
+  locale: 'en-US',
   legacy: false,
-  // @ts-ignore
-  messages,
   fallbackLocale: 'en-US',
   missingWarn: false,
   fallbackWarn: false,
 });
-const tt = (prefix: string, text: string | undefined): string => {
+const loadedLanguages = new Set<MessageLanguages>();
+export const setI18nLanguage = (locale: MessageLanguages): MessageLanguages => {
+  // @ts-ignore
+  i18n.global.locale.value = locale;
+  document.querySelector('html')?.setAttribute('lang', locale);
+  return locale;
+};
+const loadLanguageAsync = async (locale: MessageLanguages): Promise<MessageLanguages> => {
+  if (loadedLanguages.has(locale)) return setI18nLanguage(locale);
+
+  try {
+    const messages = await import(
+      /* webpackChunkName: "locale-[request]" */
+      `src/i18n/${locale}.ts`
+      );
+    // @ts-ignore
+    i18n.global.setLocaleMessage(locale, messages.default);
+    loadedLanguages.add(locale);
+    return setI18nLanguage(locale);
+  } catch (error) {
+    return setI18nLanguage('en-US');
+  }
+};
+const tt = (prefix: string | null | undefined, text: string | undefined): string => {
+  // @ts-ignore
+  if (!prefix) return i18n.global.t(text);
+
   const mText = text ? `${prefix}.${text}` : prefix;
 
   // @ts-ignore
   const result = i18n.global.t(mText);
-  return result !== mText ? result : (mText.split('.').pop() ?? '');
+  return result !== mText ? result : (mText.substring(mText.indexOf('.') + 1) ?? '');
 };
 
 /**
  * Create Axios
  */
 import axios from 'axios';
+
 const client = axios.create({baseURL: process.env.API ?? ''});
 import Api from '@api/index';
+
 const api = new Api(client);
 
 
@@ -49,9 +75,16 @@ import {useAuthStore} from 'stores/AuthStore';
 import {useAppStore} from 'stores/AppStore';
 import {Permission} from '@api/enum/Permission';
 
-export {api, client, i18n, tt};
-export default defineBoot(({app, router}) => {
+export {api, client, i18n, tt, loadLanguageAsync};
+
+export default defineBoot(async ({app, router}) => {
   app.use(i18n);
+
+  // İlk dili yükle
+  const savedLocale = localStorage.getItem('locale') as MessageLanguages;
+  const initialLocale = SUPPORT_LOCALES.includes(savedLocale) ? savedLocale : 'en-US';
+  await loadLanguageAsync(initialLocale);
+
   const authStore = useAuthStore();
   const appStore = useAppStore();
 
