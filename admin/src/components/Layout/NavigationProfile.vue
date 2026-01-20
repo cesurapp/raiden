@@ -1,21 +1,19 @@
 <template>
-  <q-btn flat no-caps rounded align="left" class="q-pa-none profile-btn full-width">
-    <q-avatar square size="48px"><q-icon :name="mdiAccountCircle"></q-icon></q-avatar>
+  <q-btn rounded flat :class="{ 'text-amber-7': $authStore.isSwitchedUser(), 'full-width': !$appStore.navMini }" no-caps align="left" class="q-pa-none profile-btn">
+    <q-avatar><q-icon :name="mdiAccountCircle"></q-icon></q-avatar>
     <div class="nav-text q-pl-sm">
       <div class="title">{{ $authStore.user.first_name }} {{ $authStore.user.last_name }}</div>
       <div class="sub">{{ $t($authStore.user.type) }}</div>
     </div>
-    <q-icon class="nav-dropdown q-ml-auto q-mr-xs" size="sm" :name="mdiChevronRight" />
+    <q-icon class="nav-dropdown q-ml-auto" size="sm" :name="mdiChevronRight" />
     <q-popup-proxy class="popup-dropdown" breakpoint="600">
       <q-list style="min-width: 200px">
         <slot></slot>
 
         <!--Profile-->
-        <q-item clickable v-close-popup to="/admin/account/profile">
+        <q-item clickable v-close-popup :to="$appStore.panel === 'admin' ? '/admin/account/profile' : '/client/profile'">
           <q-item-section side><q-icon :name="mdiAccount" /></q-item-section>
-          <q-item-section
-            ><q-item-label>{{ $t('Edit Profile') }}</q-item-label></q-item-section
-          >
+          <q-item-section><q-item-label>{{ $t('Edit Profile') }}</q-item-label></q-item-section>
         </q-item>
 
         <!--Return Admin-->
@@ -53,7 +51,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { mdiAccountCircle, mdiLogout, mdiAccountMultipleOutline, mdiChevronRight, mdiAccount } from '@quasar/extras/mdi-v7';
-
 export default defineComponent({
   name: 'NavigationProfile',
   setup: () => ({ mdiAccountCircle, mdiLogout, mdiAccountMultipleOutline, mdiChevronRight, mdiAccount }),
@@ -63,6 +60,7 @@ export default defineComponent({
 <style lang="scss">
 .profile-btn {
   .q-avatar {
+    font-size: 40px;
     height: auto;
     width: auto;
   }
@@ -71,24 +69,19 @@ export default defineComponent({
 .nav-text {
   display: flex;
   flex-direction: column;
-  line-height: 15px;
+  line-height: 16px;
   align-items: flex-start;
 
   .title {
-    line-height: 18px;
-    margin-bottom: 4px;
-
-    body.body--dark & {
-      color: #fff;
-    }
+    line-height: 14px;
+    margin-bottom: 5px;
   }
   .sub {
     text-transform: uppercase;
-    font-size: 11px;
-    line-height: 12px;
-    opacity: 0.7;
+    font-size: 10px;
+    line-height: 10px;
     font-weight: 400;
-    #color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75);
   }
 }
 </style>

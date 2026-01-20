@@ -2,13 +2,7 @@
   <q-layout class="admin" view="lHh LpR lFr">
     <!--Drawers-->
     <Navigation :navs="navs" :title="$appStore.title">
-      <q-btn-group flat spread>
-        <q-btn
-          @click="($refs.search as any).toggle();$appStore.closeNav();"
-          size="12px"
-          class="q-px-sm"
-          :icon="mdiMagnify"
-        />
+      <q-btn-group flat spread class="nav-actions">
         <q-btn
           @click="($refs.notification as any).toggle(); $appStore.closeNav();"
           size="12px"
@@ -20,7 +14,6 @@
       </q-btn-group>
     </Navigation>
 
-    <SearchBar ref="search"></SearchBar>
     <Notifications v-model:unreadcount="unreadCount" ref="notification"></Notifications>
 
     <!--Page Container-->
@@ -39,7 +32,6 @@ import { defineComponent } from 'vue';
 import { createMetaMixin } from 'quasar';
 import Notifications from 'components/Notification/Notification.vue';
 import Navigation from 'components/Layout/Navigation.vue';
-import SearchBar from 'components/Search/Search.vue';
 import {
   mdiBell,
   mdiMagnify,
@@ -61,7 +53,7 @@ export default defineComponent({
       };
     }),
   ],
-  components: { SearchBar, Notifications, Navigation },
+  components: { Notifications, Navigation },
   setup: () => ({ mdiBell, mdiMagnify }),
   mounted() {
     this.$appStore.panel = 'admin';

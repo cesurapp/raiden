@@ -7,7 +7,7 @@
         'rounded-borders q-pa-md': !borderless,
         'content-fixed': !liquid,
         'content-liquid': liquid,
-        'q-my-md q-pt-sm': !clear,
+        'q-px-md q-px-lg-lg q-py-md q-pt-sm': !clear,
         cleared: clear,
         borderless: borderless,
       }"
@@ -45,29 +45,20 @@ export default defineComponent({
   flex: 1;
   width: 100%;
 
-  .body--dark & {
-    background: var(--q-dark-page);
-  }
   .content-fixed {
     width: 100%;
     max-width: 1140px;
     &:not(.cleared) {
-      #margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
-      #margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
+      padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
+      padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
     }
   }
 
   .content-liquid {
     width: 100%;
     &:not(.cleared) {
-      margin-left: calc(env(safe-area-inset-left) / 2 + 24px);
-      margin-right: calc(env(safe-area-inset-right) / 2 + 24px);
-
-      .screen--xs &,
-      .screen--sm & {
-        margin-left: calc(env(safe-area-inset-left) / 2 + 16px);
-        margin-right: calc(env(safe-area-inset-right) / 2 + 16px);
-      }
+      padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
+      padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
     }
   }
 
@@ -80,15 +71,38 @@ export default defineComponent({
     .q-table td:first-of-type,
     .q-table__bottom {
       padding-left: 24px;
-      .screen--xs &,
-      .screen--sm & {
-        padding-left: 16px;
-      }
     }
     .q-table th:last-of-type,
     .q-table td:last-of-type,
     .q-table__bottom {
       padding-right: 24px;
+    }
+  }
+}
+
+.screen--xl,
+.screen--lg {
+  .page-content {
+    .content-liquid:not(.cleared) {
+      padding-left: calc(env(safe-area-inset-left) / 2 + 24px);
+      padding-right: calc(env(safe-area-inset-right) / 2 + 24px);
+    }
+  }
+}
+
+.screen--xs .page-content,
+.screen--sm .page-content,
+.screen--md .page-content {
+  .cleared {
+    .q-table th:first-of-type,
+    .q-table td:first-of-type,
+    .q-table__bottom {
+      padding-left: calc(env(safe-area-inset-left) / 2 + 16px);
+    }
+    .q-table th:last-of-type,
+    .q-table td:last-of-type,
+    .q-table__bottom {
+      padding-right: calc(env(safe-area-inset-right) / 2 + 16px);
     }
   }
 }
