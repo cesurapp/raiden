@@ -1,29 +1,33 @@
 # Raiden API
 
-High concurrency, Swoole based, Symfony 8 Api
+High concurrency, Swoole based, Symfony 8 API
 
 __Features__
-* Swoole Http Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
-* Auto generated __API__ documentation [ApiBundle](https://github.com/cesurapp/api-bundle)
-* Api __TypeScript__ client generator
-* Github actions auto deployment
+* Swoole HTTP Server, Task Worker (Queue), Cron Worker [SwooleBundle](https://github.com/cesurapp/swoole-bundle)
+* Auto-generated API documentation [ApiBundle](https://github.com/cesurapp/api-bundle)
+* API TypeScript client generator
+* GitHub Actions auto deployment
 * Horizontally scalable
-* Firebase integration for notifications
-* Firebase bulk notification sender
-* Email/Phone verify system
-* Cloudflare, Backblaze, Local drives for storage integration [StorageBundle](https://github.com/cesurapp/storage-bundle)
-* Role based authentication
-* Enum permission system
-* Multi language support
+* Firebase push notifications
+* Email/SMS OTP verification
+* Media upload & processing [MediaBundle](https://github.com/cesurapp/media-bundle)
+* Storage: Cloudflare R2, Backblaze B2, Local [StorageBundle](https://github.com/cesurapp/storage-bundle)
+* JWT authentication with refresh tokens
+* Role-based access control (RBAC)
+* Enum-based permission system
+* Multi-language support (i18n)
+* Organization/tenant management
+* User switch & impersonation
+* PHPUnit tests with fixtures
 
-__Requirement__
-* Postgres 14+
+__Requirements__
+* PostgreSQL 14+
 * Composer 2+
 * PHP 8.4+
-  * Swoole 4.11+ (`pecl install swoole`) 
-  * Imagick (`pecl install imagick`)
-  * Intl (`pecl install intl`)
-  * Php.ini
+  * Swoole 4.11+ (`pecl install swoole`)
+  * GD extension (`--with-gd`)
+  * Required extensions: intl, bcmath, curl, ctype, iconv
+  * php.ini configuration:
     * max_file_uploads=50
     * post_max_size=20M
     * upload_max_filesize=20M
@@ -41,202 +45,170 @@ __Requirement__
     * opcache.jit=tracing
     * opcache.jit_buffer_size=256M
 
-Install
+Installation
 --------------------
-__Development for MacOS__
+__Development (macOS)__
 
 ```shell
-# MacOS Extension (Required for development server)
-brew install fswatch
-brew install util-linux
+# macOS utilities (for hot-reload)
+brew install fswatch util-linux
 
-# Install PHP Extension
-pecl install swoole # openssl - http2 - curl - postgresql
+# PHP extensions
+pecl install swoole # enable: openssl, http2, curl, postgresql
 
-# Configure Environment
+# Setup
 cp .env .env.local
-
-# Install Dependency
 composer install
 
-# Create PostgreSql Database
+# Database
 bin/console doctrine:database:create
 bin/console doctrine:schema:update --force
+
+# Run dev server (with hot-reload)
+bin/console swoole:server:start
 ```
 
-#### Production using Docker
+__Production (Docker)__
 
-1. Clone the repository
- 
-   ```shell
-   git clone --depth 1 <repo>
-   composer install --no-dev
-   composer dump-autoload --no-dev --classmap-authoritative
-   ```
-2. Configure Environment (Optional)
+```shell
+# Build
+git clone --depth 1 <repo>
+composer install --no-dev
+composer dump-autoload --no-dev --classmap-authoritative
 
-   ```shell
-   cp .env .env.local
-   ```
-3. Build Dockerfile & Run
+# Configure (optional)
+cp .env .env.local
 
-   ```shell
-   docker build -t raiden-api .
-   docker run -d -p 80:80 --restart always --name raiden-container raiden-api
-   ```
-4. Start Migration or Commands
+# Docker
+docker build -t raiden-api .
+docker run -d -p 80:80 --restart always --name raiden-api raiden-api
 
-   ```shell
-   docker exec raiden-container "bin/console doctrine:database:create"
-   docker exec raiden-container "bin/console doctrine:schema:update --force --complete"
-   ```
-#### Github Actions Deployment
+# Migrations
+docker exec raiden-api bin/console doctrine:database:create
+docker exec raiden-api bin/console doctrine:schema:update --force
+```
+__GitHub Actions Deployment__
 
->You can deploy to multiple servers. Just provide the IP list. The application image is first sent to the Github
-Container Registry and then deployed to the servers via ssh.
+Deploy to multiple servers via GitHub Container Registry.
 
-1. Generate SSH key for Deployment
-
-   ```shell
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-2. Create Actions Secrets (Repo -> Settings -> Secret and Variables)
-
-   ```shell
-   SERVER_PRIVATEKEY: SSH Private Key
-   ```
-3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
-
-   ```shell
+1. Generate SSH key: `ssh-keygen -t ed25519`
+2. Add to **Repository Secrets**: `SERVER_PRIVATEKEY`
+3. Set **Variables**:
+   ```json
    APP_HOSTS: ["11.111.222.222"]
-   ```
-4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
-
-   ```shell
    APP_ENVS: [
      "APP_ENV=prod",
-     "DATABASE_URL=postgres://cesur:@127.0.0.1:5432/raiden?charset=utf8&serverVersion=14"
+     "DATABASE_URL=postgresql://user:pass@host:5432/db?serverVersion=14",
      "LOCK_DSN=semaphore"
    ]
    ```
-5. Create __Production__ branch and run __Deployer__ action.
+4. Create `production` branch → Run **Deployer** action
 
-#### Github Actions Staging Deploy
+__GitHub Actions Staging__
 
->You can deploy to single server. Just provide the IP address. The application image is first sent to the Github Container Registry and then deployed to the server via ssh. PostgreSql container is created automatically.
+Deploy to single server with auto PostgreSQL container.
 
-1. Generate SSH key for Deployment
-
-   ```shell
-   ssh-keygen -t ed25519 -C "your_email@example.com"
-   ```
-2. Create Actions Secrets (Repo -> Settings -> Secret and Variables)
-
-   ```shell
-   SERVER_PRIVATEKEY: SSH Private Key
-   ```
-3. Create Host in Variables (Repo -> Settings -> Secret and Variables)
-
-   ```shell
-   STAG_HOSTS: 11.111.222.222
-   ```
-4. Create Application Env in Variables (Repo -> Settings -> Secret and Variables)
-
-   ```shell
+1. Generate SSH key
+2. Add **Secret**: `SERVER_PRIVATEKEY`
+3. Set **Variables**:
+   ```json
+   STAG_HOSTS: "11.111.222.222"
    STAG_ENVS: [
-     "POSTGRES_PASSWORD=123123123" 
+     "POSTGRES_PASSWORD=pass123",
      "APP_ENV=prod",
-     "APP_SECRET=hsadgjh231",
-     "APP_JWT_SECRET=askjdhask",
-     "DATABASE_URL=postgresql+advisory://postgres:123123123@postgres:5432/postgres?serverVersion=14",
-     "SERVER_HTTP_SETTINGS_WORKER_NUM=2",
-     "SERVER_HTTP_SETTINGS_TASK_WORKER_NUM=2",
-     "FIREBASE_DSN=firebase://KEY@default",
+     "APP_SECRET=secret",
+     "APP_JWT_SECRET=jwtsecret",
+     "DATABASE_URL=postgresql://postgres:pass123@postgres:5432/postgres?serverVersion=14",
+     "FIREBASE_DSN=firebase://KEY@default"
    ]
    ```
-5. Create __Staging__ branch and run __Staging__ action.
+4. Create `staging` branch → Run **Staging** action
 
-Run Tests
+Testing & QA
 --------------------
-__Configure Local PHPUnit__
-
 ```shell
-cp .phpunit.xml.dist .phpunit.xml
+# Setup
+cp phpunit.xml.dist phpunit.xml
+
+# Commands
+composer qa:phpstan    # Static analysis
+composer qa:lint       # Check code style
+composer qa:fix        # Fix code style
+composer test          # Run tests
+composer test:stop     # Stop on first failure
+composer fix           # Run all QA + tests
 ```
 
-__Commands__
-
-```shell
-composer qa:phpstan    # PhpStan Analysis
-composer qa:lint       # PhpCsFixer Linter
-composer qa:fix        # PhpCsFixer Fix
-composer test          # PhpUnit Test
-composer test:stop     # PhpUnit Test stop first error
-composer fix           # Run All QA & Test
-```
-
-Documentation
+Usage
 --------------------
-### Packages
+### Bundles
 
-* [Swoole Server Bundle](https://github.com/cesurapp/swoole-bundle)
-* [Storage Bundle](https://github.com/cesurapp/storage-bundle)
-* [Media Bundle](https://github.com/cesurapp/media-bundle)
-* [Api Bundle](https://github.com/cesurapp/api-bundle)
+* [SwooleBundle](https://github.com/cesurapp/swoole-bundle) - HTTP server, task queue, cron
+* [ApiBundle](https://github.com/cesurapp/api-bundle) - Auto docs, TS client generator
+* [StorageBundle](https://github.com/cesurapp/storage-bundle) - Multi-driver file storage
+* [MediaBundle](https://github.com/cesurapp/media-bundle) - Image/video processing
 
-### Realtime Notification (Firebase)
+### Authentication
 
-__Configure__
-1. Create Firebase Project [Open Firebase Console](https://console.firebase.google.com/)
-2. Open -> Project Settings -> Cloud Messaging
-3. Enable -> Cloud Messaging API (Legacy)
-4. Configure .env ``FIREBASE_DSN=firebase://<ServerKey>@default``
+**Login**: `POST /api/login` → Returns `access_token` + `refresh_token`
+**Refresh**: `POST /api/token/refresh` with `refresh_token`
+**Register**: `POST /api/register` → Sends OTP
+**Verify OTP**: `POST /api/verify-otp` → Activates account
 
-__Send Notification__
+### Push Notifications (Firebase)
+
+**Setup**:
+1. [Firebase Console](https://console.firebase.google.com/) → Create project
+2. Project Settings → Cloud Messaging → Enable Legacy API
+3. Set `.env`: `FIREBASE_DSN=firebase://SERVER_KEY@default`
+
+**Send**:
 ```php
-public function test(NotificationPusher $pusher)
-{
-    $pusher->send(
-        (new Notification())
-            ->setTitle('Test')
-            ->setMessage('Test Message')
-            ->setOwner($user) // Not Required
-    )
-    
-    /*
-     * Only Firebase sends it. It is not added to system notifications. 
-     */
-    $pusher->onlySend(
-        (new \App\Admin\Notification\Entity\Device())
-            ->setToken('Device Token')
-            ->setType(\App\Admin\Notification\Enum\DeviceType::IOS),
-        (new Notification())
-            ->setTitle('Test')
-            ->setMessage('Test Message')
-            ->setOwner($user) // Not Required
-    )
-}
+$pusher->send((new Notification())
+    ->setTitle('Title')
+    ->setMessage('Message')
+    ->setOwner($user));
 ```
 
-### Mail & Sms Pusher
-__Send Mail__
+### Email & SMS
+
+**Email**:
 ```php
-public function sendMail(MailPusher $pusher)
-{
-    $pusher->send(
-        (new \Symfony\Component\Mime\Email())
-            ->to('test@test.com')
-            ->from('test@test.com')
-            ->subject('Subject')
-            ->html('Body')
-    );
-}
+$mailPusher->send((new Email())
+    ->to('user@mail.com')
+    ->subject('Subject')
+    ->html('Body'));
 ```
 
-__Send SMS__
+**SMS**:
 ```php
-public function sendSms(\App\Admin\Core\Service\SmsPusher $pusher)
-{
-    $pusher->send(5111111111, 90, 'Subject, Content');
+$smsPusher->send(phoneNumber: 5111111111, countryCode: 90, message: 'OTP: 1234');
+```
+
+### OTP Verification
+
+OTP codes expire in 15 minutes. Email/SMS sent via queue (async).
+
+```php
+// Generate OTP
+$otpKey = (new OtpKey())
+    ->setType(OtpType::EMAIL)
+    ->setAddress('user@mail.com')
+    ->setOtpKey(rand(100000, 999999))
+    ->setExpiredAt(new \DateTimeImmutable('+15 minutes'));
+
+// Verify
+$valid = !$otpKey->isExpired() && !$otpKey->isUsed();
+```
+
+### Permissions
+
+Enum-based permissions via `PermissionManager`:
+```php
+// Check permission
+if ($permissionManager->has(CorePermission::USER_EDIT)) {
+    // Allow action
 }
+
+// User types: SUPER_ADMIN, ADMIN, USER
 ```
