@@ -18,10 +18,10 @@
 
     <!--Page Container-->
     <q-page-container>
-      <router-view v-slot="{ Component }">
-        <transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-          <component :is="Component"></component>
-        </transition>
+      <router-view v-slot="{ Component, route }">
+        <Transition appear mode="out-in" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+          <component :is="Component" :key="route.path"></component>
+        </Transition>
       </router-view>
     </q-page-container>
   </q-layout>

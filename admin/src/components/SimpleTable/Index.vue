@@ -219,13 +219,13 @@
     </template>
 
     <!--BodyCell-->
-    <template #body-cell="props">
-      <q-td :props="props">
+    <template v-for="slot in columnSlots" v-slot:[`body-cell-${slot[0]}`]="props">
+      <td class="q-td text-right">
         <template v-if="columnSlots.has(props.col.name)">
-          <slot :name="'column_' + props.col.name" :props="props"></slot>
+          <slot :name="`column_${slot[0]}`" :props="props" :key="`column_${slot[0]}_slot` + props.row.id"></slot>
         </template>
         <template v-else>{{ props.value }}</template>
-      </q-td>
+      </td>
     </template>
 
     <!--Header Cell -->
@@ -527,6 +527,7 @@ export default defineComponent({
     excludedColumns: ['id'],
     contextMenuProps: null as any,
     columnSlotsCache: null as Map<string, boolean> | null,
+    isRendering: false
   }),
   watch: {
     'excludedColumns': {
@@ -657,21 +658,25 @@ export default defineComponent({
     /**
      * Table List | Sort | Filter
      */
-    onRequest(props) {
+    async onRequest(props) {
+      if (this.isRendering) return;
+      this.isRendering = true;
+      const refreshing = this.pagination.page === props.pagination.page;
+
       this.clearSelection();
       this.pagination = props.pagination;
 
       // Init Request
-      if (!this.loadEvent) {
+      if (!this.loadEvent && !refreshing) {
         this.loadQueryString(true);
       }
 
-      this.requestProp(this.getQuery())
+      await this.requestProp(this.getQuery())
         .then((r) => this.setResponse(r))
         .finally(() => {
-          if (props.pullRefresh) {
-            props.pullRefresh();
-          }
+          if (props.pullRefresh) props.pullRefresh();
+
+          setTimeout( () => this.isRendering = false, 50)
         });
       this.backEvent = false;
       this.loadEvent = false;
@@ -751,7 +756,7 @@ export default defineComponent({
         this.pagination.page--;
       }
 
-      this.onRequest({ pagination: this.pagination, pullRefresh });
+      this.$refs.table.setPagination(this.pagination, true)
     },
 
     /**

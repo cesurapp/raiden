@@ -20,6 +20,7 @@ export default [
       },
       {
         path: 'account/profile',
+        name: 'admin.profile',
         component: () => import('pages/Admin/Account/ProfilePage.vue'),
         meta: { breadcrumb: 'Edit Profile' },
       },
@@ -27,6 +28,7 @@ export default [
       // Account Management
       {
         path: 'account',
+        name: 'admin.account',
         component: () => import('pages/Admin/Account/AccountPage.vue'),
         meta: { breadcrumb: 'Accounts', permission: [Permission.AdminAccount.LIST] },
       },
@@ -34,11 +36,13 @@ export default [
       // Firebase Devices & Scheduled Notifications
       {
         path: 'firebase/devices',
+        name: 'admin.firebase.devices',
         component: () => import('pages/Admin/Firebase/DevicePage.vue'),
         meta: { breadcrumb: 'Firebase Devices', permission: [Permission.AdminDevice.LIST] },
       },
       {
         path: 'firebase/scheduler',
+        name: 'admin.firebase.scheduler',
         component: () => import('pages/Admin/Firebase/SchedulerPage.vue'),
         meta: { breadcrumb: 'Scheduled Notifications', permission: [Permission.AdminScheduler.LIST] },
       },
