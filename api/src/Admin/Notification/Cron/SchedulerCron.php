@@ -19,6 +19,7 @@ use Symfony\Component\Uid\Uuid;
 class SchedulerCron extends AbstractCronJob
 {
     public string $TIME = '@EveryMinute';
+    public bool $ENABLE = false;
 
     public function __construct(
         private readonly SchedulerRepository $repo,
